@@ -1,0 +1,1 @@
+call dev\clear.bat
