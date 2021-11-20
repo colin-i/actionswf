@@ -1,4 +1,4 @@
-format elfobj64microsoft
+format elfobj64
 
 importx "sprintf" sprintf
 

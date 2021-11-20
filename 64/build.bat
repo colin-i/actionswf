@@ -1,4 +1,7 @@
 
+::this was used in ocompiler < 1.4 only
+exit
+
 set files_src=src\
 
 goto go

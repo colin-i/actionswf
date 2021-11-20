@@ -1,4 +1,4 @@
-Format ElfObj64Microsoft
+Format ElfObj64
 
 importx "swf_text" swf_text
 importx "swf_shape" swf_shape

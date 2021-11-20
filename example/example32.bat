@@ -1,13 +1,13 @@
 gcc change_format.c -o change_format.exe
 
-change_format.exe "Format ElfObj;##########"
+change_format.exe "Format ElfObj;#"
 cd ..
 
 call dev\lib.bat
 call dev\build.bat
 
 cd example
-change_format.exe "Format ElfObj64Microsoft"
+change_format.exe "Format ElfObj64"
 
 o example32.s
 

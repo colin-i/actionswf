@@ -1,4 +1,4 @@
-Format ElfObj64Microsoft
+Format ElfObj64
 
 import "erbool" erbool
 function erbool_get()

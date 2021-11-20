@@ -1,4 +1,4 @@
-Format ElfObj64Microsoft
+Format ElfObj64
 
 importx "_open" open
 importx "_read" read

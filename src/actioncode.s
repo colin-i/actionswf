@@ -1,4 +1,4 @@
-Format ElfObj64Microsoft
+Format ElfObj64
 
 importx "strcmp" strcmp
 importx "sprintf" sprintf
