@@ -34,7 +34,7 @@ function printEr_func(ss msg,sd *item_size,sd *count,sd stderr)
         #int _charbuf;#int _bufsiz;
         #char *_tmpfname;
     #}
-    setxcall stderr iob_func()
+    setcall stderr iob_func()
     const size_of_FILE_noPad=:+DWORD+:+DWORD+DWORD+DWORD+DWORD+:
     const pad_align_calc1=:-1;const pad_align_calc2=~pad_align_calc1;const pad_align_calc3=size_of_FILE_noPad+pad_align_calc1
     const size_of_FILE=pad_align_calc3&pad_align_calc2
@@ -169,7 +169,7 @@ endfunction
 function memrealloc(sd mem,sd size)
 #unele fisiere pot da eroare de la realocare; fara functia asta aftercall poate fi degeaba
     sd ptr;sd n=NULL
-    setXcall ptr realloc(mem,size)
+    setcall ptr realloc(mem,size)
     sd comp;setcall comp memcmp(#ptr,#n,:)
     if comp==0
         call error("realloc failed")
