@@ -11,7 +11,7 @@ logs :=
 obs :=
 
 %: %.s
-	#o $<
+	o $<
 	$(eval logs += $@.s.log)
 	$(eval obs += $@.o)
 
