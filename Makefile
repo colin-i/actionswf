@@ -6,6 +6,3 @@ $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 .PHONY: $(TOPTARGETS) $(SUBDIRS)
-
-all:
-	cd ./src; ounused
