@@ -1,17 +1,17 @@
 
 platform = lin
 
-items = ${platform} actioncode actionparse actionpool action actionutil bits character file storage swf tool util
+items = ${platform} actioncode actionparse actionpool action actionutil bits character file storage swf tool util ../shared/action_dllmain
 
 all: ${items}
-	#ounused ${logs}
+	ounused ${logs}
 	#ld ${obs}
 
 logs :=
 obs :=
 
 %: %.s
-	o $<
+	o $< conv_64 1
 	$(eval logs += $@.s.log)
 	$(eval obs += $@.o)
 

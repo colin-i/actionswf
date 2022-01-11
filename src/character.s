@@ -359,7 +359,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     add size Characters_CharacterEndFlag_size
 
     chars BUTTONCONDACTION={0,0};#CondActionSize
-    chars *={8,0};#CondOverDownToOverUp 
+    chars *={8,0};#CondOverDownToOverUp
     const BUTTONCONDACTION_header_size=2+2
     #is action,pool and sprite, it's more code to get action,pool only
     import "new_sprite_id" new_sprite_id

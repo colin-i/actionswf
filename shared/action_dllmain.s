@@ -1,5 +1,5 @@
 Format ElfObj64
 
-function DllMain()
+functionx DllMain()
 	return 1
 endfunction

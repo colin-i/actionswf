@@ -769,14 +769,14 @@ functionX swf_placeobject_coords(sd refid,sd depth,sd x,sd y)
 #sd depth
 #sd x         x coordinate
 #sd y         y coordinate
-const PlaceFlagHasClipActions=0x80
-const PlaceFlagHasClipDepth=0x40
-const PlaceFlagHasName=0x20
-const PlaceFlagHasRatio=0x10
-const PlaceFlagHasColorTransform=0x8
+#const PlaceFlagHasClipActions=0x80
+#const PlaceFlagHasClipDepth=0x40
+#const PlaceFlagHasName=0x20
+#const PlaceFlagHasRatio=0x10
+#const PlaceFlagHasColorTransform=0x8
 const PlaceFlagHasMatrix=0x4
 const PlaceFlagHasCharacter=0x2
-const PlaceFlagMove=0x1
+#const PlaceFlagMove=0x1
     sd flags=PlaceFlagHasMatrix|PlaceFlagHasCharacter
     sd matrix
     sd maxtrixsz

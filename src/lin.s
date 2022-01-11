@@ -1,2 +1,2 @@
 
-format elfobj
+format elfobj64

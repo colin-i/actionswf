@@ -1,12 +1,12 @@
 Format ElfObj64
 
 import "erbool" erbool
-function erbool_get()
+functionx erbool_get()
     ss p;setcall p erbool()
     return p#
 endfunction
 
-function erbool_reset()
+functionx erbool_reset()
     ss p;setcall p erbool()
     set p# 0
 endfunction
@@ -14,7 +14,7 @@ endfunction
 include "../include/prog.h"
 
 import "swf_mem" swf_mem
-function abort()
+functionx abort()
     #free and set initial null/-1.....
     call swf_mem((mem_exp_free))
 endfunction

@@ -80,16 +80,16 @@ const StateMoveTo=1
 const StateFillStyle0=2*StateMoveTo
 const StateFillStyle1=2*StateFillStyle0
 const StateLineStyle=2*StateFillStyle1
-const StateNewStyles=2*StateLineStyle
+#const StateNewStyles=2*StateLineStyle
 
 const FontFlagsHasLayout=0x80
-const FontFlagsShiftJIS=0x40
-const FontFlagsSmallText=0x20
-const FontFlagsANSI=0x10
-const FontFlagsWideOffsets=8
-const FontFlagsWideCodes=4
-const FontFlagsItalic=2
-const FontFlagsBold=1
+#const FontFlagsShiftJIS=0x40
+#const FontFlagsSmallText=0x20
+#const FontFlagsANSI=0x10
+#const FontFlagsWideOffsets=8
+#const FontFlagsWideCodes=4
+#const FontFlagsItalic=2
+#const FontFlagsBold=1
 
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
 const win_O_CREAT=0x0100;const win_O_BINARY=0x8000

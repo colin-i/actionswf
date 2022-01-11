@@ -23,8 +23,8 @@ endfunction
 #p
 function printEr_func(ss msg,sd *item_size,sd *count,sd stderr)
 #                                                  this argument is not passed, is structure last part
-    const STDIN_FILENO=0
-    const STDOUT_FILENO=1
+#    const STDIN_FILENO=0
+#    const STDOUT_FILENO=1
     const STDERR_FILENO=2
     #typedef struct FILE{
         #char *_ptr
@@ -152,14 +152,14 @@ function error(ss msg)
 
     ss p;setcall p erbool();set p# 1
 endfunction
-function temporary_number();#p
-    data n#1
-    return #n
-endfunction
-function temporary_bool();#p
-    data b=FALSE
-    return #b
-endfunction
+#function temporary_number();#p
+#    data n#1
+#    return #n
+#endfunction
+#function temporary_bool();#p
+#    data b=FALSE
+#    return #b
+#endfunction
 function string_nl_print(ss msg)
     call printEr(msg)
     chars nl={0xa,0}
