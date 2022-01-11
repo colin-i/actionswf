@@ -8,13 +8,13 @@ importx "strcspn" strcspn
 importx "strlen" strlen
 importx "memcmp" memcmp
 
+import "platform_iob" platform_iob
+
 function erbool()
     aftercall ebool
     return #ebool
 endfunction
 include "../include/prog.h"
-
-import "__iob_func" iob_func
 
 function printEr(ss msg)
     sd len;setcall len strlen(msg)
@@ -22,24 +22,8 @@ function printEr(ss msg)
 endfunction
 #p
 function printEr_func(ss msg,sd *item_size,sd *count,sd stderr)
-#                                                  this argument is not passed, is structure last part
-#    const STDIN_FILENO=0
-#    const STDOUT_FILENO=1
-    const STDERR_FILENO=2
-    #typedef struct FILE{
-        #char *_ptr
-        #int _cnt
-        #char *_base;
-        #int _flag;#int _file;
-        #int _charbuf;#int _bufsiz;
-        #char *_tmpfname;
-    #}
-    setcall stderr iob_func()
-    const size_of_FILE_noPad=:+DWORD+:+DWORD+DWORD+DWORD+DWORD+:
-    const pad_align_calc1=:-1;const pad_align_calc2=~pad_align_calc1;const pad_align_calc3=size_of_FILE_noPad+pad_align_calc1
-    const size_of_FILE=pad_align_calc3&pad_align_calc2
-    call add64(#stderr,(STDERR_FILENO*size_of_FILE))
-
+#                                                    this argument is not passed, is structure last part
+    setcall stderr platform_iob()
     callex fwrite #msg 4
     #bytes written,error:sz!=return
 endfunction
