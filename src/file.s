@@ -1,11 +1,11 @@
 Format ElfObj64
 
-importx "_open" open
-importx "_read" read
-importx "_write" write
-importx "_lseek" lseek
-importx "_tell" tell
-importx "_close" close
+importx "open" open
+importx "read" read
+importx "write" write
+importx "lseek" lseek
+#importx "tell" tell   can't find it
+importx "close" close
 
 importaftercall ebool
 include "../include/prog.h"
@@ -38,7 +38,7 @@ endfunction
 #sz
 function file_tell(sd file)
     sd sz
-    setcall sz tell(file)
+    setcall sz lseek(file,0,(SEEK_CUR))
     if sz==-1
         str tellerr="File tell error"
         call error(tellerr)

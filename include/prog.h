@@ -18,6 +18,7 @@ const QWORD=8
 const void=0
 
 const SEEK_SET=0
+const SEEK_CUR=1
 const SEEK_END=2
 
 const block_size=0x1000
