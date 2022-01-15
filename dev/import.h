@@ -66,6 +66,6 @@ importX "actionf_sprite" actionf_sprite
 
 #tool
 
-import "erbool_get" erbool_get
-import "erbool_reset" erbool_reset
-import "abort" abort
+importx "erbool_get" erbool_get
+importx "erbool_reset" erbool_reset
+importx "abort" abort

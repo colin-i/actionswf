@@ -1,3 +1,7 @@
+
+::use Makefile
+exit
+
 gcc change_format.c -o change_format.exe
 
 change_format.exe "Format ElfObj;#"

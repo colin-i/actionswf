@@ -1,4 +1,7 @@
 
+::use Makefile
+exit
+
 cd ..
 
 call dll.bat
