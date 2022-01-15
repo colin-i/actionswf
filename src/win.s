@@ -1,7 +1,7 @@
 
 format elfobj64
 
-import "__iob_func" iob_func
+importx "__iob_func" iob_func
 
 function platform_iob()
 #    const STDIN_FILENO=0
