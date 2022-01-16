@@ -27,29 +27,6 @@ function printEr_func(ss msg,sd *item_size,sd *count,sd stderr)
     callex fwrite #msg 4
     #bytes written,error:sz!=return
 endfunction
-function add64_lastbit(sd a,sd p_b)
-    set p_b# (0x80*0x100*0x100*0x100)
-    and p_b# a
-endfunction
-function add64(sd p_64,sd int32)
-#when 0x1xxx ... at both is carry
-#when 0x1xxx ... at once is carry only if that bit becomes 0 after add
-    sd p_64_high;set p_64_high p_64;add p_64_high (DWORD)
-    sd last_bit1;sd last_bit2
-    call add64_lastbit(p_64#,#last_bit1)
-    call add64_lastbit(int32,#last_bit2)
-    if last_bit1!=0;if last_bit2!=0
-        inc p_64_high#
-    endif;endif
-    add p_64# int32
-    or last_bit1 last_bit2
-    if last_bit1!=0
-        call add64_lastbit(p_64#,#last_bit1)
-        if last_bit1==0
-            inc p_64_high#
-        endif
-    endif
-endfunction
 
 function word_swap_arg(ss word)
     sd a
@@ -123,8 +100,8 @@ function error(ss msg)
     import "action_error" action_error
     call action_error()
 
-    import "abort" abort
-    call abort()
+    import "freereset" freereset
+    call freereset()
     #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
     import "action_debug_free" action_debug_free
     call action_debug_free()
@@ -157,14 +134,6 @@ function memrealloc(sd mem,sd size)
     sd comp;setcall comp memcmp(#ptr,#n,:)
     if comp==0
         call error("realloc failed")
-    endif
-    if :!=(DWORD)
-        #cannot return only 4 bytes without a test
-        data test#1;data test_high#1;call memcpy(#test,#ptr,(2*DWORD))
-        call add64(#test,size)
-        if test_high!=0
-            call error("8 byte pointers are not implemented.")
-        endif
     endif
     return ptr
 endfunction

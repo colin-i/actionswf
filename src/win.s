@@ -19,7 +19,8 @@ function platform_iob()
     const size_of_FILE_noPad=:+DWORD+:+DWORD+DWORD+DWORD+DWORD+:
     const pad_align_calc1=:-1;const pad_align_calc2=~pad_align_calc1;const pad_align_calc3=size_of_FILE_noPad+pad_align_calc1
     const size_of_FILE=pad_align_calc3&pad_align_calc2
-    call add64(#stderr,(STDERR_FILENO*size_of_FILE))
+    #call add64(#stderr,(STDERR_FILENO*size_of_FILE))
+    add stderr (STDERR_FILENO*size_of_FILE)
 
     return stderr
 endfunction

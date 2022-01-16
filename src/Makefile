@@ -6,6 +6,7 @@ expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a
 
+OFLAGS = conv_64 1
 syms =-s
 
 name = actionswf.so
@@ -14,17 +15,18 @@ all: ${items} ${expitems}
 	ounused ${logs}
 	$(AR) cr ${exte} ${obs}
 	$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:libexte.a --exclude-libs ${exte}
+	#$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:libexte.a --exclude-libs ${exte}
 
 logs :=
 obs :=
 eobs :=
 
 %: %.s
-	o $< conv_64 1
+	o $< ${OFLAGS}
 	$(eval logs += $@.s.log)
 	$(eval obs += $@.o)
 %: %.es
-	o $< conv_64 1
+	o $< ${OFLAGS}
 	$(eval logs += $@.es.log)
 	$(eval eobs += $@.o)
 

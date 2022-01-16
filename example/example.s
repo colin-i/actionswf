@@ -58,4 +58,4 @@ _movie._y=100;
 
 call swf_showframe()
 call swf_done()
-return 1
+exit 0

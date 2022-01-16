@@ -1,4 +1,5 @@
 
+OFLAGS = conv_64 1
 syms=-s
 
 name=example
@@ -15,7 +16,7 @@ exe:
 	export LD_LIBRARY_PATH=../src; ./example
 
 %: %.s
-	o $< conv_64 1
+	o $< ${OFLAGS}
 
 install:
 

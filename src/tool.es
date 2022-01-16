@@ -14,7 +14,7 @@ endfunction
 include "../include/prog.h"
 
 import "swf_mem" swf_mem
-functionx abort()
+functionx freereset()
     #free and set initial null/-1.....
     call swf_mem((mem_exp_free))
 endfunction
