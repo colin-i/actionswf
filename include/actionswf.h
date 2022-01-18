@@ -164,7 +164,7 @@ void actionf_sprite(int sprite,char* buffer,char* format,...);
 
 char erbool_get();
 void erbool_reset();
-void abort();
+void freereset();
 
 
 

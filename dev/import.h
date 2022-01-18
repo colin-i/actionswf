@@ -68,4 +68,4 @@ importX "actionf_sprite" actionf_sprite
 
 importx "erbool_get" erbool_get
 importx "erbool_reset" erbool_reset
-importx "abort" abort
+importx "freereset" freereset
