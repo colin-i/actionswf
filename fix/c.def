@@ -5,7 +5,6 @@ _open
 _write
 _read
 _lseek
-_tell
 fwrite
 __iob_func
 realloc

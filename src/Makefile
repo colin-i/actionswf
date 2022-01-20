@@ -7,15 +7,29 @@ expitems = action swf tool ../shared/action_dllmain
 exte=libexte.a
 
 OFLAGS = conv_64 1
+ifeq (${platform},win)
+	OFLAGS += inplace_reloc 0
+endif
+
 syms =-s
 
-name = actionswf.so
+projname=actionswf
+name = ${projname}.so
 
-all: ${items} ${expitems}
+all: ${items} ${expitems} ounused lnk
+
+ounused:
 	ounused ${logs}
-	$(AR) cr ${exte} ${obs}
-	$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:libexte.a --exclude-libs ${exte}
-	#$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:libexte.a --exclude-libs ${exte}
+
+lnk:
+	if [ "${platform}" = "lin" ]; then \
+		$(AR) cr ${exte} ${obs} && \
+		$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}; \
+	else \
+		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs}`; \
+	fi
+#noleadingunderscore for exporting symbols
+#$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:libexte.a --exclude-libs ${exte}
 
 logs :=
 obs :=
@@ -36,6 +50,7 @@ clean:
 	-printf ' %s.o' ${items} ${expitems} | xargs rm -f
 	-rm -f ${exte}
 	-rm -f ${name}
+	-rm -f ${projname}.dll
 
 distclean: clean
 

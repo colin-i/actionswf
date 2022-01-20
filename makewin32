@@ -1,0 +1,6 @@
+
+cd src
+
+make platform=win
+
+#like ocompiler
