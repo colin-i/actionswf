@@ -11,6 +11,7 @@ uns:
 
 lnk:
 	$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so
+	#$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so
 
 exe:
 	export LD_LIBRARY_PATH=../src; ./example
@@ -18,17 +19,10 @@ exe:
 %: %.s
 	o $< ${OFLAGS}
 
-install:
-
 clean:
 	-rm -f ${name}.s.log
 	-rm -f ${name}.o
 	-rm -f ${name}
 
-distclean:
-
-uninstall:
-
-test:
-
-.PHONY: all install clean distclean uninstall test
+.PHONY: all clean
+# install distclean uninstall test

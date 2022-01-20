@@ -37,12 +37,18 @@ clean:
 	-rm -f ${exte}
 	-rm -f ${name}
 
-distclean:
-
-install:
-
-uninstall:
+distclean: clean
 
 test:
+	echo "Nothing"
+
+install-lib:
+	install -D ${name} \
+		$(DESTDIR)$(prefix)/lib/${name}
+
+install: all install-lib
+
+uninstall:
+	-rm -f $(DESTDIR)$(prefix)/lib/${name}
 
 .PHONY: all install clean distclean uninstall test
