@@ -6,9 +6,12 @@ expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a
 
+OCOMP=o
 OFLAGS = conv_64 1
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0
+else
+	OFLAGS += underscore_pref 1
 endif
 
 syms =-s
@@ -36,11 +39,11 @@ obs :=
 eobs :=
 
 %: %.s
-	o $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS}
 	$(eval logs += $@.s.log)
 	$(eval obs += $@.o)
 %: %.es
-	o $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS}
 	$(eval logs += $@.es.log)
 	$(eval eobs += $@.o)
 

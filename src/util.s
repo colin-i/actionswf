@@ -1,12 +1,12 @@
 Format ElfObj64
 
-importx "fwrite" fwrite
-importx "realloc" realloc
-importx "memcpy" memcpy
-importx "free" free
-importx "strcspn" strcspn
-importx "strlen" strlen
-importx "memcmp" memcmp
+importx "_fwrite" fwrite
+importx "_realloc" realloc
+importx "_memcpy" memcpy
+importx "_free" free
+importx "_strcspn" strcspn
+importx "_strlen" strlen
+importx "_memcmp" memcmp
 
 import "platform_iob" platform_iob
 

@@ -1,8 +1,8 @@
 Format ElfObj64
 
-importx "strlen" strlen
-importx "memcpy" memcpy
-importx "sprintf" sprintf
+importx "_strlen" strlen
+importx "_memcpy" memcpy
+importx "_sprintf" sprintf
 #
 importx "action" action
 

@@ -5,8 +5,8 @@ _open
 _write
 _read
 _lseek
-fwrite
 __iob_func
+fwrite
 realloc
 free
 memcmp

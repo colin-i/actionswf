@@ -1,11 +1,11 @@
 Format ElfObj64
 
-importx "open" open
-importx "read" read
-importx "write" write
-importx "lseek" lseek
-#importx "tell" tell   can't find it
-importx "close" close
+importx "_open" open
+importx "_read" read
+importx "_write" write
+importx "_lseek" lseek
+#importx tell   can't find it
+importx "_close" close
 
 importaftercall ebool
 include "../include/prog.h"

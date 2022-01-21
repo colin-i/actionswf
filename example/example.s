@@ -1,6 +1,6 @@
 format elfobj64
 
-importx "sprintf" sprintf
+importx "_sprintf" sprintf
 
 #a simple shape moving on the stage example
 

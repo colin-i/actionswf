@@ -4,6 +4,8 @@ platform = lin
 OFLAGS = conv_64 1
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0
+else
+	OFLAGS += underscore_pref 1
 endif
 
 syms=-s
@@ -24,12 +26,14 @@ lnk:
 	if [ "${platform}" = "lin" ]; then \
 		$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so; \
 	else \
-		i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -o ${name}.exe -L. -l:libactionswf.a; \
+		i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l:libactionswf.a; \
 	fi
 #$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so
 
 exe:
-	export LD_LIBRARY_PATH=../src; ./example
+	if [ "${platform}" = "lin" ]; then \
+		export LD_LIBRARY_PATH=../src; ./example; \
+	fi
 
 %: %.s
 	o $< ${OFLAGS}

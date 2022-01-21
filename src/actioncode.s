@@ -1,8 +1,8 @@
 Format ElfObj64
 
-importx "strcmp" strcmp
-importx "sprintf" sprintf
-importx "strlen" strlen
+importx "_strcmp" strcmp
+importx "_sprintf" sprintf
+importx "_strlen" strlen
 
 importaftercall ebool
 include "../include/prog.h"
