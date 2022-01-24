@@ -1,14 +1,14 @@
 
 platform = lin
-
+OCOMP=o
 OFLAGS = conv_64 1
+syms=-s
+
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0
 else
-	OFLAGS += underscore_pref 1
+	OFLAGS += underscore_pref 1 exit_end 1
 endif
-
-syms=-s
 
 name=example
 
@@ -36,7 +36,7 @@ exe:
 	fi
 
 %: %.s
-	o $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS}
 
 clean:
 	-rm -f ${name}.s.log
