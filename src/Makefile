@@ -70,3 +70,5 @@ uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${name}
 
 .PHONY: all install clean distclean uninstall test
+
+.NOTPARALLEL:
