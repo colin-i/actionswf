@@ -4,5 +4,6 @@ format elfobj64
 Importx "stderr" stderr
 
 function platform_iob()
-	return stderr
+	sd a^stderr
+	return a#
 endfunction
