@@ -5,7 +5,7 @@ OFLAGS = conv_64 1
 syms=-s
 
 ifeq (${platform},win)
-	OFLAGS += inplace_reloc 0
+	OFLAGS += inplace_reloc 0 include_sec 1
 else
 	OFLAGS += underscore_pref 1 exit_end 1
 endif

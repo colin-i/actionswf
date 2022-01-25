@@ -92,10 +92,9 @@ const FontFlagsHasLayout=0x80
 #const FontFlagsItalic=2
 #const FontFlagsBold=1
 
+include "lin.h" "win.h"
+
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
-const win_O_CREAT=0x0100;const win_O_BINARY=0x8000
-Const _open_read=_O_RDONLY|win_O_BINARY
-Const _open_write_base=_O_WRONLY|win_O_BINARY|win_O_CREAT
+Const _open_read=_O_RDONLY|flag_O_BINARY
+Const _open_write_base=_O_WRONLY|flag_O_BINARY|flag_O_CREAT
 Const _open_write=_open_write_base|_O_TRUNC
-const win_S_IREAD=0x100;const win_S_IWRITE=0x80
-Const pmode=win_S_IREAD|win_S_IWRITE

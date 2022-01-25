@@ -17,8 +17,8 @@ import "error" error
 function file_open(ss filepath,sd flags)
     sd file
     sd permission
-    sd creat_test;set creat_test flags;and creat_test (win_O_CREAT);if creat_test!=0
-        set permission (pmode);endif
+    sd creat_test;set creat_test flags;and creat_test (flag_O_CREAT);if creat_test!=0
+        set permission (flag_pmode);endif
     SetCall file open(filepath,flags,permission)
     if file==(fd_error)
         call printEr("File: \"")

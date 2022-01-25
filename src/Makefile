@@ -9,7 +9,7 @@ exte=libexte.a
 OCOMP=o
 OFLAGS = conv_64 1
 ifeq (${platform},win)
-	OFLAGS += inplace_reloc 0
+	OFLAGS += inplace_reloc 0 include_sec 1
 else
 	OFLAGS += underscore_pref 1
 endif
