@@ -11,7 +11,7 @@ Update and install:
 sudo apt-get update
 sudo apt-get install actionswf
 ```
-A brief intro is at <i>readme.txt</i>. \
+A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
 On Windows, the dll is at https://github.com/colin-i/actionswf/releases .
 
 ## From source
