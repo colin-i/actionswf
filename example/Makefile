@@ -1,13 +1,16 @@
 
 platform = lin
 OCOMP=o
-OFLAGS = conv_64 1
+OFLAGS=
 syms=-s
 
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
 	OFLAGS += underscore_pref 1 exit_end 1
+endif
+ifeq (${conv_64},1)
+	OFLAGS += conv_64 1
 endif
 
 name=example
