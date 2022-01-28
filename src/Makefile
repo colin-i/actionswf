@@ -1,20 +1,19 @@
 
 platform = lin
+OCOMP=o
+OFLAGS = conv_64 1
+syms =-s
 
 items = ${platform} actioncode actionparse actionpool actionutil bits character file storage util
 expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a
 
-OCOMP=o
-OFLAGS = conv_64 1
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
 	OFLAGS += underscore_pref 1
 endif
-
-syms =-s
 
 projname=actionswf
 name = ${projname}.so
