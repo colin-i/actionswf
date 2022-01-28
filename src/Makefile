@@ -1,8 +1,9 @@
 
 platform = lin
 OCOMP=o
-OFLAGS=
 syms=-s
+conv_64=1
+OFLAGS=conv_64 ${conv_64}
 
 items = ${platform} actioncode actionparse actionpool actionutil bits character file storage util
 expitems = action swf tool ../shared/action_dllmain
@@ -13,9 +14,6 @@ ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
 	OFLAGS += underscore_pref 1
-endif
-ifeq (${conv_64},1)
-	OFLAGS += conv_64 1
 endif
 
 projname=actionswf
@@ -28,7 +26,7 @@ ounused:
 
 lnk:
 	if [ "${platform}" = "lin" ]; then \
-		$(AR) cr ${exte} ${obs} \
+		$(AR) cr ${exte} ${obs}; \
 		if [ "${conv_64}" = "1" ]; then \
 			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}; \
 		else \
