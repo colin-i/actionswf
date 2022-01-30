@@ -18,6 +18,7 @@ endif
 
 projname=actionswf
 name = ${projname}.so
+xname = lib${name}
 
 all: ${items} ${expitems} ounused lnk
 
@@ -69,12 +70,12 @@ test:
 
 install-lib:
 	install -D ${name} \
-		$(DESTDIR)$(prefix)/lib/${name}
+		$(DESTDIR)$(prefix)/lib/${xname}
 
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${name}
+	-rm -f $(DESTDIR)$(prefix)/lib/${xname}
 
 .PHONY: all install clean distclean uninstall test
 
