@@ -20,7 +20,7 @@ uns:
 
 lib:
 	if [ "${platform}" = "win" ]; then \
-		i686-w64-mingw32-dlltool --no-leading-underscore -d ../lib/actionswf.def -l ./libactionswf.a; \
+		i686-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ./libactionswf.a; \
 	fi
 
 lnk:

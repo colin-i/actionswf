@@ -19,8 +19,9 @@ endif
 projname=actionswf
 name = ${projname}.so
 xname = lib${name}
+defname = ${projname}.def
 
-all: ${items} ${expitems} ounused lnk
+all: ${items} ${expitems} ounused lnk def
 
 ounused:
 	ounused ${logs}
@@ -42,6 +43,11 @@ lnk:
 	fi
 #noleadingunderscore for exporting symbols
 
+def:
+	if [ "${platform}" = "win" ]; then \
+		../fix/makedef ${defname}; \
+	fi
+
 logs :=
 obs :=
 eobs :=
@@ -62,6 +68,7 @@ clean:
 	-rm -f ${exte}
 	-rm -f ${name}
 	-rm -f ${projname}.dll
+	-rm -f ${defname}
 
 distclean: clean
 
