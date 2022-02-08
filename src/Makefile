@@ -18,8 +18,9 @@ endif
 
 projname=actionswf
 name = ${projname}.so
+defname = ${projname}.def
 
-all: ${items} ${expitems} ounused lnk
+all: ${items} ${expitems} ounused lnk def
 
 ounused:
 	ounused ${logs}
@@ -36,6 +37,11 @@ lnk:
 		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
 #noleadingunderscore for exporting symbols
+
+def:
+	if [ "${platform}" = "win" ]; then \
+		../fix/makedef ${defname}; \
+	fi
 
 logs :=
 obs :=
@@ -57,6 +63,7 @@ clean:
 	-rm -f ${exte}
 	-rm -f ${name}
 	-rm -f ${projname}.dll
+	-rm -f ${defname}
 
 distclean: clean
 
