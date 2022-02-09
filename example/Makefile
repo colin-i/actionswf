@@ -12,6 +12,8 @@ else
 endif
 
 name=example
+linkname=actionswf
+linkfile=${linkname}.lib
 
 all: ${name} uns lib lnk exe
 
@@ -20,7 +22,7 @@ uns:
 
 lib:
 	if [ "${platform}" = "win" ]; then \
-		i686-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ./libactionswf.a; \
+		i686-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ${linkfile}; \
 	fi
 
 lnk:
@@ -31,7 +33,7 @@ lnk:
 			$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so; \
 		fi \
 	else \
-		i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l:libactionswf.a; \
+		i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 	fi
 
 exe:
@@ -47,7 +49,7 @@ clean:
 	-rm -f ${name}.o
 	-rm -f ${name}
 	-rm -f ${name}.exe
-	-rm -f libactionswf.a
+	-rm -f ${linkfile}
 
 .PHONY: all clean
 # install distclean uninstall test
