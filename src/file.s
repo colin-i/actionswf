@@ -102,7 +102,7 @@ function file_write(sd file,sd buffer,sd size)
     endif
     sd len
     setcall len write(file,buffer,size)
-    if len!=-1
+    if len==size
         return (void)
     endif
     str er="File write error"
