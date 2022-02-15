@@ -16,7 +16,7 @@ On Windows, the dll is at https://github.com/colin-i/actionswf/releases .
 Compile with [O Compiler](https://github.com/colin-i/o)
 
 ## Info
-A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
+A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).
 
 ## Donations
 The *donations* section is here
