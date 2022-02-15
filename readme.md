@@ -10,11 +10,13 @@ Install:
 ```sh
 sudo apt-get install actionswf
 ```
-A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
 On Windows, the dll is at https://github.com/colin-i/actionswf/releases .
 
 ## From source
 Compile with [O Compiler](https://github.com/colin-i/o)
+
+## Info
+A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
 
 ## Donations
 The *donations* section is here
