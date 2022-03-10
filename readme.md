@@ -1,7 +1,7 @@
 # Action SWF
 
 ## Install
-On Ubuntu, but other distros may have the same tree and dependencies.
+On Ubuntu from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
@@ -10,6 +10,7 @@ Install:
 ```sh
 sudo apt-get install actionswf
 ```
+\
 On Windows, the dll is at https://github.com/colin-i/actionswf/releases .
 
 ## From source
