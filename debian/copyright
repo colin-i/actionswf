@@ -1,0 +1,65 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: actionswf
+Upstream-Contact: <preferred name and address to reach the upstream project>
+Source: <url://example.com>
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     64/build.bat
+           Makefile
+           clear.bat
+           dev/build.bat
+           dev/clear.bat
+           dev/f1.txt
+           dev/f2.txt
+           dev/files.bat
+           dev/import.h
+           dev/lib.bat
+           dev/link.bat
+           dev/shared.bat
+           example/Makefile
+           example/change_format.c
+           example/example.bat
+           example/example.s
+           example/example.swf
+           example/example32.bat
+           example/example32.s
+           example/example32.swf
+           example/shared_c++_example.bat
+           example/shared_c++_example.swf
+           example/shared_c_example.bat
+           example/shared_c_example.c
+           example/shared_c_example.swf
+           fix/c.def
+           include/action.h
+           include/actionswf.h
+           include/ascii.h
+           include/prog.h
+           include/text.h
+           lib/actionswf.def
+           object.bat
+           readme.md
+           readme.txt
+           shared.bat
+           shared/action_dllmain.es
+           src/Makefile
+           src/action.es
+           src/actioncode.s
+           src/actionparse.s
+           src/actionpool.s
+           src/actionutil.s
+           src/bits.s
+           src/character.s
+           src/file.s
+           src/lin.s
+           src/storage.s
+           src/swf.es
+           src/tool.es
+           src/util.s
+           src/win.s
+Copyright: __NO_COPYRIGHT_NOR_LICENSE__
+License:   __NO_COPYRIGHT_NOR_LICENSE__
+
+#----------------------------------------------------------------------------
+# Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following
+# license/copyright files.

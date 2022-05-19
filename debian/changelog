@@ -1,0 +1,36 @@
+actionswf (1-1.37) bionic; urgency=medium
+
+  * safe write
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Fri, 11 Feb 2022 14:20:32 +0200
+
+actionswf (1-1.36) bionic; urgency=medium
+
+  * naming
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sun, 30 Jan 2022 06:04:09 +0200
+
+actionswf (1-1.35) bionic; urgency=medium
+
+  * perms
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Tue, 25 Jan 2022 13:31:44 +0200
+
+actionswf (1-1.34) bionic; urgency=medium
+
+  * new try
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Tue, 25 Jan 2022 11:24:06 +0200
+
+actionswf (1-1.33) bionic; urgency=medium
+
+  * flags fix
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Tue, 25 Jan 2022 11:07:50 +0200
+
+actionswf (1-1.32) bionic; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- Botescu Costin <costin.botescu@gmail.com>  Thu, 20 Jan 2022 12:22:46 +0200
