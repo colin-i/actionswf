@@ -17,15 +17,15 @@ jobs:
    - name: Run a multi-line script
      run: |
       #get deb
-      dist=`cat debian/changelog | head -1 | grep -Poe "[^ ]*(?=;)"`
       arh=i386
       name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
       version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
+      #dist=`cat debian/changelog | head -1 | grep -Poe "[^ ]*(?=;)"`
       if [ ! -e "lp.py" ]; then
        wget -q https://raw.githubusercontent.com/colin-i/test/master/lp.py
        sudo apt install python3-launchpadlib
       fi
-      OUTPUT=$(python3 lp.py ppa${{ github.event.inputs.ppa }} ${dist} ${arh} ${name} ${version})
+      OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version})
       wget ${OUTPUT}/+files/${name}_${version}_${arh}.deb -O ${name}.deb
       #make rpm
       mkdir out
