@@ -11,7 +11,12 @@ Install:
 sudo apt-get install actionswf
 ```
 \
-On Windows, the dll is at https://github.com/colin-i/actionswf/releases .
+On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/actionswf/releases).
+```sh
+yum install actionswf-*.rpm
+```
+\
+On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases) has the dll.
 
 ## From source
 Compile with [O Compiler](https://github.com/colin-i/o)
