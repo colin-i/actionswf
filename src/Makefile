@@ -20,17 +20,25 @@ projname=actionswf
 name = ${projname}.so
 xname = lib${name}
 defname = ${projname}.def
+items_prefix=
+prefname=${items_prefix}${name}
 
-all: ${items} ${expitems} ounused lnk def
+logs :=
+obs :=
+eobs :=
+
+all: compile lnk def
 
 ounused:
 	ounused ${logs}
+
+compile: ${items} ${expitems} ounused
 
 lnk:
 	if [ "${platform}" = "lin" ]; then \
 		$(AR) cr ${exte} ${obs}; \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}; \
+			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}; \
 		else \
 			$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}; \
 		fi \
@@ -43,14 +51,16 @@ lnk:
 	fi
 #noleadingunderscore for exporting symbols
 
+fast:
+	$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
+
+link: fast lnk
+
 def:
 	if [ "${platform}" = "win" ]; then \
 		../fix/makedef ${defname}; \
 	fi
-
-logs :=
-obs :=
-eobs :=
 
 %: %.s
 	${OCOMP} $< ${OFLAGS}
@@ -87,3 +97,6 @@ uninstall:
 .PHONY: all install clean distclean uninstall test
 
 .NOTPARALLEL:
+
+#make compile && make link syms= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
+#make compile conv_64=0 && make link syms= conv_64=0

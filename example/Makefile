@@ -53,3 +53,5 @@ clean:
 
 .PHONY: all clean
 # install distclean uninstall test
+
+#LD_LIBRARY_PATH=/home/bc/s/actionswf-1/src ./example
