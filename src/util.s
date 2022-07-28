@@ -153,13 +153,11 @@ function def_mem()
 endfunction
 #mem
 function def_data()
-    sd all
-    sd sz
-    sd mem
-    call mem_init(#mem,#all,#sz)
-    set mem# all
-    call block_reset_size(mem)
-    return mem
+	sd mem
+	setcall mem memalloc((block_size))
+	set mem# (block_size)
+	call block_reset_size(mem)
+	return mem
 endfunction
 
 #block
@@ -193,12 +191,6 @@ endfunction
 
 #mem procedures
 
-function mem_init(sd p_mem,sd p_allsize,sd p_size)
-    set p_allsize# (block_size)
-    set p_size# 0
-    setcall p_mem# memalloc(p_allsize#)
-endfunction
-
 function mem_block_add(sd p_block,ss newblock,sd newblock_size)
     sd block
     sd allsize
@@ -228,7 +220,7 @@ function mem_block_add(sd p_block,ss newblock,sd newblock_size)
     set block# size
 endfunction
 
-function mem_free(sd p_mem)
+function mem_free(sv p_mem)
     call free(p_mem#)
     set p_mem# (NULL)
 endfunction
@@ -238,10 +230,10 @@ endfunction
 const max_structures=100
 function struct_ids(sd proc,sd id)
     data structures#max_structures
-    data strct^structures
+    vdata strct^structures
     data counter=0
-    sd ac_ptr
-    sd pointer
+    sv ac_ptr
+    sv pointer
     if proc==(ids_all_free)
         #starting with ids_all_free:
         #                #counter increment#, then null at ac,pools

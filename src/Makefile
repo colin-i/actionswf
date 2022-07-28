@@ -99,4 +99,5 @@ uninstall:
 .NOTPARALLEL:
 
 #make compile && make link syms= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
-#make compile conv_64=0 && make link syms= conv_64=0
+#make syms= conv_64=0
+#make syms= conv_64=0 link

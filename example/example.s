@@ -28,8 +28,8 @@ call swf_sprite_placeobject(movie_preid,shape,1)
 call swf_sprite_showframe(movie_preid)
 
 chars data#512
-str ac^data
-str vars="var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move"
+vstr ac^data
+vstr vars="var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move"
 call sprintf(ac,vars,(width),(height),(shape_lat))
 call action_sprite(movie_preid,ac)
 

@@ -14,14 +14,15 @@ import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 
 function swf_mem(sd proc,sd arg,sd len)
-    data path_mem=NULL
+    vdata path_mem=NULL
+    #4-7 is 0
     data path_size#1
     data filelength_offset#1
     data file_out=fd_error
 
     data id#1
     data main_id#1
-    data call_struct#1;data c_main^struct_ids;data c_pool^struct_ids_actionpool
+    vdata call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
     if proc==(mem_exp_init)
     #arg is file

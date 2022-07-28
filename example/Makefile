@@ -15,7 +15,9 @@ name=example
 linkname=actionswf
 linkfile=${linkname}.lib
 
-all: ${name} uns lib lnk exe
+all: build exe
+
+build: ${name} uns lib lnk
 
 uns:
 	ounused ${name}.s.log
