@@ -229,7 +229,7 @@ endfunction
 
 const max_structures=100
 function struct_ids(sd proc,sd id)
-    data structures#max_structures
+    vdata structures#max_structures
     vdata strct^structures
     data counter=0
     sv ac_ptr
@@ -257,7 +257,7 @@ function struct_ids(sd proc,sd id)
     else
         set ident id
     endelse
-    setcall pointer move_to_n_dword(strct,ident)
+    setcall pointer move_to_n_pointer(strct,ident)
     if proc==(ids_set)
     #id
         if counter==(max_structures)
@@ -269,11 +269,11 @@ function struct_ids(sd proc,sd id)
         set iter pointer
         while iter!=strct
         #can be in a free place
-            sub iter (DWORD)
+            sub iter :
             if iter#==0
                 set iter# newblock
                 sub iter strct
-                div iter (DWORD)
+                div iter :
                 return iter
             endif
         endwhile
@@ -296,17 +296,17 @@ function struct_ids(sd proc,sd id)
     endelse
 endfunction
 function struct_ids_action(sd proc,sd id)
-    data action_structures#max_structures
+    vdata action_structures#max_structures
     sd v;setcall v struct_ids_expand(proc,id,#action_structures)
     return v
 endfunction
 function struct_ids_actionpool(sd proc,sd id)
-    data actionpool_structures#max_structures
+    vdata actionpool_structures#max_structures
     sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
     return v
 endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
-    sd pointer;setcall pointer move_to_n_dword(p_action_structures,id)
+    sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
     if proc==(ids_set)
         setcall pointer# def_data()
     elseif proc==(ids_get_pointer)
@@ -323,8 +323,8 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
     endelse
 endfunction
 #pointer
-function move_to_n_dword(sd pointer,sd id)
-    mult id (DWORD)
+function move_to_n_pointer(sd pointer,sd id)
+    mult id :
     add pointer id
     return pointer
 endfunction
