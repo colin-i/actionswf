@@ -12,7 +12,6 @@ function actionpoolid_root()
 endfunction
 function actionpoolid()
     data id#1
-i3
     return #id
 endfunction
 function actionpoolid_get()
