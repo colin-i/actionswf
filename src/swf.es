@@ -726,20 +726,19 @@ const hd_start=!
 const file_sz_off=!
     data *FileLength#1
 data size=!-hd_start
-data hd_pack%hd_start
+vdata hd_pack%hd_start
     #rect
 const hd2=!
     chars *FrameRate=0
         chars FrameRate#1
     chars *FrameCount={1,0}
 data size2=!-hd2
-data hd_pack2%hd2
+vdata hd_pack2%hd2
 
     #
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
     #identifiers for swf
     call identifiers_set(1);#font with id 0 isn't visible in the placements
-
     call swf_mem_add(hd_pack,size)
     call rect_add(width,height)
     #x.x format
