@@ -18,7 +18,7 @@ function bits_packs(ss dest,sd packs)
         inc i
     endwhile
 endfunction
-function bits_bigendian(sd value,sd size,sd p_dest,sd p_pos)
+function bits_bigendian(sd value,sd size,sv p_dest,sd p_pos)
     ss dest
     sd pos
     set dest p_dest#
@@ -99,7 +99,7 @@ function rect_add(sd width,sd height)
     call rect_prepare(#mem,#sz,width,height)
     call swf_mem_add(mem,sz)
 endfunction
-function rect_prepare(sd p_out,sd p_size,sd width,sd height)
+function rect_prepare(sv p_out,sd p_size,sd width,sd height)
     sd NBits
     mult width 20
     mult height 20
