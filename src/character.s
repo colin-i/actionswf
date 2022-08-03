@@ -26,10 +26,10 @@ function shapewithstyle_records()
     return #shapewithstyle_record
 endfunction
 import "error" error
-function shape_records_bits(sd value,sd size,sd p_dest_pos)
-    data start#1
+function shape_records_bits(sd value,sd size,sv p_dest_pos)
+    #why was this here? data start#1
     if p_dest_pos==0
-        set start value
+        #set start value
         return (void)
     endif
     sd pointer
@@ -41,7 +41,7 @@ function shape_records_bits(sd value,sd size,sd p_dest_pos)
     import "bits_bigendian" bits_bigendian
     sd p_pos
     set p_pos p_dest_pos
-    add p_pos (DWORD)
+    add p_pos :
     call bits_bigendian(value,size,p_dest_pos,p_pos)
 endfunction
 function shape_records_add(sd p_dest_pos,sd p_args)

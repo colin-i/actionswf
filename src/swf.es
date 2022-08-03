@@ -459,7 +459,7 @@ functionX swf_shape(sd width,sd height,sd args)
     import "shapewithstyle_records" shapewithstyle_records
     sd shapewithstyle_record_start
     setcall shapewithstyle_record_start shapewithstyle_records()
-    data pointer#1;data pos#1
+    value pointer#1;data pos#1
     set pos 0x80
     set pointer shapewithstyle_record_start
     sd p_dest_pos^pointer
