@@ -28,10 +28,10 @@ endfunction
 import "error" error
 function shape_records_bits(sd value,sd size,sv p_dest_pos)
     #why was this here? data start#1
-    if p_dest_pos==0
-        #set start value
-        return (void)
-    endif
+    #and this, this is called through shape_records_add    if p_dest_pos==0
+    #	set start value
+    #	return (void)
+    #endif
     sd pointer
     set pointer p_dest_pos#
     subcall pointer shapewithstyle_records()
