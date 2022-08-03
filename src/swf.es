@@ -374,6 +374,7 @@ functionX swf_shape(sd width,sd height,sd args)
     sd fillarg
     sd linewidth
     sd linecolor
+
     setcall fillstyle args_advance(#args)
     if fillstyle!=(no_fill)
         setcall fillarg args_advance(#args)

@@ -14,7 +14,7 @@ include "../include/prog.h"
 import "identifiers_get" identifiers_get
 import "dword_to_word_arg" dword_to_word_arg
 #value
-function args_advance(sd p_args)
+function args_advance(sv p_args)
     sd value
     set value p_args#
     add p_args# (DWORD)
@@ -208,7 +208,7 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
     add cursor (DWORD);set cursor# fillcolor
     add cursor (DWORD);set cursor# lineheight
     if lineheight!=0;add cursor (DWORD);set cursor# linecolor;endif
-
+    #the header is connected with the part below
     data *=0
     data styles#1;set styles (StateFillStyle0|StateMoveTo);if lineheight!=0;or styles (StateLineStyle);endif
         data x_move#1;set x_move lineheight_hf;add x_move xcurve
