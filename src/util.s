@@ -191,7 +191,7 @@ endfunction
 
 #mem procedures
 
-function mem_block_add(sd p_block,ss newblock,sd newblock_size)
+function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     sd block
     sd allsize
     sd size

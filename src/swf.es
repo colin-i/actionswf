@@ -740,6 +740,7 @@ vdata hd_pack2%hd2
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
     #identifiers for swf
     call identifiers_set(1);#font with id 0 isn't visible in the placements
+
     call swf_mem_add(hd_pack,size)
     call rect_add(width,height)
     #x.x format
