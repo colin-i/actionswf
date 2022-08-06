@@ -402,7 +402,7 @@ functionX swf_shape(sd width,sd height,sd args)
         chars FillStyleType#1
     #
         data data#3
-    data fillstyles^FillStyleCount
+    vdata fillstyles^FillStyleCount
     set FillStyleCount 0
     sd fillstyles_size=1
     if fillstyle!=(no_fill)
@@ -439,7 +439,7 @@ functionX swf_shape(sd width,sd height,sd args)
     chars LineStyleCount#1
     chars line_points#2
     data color#1
-    data linestyles^LineStyleCount
+    vdata linestyles^LineStyleCount
     sd linestyles_size=1
     set LineStyleCount 0
     if linewidth!=0
