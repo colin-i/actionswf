@@ -1,6 +1,6 @@
 TOPTARGETS := all install clean distclean uninstall test
 
-SUBDIRS := src
+SUBDIRS := src example
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):

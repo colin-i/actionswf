@@ -1,6 +1,7 @@
 
 platform = lin
 OCOMP=o
+OLINK=ounused
 syms=-s
 conv_64=1
 OFLAGS=conv_64 ${conv_64}
@@ -20,7 +21,7 @@ all: build exe
 build: ${name} uns lib lnk
 
 uns:
-	ounused ${name}.s.log
+	${OLINK} ${name}.s.log
 
 lib:
 	if [ "${platform}" = "win" ]; then \
@@ -53,7 +54,15 @@ clean:
 	-rm -f ${name}.exe
 	-rm -f ${linkfile}
 
-.PHONY: all clean
-# install distclean uninstall test
+distclean: clean
+
+install: test
+
+uninstall: test
+
+test:
+	echo "Nothing"
+
+.PHONY: all install clean distclean uninstall test
 
 #LD_LIBRARY_PATH=/home/bc/s/actionswf-1/src ./example

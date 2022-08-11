@@ -115,7 +115,7 @@ function rect_prepare(sv p_out,sd p_size,sd width,sd height)
     set p_out# #rect
     set p_size# size
 endfunction
-function matrix_translate(sd p_dest,sd p_size,sd x,sd y)
+function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
     chars matrix#1+4+4
     set p_dest# #matrix
     if x==0

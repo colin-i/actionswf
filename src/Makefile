@@ -1,6 +1,7 @@
 
 platform = lin
 OCOMP=o
+OLINK=ounused
 syms=-s
 conv_64=1
 OFLAGS=conv_64 ${conv_64}
@@ -30,7 +31,7 @@ eobs :=
 all: compile lnk def
 
 ounused:
-	ounused ${logs}
+	${OLINK} ${logs}
 
 compile: ${items} ${expitems} ounused
 
