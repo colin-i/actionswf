@@ -9,23 +9,23 @@ include "../include/prog.h"
 
 const totalvalues=65535
 function action_code_values_container()
-    data setofvalues=NULL
+    value setofvalues=NULL
     return #setofvalues
 endfunction
 function action_code_values()
-    sd m
+    sv m
     setcall m action_code_values_container()
     return m#
 endfunction
 function action_code_values_init()
     import "memalloc" memalloc
-    sd m
+    sv m
     setcall m action_code_values_container()
     setcall m# memalloc((totalvalues*DWORD))
 endfunction
 import "mem_free" mem_free
 function action_code_values_free()
-    sd p
+    sv p
     setcall p action_code_values_container()
     if p#!=(NULL);call mem_free(p);endif
 endfunction
@@ -39,7 +39,7 @@ function action_code_get()
     setcall nr action_code_values_index()
     sd x
     set x nr#
-    sd pointer
+    sv pointer
     setcall pointer action_code_values()
     mult x (DWORD)
     add pointer x
@@ -54,7 +54,7 @@ function action_code_set(sd value)
         import "error" error
         call error("size error")
     endif
-    sd pointer
+    sv pointer
     setcall pointer action_code_values()
     mult x (DWORD)
     add pointer x
@@ -66,7 +66,7 @@ function forward_values_expand(sd forward,sd data)
     sd p_currentnr
     setcall p_currentnr action_code_values_index()
     set currentnr p_currentnr#
-    sd values
+    sv values
     setcall values action_code_get()
     #
     call forward(values,data)

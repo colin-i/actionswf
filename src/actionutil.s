@@ -169,7 +169,7 @@ import "forward_values_expand" forward_values_expand
 function action_member_write(ss member)
     const dup_member=256
     chars dup_data#dup_member
-    str code^dup_data
+    vstr code^dup_data
     sd len
     setcall len strlen(member)
     inc len

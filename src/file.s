@@ -31,7 +31,7 @@ function file_seek(sd file,sd off,sd method)
     sd seekint
     setcall seekint lseek(file,off,method)
     If seekint==-1
-        str seekerr="File seek error"
+        vstr seekerr="File seek error"
         call error(seekerr)
     endif
 endfunction
@@ -40,7 +40,7 @@ function file_tell(sd file)
     sd sz
     setcall sz lseek(file,0,(SEEK_CUR))
     if sz==-1
-        str tellerr="File tell error"
+        vstr tellerr="File tell error"
         call error(tellerr)
     endif
     return sz
@@ -105,7 +105,7 @@ function file_write(sd file,sd buffer,sd size)
     if len==size
         return (void)
     endif
-    str er="File write error"
+    vstr er="File write error"
     call error(er)
 endfunction
 

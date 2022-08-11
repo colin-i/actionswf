@@ -488,7 +488,7 @@ function action_parse_loop(ss ac,sd p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     sd is_compare_ptr
     setcall is_compare_ptr compare_bool_pointer()
     #
-    str op_set^oprs
+    vstr op_set^oprs
     ss ops;setcall ops get_operations();call memcpy(op_set,ops,(operations_size))
     while 1==1
         sd op
@@ -759,7 +759,7 @@ function action_code_membersplit(ss ac)
     return next
 endfunction
 function action_code_member(ss ac)
-    str delims=".["
+    vstr delims=".["
     chars dot=".";chars sqbrace_start="["
     chars sqbrace_end="]"
     while ac#!=0
@@ -1158,8 +1158,8 @@ import "action_code_values_index" action_code_values_index
 #pointer
 function action_code_parse_function_arguments(ss pointer)
     #arguments
-    sd math_values
-    setcall math_values action_code_get()
+    # this was for what? sd math_values
+    # setcall math_values action_code_get()
     chars comma=","
     chars close=")"
     inc pointer
@@ -1259,7 +1259,7 @@ function action_code_parse_deffunction(ss ac)
 endfunction
 #pointer
 function action_code_parse_function_defarguments(ss ac)
-    str argsdelims=",)"
+    vstr argsdelims=",)"
     chars close=")"
     inc ac
     if ac#==close
