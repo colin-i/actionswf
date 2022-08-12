@@ -76,7 +76,7 @@ function file_read(sd file,sd mem,sd size)
     endif
 endfunction
 function file_get_content__resources(sd trueIsSet_falseIsFree,sd fileIn,sd memIn)
-    data file=fd_none;data mem=NULL
+    data file=fd_none;vdata mem=NULL
     if trueIsSet_falseIsFree==(TRUE)
         if fileIn!=(fd_none);set file fileIn
         else;set mem memIn;endelse

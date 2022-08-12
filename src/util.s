@@ -239,9 +239,9 @@ function struct_ids(sd proc,sd id)
         #                #counter increment#, then null at ac,pools
         #   mem_free at struct_ids_action_expand
         #   can have errors at any point and here all are verified
-        set pointer (DWORD);mult pointer counter;add pointer strct
+        set pointer :;mult pointer counter;add pointer strct
         while strct!=pointer
-            sub pointer (DWORD);if pointer#!=(NULL);call free(pointer#);endif
+            sub pointer :;if pointer#!=(NULL);call free(pointer#);endif
             dec counter
             setcall ac_ptr struct_ids_action((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
             setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
@@ -263,7 +263,7 @@ function struct_ids(sd proc,sd id)
         if counter==(max_structures)
             call error("too many objects")
         endif
-        sd iter
+        sv iter
         sd newblock
         setcall newblock def_data()
         set iter pointer

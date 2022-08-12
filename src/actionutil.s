@@ -286,7 +286,7 @@ endfunction
 function action_debug(sd is_on)
     data action_errors=FALSE
     data *#1
-    data m=NULL
+    vdata m=NULL
     if is_on==(FALSE)
         #set there and here, here good at errors and comeback
         set action_errors (FALSE)
