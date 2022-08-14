@@ -202,14 +202,15 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     set allsize block#
     set sz_test size
     add sz_test newblock_size
-    if sz_test>=allsize
+    if sz_test>allsize
+    #was >=
         div sz_test (block_size)
         mult sz_test (block_size)
         add sz_test (block_size)
-        set allsize sz_test
-        setcall block memrealloc(block,allsize)
+    #    set allsize sz_test
+        setcall block memrealloc(block,sz_test)  #allsize
         set p_block# block
-        set block# allsize
+        set block# sz_test  #allsize
     endif
     sd pointer
     set pointer block

@@ -35,7 +35,8 @@ function shape_records_bits(sd value,sd size,sv p_dest_pos)
     sd pointer
     set pointer p_dest_pos#
     subcall pointer shapewithstyle_records()
-    if pointer>=(max_chars_records)
+    if pointer==(max_chars_records)
+    #was >=
         call error("too many arguments at shape")
     endif
     import "bits_bigendian" bits_bigendian

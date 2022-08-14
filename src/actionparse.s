@@ -892,7 +892,8 @@ endfunction
 function brace_blocks_counter_inc()
     sd c
     setcall c brace_blocks_counter()
-    if c#>=(brace_blocks_max)
+    if c#==(brace_blocks_max)
+    #was >=
         call error("too many blocks: {}")
     endif
     inc c#

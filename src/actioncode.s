@@ -50,7 +50,8 @@ function action_code_set(sd value)
     setcall nr action_code_values_index()
     sd x
     set x nr#
-    if x>=(totalvalues)
+    if x==(totalvalues)
+    #was >= but when >?, here and in another 3 places
         import "error" error
         call error("size error")
     endif
