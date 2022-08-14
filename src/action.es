@@ -31,7 +31,8 @@ functionX action(ss ac)
     setcall mem dupreserve_string(ac)
     sd p_action_errors
     setcall p_action_errors action_debug((TRUE))
-    set p_action_errors# (TRUE);add p_action_errors (DWORD);set p_action_errors# ac;add p_action_errors (DWORD);set p_action_errors# mem
+#i3
+    set p_action_errors# (TRUE);add p_action_errors (DWORD);set p_action_errors#v^ ac;add p_action_errors :;set p_action_errors#v^ mem
     call escape_action(ac,mem,0)
     while mem#!=0
         setcall mem action_code_row(mem,(FALSE))

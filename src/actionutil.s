@@ -285,8 +285,8 @@ endfunction
 
 function action_debug(sd is_on)
     data action_errors=FALSE
-    data *#1
-    vdata m=NULL
+    vstr *#1
+    vstr m=NULL
     if is_on==(FALSE)
         #set there and here, here good at errors and comeback
         set action_errors (FALSE)
@@ -301,7 +301,7 @@ function action_debug_free()
 endfunction
 
 function debug_code()
-    data code#1
+    value code#1
     return #code
 endfunction
 
@@ -312,15 +312,16 @@ function action_error()
         return (void)
     endif
 
-    data ac#1
-    data mem#1
-    add p_action_errors (DWORD);call memcpy(#ac,p_action_errors,(2*DWORD))
+    vstr ac#1
+    vstr mem#1
+    add p_action_errors (DWORD);call memcpy(#ac,p_action_errors,(2*:))
 
     import "printEr" printEr
     call printEr("Row: ")
-    sd p_c
+    sv p_c
     setcall p_c debug_code()
     sd row
+#i3
     setcall row escape_action(ac,mem,p_c#)
     import "string_nl_print" string_nl_print
     #a small reserve for a number like 2 000 000 000

@@ -32,7 +32,7 @@ endfunction
 #pointer
 function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
     import "debug_code" debug_code
-    sd p_c
+    sv p_c
     setcall p_c debug_code()
     set p_c# ac
     ss atstart=NULL
@@ -617,7 +617,7 @@ function action_code_extended_operations(ss pointer,sd op)
     return pointer
 endfunction
 #pointer
-function action_code_take_main(ss ac,sd p_op,ss delims)
+function action_code_take_main(ss ac,sv p_op,ss delims) #p_op is pointing at a stack variable
     #a string
     ss pointer
     setcall pointer action_code_str(ac)
