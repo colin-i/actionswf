@@ -52,7 +52,11 @@ lnk:
 	fi
 #noleadingunderscore for exporting symbols
 
+#obs =   :in case it is called after an object (make bits link)
+#(make action link)
 fast:
+	$(eval obs = )
+	$(eval eobs = )
 	$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 	$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
 

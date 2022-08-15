@@ -321,7 +321,6 @@ function action_error()
     sv p_c
     setcall p_c debug_code()
     sd row
-#i3
     setcall row escape_action(ac,mem,p_c#)
     import "string_nl_print" string_nl_print
     #a small reserve for a number like 2 000 000 000
