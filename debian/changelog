@@ -1,3 +1,9 @@
+actionswf (1-41) bionic; urgency=medium
+
+  * Not parallel?
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Tue, 16 Aug 2022 06:56:29 +0300
+
 actionswf (1-40) bionic; urgency=medium
 
   * Makefile order

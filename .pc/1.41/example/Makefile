@@ -65,6 +65,4 @@ test:
 
 .PHONY: all install clean distclean uninstall test
 
-.NOTPARALLEL:
-
 #LD_LIBRARY_PATH=/home/bc/s/actionswf-1/src ./example
