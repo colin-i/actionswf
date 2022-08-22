@@ -305,7 +305,6 @@ function action_parse_pack(ss ac,sd endChar)
     ss delims^set
 
     setcall ac str_next(pointer,delims,#op)
-
     if isnewvar==(TRUE)
         if op==set
             call action_code_set((ActionDefineLocal))
@@ -474,7 +473,7 @@ function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
     return ac
 endfunction
 #pointer
-function action_parse_loop(ss ac,sd p_op,sd endtype1,sd endtype2,sd p_ifElse_bool)
+function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_bool)  #p_op is pointing at a stack variable
     sd bool
     #can be on the stack but chars are low values; ends are set again when recursivity
     chars oprs#operations_size
@@ -536,7 +535,7 @@ function action_parse_loop(ss ac,sd p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     endwhile
 endfunction
 #bool
-function action_parse_utilEndTypes(sd op,sd p_op,sd endtype1,sd endtype2)
+function action_parse_utilEndTypes(sd op,sv p_op,sd endtype1,sd endtype2)  #p_op is pointing at a stack variable
     #when p_op is set, is to store the multiple kind of endtypes
     if p_op!=0
         set p_op# op

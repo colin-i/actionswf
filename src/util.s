@@ -375,7 +375,7 @@ endfunction
 #strings
 
 #str
-function str_next(ss s,ss delims,sd p_op)
+function str_next(ss s,ss delims,sv p_op)  #p_op is pointing at a stack variable
     sd pos
     setcall pos strcspn(s,delims)
     ss x
