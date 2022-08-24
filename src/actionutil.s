@@ -21,16 +21,16 @@ function action_push(sd factors)
     sd size=0
     while iter#!=-1
         inc size
-        if iter#==(ap_Null)
-        #skip
-        elseif iter#==(ap_Undefined)
-        #skip
-        elseif iter#==(ap_Integer)
+        if iter#==(ap_Integer)
             add size (DWORD)
             incst iter
         elseif iter#==(ap_double)
             add size (QWORD)
             incst iter;incst iter
+        elseif iter#==(ap_Null)
+        #skip
+        elseif iter#==(ap_Undefined)
+        #skip
         else
         #if iter#==(ap_RegisterNumber)
         #if iter#==(ap_Boolean)
@@ -71,11 +71,7 @@ function action_push(sd factors)
 
         call swf_actionblock_add(cursor,1)
 
-        if cursor#==(ap_Null)
-        #skip
-        elseif cursor#==(ap_Undefined)
-        #skip
-        elseif cursor#==(ap_Integer)
+        if cursor#==(ap_Integer)
             incst cursor
             call swf_actionblock_add(cursor,(DWORD))
         elseif cursor#==(ap_double)
@@ -89,7 +85,12 @@ function action_push(sd factors)
         elseif cursor#==(ap_Boolean)
             incst cursor
             call swf_actionblock_add(cursor,(BYTE))
+        elseif cursor#==(ap_Null)
+        #skip
+        elseif cursor#==(ap_Undefined)
+        #skip
         else
+        i3
         #if cursor#==(ap_Constant8)
         #or was modified to (ap_Constant16)
             incst cursor

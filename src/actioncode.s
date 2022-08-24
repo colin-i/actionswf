@@ -46,21 +46,30 @@ function action_code_get()
     return pointer
 endfunction
 function action_code_set(sd value)
-    sd nr
-    setcall nr action_code_values_index()
-    sd x
-    set x nr#
-    if x==(totalvalues)
-    #was >= but when >?, here and in another 3 places
-        import "error" error
-        call error("size error")
-    endif
-    sv pointer
-    setcall pointer action_code_values()
-    mult x (DWORD)
-    add pointer x
-    set pointer# value
-    inc nr#
+	call action_code_set_ex(value,1)
+endfunction
+function action_code_set_ex(sd value,sd size)
+	sd nr
+	setcall nr action_code_values_index()
+	sd x
+	set x nr#
+	sd to=DWORD
+	mult to x
+	add x size
+	if x>=(totalvalues)
+		import "error" error
+		call error("size error")
+	endif
+	sd pointer
+	setcall pointer action_code_values()
+	add pointer to
+	if size==1
+		set pointer# value
+		i3
+	else
+		set pointer#v^ value
+	endelse
+	set nr# x
 endfunction
 function forward_values_expand(sd forward,sd data)
     sd currentnr

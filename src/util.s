@@ -203,7 +203,7 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     set sz_test size
     add sz_test newblock_size
     if sz_test>allsize
-    #was >=
+    #was >= but when >?, here and in another 2 places
         div sz_test (block_size)
         mult sz_test (block_size)
         add sz_test (block_size)
