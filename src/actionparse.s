@@ -12,6 +12,7 @@ include "../include/prog.h"
 import "str_next" str_next
 import "str_expression_at_start" str_expression_at_start
 import "action_code_set" action_code_set
+import "action_code_set_pointer" action_code_set_pointer
 import "error" error
 const add=Plus
 const sub=Hyphen
@@ -152,11 +153,11 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         set cursor# 0
         #
         #enum can take ActionEnumerate(x.x[z])
-        call action_code_set(marker)
+        call action_code_set_pointer(marker)
         #
         if pointer!=ac
             call action_code_set((ActionDefineLocal))
-            call action_code_set(pointer)
+            call action_code_set_pointer(pointer)
         else
             call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
         endelse
@@ -308,10 +309,10 @@ function action_parse_pack(ss ac,sd endChar)
     if isnewvar==(TRUE)
         if op==set
             call action_code_set((ActionDefineLocal))
-            call action_code_set(pointer)
+            call action_code_set_pointer(pointer)
         else
             call action_code_set((ActionDefineLocal2))
-            call action_code_set(pointer)
+            call action_code_set_pointer(pointer)
             return ac
         endelse
     else
@@ -380,7 +381,7 @@ function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
     setcall test action_code_membersplit(pointer)
     if test==(NULL)
         call action_code_set(ac1)
-        call action_code_set(pointer)
+        call action_code_set_pointer(pointer)
     else
         call action_code_set(ac2)
         call action_code_member(pointer)
@@ -693,7 +694,7 @@ function action_code_str(ss ac)
     inc dest
     setcall next str_escape(ac,dest,delim)
     call action_code_set((ap_Constant8))
-    call action_code_set(dest)
+    call action_code_set_pointer(dest)
     return next
 endfunction
 function action_code_take(ss ac)
@@ -705,7 +706,7 @@ function action_code_take(ss ac)
     setcall test action_code_membersplit(ac)
     if test==0
         call action_code_set((ActionGetVariable))
-        call action_code_set(ac)
+        call action_code_set_pointer(ac)
     else
         call action_code_set((ActionGetMember))
         call action_code_member(ac)
@@ -769,7 +770,7 @@ function action_code_member(ss ac)
         if pos!=0
         #0 is at second+ multi-dimensional arrays levels
             add pointer pos
-            call action_code_set(ac)
+            call action_code_set_pointer(ac)
         endif
         if pointer#==sqbrace_start
             set pointer# 0
@@ -783,7 +784,7 @@ function action_code_member(ss ac)
         endif
         set ac pointer
     endwhile
-    call action_code_set(0)
+    call action_code_set_pointer((no_pointer))
 endfunction
 
 
@@ -1143,11 +1144,11 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     if last_dot!=0
         set last_dot# 0
         inc last_dot
-        call action_code_set(start)
-        call action_code_set(last_dot)
+        call action_code_set_pointer(start)
+        call action_code_set_pointer(last_dot)
     else
-        call action_code_set(0)
-        call action_code_set(start)
+        call action_code_set_pointer((no_pointer))
+        call action_code_set_pointer(start)
     endelse
     setcall pointer action_code_parse_function_arguments(pointer)
     call action_code_set((args_end))
@@ -1233,9 +1234,9 @@ function action_code_parse_deffunction(ss ac)
         call error("start sign expected at function definition: (")
     endif
     set args# 0
-    call action_code_set(name_start)
+    call action_code_set_pointer(name_start)
     setcall pointer action_code_parse_function_defarguments(args)
-    call action_code_set(0)
+    call action_code_set_pointer((no_pointer))
     #
     call brace_blocks_add_parse((function_marker))
     #loop until the function code is over
@@ -1270,7 +1271,7 @@ function action_code_parse_function_defarguments(ss ac)
     while op!=close
         sd pos
         setcall pos strcspn(ac,argsdelims)
-        call action_code_set(ac)
+        call action_code_set_pointer(ac)
         add ac pos
         if ac#==0
             call error("close the function arguments sign expected: )")

@@ -48,6 +48,9 @@ endfunction
 function action_code_set(sd value)
 	call action_code_set_ex(value,1)
 endfunction
+function action_code_set_pointer(sd value)
+	call action_code_set_ex(value,(:/DWORD))
+endfunction
 function action_code_set_ex(sd value,sd size)
 	sd nr
 	setcall nr action_code_values_index()
@@ -65,7 +68,6 @@ function action_code_set_ex(sd value,sd size)
 	add pointer to
 	if size==1
 		set pointer# value
-		i3
 	else
 		set pointer#v^ value
 	endelse
@@ -167,11 +169,11 @@ function action_code_pack(sd codepointer)
     endelseif
     #
     if is_member==(TRUE)
-        setcall codepointer action_member_loop(codepointer,(DWORD))
+        setcall codepointer action_member_loop(codepointer,:)   #to pass the pointer
     else
     #definelocal or setvariable or delete2
-        call action_push((ap_Constant8),codepointer#,-1)
-        add codepointer (DWORD)
+        call action_push((ap_Constant8),codepointer#v^,-1)
+        add codepointer :  #to pass the pointer
     endelse
     if need_right==(TRUE)
         if codepointer#==(ActionIncrement)
@@ -240,7 +242,7 @@ function action_code_write_conditions(sd codepointer)
     if cond==(for_marker)
         add codepointer (DWORD)
         if codepointer#!=(for_three)
-            call action_push((ap_Constant8),codepointer#,-1);add codepointer (DWORD)
+            call action_push((ap_Constant8),codepointer#v^,-1);add codepointer :   #to pass the pointer
             call action_one((ActionEnumerate))
             #
             call add_while_top_off((for_marker))
@@ -257,11 +259,11 @@ function action_code_write_conditions(sd codepointer)
             sd attr2;set attr2 codepointer#;add codepointer (DWORD)
             #
             if attr2==(ActionSetMember)
-                setcall codepointer action_member_loop(codepointer,(DWORD))
+                setcall codepointer action_member_loop(codepointer,:)  #to pass the pointer
             else
                 #var or set variable
                 call action_push((ap_Constant8),codepointer#,-1)
-                add codepointer (DWORD)
+                add codepointer :   #to pass the pointer
             endelse
             #
             call action_push((ap_RegisterNumber),first_reg,-1)
@@ -459,7 +461,7 @@ function action_code_write_function(sd codepointer)
 endfunction
 
 #codepointer
-function action_code_write_function_call(sd codepointer)
+function action_code_write_function_call(sv codepointer)
     add codepointer (DWORD)
     sd pointer
     setcall pointer action_code_write_builtin_function(codepointer)
@@ -477,14 +479,14 @@ function action_code_write_function_call(sd codepointer)
     return codepointer
 endfunction
 #codepointer
-function action_code_write_builtin_function(sd codepointer)
-    sd pointer
+function action_code_write_builtin_function(sv codepointer)
+    sv pointer
     set pointer codepointer
-    if pointer#!=0
+    if pointer#!=(no_pointer)
         #no builtin at members
         return codepointer
     endif
-    add pointer (DWORD)
+    add pointer :  #to pass the pointer
     #
     sd cursor
     setcall cursor action_code_write_builtin_set(pointer)
@@ -494,7 +496,7 @@ function action_code_write_builtin_function(sd codepointer)
     return cursor
 endfunction
 #name/0
-function action_code_write_builtin_names(sd codepointer,sd p_action)
+function action_code_write_builtin_names(sv codepointer,sd p_action)
     ss int="int"
     sd compare
     setcall compare strcmp(codepointer#,int)
@@ -540,7 +542,7 @@ function action_code_write_builtin_set(sd codepointer)
     endif
     #
     chars er#256
-    add codepointer (DWORD)
+    add codepointer :   #to pass the pointer
     if codepointer#==(args_end)
         call sprintf(#er,"%s builtin function expects at least one parameter",name)
         call error(#er)
@@ -555,16 +557,16 @@ function action_code_write_builtin_set(sd codepointer)
     return codepointer
 endfunction
 #codepointer
-function action_code_new_or_call(sd codepointer)
+function action_code_new_or_call(sv codepointer)
     sd member
     set member codepointer#
     #
-    add codepointer (DWORD)
+    add codepointer :  #to pass the pointer
     sd fname
     set fname codepointer#
     #
     import "action_caller" action_caller
-    add codepointer (DWORD)
+    add codepointer :  #to pass the pointer
     setcall codepointer action_caller(fname,member,codepointer)
     return codepointer
 endfunction
@@ -583,7 +585,7 @@ function action_code_right_util(sd codepointer)
     if codepointer#==(new_action)
         add codepointer (DWORD)
         sd member
-        set member codepointer#
+        set member codepointer#v^
         setcall codepointer action_code_new_or_call(codepointer)
         if member==0
             call action_one((ActionNewObject))
@@ -639,16 +641,19 @@ function action_code_right_number(sd codepointer)
     set attrib codepointer#
     add codepointer (DWORD)
     if attrib==(ActionGetMember)
-        setcall codepointer action_member_loop(codepointer,0)
+        setcall codepointer action_member_loop(codepointer,(get_member))
     else
         if attrib==(ActionGetVariable)
             call action_one_command(codepointer#)
         elseif attrib==(ap_double)
             sd low;set low codepointer#;add codepointer (DWORD)
             call action_push(attrib,low,codepointer#,-1)
-        else
-        #ap_Integer or ap_Constant8
+        elseif attrib==(ap_Integer)
             call action_push(attrib,codepointer#,-1)
+        else
+        #ap_Constant8
+            call action_push(attrib,codepointer#v^,-1)
+            add codepointer (pointer_rest)
         endelse
         add codepointer (DWORD)
     endelse
@@ -713,10 +718,10 @@ function action_definefunction(sd codepointer)
     return codepointer
 endfunction
 #codepointer
-function action_deffunction(sd codepointer)
+function action_deffunction(sv codepointer)
     ss fn_name
     set fn_name codepointer#
-    add codepointer (DWORD)
+    add codepointer :  #to pass the pointer
     sd fn_name_size
     setcall fn_name_size strlen(fn_name)
     inc fn_name_size
@@ -730,24 +735,24 @@ function action_deffunction(sd codepointer)
     sd NumParams=0
     sd args
     set args codepointer
-    while codepointer#!=0
+    while codepointer#!=(no_pointer)
         addcall fn_size strlen(codepointer#)
         inc fn_size
         inc NumParams
-        add codepointer (DWORD)
+        add codepointer :  #to pass the pointer
     endwhile
-    add codepointer (DWORD)
+    add codepointer :  #to pass the pointer
     #
     call actionrecordheader((ActionDefineFunction),fn_size)
     call swf_actionblock_add(fn_name,fn_name_size)
     call swf_actionblock_add(#NumParams,(NumParams_size))
     #
     sd wr_size
-    while args#!=0
+    while args#!=(no_pointer)
         setcall wr_size strlen(args#)
         inc wr_size
         call swf_actionblock_add(args#,wr_size)
-        add args (DWORD)
+        add args :  #to pass the pointer
     endwhile
     #
     data dummyoffset=0

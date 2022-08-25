@@ -5,6 +5,7 @@ const TRUE=1
 const FALSE=0
 
 const NULL=0
+const no_pointer=NULL
 
 #const MAX_PATH=260
 
@@ -14,6 +15,8 @@ const BYTE=1
 const WORD=2
 const DWORD=4
 const QWORD=8
+
+const pointer_rest=:-DWORD
 
 const void=0
 

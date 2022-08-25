@@ -16,6 +16,8 @@ import "spaces" spaces
 
 #tags
 
+const code_default_size=DWORD      #this is implemented only partial where was incst
+
 function action_push(sd factors)
     sd iter^factors
     sd size=0
@@ -23,10 +25,10 @@ function action_push(sd factors)
         inc size
         if iter#==(ap_Integer)
             add size (DWORD)
-            incst iter
+            add iter (code_default_size)
         elseif iter#==(ap_double)
             add size (QWORD)
-            incst iter;incst iter
+            add iter (2*code_default_size)
         elseif iter#==(ap_Null)
         #skip
         elseif iter#==(ap_Undefined)
@@ -38,17 +40,18 @@ function action_push(sd factors)
             add size (BYTE)
             sd value
             set value iter#
-            incst iter
+            add iter (code_default_size)
             if value==(ap_Constant8)
             #add the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
                 sd translated_id
-                setcall translated_id actionpool_value(iter#)
+                setcall translated_id actionpool_value(iter#v^)
                 if translated_id>0xff
                     inc size
                 endif
+                add iter (pointer_rest)  #to pass the pointer
             endif
         endelse
-        incst iter
+        add iter (code_default_size)
     endwhile
 
     call actionrecordheader((ActionPush),size)
@@ -57,11 +60,11 @@ function action_push(sd factors)
     while cursor#!=-1
         #test here Constant8 to Constant16
         if cursor#==(ap_Constant8)
-            incst cursor
+            add cursor (code_default_size)
             #call actionpool_getvalue, the pool already exists(actionpool_value if not)
             import "actionpool_getvalue" actionpool_getvalue
-            setcall translated_id actionpool_getvalue(cursor#)
-            sub cursor :
+            setcall translated_id actionpool_getvalue(cursor#v^)
+            sub cursor (code_default_size)
             sd const_sz=BYTE
             if translated_id>0xff
                 inc const_sz
@@ -72,31 +75,30 @@ function action_push(sd factors)
         call swf_actionblock_add(cursor,1)
 
         if cursor#==(ap_Integer)
-            incst cursor
+            add cursor (code_default_size)
             call swf_actionblock_add(cursor,(DWORD))
         elseif cursor#==(ap_double)
-            incst cursor
+            add cursor (code_default_size)
             call swf_actionblock_add(cursor,(DWORD))
-            incst cursor
+            add cursor (code_default_size)
             call swf_actionblock_add(cursor,(DWORD))
         elseif cursor#==(ap_RegisterNumber)
-            incst cursor
+            add cursor (code_default_size)
             call swf_actionblock_add(cursor,(BYTE))
         elseif cursor#==(ap_Boolean)
-            incst cursor
+            add cursor (code_default_size)
             call swf_actionblock_add(cursor,(BYTE))
         elseif cursor#==(ap_Null)
         #skip
         elseif cursor#==(ap_Undefined)
         #skip
         else
-        i3
         #if cursor#==(ap_Constant8)
         #or was modified to (ap_Constant16)
-            incst cursor
             call swf_actionblock_add(#translated_id,const_sz)
+            add cursor :   #to pass the pointer
         endelse
-        incst cursor
+        add cursor (code_default_size)
     endwhile
 endfunction
 
@@ -128,9 +130,9 @@ endfunction
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
 function action_member_loop(sd mathpointer,sd endoffset)
-    call action_get_one(mathpointer#)
+    call action_get_one(mathpointer#v^)
     while 1==1
-        add mathpointer (DWORD)
+        add mathpointer :  #to pass the pointer
         #
         while mathpointer#==(square_bracket_start)
         #multi-dim arrays
@@ -139,28 +141,28 @@ function action_member_loop(sd mathpointer,sd endoffset)
             if endoffset==(get_member)
                 call action_one((ActionGetMember))
             else
-                if mathpointer#!=0
+                if mathpointer#v^!=(no_pointer)
                     call action_one((ActionGetMember))
                 else
-                    add mathpointer (DWORD)
+                    add mathpointer :  #to pass the pointer
                     return mathpointer
                 endelse
             endelse
         endwhile
-        sd endtest
+        sv endtest
         set endtest mathpointer
         add endtest endoffset
         #
-        if endtest#==0
-            if endoffset!=0
+        if endtest#==(no_pointer)
+            if endoffset!=(no_pointer)
                 #push to set later
-                call action_push((ap_Constant8),mathpointer#,-1)
-                add mathpointer (DWORD)
+                call action_push((ap_Constant8),mathpointer#v^,-1)
+                add mathpointer :  #to pass the pointer
             endif
-            add mathpointer (DWORD)
+            add mathpointer :  #to pass the pointer
             return mathpointer
         endif
-        call action_push((ap_Constant8),mathpointer#,-1)
+        call action_push((ap_Constant8),mathpointer#v^,-1)
         call action_one((ActionGetMember))
     endwhile
 endfunction
@@ -385,9 +387,9 @@ endfunction
 
 #format
 
-function action_format(sd args)
+function action_format(sv args)
     sd args_nr=2
-    sd args_format
+    sv args_format
     set args_format args;incst args_format
     chars e="%"
     addcall args_nr escape_count(args_format#,e)

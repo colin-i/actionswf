@@ -4,7 +4,8 @@ OCOMP=o
 OLINK=ounused
 syms=-s
 conv_64=1
-OFLAGS=conv_64 ${conv_64}
+#OFLAGSEXTRA=
+OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
 items = ${platform} actioncode actionparse actionpool actionutil bits character file storage util
 expitems = action swf tool ../shared/action_dllmain
