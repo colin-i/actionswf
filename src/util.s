@@ -184,7 +184,7 @@ function block_get_mem(sd block)
     add block (mem_struct_size)
     return block
 endfunction
-function block_get_mem_size(sd block,sd p_mem,sd p_size)
+function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack variable
     setcall p_mem# block_get_mem(block)
     setcall p_size# block_get_size(block)
 endfunction

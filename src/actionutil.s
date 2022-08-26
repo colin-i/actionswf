@@ -16,90 +16,88 @@ import "spaces" spaces
 
 #tags
 
-const code_default_size=DWORD      #this is implemented only partial where was incst
-
 function action_push(sd factors)
-    sd iter^factors
-    sd size=0
-    while iter#!=-1
-        inc size
-        if iter#==(ap_Integer)
-            add size (DWORD)
-            add iter (code_default_size)
-        elseif iter#==(ap_double)
-            add size (QWORD)
-            add iter (2*code_default_size)
-        elseif iter#==(ap_Null)
-        #skip
-        elseif iter#==(ap_Undefined)
-        #skip
-        else
-        #if iter#==(ap_RegisterNumber)
-        #if iter#==(ap_Boolean)
-        #if iter#==(ap_Constant8)
-            add size (BYTE)
-            sd value
-            set value iter#
-            add iter (code_default_size)
-            if value==(ap_Constant8)
-            #add the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
-                sd translated_id
-                setcall translated_id actionpool_value(iter#v^)
-                if translated_id>0xff
-                    inc size
-                endif
-                add iter (pointer_rest)  #to pass the pointer
-            endif
-        endelse
-        add iter (code_default_size)
-    endwhile
+	sd iter^factors
+	sd size=0
+	while iter#!=-1
+		inc size
+		if iter#==(ap_Integer)
+			add size (DWORD)
+			incst iter
+		elseif iter#==(ap_double)
+			add size (QWORD)
+			add iter (2*:)
+		elseif iter#==(ap_Null)
+		#skip
+		elseif iter#==(ap_Undefined)
+		#skip
+		else
+		#if iter#==(ap_RegisterNumber)
+		#if iter#==(ap_Boolean)
+		#if iter#==(ap_Constant8)
+			add size (BYTE)
+			sd value
+			set value iter#
+			incst iter
+			if value==(ap_Constant8)
+			#add the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
+				sd translated_id
+				setcall translated_id actionpool_value(iter#v^)
+				if translated_id>0xff
+					inc size
+				endif
+			endif
+		endelse
+		incst iter
+	endwhile
 
-    call actionrecordheader((ActionPush),size)
+	call actionrecordheader((ActionPush),size)
 
-    sd cursor^factors
-    while cursor#!=-1
-        #test here Constant8 to Constant16
-        if cursor#==(ap_Constant8)
-            add cursor (code_default_size)
-            #call actionpool_getvalue, the pool already exists(actionpool_value if not)
-            import "actionpool_getvalue" actionpool_getvalue
-            setcall translated_id actionpool_getvalue(cursor#v^)
-            sub cursor (code_default_size)
-            sd const_sz=BYTE
-            if translated_id>0xff
-                inc const_sz
-                set cursor# (ap_Constant16)
-            endif
-        endif
+	sd cursor^factors
+	while cursor#!=-1
+		#test here Constant8 to Constant16
+		if cursor#==(ap_Constant8)
+			sv pointer
+			set pointer cursor
+			incst pointer
+			#call actionpool_getvalue, the pool already exists(actionpool_value if not)
+			import "actionpool_getvalue" actionpool_getvalue
+			setcall translated_id actionpool_getvalue(pointer#)
+			sd const_sz=BYTE
+			if translated_id>0xff
+				inc const_sz
+				set cursor# (ap_Constant16)
+			endif
+		endif
 
-        call swf_actionblock_add(cursor,1)
+		call swf_actionblock_add(cursor,1)
 
-        if cursor#==(ap_Integer)
-            add cursor (code_default_size)
-            call swf_actionblock_add(cursor,(DWORD))
-        elseif cursor#==(ap_double)
-            add cursor (code_default_size)
-            call swf_actionblock_add(cursor,(DWORD))
-            add cursor (code_default_size)
-            call swf_actionblock_add(cursor,(DWORD))
-        elseif cursor#==(ap_RegisterNumber)
-            add cursor (code_default_size)
-            call swf_actionblock_add(cursor,(BYTE))
-        elseif cursor#==(ap_Boolean)
-            add cursor (code_default_size)
-            call swf_actionblock_add(cursor,(BYTE))
-        elseif cursor#==(ap_Null)
-        #skip
-        elseif cursor#==(ap_Undefined)
-        #skip
-        else
-        #if cursor#==(ap_Constant8)
-        #or was modified to (ap_Constant16)
-            call swf_actionblock_add(#translated_id,const_sz)
-            add cursor :   #to pass the pointer
-        endelse
-        add cursor (code_default_size)
-    endwhile
+		if cursor#==(ap_Integer)
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+		elseif cursor#==(ap_double)
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+		elseif cursor#==(ap_RegisterNumber)
+			incst cursor
+			call swf_actionblock_add(cursor,(BYTE))
+		elseif cursor#==(ap_Boolean)
+			incst cursor
+			call swf_actionblock_add(cursor,(BYTE))
+		elseif cursor#==(ap_Null)
+		#skip
+		elseif cursor#==(ap_Undefined)
+		#skip
+		else
+		#if cursor#==(ap_Constant8)
+		#or was modified to (ap_Constant16)
+			call swf_actionblock_add(#translated_id,const_sz)
+			incst cursor
+		endelse
+		incst cursor
+	endwhile
 endfunction
 
 function action_one(sd tag)
