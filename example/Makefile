@@ -9,7 +9,8 @@ OFLAGS=conv_64 ${conv_64}
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
-	OFLAGS += underscore_pref 1 exit_end 1
+	OFLAGS += exit_end 1
+	# underscore_pref 1   win32 with _, can go back to this later
 endif
 
 name=example
@@ -25,7 +26,11 @@ uns:
 
 lib:
 	if [ "${platform}" = "win" ]; then \
-		i686-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ${linkfile}; \
+		if [ "${conv_64}" = "1" ]; then \
+			i686-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ${linkfile}; \
+		else \
+			x86_64-w64-mingw32-dlltool --no-leading-underscore -d ../src/actionswf.def -l ${linkfile}; \
+		fi \
 	fi
 
 lnk:
@@ -36,7 +41,11 @@ lnk:
 			$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry example_main -o ${name} -lc -L../src -l:actionswf.so; \
 		fi \
 	else \
-		i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+		if [ "${conv_64}" = "1" ]; then \
+			i686-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+		else \
+			x86_64-w64-mingw32-ld ${syms} ${name}.o -entry example_main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+		fi \
 	fi
 
 exe:

@@ -1,2 +1,2 @@
 
-make conv_64=1 platform=win $@
+make platform=win conv_64=1 $@
