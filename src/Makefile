@@ -3,7 +3,7 @@ platform = lin
 OCOMP=o
 OLINK=ounused
 syms=-s
-conv_64=1
+conv_64=0
 #OFLAGSEXTRA=
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 

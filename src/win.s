@@ -3,7 +3,8 @@ format elfobj64
 
 include "../include/prog.h"
 
-importx "___iob_func" iob_func
+#win32 with _
+importx "__iob_func" iob_func
 
 function platform_iob()
 #    const STDIN_FILENO=0

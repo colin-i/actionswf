@@ -1,10 +1,11 @@
 Format ElfObj64
 
-importx "_strcspn" strcspn
-importx "_strchr" strchr
-importx "_memcpy" memcpy
-importx "_sscanf" sscanf
-importx "_strpbrk" strpbrk
+#win32 with _
+importx "strcspn" strcspn
+importx "strchr" strchr
+importx "memcpy" memcpy
+importx "sscanf" sscanf
+importx "strpbrk" strpbrk
 
 importaftercall ebool
 include "../include/prog.h"

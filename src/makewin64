@@ -1,0 +1,4 @@
+
+make conv_64=0 platform=win $@
+
+#make platform=win link

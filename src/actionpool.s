@@ -1,7 +1,8 @@
 Format ElfObj64
 
-importx "_strlen" strlen
-importx "_memcmp" memcmp
+#win32 with _
+importx "strlen" strlen
+importx "memcmp" memcmp
 
 importaftercall ebool
 include "../include/prog.h"
