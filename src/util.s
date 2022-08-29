@@ -101,7 +101,7 @@ function error(ss msg)
     import "action_error" action_error
     call action_error()
 
-    import "freereset" freereset
+    importx "freereset" freereset
     call freereset()
     #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
     import "action_debug_free" action_debug_free

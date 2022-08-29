@@ -25,7 +25,11 @@ function swf_mem(sd proc,sd arg,sd len)
     data main_id#1
     vdata call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
-    if proc==(mem_exp_init)
+    if proc==(mem_exp_change_back)
+        set id main_id
+        set call_struct c_main
+        return (void)
+    elseif proc==(mem_exp_init)
     #arg is file
     #len is filelength offset
         if path_mem!=(NULL)
@@ -69,10 +73,6 @@ function swf_mem(sd proc,sd arg,sd len)
                 call file_close(#file_out)
             endif
         endif
-        return (void)
-    elseif proc==(mem_exp_change_back)
-        set id main_id
-        set call_struct c_main
         return (void)
     endelseif
     if path_mem==(NULL)
@@ -153,15 +153,7 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
     data id#1
     data id_back#1
     sd poolid
-    if proc==(mem_exp_init)
-        set id arg
-        set id_back id
-        call struct_ids_action((ids_set),id)
-        call struct_ids_actionpool((ids_set),id)
-        sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
-        sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
-        return (void)
-    elseif proc==(mem_exp_change)
+    if proc==(mem_exp_change)
         #must verify to be a valid user input id
         call struct_ids_actionpool((ids_get_pointer),id)
         #
@@ -177,6 +169,14 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
         setcall root_poolid actionpoolid_root()
         setcall poolid actionpoolid()
         set poolid# root_poolid#
+        return (void)
+    elseif proc==(mem_exp_init)
+        set id arg
+        set id_back id
+        call struct_ids_action((ids_set),id)
+        call struct_ids_actionpool((ids_set),id)
+        sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
+        sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
         return (void)
     endelseif
     sd p_block

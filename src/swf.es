@@ -709,7 +709,7 @@ functionX swf_done()
     call swf_actionblock((mem_exp_part_done));#in case there are remaining actions
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
-    import "freereset" freereset
+    importx "freereset" freereset
     call freereset()
 endfunction
 

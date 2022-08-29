@@ -99,7 +99,7 @@ function rect_add(sd width,sd height)
     call rect_prepare(#mem,#sz,width,height)
     call swf_mem_add(mem,sz)
 endfunction
-function rect_prepare(sv p_out,sd p_size,sd width,sd height)
+function rect_prepare(sv p_out,sv p_size,sd width,sd height)  #p_size is a stack variable
     sd NBits
     mult width 20
     mult height 20
