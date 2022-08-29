@@ -57,7 +57,7 @@ endfunction
 #read
 import "memalloc" memalloc
 #mem
-function file_get_content(ss filepath,sd p_size)
+function file_get_content(ss filepath,sv p_size)  #size is a stack variable
     sd file
     setcall file file_open(filepath,(_open_read))
     call file_get_content__resources((TRUE),file)

@@ -166,7 +166,7 @@ functionX swf_font(ss fontname,sd font_flags)
     chars FontNameLen#1
 
     const font_hd_start_size=!-font_hd_start
-    data font_hd_start^id
+    vdata font_hd_start^id
 
     data NumGlyphs=0
 
@@ -613,8 +613,8 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
     if size<8
         call error("missing image header")
     endif
-    chars hd_magic1={D,B,l,1};data magic1^hd_magic1
-    chars hd_magic2={D,B,l,2};data magic2^hd_magic2
+    chars hd_magic1={D,B,l,1};vdata magic1^hd_magic1
+    chars hd_magic2={D,B,l,2};vdata magic2^hd_magic2
     if mem#!=magic1#
     if mem#!=magic2#
         call printEr("expecting dbl(define bits lossless 1 or 2)header; filepath: ")
