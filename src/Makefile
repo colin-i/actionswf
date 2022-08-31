@@ -5,6 +5,7 @@ OLINK=ounused
 syms=-s
 conv_64=0
 #OFLAGSEXTRA=
+#if modifying OFLAGS will lose inside data
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
 items = ${platform} actioncode actionparse actionpool actionutil bits character file storage util
