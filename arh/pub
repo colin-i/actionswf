@@ -7,7 +7,7 @@
 ~/test/publp && \
 ~/test/rpm && \
 ~/test/pub rpm && \
-./makewin32 && \
+./makewin64 && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub rel && \

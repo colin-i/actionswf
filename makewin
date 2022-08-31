@@ -1,13 +1,13 @@
 
 cd src
 
-./makewin32 $@ && \
+./makewin${1} && \
 \
 cd .. && \
 mkdir actionswf && \
 mv src/actionswf.dll actionswf && \
 cd src && \
-./makewin32 clean && \
+./makewin${1} clean && \
 cd .. && \
 zip -r actionswf.zip actionswf && \
 rm -r ./actionswf && \
