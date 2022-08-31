@@ -1,3 +1,9 @@
+actionswf (1-43) bionic; urgency=medium
+
+  * 64 ocomp i386
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Wed, 31 Aug 2022 09:38:07 +0300
+
 actionswf (1-42) bionic; urgency=medium
 
   * 64
