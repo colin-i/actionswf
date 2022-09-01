@@ -1,10 +1,6 @@
 TOPTARGETS := all install clean distclean uninstall test
 
-ifndef test
-SUBDIRS := src
-else
 SUBDIRS := src example
-endif
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
