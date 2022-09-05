@@ -1,5 +1,7 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 importx "_open" open
 importx "_read" read
 importx "_write" write
@@ -7,10 +9,40 @@ importx "_lseek" lseek
 #importx tell   can't find it
 importx "_close" close
 
-importaftercall ebool
-include "../include/prog.h"
-
 import "printEr" printEr
+
+function file_get_content__resources(sd trueIsSet_falseIsFree,sd fileIn,sd memIn)
+    data file=fd_none;vdata mem=NULL
+    if trueIsSet_falseIsFree==(TRUE)
+        if fileIn!=(fd_none);set file fileIn
+        else;set mem memIn;endelse
+    else
+        if file!=(fd_none)
+            call file_close(#file)
+            if mem!=(NULL)
+                import "mem_free" mem_free
+                call mem_free(#mem)
+            endif
+        endif
+    endelse
+endfunction
+function file_get_content__resources_free()
+    call file_get_content__resources((FALSE))
+endfunction
+
+#close
+
+function file_close(sd p_file)
+    call close(p_file#)
+    set p_file# (fd_none)
+endfunction
+
+
+
+
+
+importaftercall ebool
+
 import "error" error
 
 #file
@@ -75,24 +107,6 @@ function file_read(sd file,sd mem,sd size)
         call error("Read length is different or error")
     endif
 endfunction
-function file_get_content__resources(sd trueIsSet_falseIsFree,sd fileIn,sd memIn)
-    data file=fd_none;vdata mem=NULL
-    if trueIsSet_falseIsFree==(TRUE)
-        if fileIn!=(fd_none);set file fileIn
-        else;set mem memIn;endelse
-    else
-        if file!=(fd_none)
-            call file_close(#file)
-            if mem!=(NULL)
-                import "mem_free" mem_free
-                call mem_free(#mem)
-            endif
-        endif
-    endelse
-endfunction
-function file_get_content__resources_free()
-    call file_get_content__resources((FALSE))
-endfunction
 
 #write
 
@@ -107,11 +121,4 @@ function file_write(sd file,sd buffer,sd size)
     endif
     vstr er="File write error"
     call error(er)
-endfunction
-
-#close
-
-function file_close(sd p_file)
-    call close(p_file#)
-    set p_file# (fd_none)
 endfunction

@@ -1,6 +1,5 @@
 Format ElfObj64
 
-importaftercall ebool
 include "../include/prog.h"
 
 function bits_packs(ss dest,sd packs)
@@ -91,14 +90,7 @@ function numbitsMax(sd width,sd height)
     inc NBits
     return NBits
 endfunction
-#
-import "swf_mem_add" swf_mem_add
-function rect_add(sd width,sd height)
-    sd mem
-    sd sz
-    call rect_prepare(#mem,#sz,width,height)
-    call swf_mem_add(mem,sz)
-endfunction
+
 function rect_prepare(sv p_out,sv p_size,sd width,sd height)  #p_size is a stack variable
     sd NBits
     mult width 20
@@ -138,6 +130,20 @@ function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
         div size 8
     set p_size# size
 endfunction
+
+
+
+
+
+importaftercall ebool
+
+
+
 #
-
-
+import "swf_mem_add" swf_mem_add
+function rect_add(sd width,sd height)
+    sd mem
+    sd sz
+    call rect_prepare(#mem,#sz,width,height)
+    call swf_mem_add(mem,sz)
+endfunction

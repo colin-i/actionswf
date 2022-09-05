@@ -1,20 +1,25 @@
 Format ElfObj64
 
-importaftercall ebool
 include "../include/prog.h"
+
+import "action_debug" action_debug
+import "brace_blocks_counter_init" brace_blocks_counter_init
+import "action_code_values" action_code_values
+import "action_code_values_index" action_code_values_index
+import "escape_action" escape_action
+import "action_debug_free" action_debug_free
+
+
+
+importaftercall ebool
 
 #this/an action
 
 import "action__code" action__code
 import "action_code_set" action_code_set
 import "action_code_row" action_code_row
-import "action_debug" action_debug
 import "dupreserve_string" dupreserve_string
-import "brace_blocks_counter_init" brace_blocks_counter_init
 import "brace_blocks_end" brace_blocks_end
-import "action_code_values" action_code_values
-import "action_code_values_index" action_code_values_index
-import "escape_action" escape_action
 functionX action(ss ac)
 #ss ac       actionscript string to be parsed
     sd p_values
@@ -48,7 +53,6 @@ functionX action(ss ac)
     call action__code(p_values)
 
     #free mem ok,another free can be at errors
-    import "action_debug_free" action_debug_free
     call action_debug_free()
 endfunction
 import "action_format" action_format

@@ -11,10 +11,6 @@ importx "memcmp" memcmp
 
 import "platform_iob" platform_iob
 
-function erbool()
-    aftercall ebool
-    return #ebool
-endfunction
 include "../include/prog.h"
 
 function printEr(ss msg)
@@ -127,6 +123,209 @@ function string_nl_print(ss msg)
     chars nl={0xa,0}
     call printEr(#nl)
 endfunction
+
+#block
+
+function block_reset_size(sd block)
+    add block (mem_struct__size_off)
+    set block# (mem_struct_size)
+endfunction
+#size
+function block_get_size(sd block)
+    sd size
+    setcall size struct_off(block,(mem_struct__size_off))
+    sub size (mem_struct_size)
+    return size
+endfunction
+#size
+function block_get_fullsize(sd block)
+    sd size
+    setcall size struct_off(block,(mem_struct__size_off))
+    return size
+endfunction
+#mem
+function block_get_mem(sd block)
+    add block (mem_struct_size)
+    return block
+endfunction
+function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack variable
+    setcall p_mem# block_get_mem(block)
+    setcall p_size# block_get_size(block)
+endfunction
+
+#mem procedures
+
+function mem_free(sv p_mem)
+    call free(p_mem#)
+    set p_mem# (NULL)
+endfunction
+
+#pointer
+
+function move_to_n_pointer(sd pointer,sd id)
+    mult id :
+    add pointer id
+    return pointer
+endfunction
+
+#strings/chars
+
+#chars
+
+#bool
+function is_numeric(sd char)
+    chars min="0"
+    chars max="9"
+    if char<min
+        return (FALSE)
+    elseif char<=max
+        return (TRUE)
+    endelseif
+    return (FALSE)
+endfunction
+#bool
+function part_of_variable(sd value)
+    sd bool
+    setcall bool is_numeric(value)
+    if bool==(TRUE)
+        return (TRUE)
+    endif
+    setcall bool is_letter(value)
+    return bool
+endfunction
+#bool
+function is_letter(sd value)
+    if value<(A)
+        return (FALSE)
+    elseif value<=(Z)
+        return (TRUE)
+    elseif value==(_)
+        return (TRUE)
+    elseif value<(a)
+        return (FALSE)
+    elseif value<=(z)
+        return (TRUE)
+    endelseif
+    return (FALSE)
+endfunction
+
+#strings
+
+#str
+function str_next(ss s,ss delims,sv p_op)  #p_op is pointing at a stack variable
+    sd pos
+    setcall pos strcspn(s,delims)
+    ss x
+    set x s
+    add x pos
+    set p_op# x#
+    if x#==0
+        return x
+    endif
+    set x# 0
+    inc x
+    return x
+endfunction
+#bool
+function str_at_str_start(ss s1,ss s2)
+    sd l1
+    sd l2
+    setcall l1 strlen(s1)
+    setcall l2 strlen(s2)
+    if l1<l2
+        return (FALSE)
+    endif
+    sd comp
+    setcall comp memcmp(s1,s2,l2)
+    if comp==0
+        return (TRUE)
+    endif
+    return (FALSE)
+endfunction
+
+#next/same
+function str_expression_at_start(ss string,ss expression)
+    sd bool
+    setcall bool str_at_str_start(string,expression)
+    if bool==(FALSE)
+        return string
+    endif
+    ss next
+    set next string
+    addcall next strlen(expression)
+    setcall bool part_of_variable(next#)
+    if bool==(TRUE)
+        return string
+    endif
+    setcall next spaces(next)
+    return next
+endfunction
+#next/same
+function str_expression_at_start_withEndCare(ss ac,ss expression)
+    ss pointer
+    setcall pointer str_expression_at_start(ac,expression)
+    if pointer==ac
+        return ac
+    endif
+    chars term=";"
+    if pointer#==term
+        inc pointer
+    endif
+    return pointer
+endfunction
+
+#str
+function spaces(ss str)
+    while 1==1
+        if str#!=(Space)
+            if str#!=(HorizontalTab)
+                return str
+            endif
+        endif
+        inc str
+    endwhile
+endfunction
+
+
+#closings
+
+import "file_close" file_close
+function file_resources(sd trueIsSet_falseIsFree,sd fileIn)
+    data file=fd_none
+    if trueIsSet_falseIsFree==(TRUE)
+        set file fileIn
+    else
+        if file!=(fd_none)
+            call file_close(#file)
+        endif
+    endelse
+endfunction
+function file_resources_set(sd file)
+    call file_resources((TRUE),file)
+endfunction
+function file_resources_free()
+    call file_resources((FALSE))
+endfunction
+
+#
+
+
+
+
+
+
+
+function erbool()
+    aftercall ebool
+    return #ebool
+endfunction
+
+
+
+
+
+
+
 #
 function memrealloc(sd mem,sd size)
 #unele fisiere pot da eroare de la realocare; fara functia asta aftercall poate fi degeaba
@@ -161,35 +360,6 @@ function def_data()
 	return mem
 endfunction
 
-#block
-
-function block_reset_size(sd block)
-    add block (mem_struct__size_off)
-    set block# (mem_struct_size)
-endfunction
-#size
-function block_get_size(sd block)
-    sd size
-    setcall size struct_off(block,(mem_struct__size_off))
-    sub size (mem_struct_size)
-    return size
-endfunction
-#size
-function block_get_fullsize(sd block)
-    sd size
-    setcall size struct_off(block,(mem_struct__size_off))
-    return size
-endfunction
-#mem
-function block_get_mem(sd block)
-    add block (mem_struct_size)
-    return block
-endfunction
-function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack variable
-    setcall p_mem# block_get_mem(block)
-    setcall p_size# block_get_size(block)
-endfunction
-
 #mem procedures
 
 function mem_block_add(sv p_block,ss newblock,sd newblock_size)
@@ -220,11 +390,6 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     add size newblock_size
     add block (mem_struct__size_off)
     set block# size
-endfunction
-
-function mem_free(sv p_mem)
-    call free(p_mem#)
-    set p_mem# (NULL)
 endfunction
 
 #structure ids
@@ -324,88 +489,9 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
         call mem_free(pointer)
     endelse
 endfunction
-#pointer
-function move_to_n_pointer(sd pointer,sd id)
-    mult id :
-    add pointer id
-    return pointer
-endfunction
 
-
-#strings/chars
-
-#chars
-
-#bool
-function is_numeric(sd char)
-    chars min="0"
-    chars max="9"
-    if char<min
-        return (FALSE)
-    elseif char<=max
-        return (TRUE)
-    endelseif
-    return (FALSE)
-endfunction
-#bool
-function part_of_variable(sd value)
-    sd bool
-    setcall bool is_numeric(value)
-    if bool==(TRUE)
-        return (TRUE)
-    endif
-    setcall bool is_letter(value)
-    return bool
-endfunction
-#bool
-function is_letter(sd value)
-    if value<(A)
-        return (FALSE)
-    elseif value<=(Z)
-        return (TRUE)
-    elseif value==(_)
-        return (TRUE)
-    elseif value<(a)
-        return (FALSE)
-    elseif value<=(z)
-        return (TRUE)
-    endelseif
-    return (FALSE)
-endfunction
 
 #strings
-
-#str
-function str_next(ss s,ss delims,sv p_op)  #p_op is pointing at a stack variable
-    sd pos
-    setcall pos strcspn(s,delims)
-    ss x
-    set x s
-    add x pos
-    set p_op# x#
-    if x#==0
-        return x
-    endif
-    set x# 0
-    inc x
-    return x
-endfunction
-#bool
-function str_at_str_start(ss s1,ss s2)
-    sd l1
-    sd l2
-    setcall l1 strlen(s1)
-    setcall l2 strlen(s2)
-    if l1<l2
-        return (FALSE)
-    endif
-    sd comp
-    setcall comp memcmp(s1,s2,l2)
-    if comp==0
-        return (TRUE)
-    endif
-    return (FALSE)
-endfunction
 
 #alloc
 function dupreserve_string(ss str)
@@ -459,67 +545,4 @@ function str_escape(ss src,ss dest,sd delim)
     set dest# 0
     inc src
     return src
-endfunction
-
-#next/same
-function str_expression_at_start(ss string,ss expression)
-    sd bool
-    setcall bool str_at_str_start(string,expression)
-    if bool==(FALSE)
-        return string
-    endif
-    ss next
-    set next string
-    addcall next strlen(expression)
-    setcall bool part_of_variable(next#)
-    if bool==(TRUE)
-        return string
-    endif
-    setcall next spaces(next)
-    return next
-endfunction
-#next/same
-function str_expression_at_start_withEndCare(ss ac,ss expression)
-    ss pointer
-    setcall pointer str_expression_at_start(ac,expression)
-    if pointer==ac
-        return ac
-    endif
-    chars term=";"
-    if pointer#==term
-        inc pointer
-    endif
-    return pointer
-endfunction
-
-#str
-function spaces(ss str)
-    while 1==1
-        if str#!=(Space)
-            if str#!=(HorizontalTab)
-                return str
-            endif
-        endif
-        inc str
-    endwhile
-endfunction
-
-#closings
-
-import "file_close" file_close
-function file_resources(sd trueIsSet_falseIsFree,sd fileIn)
-    data file=fd_none
-    if trueIsSet_falseIsFree==(TRUE)
-        set file fileIn
-    else
-        if file!=(fd_none)
-            call file_close(#file)
-        endif
-    endelse
-endfunction
-function file_resources_set(sd file)
-    call file_resources((TRUE),file)
-endfunction
-function file_resources_free()
-    call file_resources((FALSE))
 endfunction

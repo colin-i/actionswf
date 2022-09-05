@@ -1,190 +1,13 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "strlen" strlen
 importx "memcpy" memcpy
 importx "sprintf" sprintf
-#
-importx "action" action
 
-importaftercall ebool
-include "../include/prog.h"
-
-import "swf_actionblock_add" swf_actionblock_add
-import "actionrecordheader" actionrecordheader
-import "actionpool_value" actionpool_value
 import "spaces" spaces
-
-#tags
-
-function action_push(sd factors)
-	sd iter^factors
-	sd size=0
-	while iter#!=-1
-		inc size
-		if iter#==(ap_Integer)
-			add size (DWORD)
-			incst iter
-		elseif iter#==(ap_double)
-			add size (QWORD)
-			add iter (2*:)
-		elseif iter#==(ap_Null)
-		#skip
-		elseif iter#==(ap_Undefined)
-		#skip
-		else
-		#if iter#==(ap_RegisterNumber)
-		#if iter#==(ap_Boolean)
-		#if iter#==(ap_Constant8)
-			add size (BYTE)
-			sd value
-			set value iter#
-			incst iter
-			if value==(ap_Constant8)
-			#add the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
-				sd translated_id
-				setcall translated_id actionpool_value(iter#v^)
-				if translated_id>0xff
-					inc size
-				endif
-			endif
-		endelse
-		incst iter
-	endwhile
-
-	call actionrecordheader((ActionPush),size)
-
-	sd cursor^factors
-	while cursor#!=-1
-		#test here Constant8 to Constant16
-		if cursor#==(ap_Constant8)
-			sv pointer
-			set pointer cursor
-			incst pointer
-			#call actionpool_getvalue, the pool already exists(actionpool_value if not)
-			import "actionpool_getvalue" actionpool_getvalue
-			setcall translated_id actionpool_getvalue(pointer#)
-			sd const_sz=BYTE
-			if translated_id>0xff
-				inc const_sz
-				set cursor# (ap_Constant16)
-			endif
-		endif
-
-		call swf_actionblock_add(cursor,1)
-
-		if cursor#==(ap_Integer)
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#==(ap_double)
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#==(ap_RegisterNumber)
-			incst cursor
-			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#==(ap_Boolean)
-			incst cursor
-			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#==(ap_Null)
-		#skip
-		elseif cursor#==(ap_Undefined)
-		#skip
-		else
-		#if cursor#==(ap_Constant8)
-		#or was modified to (ap_Constant16)
-			call swf_actionblock_add(#translated_id,const_sz)
-			incst cursor
-		endelse
-		incst cursor
-	endwhile
-endfunction
-
-function action_one(sd tag)
-    call swf_actionblock_add(#tag,1)
-endfunction
-
-
-import "action_code_right_util" action_code_right_util
-#codepointer
-function action_caller(ss name,ss member,sd args_pointer)
-    sd nrargs=0
-    while args_pointer#!=(args_end)
-        setcall args_pointer action_code_right_util(args_pointer)
-        inc nrargs
-    endwhile
-    add args_pointer (DWORD)
-    call action_push((ap_Integer),nrargs,-1)
-    #
-    if member!=0
-        call action_member_write(member)
-    endif
-    call action_push((ap_Constant8),name,-1)
-    return args_pointer
-endfunction
-
-#member
-
-import "action_get_one" action_get_one
-#the position where the mathpointer reachs
-function action_member_loop(sd mathpointer,sd endoffset)
-    call action_get_one(mathpointer#v^)
-    while 1==1
-        add mathpointer :  #to pass the pointer
-        #
-        while mathpointer#==(square_bracket_start)
-        #multi-dim arrays
-            add mathpointer (DWORD)
-            setcall mathpointer action_code_right_util(mathpointer)
-            if endoffset==(get_member)
-                call action_one((ActionGetMember))
-            else
-                if mathpointer#v^!=(no_pointer)
-                    call action_one((ActionGetMember))
-                else
-                    add mathpointer :  #to pass the pointer
-                    return mathpointer
-                endelse
-            endelse
-        endwhile
-        sv endtest
-        set endtest mathpointer
-        add endtest endoffset
-        #
-        if endtest#==(no_pointer)
-            if endoffset!=(no_pointer)
-                #push to set later
-                call action_push((ap_Constant8),mathpointer#v^,-1)
-                add mathpointer :  #to pass the pointer
-            endif
-            add mathpointer :  #to pass the pointer
-            return mathpointer
-        endif
-        call action_push((ap_Constant8),mathpointer#v^,-1)
-        call action_one((ActionGetMember))
-    endwhile
-endfunction
-import "action_code_member" action_code_member
-import "error" error
-import "forward_values_expand" forward_values_expand
-function action_member_write(ss member)
-    const dup_member=256
-    chars dup_data#dup_member
-    vstr code^dup_data
-    sd len
-    setcall len strlen(member)
-    inc len
-    if len>(dup_member)
-        call error("actionscript code limit exceeded")
-    endif
-    call memcpy(code,member,len)
-    call forward_values_expand(action_member_write_tool,code)
-endfunction
-function action_member_write_tool(sd values,ss names)
-    call action_code_member(names)
-    call action_member_loop(values,(get_member))
-endfunction
 
 #strings
 
@@ -332,11 +155,6 @@ function action_error()
     call string_nl_print(p_c#)
 endfunction
 
-#action
-
-import "struct_ids_action" struct_ids_action
-import "struct_ids_actionpool" struct_ids_actionpool
-
 #size
 function action_size(sd id)
     import "block_get_size" block_get_size
@@ -349,7 +167,195 @@ function action_size(sd id)
     add size 1
     return size
 endfunction
+
 import "block_get_mem" block_get_mem
+
+
+
+
+importaftercall ebool
+
+importx "action" action
+
+import "swf_actionblock_add" swf_actionblock_add
+import "actionrecordheader" actionrecordheader
+import "actionpool_value" actionpool_value
+
+#tags
+
+function action_push(sd factors)
+	sd iter^factors
+	sd size=0
+	while iter#!=-1
+		inc size
+		if iter#==(ap_Integer)
+			add size (DWORD)
+			incst iter
+		elseif iter#==(ap_double)
+			add size (QWORD)
+			add iter (2*:)
+		elseif iter#==(ap_Null)
+		#skip
+		elseif iter#==(ap_Undefined)
+		#skip
+		else
+		#if iter#==(ap_RegisterNumber)
+		#if iter#==(ap_Boolean)
+		#if iter#==(ap_Constant8)
+			add size (BYTE)
+			sd value
+			set value iter#
+			incst iter
+			if value==(ap_Constant8)
+			#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
+				sd translated_id
+				setcall translated_id actionpool_value(iter#v^)
+				if translated_id>0xff
+					inc size
+				endif
+			endif
+		endelse
+		incst iter
+	endwhile
+
+	call actionrecordheader((ActionPush),size)
+
+	sd cursor^factors
+	while cursor#!=-1
+		#test here Constant8 to Constant16
+		if cursor#==(ap_Constant8)
+			sv pointer
+			set pointer cursor
+			incst pointer
+			#call actionpool_getvalue, the pool already exists(actionpool_value if not)
+			import "actionpool_getvalue" actionpool_getvalue
+			setcall translated_id actionpool_getvalue(pointer#)
+			sd const_sz=BYTE
+			if translated_id>0xff
+				inc const_sz
+				set cursor# (ap_Constant16)
+			endif
+		endif
+
+		call swf_actionblock_add(cursor,1)
+
+		if cursor#==(ap_Integer)
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+		elseif cursor#==(ap_double)
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+			incst cursor
+			call swf_actionblock_add(cursor,(DWORD))
+		elseif cursor#==(ap_RegisterNumber)
+			incst cursor
+			call swf_actionblock_add(cursor,(BYTE))
+		elseif cursor#==(ap_Boolean)
+			incst cursor
+			call swf_actionblock_add(cursor,(BYTE))
+		elseif cursor#==(ap_Null)
+		#skip
+		elseif cursor#==(ap_Undefined)
+		#skip
+		else
+		#if cursor#==(ap_Constant8)
+		#or was modified to (ap_Constant16)
+			call swf_actionblock_add(#translated_id,const_sz)
+			incst cursor
+		endelse
+		incst cursor
+	endwhile
+endfunction
+
+function action_one(sd tag)
+    call swf_actionblock_add(#tag,1)
+endfunction
+
+import "action_code_right_util" action_code_right_util
+#codepointer
+function action_caller(ss name,ss member,sd args_pointer)
+    sd nrargs=0
+    while args_pointer#!=(args_end)
+        setcall args_pointer action_code_right_util(args_pointer)
+        inc nrargs
+    endwhile
+    add args_pointer (DWORD)
+    call action_push((ap_Integer),nrargs,-1)
+    #
+    if member!=0
+        call action_member_write(member)
+    endif
+    call action_push((ap_Constant8),name,-1)
+    return args_pointer
+endfunction
+
+#member
+
+import "action_get_one" action_get_one
+#the position where the mathpointer reachs
+function action_member_loop(sd mathpointer,sd endoffset)
+    call action_get_one(mathpointer#v^)
+    while 1==1
+        add mathpointer :  #to pass the pointer
+        #
+        while mathpointer#==(square_bracket_start)
+        #multi-dim arrays
+            add mathpointer (DWORD)
+            setcall mathpointer action_code_right_util(mathpointer)
+            if endoffset==(get_member)
+                call action_one((ActionGetMember))
+            else
+                if mathpointer#v^!=(no_pointer)
+                    call action_one((ActionGetMember))
+                else
+                    add mathpointer :  #to pass the pointer
+                    return mathpointer
+                endelse
+            endelse
+        endwhile
+        sv endtest
+        set endtest mathpointer
+        add endtest endoffset
+        #
+        if endtest#==(no_pointer)
+            if endoffset!=(no_pointer)
+                #push to set later
+                call action_push((ap_Constant8),mathpointer#v^,-1)
+                add mathpointer :  #to pass the pointer
+            endif
+            add mathpointer :  #to pass the pointer
+            return mathpointer
+        endif
+        call action_push((ap_Constant8),mathpointer#v^,-1)
+        call action_one((ActionGetMember))
+    endwhile
+endfunction
+import "action_code_member" action_code_member
+import "error" error
+import "forward_values_expand" forward_values_expand
+function action_member_write(ss member)
+    const dup_member=256
+    chars dup_data#dup_member
+    vstr code^dup_data
+    sd len
+    setcall len strlen(member)
+    inc len
+    if len>(dup_member)
+        call error("actionscript code limit exceeded")
+    endif
+    call memcpy(code,member,len)
+    call forward_values_expand(action_member_write_tool,code)
+endfunction
+function action_member_write_tool(sd values,ss names)
+    call action_code_member(names)
+    call action_member_loop(values,(get_member))
+endfunction
+
+#action
+
+import "struct_ids_action" struct_ids_action
+import "struct_ids_actionpool" struct_ids_actionpool
+
 import "swf_actionrecordheader" swf_actionrecordheader
 import "swf_mem_add" swf_mem_add
 function write_action(sd id)

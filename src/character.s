@@ -1,18 +1,10 @@
 Format ElfObj64
 
-importx "swf_text" swf_text
-importx "swf_shape" swf_shape
-#
-importx "action_sprite" action_sprite
-
-importaftercall ebool
 include "../include/prog.h"
-
-
-#shape
 
 import "identifiers_get" identifiers_get
 import "dword_to_word_arg" dword_to_word_arg
+
 #value
 function args_advance(sv p_args)
     sd value
@@ -25,6 +17,112 @@ function shapewithstyle_records()
     chars shapewithstyle_record#max_chars_records
     return #shapewithstyle_record
 endfunction
+
+import "bits_bigendian" bits_bigendian
+import "numbitsMax" numbitsMax
+
+#n
+function shape_records_NumBits(sd p_val)
+    sd val=-2;add val p_val#
+    if val<0
+        mult val -1;add p_val# val
+        return 0
+    endif
+    return val
+endfunction
+#get:fill/lin
+function NumFill_NumLin(sd set_get,sd fill,sd lin)
+    data NFill_NLin#1
+    if set_get==0
+        set NFill_NLin lin;mult fill 0x10;or NFill_NLin fill
+    else
+        if fill==(FALSE);set lin NFill_NLin;and lin 0x0F;return lin
+        else;set fill NFill_NLin;div fill 0x10;return fill;endelse
+    endelse
+endfunction
+
+#edittext
+
+const sim64pointerSize=pointer_rest
+#struct
+function edittext_struct()
+    data fontid#1
+    data *font_height#1
+    str *fontclassname#1;chars *sim64pointer#sim64pointerSize
+    data *rgba#1
+    data *maxlength#1
+    str *initialtext#1;chars *sim64pointer#sim64pointerSize
+    data *layout_align#1
+    data *layout_leftmargin#1
+    data *layout_rightmargin#1
+    data *layout_indent#1
+    data *layout_leading#1
+    return #fontid
+endfunction
+function edittext_font(sd fontid,sd fontheight)
+    sd s
+    setcall s edittext_struct()
+    set s# fontid
+    add s (DWORD)
+    set s# fontheight
+endfunction
+function edittext_rgba(sd val)
+    sd ed_str
+    setcall ed_str edittext_struct()
+    add ed_str (3*DWORD+sim64pointerSize);set ed_str# val
+endfunction
+function edittext_layout(sd in_args)
+    sd s
+    setcall s edittext_struct()
+    add s (6*DWORD+sim64pointerSize+sim64pointerSize)
+    set s# in_args#
+    add s (DWORD);add in_args (DWORD);set s# in_args#
+    add s (DWORD);add in_args (DWORD);set s# in_args#
+    add s (DWORD);add in_args (DWORD);set s# in_args#
+    add s (DWORD);add in_args (DWORD);set s# in_args#
+endfunction
+function edittext_text(ss text)
+    sd s
+    setcall s edittext_struct()
+    add s (5*DWORD+sim64pointerSize)
+    set s# text
+endfunction
+
+function button_mem()
+    data up#1
+    data *over#1
+	data *hit#1
+
+    data *width#1
+    data *height#1
+
+    data *no_text#1
+    data *font_id#1
+    data *font_height#1
+    data *y#1
+    data *font_color#1
+
+    return #up
+endfunction
+
+import "free_sprite_id" free_sprite_id
+import "matrix_translate" matrix_translate
+
+import "action_size" action_size
+
+
+
+
+importaftercall ebool
+
+importx "swf_text" swf_text
+importx "swf_shape" swf_shape
+
+importx "action_sprite" action_sprite
+
+
+#shape
+
 import "error" error
 function shape_records_bits(sd value,sd size,sv p_dest_pos)
     #why was this here? data start#1
@@ -39,7 +137,6 @@ function shape_records_bits(sd value,sd size,sv p_dest_pos)
     #was >=
         call error("too many arguments at shape")
     endif
-    import "bits_bigendian" bits_bigendian
     sd p_pos
     set p_pos p_dest_pos
     add p_pos :
@@ -92,7 +189,6 @@ function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
     setcall x args_advance(p_args)
     sd y
     setcall y args_advance(p_args)
-    import "numbitsMax" numbitsMax
     sd numbits
     mult x 20
     mult y 20
@@ -162,25 +258,6 @@ function shape_records_add_edge_curved(sd p_dest_pos,sd p_args)
     call shape_records_bits(control_y,numbits,p_dest_pos)
     call shape_records_bits(anchor_x,numbits,p_dest_pos)
     call shape_records_bits(anchor_y,numbits,p_dest_pos)
-endfunction
-#n
-function shape_records_NumBits(sd p_val)
-    sd val=-2;add val p_val#
-    if val<0
-        mult val -1;add p_val# val
-        return 0
-    endif
-    return val
-endfunction
-#get:fill/lin
-function NumFill_NumLin(sd set_get,sd fill,sd lin)
-    data NFill_NLin#1
-    if set_get==0
-        set NFill_NLin lin;mult fill 0x10;or NFill_NLin fill
-    else
-        if fill==(FALSE);set lin NFill_NLin;and lin 0x0F;return lin
-        else;set fill NFill_NLin;div fill 0x10;return fill;endelse
-    endelse
 endfunction
 #id
 function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linecolor,sd xcurve,sd ycurve)
@@ -264,53 +341,6 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
     return id
 endfunction
 
-#edittext
-
-const sim64pointerSize=pointer_rest
-#struct
-function edittext_struct()
-    data fontid#1
-    data *font_height#1
-    str *fontclassname#1;chars *sim64pointer#sim64pointerSize
-    data *rgba#1
-    data *maxlength#1
-    str *initialtext#1;chars *sim64pointer#sim64pointerSize
-    data *layout_align#1
-    data *layout_leftmargin#1
-    data *layout_rightmargin#1
-    data *layout_indent#1
-    data *layout_leading#1
-    return #fontid
-endfunction
-function edittext_font(sd fontid,sd fontheight)
-    sd s
-    setcall s edittext_struct()
-    set s# fontid
-    add s (DWORD)
-    set s# fontheight
-endfunction
-function edittext_rgba(sd val)
-    sd ed_str
-    setcall ed_str edittext_struct()
-    add ed_str (3*DWORD+sim64pointerSize);set ed_str# val
-endfunction
-function edittext_layout(sd in_args)
-    sd s
-    setcall s edittext_struct()
-    add s (6*DWORD+sim64pointerSize+sim64pointerSize)
-    set s# in_args#
-    add s (DWORD);add in_args (DWORD);set s# in_args#
-    add s (DWORD);add in_args (DWORD);set s# in_args#
-    add s (DWORD);add in_args (DWORD);set s# in_args#
-    add s (DWORD);add in_args (DWORD);set s# in_args#
-endfunction
-function edittext_text(ss text)
-    sd s
-    setcall s edittext_struct()
-    add s (5*DWORD+sim64pointerSize)
-    set s# text
-endfunction
-
 #id
 function swf_text_initial_font_centered(sd width,sd height,ss text,sd font_id,sd font_height,sd font_color)
     call edittext_font(font_id,font_height)
@@ -327,22 +357,6 @@ endfunction
 
 #button
 
-function button_mem()
-    data up#1
-    data *over#1
-	data *hit#1
-
-    data *width#1
-    data *height#1
-
-    data *no_text#1
-    data *font_id#1
-    data *font_height#1
-    data *y#1
-    data *font_color#1
-
-    return #up
-endfunction
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "swf_mem_add" swf_mem_add
 #id
@@ -369,7 +383,6 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     call action_sprite(id,actions)
 
     add size (BUTTONCONDACTION_header_size)
-    import "action_size" action_size
     addcall size action_size(id)
 
     call swf_tag_recordheader_entry((DefineButton2),size)
@@ -392,12 +405,9 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     call swf_mem_add(#BUTTONCONDACTION,(BUTTONCONDACTION_header_size))
     call write_action(id)
 
-    import "free_sprite_id" free_sprite_id
     call free_sprite_id(id)
     return ButtonId
 endfunction
-
-import "matrix_translate" matrix_translate
 
 #size/void
 function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)

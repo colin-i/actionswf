@@ -1,11 +1,10 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "strlen" strlen
 importx "memcmp" memcmp
-
-importaftercall ebool
-include "../include/prog.h"
 
 function actionpoolid_root()
     data id#1
@@ -29,7 +28,23 @@ function actionpool_currentblock()
     setcall block struct_ids_actionpool((ids_get),poolid)
     return block
 endfunction
+
+import "block_get_mem" block_get_mem
+import "block_get_size" block_get_size
+import "dword_to_word_arg" dword_to_word_arg
+import "word_arg_to_dword" word_arg_to_dword
+
 import "swf_mem" swf_mem
+
+
+
+
+importaftercall ebool
+
+
+
+
+
 #pool id
 function actionpool_value(ss value)
     sd poolid
@@ -41,10 +56,7 @@ function actionpool_value(ss value)
     call swf_mem((mem_exp_change_back))
     return nr
 endfunction
-import "block_get_mem" block_get_mem
-import "block_get_size" block_get_size
 import "swf_mem_add" swf_mem_add
-import "dword_to_word_arg" dword_to_word_arg
 #pool id
 function actionpool_getvalue(ss value)
     sd block
@@ -60,7 +72,6 @@ function actionpool_getvalue(ss value)
         call swf_mem_add(#onevalue,2)
         set nr 0
     else
-        import "word_arg_to_dword" word_arg_to_dword
         sd mem
         sd count
         setcall mem block_get_mem(block)

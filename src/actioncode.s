@@ -1,12 +1,11 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "strcmp" strcmp
 importx "sprintf" sprintf
 importx "strlen" strlen
-
-importaftercall ebool
-include "../include/prog.h"
 
 const totalvalues=65535
 function action_code_values_container()
@@ -18,13 +17,9 @@ function action_code_values()
     setcall m action_code_values_container()
     return m#
 endfunction
-function action_code_values_init()
-    import "memalloc" memalloc
-    sv m
-    setcall m action_code_values_container()
-    setcall m# memalloc((totalvalues*DWORD))
-endfunction
+
 import "mem_free" mem_free
+
 function action_code_values_free()
     sv p
     setcall p action_code_values_container()
@@ -45,6 +40,81 @@ function action_code_get()
     mult x (DWORD)
     add pointer x
     return pointer
+endfunction
+
+import "brace_blocks_get_memblock" brace_blocks_get_memblock
+import "block_get_size" block_get_size
+
+import "cond_blocks" cond_blocks
+import "brace_blocks_counter" brace_blocks_counter
+
+function get_nr_of_forIn_statements()
+    sd block;setcall block cond_blocks()
+    sd counter;sd c;setcall c brace_blocks_counter();set counter c#
+    sd nr=0
+    while counter>0
+        dec counter
+        sub block (DWORD)
+        if block#==(brace_blocks_function)
+            return nr
+        elseif block#==(for_marker)
+            inc nr
+        endelseif
+    endwhile
+    return nr
+endfunction
+
+#name/0
+function action_code_write_builtin_names(sv codepointer,sd p_action)
+    ss int="int"
+    sd compare
+    setcall compare strcmp(codepointer#,int)
+    if compare==0
+        set p_action# (ActionToInteger)
+        return int
+    endif
+    ss rnd="random"
+    setcall compare strcmp(codepointer#,rnd)
+    if compare==0
+    #0�(maximum-1)
+        set p_action# (ActionRandomNumber)
+        return rnd
+    endif
+    ss ascii="ord"
+    setcall compare strcmp(codepointer#,ascii)
+    if compare==0
+        set p_action# (ActionCharToAscii)
+        return ascii
+    endif
+    ss chr="chr"
+    setcall compare strcmp(codepointer#,chr)
+    if compare==0
+        set p_action# (ActionAsciiToChar)
+        return chr
+    endif
+    ss typeOf="TypeOf"
+    setcall compare strcmp(codepointer#,typeOf)
+    if compare==0
+        set p_action# (ActionTypeOf)
+        return typeOf
+    endif
+    return 0
+endfunction
+
+
+
+
+
+
+
+
+importaftercall ebool
+
+function action_code_values_init()
+    import "memalloc" memalloc
+    sv m
+    setcall m action_code_values_container()
+    setcall m# memalloc((totalvalues*DWORD))
 endfunction
 function action_code_set(sd value)
 	call action_code_set_ex(value,1)
@@ -233,8 +303,6 @@ import "brace_blocks_add_write_current" brace_blocks_add_write_current
 
 import "add_dummy_jump" add_dummy_jump
 import "resolve_dummy_jump" resolve_dummy_jump
-import "brace_blocks_get_memblock" brace_blocks_get_memblock
-import "block_get_size" block_get_size
 
 #next/same
 function action_code_write_conditions(sd codepointer)
@@ -307,7 +375,6 @@ function write_ifjump_withNot()
     #write the jump offset
     call write_ifjump_addTo_braceBlocks()
 endfunction
-import "cond_blocks" cond_blocks
 import "brace_blocks_counter_inc" brace_blocks_counter_inc
 function add_while_top_off(sd typeOfLoop)
     call brace_blocks_add_write_current()
@@ -353,22 +420,6 @@ function close_scope_forIn_statements()
         call remove_forIn_stack()
         dec nr_of_forIn_statements
     endwhile
-endfunction
-import "brace_blocks_counter" brace_blocks_counter
-function get_nr_of_forIn_statements()
-    sd block;setcall block cond_blocks()
-    sd counter;sd c;setcall c brace_blocks_counter();set counter c#
-    sd nr=0
-    while counter>0
-        dec counter
-        sub block (DWORD)
-        if block#==(brace_blocks_function)
-            return nr
-        elseif block#==(for_marker)
-            inc nr
-        endelseif
-    endwhile
-    return nr
 endfunction
 function write_jump(sd size)
     call actionrecordheader((ActionJump),2)
@@ -495,42 +546,6 @@ function action_code_write_builtin_function(sv codepointer)
         return codepointer
     endif
     return cursor
-endfunction
-#name/0
-function action_code_write_builtin_names(sv codepointer,sd p_action)
-    ss int="int"
-    sd compare
-    setcall compare strcmp(codepointer#,int)
-    if compare==0
-        set p_action# (ActionToInteger)
-        return int
-    endif
-    ss rnd="random"
-    setcall compare strcmp(codepointer#,rnd)
-    if compare==0
-    #0�(maximum-1)
-        set p_action# (ActionRandomNumber)
-        return rnd
-    endif
-    ss ascii="ord"
-    setcall compare strcmp(codepointer#,ascii)
-    if compare==0
-        set p_action# (ActionCharToAscii)
-        return ascii
-    endif
-    ss chr="chr"
-    setcall compare strcmp(codepointer#,chr)
-    if compare==0
-        set p_action# (ActionAsciiToChar)
-        return chr
-    endif
-    ss typeOf="TypeOf"
-    setcall compare strcmp(codepointer#,typeOf)
-    if compare==0
-        set p_action# (ActionTypeOf)
-        return typeOf
-    endif
-    return 0
 endfunction
 #codepointer
 function action_code_write_builtin_set(sd codepointer)

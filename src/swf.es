@@ -1,28 +1,51 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "memcpy" memcpy
 importx "strlen" strlen
 importx "memcmp" memcmp
 
-importaftercall ebool
-include "../include/prog.h"
-
 import "printEr" printEr
+import "identifiers_set" identifiers_set
+import "identifiers_get" identifiers_get
+import "rect_prepare" rect_prepare
+import "button_mem" button_mem
+
+import "dword_to_word_arg" dword_to_word_arg
+import "dword_swap" dword_swap
+import "args_advance" args_advance
+import "bits_packs" bits_packs
+import "NumFill_NumLin" NFill_NLin
+import "shapewithstyle_records" shapewithstyle_records
+import "word_arg_to_dword" word_arg_to_dword
+import "file_get_content__resources_free" file_get_content__resources_free
+import "file_resources_set" file_resources_set
+import "file_resources_free" file_resources_free
+importx "freereset" freereset
+import "struct_ids" struct_ids
+import "matrix_translate" matrix_translate
+import "block_get_size" block_get_size
+import "block_get_mem" block_get_mem
+import "free_sprite_id" free_sprite_id
+import "block_reset_size" block_reset_size
+
+
+
+
+importaftercall ebool
+
 import "swf_tag" swf_tag
 import "swf_mem" swf_mem
 import "swf_mem_add" swf_mem_add
 import "swf_actionblock" swf_actionblock
-import "identifiers_set" identifiers_set
-import "identifiers_get" identifiers_get
 import "rect_add" rect_add
-import "rect_prepare" rect_prepare
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "error" error
 import "swf_shape_simple" swf_shape_simple
 
 import "swf_button_base" swf_button_base
-import "button_mem" button_mem
 import "swf_text_initial_font_centered" swf_text_initial_font_centered
 #id
 functionX swf_button(sd width,sd height,sd ButtonData)
@@ -151,7 +174,6 @@ functionX swf_button_last(ss newtext,ss actions)
     return id
 endfunction
 
-import "dword_to_word_arg" dword_to_word_arg
 #font
 
 #id
@@ -210,7 +232,6 @@ endfunction
 
 #text
 
-import "dword_swap" dword_swap
 #id
 functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sd structure)
 #sd bound_width  width of the text
@@ -360,7 +381,6 @@ functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sd st
 endfunction
 
 import "shape_records_add" shape_records_add
-import "args_advance" args_advance
 #id
 functionX swf_shape(sd width,sd height,sd args)
 #sd width
@@ -416,7 +436,6 @@ functionX swf_shape(sd width,sd height,sd args)
         else
         #if fillstyle==(repeating_bitmap_fill)
         #clipped bitmap fill,non-smoothed repeating bitmap or non-smoothed clipped bitmap
-            import "bits_packs" bits_packs
             call dword_to_word_arg(fillarg,#data)
             sd fill_pointer^data
             add fill_pointer (WORD)
@@ -452,12 +471,10 @@ functionX swf_shape(sd width,sd height,sd args)
     endif
     add shape_size linestyles_size
     #NumFillBits/NumLineBits
-    import "NumFill_NumLin" NFill_NLin
     call NFill_NLin(0,FillStyleCount,LineStyleCount)
     sd NumFill_NumLin;setcall NumFill_NumLin NFill_NLin(1,(TRUE));mult NumFill_NumLin 0x10;orcall NumFill_NumLin NFill_NLin(1,(FALSE))
     inc shape_size
     #shaperecord[n]
-    import "shapewithstyle_records" shapewithstyle_records
     sd shapewithstyle_record_start
     setcall shapewithstyle_record_start shapewithstyle_records()
     value pointer#1;data pos#1
@@ -648,14 +665,12 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
         sd pointer
         set pointer cursor
         add pointer (BYTE)
-        import "word_arg_to_dword" word_arg_to_dword
         setcall p_wh# word_arg_to_dword(pointer)
         add pointer (WORD)
         add p_wh (DWORD)
         setcall p_wh# word_arg_to_dword(pointer)
     endif
     call swf_mem_add(cursor,image_size)
-    import "file_get_content__resources_free" file_get_content__resources_free
     call file_get_content__resources_free()
     return id
 endfunction
@@ -663,8 +678,6 @@ import "file_open" file_open
 import "file_seek" file_seek
 import "file_read" file_read
 import "filesize" filesize
-import "file_resources_set" file_resources_set
-import "file_resources_free" file_resources_free
 
 #width
 functionX swf_dbl_width(ss imagepath)
@@ -703,13 +716,11 @@ endfunction
 
 ##############
 import "exportsId_get" exportsId_get
-import "struct_ids" struct_ids
 functionX swf_done()
     call swf_exports_done();#remaining exports?
     call swf_actionblock((mem_exp_part_done));#in case there are remaining actions
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
-    importx "freereset" freereset
     call freereset()
 endfunction
 
@@ -765,7 +776,6 @@ functionX swf_placeobject(sd refid,sd depth)
 #sd depth    depth value
      call swf_placeobject_coords(refid,depth,0,0)
 endfunction
-import "matrix_translate" matrix_translate
 functionX swf_placeobject_coords(sd refid,sd depth,sd x,sd y)
 #sd refid
 #sd depth
@@ -811,8 +821,6 @@ endfunction
 
 #sprite
 
-import "block_get_size" block_get_size
-import "block_get_mem" block_get_mem
 #id
 functionX swf_sprite_done(sd spriteid)
 #sd spriteid        pre-id created with swf_sprite_new
@@ -839,7 +847,6 @@ functionX swf_sprite_done(sd spriteid)
 
     call swf_mem_add(mem,size)
 
-    import "free_sprite_id" free_sprite_id
     call free_sprite_id(spriteid)
 
     return id
@@ -935,7 +942,6 @@ functionX swf_exports_add(sd id,ss name)
     #
     call swf_mem((mem_exp_change_back))
 endfunction
-import "block_reset_size" block_reset_size
 functionX swf_exports_done()
 #write all the exports to the swf
     sd exports

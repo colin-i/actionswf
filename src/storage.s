@@ -1,16 +1,76 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "strlen" strlen
 importx "memcpy" memcpy
 
-importaftercall ebool
-include "../include/prog.h"
+
+function free_sprite_id(sd id)
+    call struct_ids((ids_free),id)
+    call struct_ids_action((ids_free),id)
+    call struct_ids_actionpool((ids_free),id)
+endfunction
+
+#
+function identifiers()
+    data id#1
+    return #id
+endfunction
+function identifiers_set(sd value)
+    sd id
+    setcall id identifiers()
+    set id# value
+endfunction
+#id
+function identifiers_get()
+    sd id
+    setcall id identifiers()
+    sd value
+    set value id#
+    inc id#
+    call identifiers_set(id#)
+    return value
+endfunction
+
+#p
+function exportsId()
+    data exports=not_an_id
+    return #exports
+endfunction
 
 import "mem_free" mem_free
+import "action_code_values_free" action_code_values_free
+import "file_close" file_close
+import "block_get_mem_size" block_get_mem_size
+import "bits_packs" bits_packs
+import "word_swap_arg" word_swap_arg
+import "block_get_size" block_get_size
+import "block_reset_size" block_reset_size
+
+import "actionpoolid" actionpoolid;import "actionpoolid_root" actionpoolid_root
+import "actionpool_currentblock" actionpool_currentblock
+
+import "action_size" action_size
+import "dword_to_word_arg" dword_to_word_arg
+
+
+
+
+
+importaftercall ebool
+
+
+
+
+
+
+
 import "error" error
 import "struct_ids" struct_ids
 import "struct_ids_actionpool" struct_ids_actionpool
+import "struct_ids_action" struct_ids_action
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 
@@ -65,11 +125,9 @@ function swf_mem(sd proc,sd arg,sd len)
             setcall exports exportsId()
             set exports# (not_an_id)
             #3 set of values
-            import "action_code_values_free" action_code_values_free
             call action_code_values_free()
             #file
             if file_out!=(fd_error)
-                import "file_close" file_close
                 call file_close(#file_out)
             endif
         endif
@@ -95,7 +153,6 @@ function swf_mem(sd proc,sd arg,sd len)
 
         sd block
         setcall block call_struct((ids_get),main_id)
-        import "block_get_mem_size" block_get_mem_size
         sd mem;sd size;call block_get_mem_size(block,#mem,#size)
 
         sd pointer
@@ -130,8 +187,6 @@ function swf_tag_recordheader_long_entry(sd tag,sd size)
     call swf_mem_add(#size,(DWORD))
 endfunction
 const short_header=2
-import "bits_packs" bits_packs
-import "word_swap_arg" word_swap_arg
 function swf_tag_recordheader(ss dest,sd tag,sd size)
     call bits_packs(dest,2,tag,10,size,6)
     call word_swap_arg(dest)
@@ -144,11 +199,6 @@ function swf_tag(ss dest,sd tag,sd size)
 endfunction
 
 #
-import "block_get_size" block_get_size
-import "block_reset_size" block_reset_size
-import "struct_ids_action" struct_ids_action
-import "actionpoolid" actionpoolid;import "actionpoolid_root" actionpoolid_root
-import "actionpool_currentblock" actionpool_currentblock
 function swf_actionblock(sd proc,sd arg,sd newmem_len)
     data id#1
     data id_back#1
@@ -189,7 +239,6 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
         sd size
         setcall size block_get_size(block)
         if size!=0
-            import "action_size" action_size
             import "write_action" write_action
             sd tagsz
             setcall tagsz action_size(id)
@@ -209,7 +258,6 @@ endfunction
 function swf_actionblock_add(sd value,sd size)
     call swf_actionblock((mem_exp_add),value,size)
 endfunction
-import "dword_to_word_arg" dword_to_word_arg
 function actionrecordheader(sd tag,sd size)
     chars t#1
     chars length#2
@@ -233,32 +281,6 @@ function new_sprite_id()
     call struct_ids_actionpool((ids_set),id)
     return id
 endfunction
-function free_sprite_id(sd id)
-    call struct_ids((ids_free),id)
-    call struct_ids_action((ids_free),id)
-    call struct_ids_actionpool((ids_free),id)
-endfunction
-
-#
-function identifiers()
-    data id#1
-    return #id
-endfunction
-function identifiers_set(sd value)
-    sd id
-    setcall id identifiers()
-    set id# value
-endfunction
-#id
-function identifiers_get()
-    sd id
-    setcall id identifiers()
-    sd value
-    set value id#
-    inc id#
-    call identifiers_set(id#)
-    return value
-endfunction
 
 #
 function exports_init()
@@ -267,11 +289,6 @@ function exports_init()
     sd id
     setcall id def_mem()
     set exports# id
-endfunction
-#p
-function exportsId()
-    data exports=not_an_id
-    return #exports
 endfunction
 #id
 function exportsId_get()

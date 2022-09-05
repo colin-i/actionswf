@@ -1,5 +1,7 @@
 Format ElfObj64
 
+include "../include/prog.h"
+
 #win32 with _
 importx "strcspn" strcspn
 importx "strchr" strchr
@@ -7,11 +9,98 @@ importx "memcpy" memcpy
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
 
-importaftercall ebool
-include "../include/prog.h"
-
 import "str_next" str_next
 import "str_expression_at_start" str_expression_at_start
+
+import "debug_code" debug_code
+import "spaces" spaces
+
+import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
+
+#operations str
+function get_operations()
+    const operations_begin=!
+    chars operations="+-*/%&|^<>?"
+    #subtract 1 is for the string termination
+    const operations_size=!-operations_begin-1
+    return #operations
+endfunction
+
+#bool
+function action_parse_utilEndTypes(sd op,sv p_op,sd endtype1,sd endtype2)  #p_op is pointing at a stack variable
+    #when p_op is set, is to store the multiple kind of endtypes
+    if p_op!=0
+        set p_op# op
+        if op==endtype2
+            return (TRUE)
+        endif
+    endif
+    if op==endtype1;return (TRUE);endif
+    return (FALSE)
+endfunction
+
+import "is_numeric" is_numeric
+
+#strpbrk
+function action_code_membersplit(ss ac)
+    chars delims=".["
+    ss next
+    setcall next strpbrk(ac,#delims)
+    return next
+endfunction
+
+#str
+function compares_signs()
+    return "<>=!"
+endfunction
+function compare_bool_pointer()
+    data compare_bool=FALSE;return #compare_bool
+endfunction
+
+const cond_block_size=DWORD
+const brace_blocks_max=100*cond_block_size
+function brace_blocks_counter()
+    data counter#1
+    return #counter
+endfunction
+function brace_blocks_counter_init()
+    sd c
+    setcall c brace_blocks_counter()
+    set c# 0
+endfunction
+
+function cond_blocks()
+    sd p_i
+    setcall p_i brace_blocks_counter()
+    sd blocks
+    setcall blocks cond_blocks_at_index(p_i#)
+    return blocks
+endfunction
+function cond_blocks_at_index(sd i)
+    data blocks_mem#brace_blocks_max
+    sd blocks^blocks_mem
+    #
+    mult i (cond_block_size)
+    add blocks i
+    return blocks
+endfunction
+
+import "swf_actionblock" swf_actionblock
+function brace_blocks_get_memblock()
+    sd memblock
+    setcall memblock swf_actionblock((mem_exp_get_block))
+    return memblock
+endfunction
+
+import "action_code_get" action_code_get
+import "action_code_values_index" action_code_values_index
+
+
+
+
+
+importaftercall ebool
+
 import "action_code_set" action_code_set
 import "action_code_set_pointer" action_code_set_pointer
 import "error" error
@@ -33,7 +122,6 @@ function action_code_row(ss ac,sd a_block_detected)
 endfunction
 #pointer
 function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
-    import "debug_code" debug_code
     sv p_c
     setcall p_c debug_code()
     set p_c# ac
@@ -139,7 +227,6 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
             call error("expecting 'space' at for loop")
         endif
         set cursor# 0
-        import "spaces" spaces
         inc cursor;setcall cursor spaces(cursor)
         setcall marker str_expression_at_start(cursor,"in")
         if marker==cursor
@@ -255,7 +342,6 @@ function else_elseif_expression(ss ac,sd p_elseif)
     set p_elseif# (TRUE)
     return pointer
 endfunction
-import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
 #pointer
 function action_code_row_parse_instrument(ss ac)
     ss pointer
@@ -444,14 +530,6 @@ function action_code_row_parse_tool(ss ac,sd endtype)
     setcall ac action_code_row_parse_tool_util(ac,0,endtype,0)
     return ac
 endfunction
-#operations str
-function get_operations()
-    const operations_begin=!
-    chars operations="+-*/%&|^<>?"
-    #subtract 1 is for the string termination
-    const operations_size=!-operations_begin-1
-    return #operations
-endfunction
 
 #pointer
 function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
@@ -535,18 +613,6 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
             call action_code_set(x)
         endelse
     endwhile
-endfunction
-#bool
-function action_parse_utilEndTypes(sd op,sv p_op,sd endtype1,sd endtype2)  #p_op is pointing at a stack variable
-    #when p_op is set, is to store the multiple kind of endtypes
-    if p_op!=0
-        set p_op# op
-        if op==endtype2
-            return (TRUE)
-        endif
-    endif
-    if op==endtype1;return (TRUE);endif
-    return (FALSE)
 endfunction
 #action
 function action_parse_take_action(sd op,ss ac)
@@ -713,7 +779,6 @@ function action_code_take(ss ac)
         call action_code_member(ac)
     endelse
 endfunction
-import "is_numeric" is_numeric
 #bool
 function numeric_code(ss ac)
     ss pointer;set pointer ac
@@ -752,13 +817,6 @@ function numeric_code(ss ac)
     call action_code_set(value_low)
     return (TRUE)
 endfunction
-#strpbrk
-function action_code_membersplit(ss ac)
-    chars delims=".["
-    ss next
-    setcall next strpbrk(ac,#delims)
-    return next
-endfunction
 function action_code_member(ss ac)
     vstr delims=".["
     chars dot=".";chars sqbrace_start="["
@@ -792,13 +850,6 @@ endfunction
 #condition
 
 
-#str
-function compares_signs()
-    return "<>=!"
-endfunction
-function compare_bool_pointer()
-    data compare_bool=FALSE;return #compare_bool
-endfunction
 #firstcompare==NULL:action code/NULL;else oneSign_two_or_noCompare 0/1/2
 function action_compare(sd value,sd firstcompare)
     #
@@ -879,17 +930,6 @@ endfunction
 
 #{} blocks
 
-const cond_block_size=DWORD
-const brace_blocks_max=100*cond_block_size
-function brace_blocks_counter()
-    data counter#1
-    return #counter
-endfunction
-function brace_blocks_counter_init()
-    sd c
-    setcall c brace_blocks_counter()
-    set c# 0
-endfunction
 function brace_blocks_counter_inc()
     sd c
     setcall c brace_blocks_counter()
@@ -906,28 +946,6 @@ function brace_blocks_counter_dec()
         call error("unexpected end block: }")
     endif
     dec c#
-endfunction
-#
-function cond_blocks()
-    sd p_i
-    setcall p_i brace_blocks_counter()
-    sd blocks
-    setcall blocks cond_blocks_at_index(p_i#)
-    return blocks
-endfunction
-function cond_blocks_at_index(sd i)
-    data blocks_mem#brace_blocks_max
-    sd blocks^blocks_mem
-    #
-    mult i (cond_block_size)
-    add blocks i
-    return blocks
-endfunction
-import "swf_actionblock" swf_actionblock
-function brace_blocks_get_memblock()
-    sd memblock
-    setcall memblock swf_actionblock((mem_exp_get_block))
-    return memblock
 endfunction
 #
 function brace_blocks_add_parse(sd type)
@@ -1155,8 +1173,6 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     call action_code_set((args_end))
     return pointer
 endfunction
-import "action_code_get" action_code_get
-import "action_code_values_index" action_code_values_index
 #pointer
 function action_code_parse_function_arguments(ss pointer)
     #arguments
