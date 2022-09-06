@@ -1,6 +1,10 @@
 
 platform = lin
+
+ifndef OCOMP
 OCOMP=o
+endif
+
 OLINK=ounused
 syms=-s
 conv_64=0
