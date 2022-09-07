@@ -6,11 +6,15 @@ include "../include/prog.h"
 importx "strlen" strlen
 importx "memcpy" memcpy
 
+#this is throwless here
+import "struct_ids" struct_ids
 
 function free_sprite_id(sd id)
     call struct_ids((ids_free),id)
+#these two are ok throwless
     call struct_ids_action((ids_free),id)
     call struct_ids_actionpool((ids_free),id)
+#
 endfunction
 
 #
@@ -68,7 +72,6 @@ importaftercall ebool
 
 
 import "error" error
-import "struct_ids" struct_ids
 import "struct_ids_actionpool" struct_ids_actionpool
 import "struct_ids_action" struct_ids_action
 import "mem_block_add" mem_block_add

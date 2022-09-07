@@ -162,13 +162,31 @@ function action_size(sd id)
     setcall block struct_ids_action((ids_get),id)
     sd size
     setcall size block_get_size(block)
-    addcall size pool_wr_size((FALSE),id)
+    addcall size pool_size(id)
     #add termination
     add size 1
     return size
 endfunction
 
 import "block_get_mem" block_get_mem
+
+#these ids are get only, is safe at throwless
+import "struct_ids_action" struct_ids_action
+import "struct_ids_actionpool" struct_ids_actionpool
+
+#size
+function pool_size(sd id)
+    sd poolblock
+    setcall poolblock struct_ids_actionpool((ids_get),id)
+    sd poolsize
+    setcall poolsize block_get_size(poolblock)
+    #detected at button actions="", swfdump giving error without "if poolsize!=0"
+    if poolsize==0;return 0;endif
+    #add header
+    add poolsize (1+2)
+    return poolsize
+endfunction
+
 
 
 
@@ -353,9 +371,6 @@ endfunction
 
 #action
 
-import "struct_ids_action" struct_ids_action
-import "struct_ids_actionpool" struct_ids_actionpool
-
 import "swf_actionrecordheader" swf_actionrecordheader
 import "swf_mem_add" swf_mem_add
 function write_action(sd id)
@@ -365,25 +380,20 @@ function write_action(sd id)
     setcall mem block_get_mem(block)
     sd size
     setcall size block_get_size(block)
-    call pool_wr_size((TRUE),id)
+    call pool_wr(id)
     call swf_mem_add(mem,size)
     #this is ActionEndFlag after ACTIONRECORD [zero or more]
     data end=0
     call swf_mem_add(#end,1)
 endfunction
-#size/void
-function pool_wr_size(sd wrTrue_sizeFalse,sd id)
+#void
+function pool_wr(sd id)
     sd poolblock
     setcall poolblock struct_ids_actionpool((ids_get),id)
     sd poolsize
     setcall poolsize block_get_size(poolblock)
     #detected at button actions="", swfdump giving error without "if poolsize!=0"
     if poolsize==0;return 0;endif
-    if wrTrue_sizeFalse==(FALSE)
-        #add header
-        add poolsize (1+2)
-        return poolsize
-    endif
     sd poolmem
     setcall poolmem block_get_mem(poolblock)
     call swf_actionrecordheader((ActionConstantPool),poolsize)
