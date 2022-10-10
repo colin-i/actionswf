@@ -38,6 +38,7 @@ all: compile lnk def
 
 ounused:
 	${OLINK} ${logs}
+	@echo
 
 compile: ${items} ${expitems} ounused
 
