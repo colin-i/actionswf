@@ -142,7 +142,7 @@ function swf_mem(sd proc,sd arg,sd len)
     endif
     if proc==(mem_exp_add)
         #blockMain blockPool
-        sd p_block
+        sv p_block
         setcall p_block call_struct((ids_get_pointer),id)
         call mem_block_add(p_block,arg,len)
     elseif proc==(mem_exp_change)
@@ -232,7 +232,7 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
         sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
         return (void)
     endelseif
-    sd p_block
+    sv p_block
     setcall p_block struct_ids_action((ids_get_pointer),id)
     if proc==(mem_exp_add)
         call mem_block_add(p_block,arg,newmem_len)

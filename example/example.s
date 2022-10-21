@@ -15,7 +15,7 @@ const height=480
 const shape_lat=40
 
 ####################
-entry example_main()
+entry main()
 
 call swf_new("example.swf",(width),(height),0x001100,24)
 
@@ -26,6 +26,7 @@ sd movie_preid
 setcall movie_preid swf_sprite_new()
 
 call swf_sprite_placeobject(movie_preid,shape,1)
+
 call swf_sprite_showframe(movie_preid)
 
 chars data#512
