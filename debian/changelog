@@ -1,3 +1,9 @@
+actionswf (1-47) bionic; urgency=medium
+
+  * fix a sv
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Fri, 21 Oct 2022 06:13:44 +0300
+
 actionswf (1-46) bionic; urgency=medium
 
   * optimizations
