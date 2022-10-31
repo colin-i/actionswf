@@ -1,9 +1,10 @@
 
+const ActionEndFlag=0
+const ActionPlay=0x06
 #const ActionAdd=0x0A
 const ActionSubtract=0x0B
 const ActionMultiply=0x0C
 const ActionDivide=0x0D
-
 const ActionAnd=0x10
 const ActionOr=0x11
 const ActionNot=0x12
@@ -11,7 +12,7 @@ const ActionPop=0x17
 const ActionToInteger=0x18
 const ActionGetVariable=0x1C
 const ActionSetVariable=0x1D
-#const ActionTrace=0x26
+const ActionTrace=0x26
 const ActionRandomNumber=0x30
 const ActionCharToAscii=0x32
 const ActionAsciiToChar=0x33

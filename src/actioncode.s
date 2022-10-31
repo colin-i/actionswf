@@ -64,7 +64,7 @@ function get_nr_of_forIn_statements()
 endfunction
 
 #name/null
-function action_code_write_builtin_names(sv codepointer,sd p_action)
+function action_code_write_builtin_names(sv codepointer,ss p_action)
 	set codepointer codepointer#
     sd compare
     vstr int="int"
@@ -98,13 +98,29 @@ function action_code_write_builtin_names(sv codepointer,sd p_action)
         set p_action# (ActionTypeOf)
         return typeOf
     endif
-    vstr goto="gotoAndStop"
-    setcall compare strcmp(codepointer,goto)
-    if compare==0
-        set p_action# (ActionGotoFrame)
-        return goto
-    endif
-    return (NULL)
+	vstr goto="gotoAndStop"
+	setcall compare strcmp(codepointer,goto)
+	if compare==0
+		set p_action# (ActionGotoFrame)
+		inc p_action
+		set p_action# (ActionEndFlag)
+		return goto
+	endif
+	vstr gotop="gotoAndPlay"
+	setcall compare strcmp(codepointer,gotop)
+	if compare==0
+		set p_action# (ActionGotoFrame)
+		inc p_action
+		set p_action# (ActionPlay)
+		return gotop
+	endif
+	vstr trace="trace"
+	setcall compare strcmp(codepointer,trace)
+	if compare==0
+		set p_action# (ActionTrace)
+		return trace
+	endif
+	return (NULL)
 endfunction
 
 
@@ -559,7 +575,7 @@ endfunction
 #codepointer
 function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 	ss name
-	datax act#1
+	chars act#1;chars act2#1
 	setcall name action_code_write_builtin_names(codepointer,#act)
 	if name!=(NULL)
 		sd test;set test codepointer
@@ -590,6 +606,12 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 								call actionrecordheader(act,(WORD))
 								call swf_actionblock_add(#val,(WORD))
 								set pwant_return# (TRUE)   #no ActionPop required
+								#
+								if act2!=(ActionEndFlag)
+									#ActionPlay
+									call swf_actionblock_add(#act2,(BYTE))
+								endif
+								#
 								add test (DWORD)
 								return test
 							endif
