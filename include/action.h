@@ -42,6 +42,7 @@ const ActionBitLShift=0x63
 const ActionBitRShift=0x64
 const ActionBitURShift=0x65
 const ActionGreater=0x67
+const ActionGotoFrame=0x81
 const ActionStoreRegister=0x87
 const ActionConstantPool=0x88
 const ActionPush=0x96

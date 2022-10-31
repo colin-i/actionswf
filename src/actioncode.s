@@ -4,7 +4,6 @@ include "../include/prog.h"
 
 #win32 with _
 importx "strcmp" strcmp
-importx "sprintf" sprintf
 importx "strlen" strlen
 
 const totalvalues=65535
@@ -64,41 +63,48 @@ function get_nr_of_forIn_statements()
     return nr
 endfunction
 
-#name/0
+#name/null
 function action_code_write_builtin_names(sv codepointer,sd p_action)
-    ss int="int"
+	set codepointer codepointer#
     sd compare
-    setcall compare strcmp(codepointer#,int)
+    vstr int="int"
+    setcall compare strcmp(codepointer,int)
     if compare==0
         set p_action# (ActionToInteger)
         return int
     endif
-    ss rnd="random"
-    setcall compare strcmp(codepointer#,rnd)
+    vstr rnd="random"
+    setcall compare strcmp(codepointer,rnd)
     if compare==0
     #0�(maximum-1)
         set p_action# (ActionRandomNumber)
         return rnd
     endif
-    ss ascii="ord"
-    setcall compare strcmp(codepointer#,ascii)
+    vstr ascii="ord"
+    setcall compare strcmp(codepointer,ascii)
     if compare==0
         set p_action# (ActionCharToAscii)
         return ascii
     endif
-    ss chr="chr"
-    setcall compare strcmp(codepointer#,chr)
+    vstr chr="chr"
+    setcall compare strcmp(codepointer,chr)
     if compare==0
         set p_action# (ActionAsciiToChar)
         return chr
     endif
-    ss typeOf="TypeOf"
-    setcall compare strcmp(codepointer#,typeOf)
+    vstr typeOf="TypeOf"
+    setcall compare strcmp(codepointer,typeOf)
     if compare==0
         set p_action# (ActionTypeOf)
         return typeOf
     endif
-    return 0
+    vstr goto="gotoAndStop"
+    setcall compare strcmp(codepointer,goto)
+    if compare==0
+        set p_action# (ActionGotoFrame)
+        return goto
+    endif
+    return (NULL)
 endfunction
 
 
@@ -499,24 +505,27 @@ endfunction
 
 #codepointer
 function action_code_write_function(sd codepointer)
-    sd pointer
-    setcall pointer action_definefunction(codepointer)
-    if pointer!=codepointer
-        return pointer
-    endif
-    if codepointer#!=(call_action_left)
-        return codepointer
-    endif
-    setcall codepointer action_code_write_function_call(codepointer)
-    call action_one((ActionPop))
-    return codepointer
+	sd pointer
+	setcall pointer action_definefunction(codepointer)
+	if pointer!=codepointer
+		return pointer
+	endif
+	if codepointer#!=(call_action_left)
+		return codepointer
+	endif
+	sd want_return=FALSE
+	setcall codepointer action_code_write_function_call(codepointer,#want_return)
+	if want_return==(FALSE)  #can be modified inside
+		call action_one((ActionPop))
+	endif
+	return codepointer
 endfunction
 
 #codepointer
-function action_code_write_function_call(sv codepointer)
+function action_code_write_function_call(sv codepointer,sd pwant_return)
     add codepointer (DWORD)
     sd pointer
-    setcall pointer action_code_write_builtin_function(codepointer)
+    setcall pointer action_code_write_builtin_function(codepointer,pwant_return)
     if pointer!=codepointer
         return pointer
     endif
@@ -531,7 +540,7 @@ function action_code_write_function_call(sv codepointer)
     return codepointer
 endfunction
 #codepointer
-function action_code_write_builtin_function(sv codepointer)
+function action_code_write_builtin_function(sv codepointer,sd pwant_return)
     sv pointer
     set pointer codepointer
     if pointer#!=(no_pointer)
@@ -541,36 +550,56 @@ function action_code_write_builtin_function(sv codepointer)
     add pointer :  #to pass the pointer
     #
     sd cursor
-    setcall cursor action_code_write_builtin_set(pointer)
+    setcall cursor action_code_write_builtin_set(pointer,pwant_return)
     if cursor==pointer
         return codepointer
     endif
     return cursor
 endfunction
 #codepointer
-function action_code_write_builtin_set(sd codepointer)
-    ss name
-    sd act
-    #
-    setcall name action_code_write_builtin_names(codepointer,#act)
-    if name==0
-        return codepointer
-    endif
-    #
-    chars er#256
-    add codepointer :   #to pass the pointer
-    if codepointer#==(args_end)
-        call sprintf(#er,"%s builtin function expects at least one parameter",name)
-        call error(#er)
-    endif
-    setcall codepointer action_code_right_util(codepointer)
-    if codepointer#!=(args_end)
-        call sprintf(#er,"%s builtin function expects at most one parameter",name)
-        call error(#er)
-    endif
-    add codepointer (DWORD)
-    call action_one(act)
-    return codepointer
+function action_code_write_builtin_set(sd codepointer,sd pwant_return)
+	ss name
+	datax act#1
+	setcall name action_code_write_builtin_names(codepointer,#act)
+	if name!=(NULL)
+		sd test;set test codepointer
+		add test :   #to pass the pointer
+		if test#!=(args_end)
+			if act!=(ActionGotoFrame)
+				setcall test action_code_right_util(test)
+				if test#==(args_end)
+					call action_one(act)
+					add test (DWORD)
+					return test
+				endif
+				#this is not ok but is lazy and mc overrides are not a must for builtin functions
+				vstr builtin="builtin function expects at most one parameter"
+				call error(builtin)
+			endif
+			#here is another format, if the first is not unsigned 16 then call movie clip function instead of actiongotoframe
+			if test#==(ap_Integer)
+				add test (DWORD)
+				if test#<=^0xffFF #attention at negative numbers, ignoring gotoandstop mc behaviour
+					sd val;set val test#
+					add test (DWORD)
+					if test#==(math_end)
+						add test (DWORD)
+						if test#==(args_end)
+							if pwant_return#==(FALSE)   #can be in a ...=gotoAndStop+... attribution and add extra code there
+								#                      because ActionGotoFrame is not pushing a return value
+								call actionrecordheader(act,(WORD))
+								call swf_actionblock_add(#val,(WORD))
+								set pwant_return# (TRUE)   #no ActionPop required
+								add test (DWORD)
+								return test
+							endif
+						endif
+					endif
+				endif
+			endif
+		endif
+	endif
+	return codepointer
 endfunction
 #codepointer
 function action_code_new_or_call(sv codepointer)
@@ -650,7 +679,8 @@ function action_code_right_number(sd codepointer)
         return codepointer
     endif
     if codepointer#==(call_action_right)
-        setcall codepointer action_code_write_function_call(codepointer)
+		sd want_return=TRUE
+        setcall codepointer action_code_write_function_call(codepointer,#want_return)
         return codepointer
     endif
     sd attrib

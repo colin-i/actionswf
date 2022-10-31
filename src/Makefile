@@ -23,7 +23,8 @@ else
 	OFLAGS += underscore_pref 1
 endif
 
-projname=actionswf
+debug=
+projname=actionswf${debug}
 name = ${projname}.so
 xname = lib${name}
 defname = ${projname}.def
