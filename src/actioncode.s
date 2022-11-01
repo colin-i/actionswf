@@ -103,7 +103,7 @@ function action_code_write_builtin_names(sv codepointer,ss p_action)
 	if compare==0
 		set p_action# (ActionGotoFrame)
 		inc p_action
-		set p_action# (ActionEndFlag)
+		set p_action# (ActionEndFlag)   #even if it's playing, it will stop, no ActionStop here
 		return goto
 	endif
 	vstr gotop="gotoAndPlay"
