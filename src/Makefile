@@ -34,8 +34,9 @@ prefname=${items_prefix}${name}
 logs :=
 obs :=
 eobs :=
+strp :=
 
-all: compile lnk def
+all: compile lnk def strip
 
 ounused:
 	${OLINK} ${logs}
@@ -84,6 +85,14 @@ def:
 	$(eval logs += $@.es.log)
 	$(eval eobs += $@.o)
 
+strip:
+	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
+	$(eval strp = )
+	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.log.s ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.log.es ${items_prefix}${var}.o))
+	ostrip ${name} ${strp}
+	python3 strip.py {name} {name}
+
 clean:
 	-printf ' %s.s.log' ${items} | xargs rm -f
 	-printf ' %s.es.log' ${expitems} | xargs rm -f
@@ -92,6 +101,7 @@ clean:
 	-rm -f ${name}
 	-rm -f ${projname}.dll
 	-rm -f ${defname}
+	-rm -f strip.py
 
 distclean: clean
 
