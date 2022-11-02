@@ -34,7 +34,6 @@ prefname=${items_prefix}${name}
 logs :=
 obs :=
 eobs :=
-strp :=
 
 all: compile lnk def strip
 
