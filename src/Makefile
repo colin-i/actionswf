@@ -84,13 +84,22 @@ def:
 	$(eval logs += $@.es.log)
 	$(eval eobs += $@.o)
 
+
+ifeq (${platform},win)
+strip:
+	echo win no strip
+elseif (${conv_64},1)
+strip:
+	echo i386 no strip
+else
 strip:
 	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
 	$(eval strp = )
-	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.log.s ${items_prefix}${var}.o))
-	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.log.es ${items_prefix}${var}.o))
+	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
 	ostrip ${name} ${strp}
 	python3 strip.py {name} {name}
+endif
 
 clean:
 	-printf ' %s.s.log' ${items} | xargs rm -f
@@ -101,6 +110,9 @@ clean:
 	-rm -f ${projname}.dll
 	-rm -f ${defname}
 	-rm -f strip.py
+	-rm -f .data
+	-rm -f .text
+	-rm -f .rela.dyn
 
 distclean: clean
 
