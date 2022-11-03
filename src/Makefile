@@ -115,8 +115,7 @@ install-lib:
 	install -D ${name} \
 		$(DESTDIR)$(prefix)/lib/${xname}
 
-#with all, launchpad will do the same step
-install: install-lib
+install: all install-lib
 
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${xname}
