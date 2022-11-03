@@ -1,6 +1,9 @@
 
 const ActionEndFlag=0
+const ActionNextFrame=0x04
+const ActionPreviousFrame=0x05
 const ActionPlay=0x06
+const ActionStop=0x07
 #const ActionAdd=0x0A
 const ActionSubtract=0x0B
 const ActionMultiply=0x0C

@@ -66,38 +66,62 @@ endfunction
 #name/null
 function action_code_write_builtin_names(sv codepointer,ss p_action)
 	set codepointer codepointer#
-    sd compare
-    vstr int="int"
-    setcall compare strcmp(codepointer,int)
-    if compare==0
-        set p_action# (ActionToInteger)
-        return int
-    endif
-    vstr rnd="random"
-    setcall compare strcmp(codepointer,rnd)
-    if compare==0
-    #0�(maximum-1)
-        set p_action# (ActionRandomNumber)
-        return rnd
-    endif
-    vstr ascii="ord"
-    setcall compare strcmp(codepointer,ascii)
-    if compare==0
-        set p_action# (ActionCharToAscii)
-        return ascii
-    endif
-    vstr chr="chr"
-    setcall compare strcmp(codepointer,chr)
-    if compare==0
-        set p_action# (ActionAsciiToChar)
-        return chr
-    endif
-    vstr typeOf="TypeOf"
-    setcall compare strcmp(codepointer,typeOf)
-    if compare==0
-        set p_action# (ActionTypeOf)
-        return typeOf
-    endif
+	sd compare
+	vstr int="int"
+	setcall compare strcmp(codepointer,int)
+	if compare==0
+		set p_action# (ActionToInteger)
+		return int
+	endif
+	vstr rnd="random"
+	setcall compare strcmp(codepointer,rnd)
+	if compare==0
+	#0�(maximum-1)
+		set p_action# (ActionRandomNumber)
+		return rnd
+	endif
+	vstr ascii="ord"
+	setcall compare strcmp(codepointer,ascii)
+	if compare==0
+		set p_action# (ActionCharToAscii)
+		return ascii
+	endif
+	vstr chr="chr"
+	setcall compare strcmp(codepointer,chr)
+	if compare==0
+		set p_action# (ActionAsciiToChar)
+		return chr
+	endif
+	vstr typeOf="TypeOf"
+	setcall compare strcmp(codepointer,typeOf)
+	if compare==0
+		set p_action# (ActionTypeOf)
+		return typeOf
+	endif
+	vstr stop="stop"
+	setcall compare strcmp(codepointer,stop)
+	if compare==0
+		set p_action# (ActionStop)
+		return stop
+	endif
+	vstr play="play"
+	setcall compare strcmp(codepointer,play)
+	if compare==0
+		set p_action# (ActionPlay)
+		return play
+	endif
+	vstr nframe="nextFrame"
+	setcall compare strcmp(codepointer,nframe)
+	if compare==0
+		set p_action# (ActionNextFrame)
+		return nframe
+	endif
+	vstr pframe="prevFrame"
+	setcall compare strcmp(codepointer,pframe)
+	if compare==0
+		set p_action# (ActionPreviousFrame)
+		return pframe
+	endif
 	vstr goto="gotoAndStop"
 	setcall compare strcmp(codepointer,goto)
 	if compare==0
@@ -582,9 +606,17 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 		add test :   #to pass the pointer
 		if test#!=(args_end)
 			if act!=(ActionGotoFrame)
+				if act==(ActionTrace)
+					if pwant_return#==(TRUE)  #same like at gotoAndStop
+						return codepointer
+					endif
+				endif
 				setcall test action_code_right_util(test)
 				if test#==(args_end)
 					call action_one(act)
+					if act==(ActionTrace)
+						set pwant_return# (TRUE)  #to skip pop
+					endif
 					add test (DWORD)
 					return test
 				endif
@@ -619,7 +651,14 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 					endif
 				endif
 			endif
-		endif
+		elseif act<=(ActionStop)  #this is skipping 1,2,3 but there are no actions in the model
+			if pwant_return#==(FALSE)  #same like at gotoAndStop
+				call action_one(act)
+				set pwant_return# (TRUE)  #to skip pop
+				add test (DWORD)
+				return test
+			endif
+		endelseif
 	endif
 	return codepointer
 endfunction

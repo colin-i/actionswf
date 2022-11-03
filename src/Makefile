@@ -43,13 +43,14 @@ ATLDCOM = $(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -sh
 
 ifeq (${platform},win)
 all: compile ounused link def
-elseif (${conv_64},1)
+else ifeq (${conv_64},1)
 all: compile ounused link
 else
 all: compile ${name}
 ${name}:
 	${OLINK} ${logs}
 	@echo
+	$(AR) cr ${exte} ${obs}
 	${ATLDCOM}
 	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
 	$(eval strp = )
