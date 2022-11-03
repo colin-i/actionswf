@@ -31,25 +31,52 @@ defname = ${projname}.def
 items_prefix=
 prefname=${items_prefix}${name}
 
-logs :=
-obs :=
-eobs :=
+$(eval obs = )
+$(eval eobs = )
+$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
+$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
+$(eval logs = )
+$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
+$(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
 
-all: compile lnk def strip
+ATLDCOM = $(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}
+
+ifeq (${platform},win)
+all: compile ounused link def
+elseif (${conv_64},1)
+all: compile ounused link
+else
+all: compile ${name}
+${name}:
+	${OLINK} ${logs}
+	@echo
+	${ATLDCOM}
+	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
+	$(eval strp = )
+	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
+	ostrip ${name} ${strp}
+	python3 strip.py ${name} ${name}
+endif
+
+%.o: %.s
+	${OCOMP} $< ${OFLAGS}
+%.o: %.es
+	${OCOMP} $< ${OFLAGS}
 
 ounused:
 	${OLINK} ${logs}
 	@echo
 
-compile: ${items} ${expitems} ounused
+compile: ${obs} ${eobs}
 
-lnk:
+link:
 	if [ "${platform}" = "lin" ]; then \
 		$(AR) cr ${exte} ${obs}; \
 		if [ "${conv_64}" = "1" ]; then \
 			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}; \
 		else \
-			$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}; \
+			${ATLDCOM}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
@@ -62,44 +89,9 @@ lnk:
 
 #obs =   :in case it is called after an object (make bits link)
 #(make action link)
-fast:
-	$(eval obs = )
-	$(eval eobs = )
-	$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
-	$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
-
-link: fast lnk
 
 def:
-	if [ "${platform}" = "win" ]; then \
-		../fix/makedef ${defname}; \
-	fi
-
-%: %.s
-	${OCOMP} $< ${OFLAGS}
-	$(eval logs += $@.s.log)
-	$(eval obs += $@.o)
-%: %.es
-	${OCOMP} $< ${OFLAGS}
-	$(eval logs += $@.es.log)
-	$(eval eobs += $@.o)
-
-
-ifeq (${platform},win)
-strip:
-	echo win no strip
-elseif (${conv_64},1)
-strip:
-	echo i386 no strip
-else
-strip:
-	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
-	$(eval strp = )
-	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
-	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
-	ostrip ${name} ${strp}
-	python3 strip.py {name} {name}
-endif
+	../fix/makedef ${defname}
 
 clean:
 	-printf ' %s.s.log' ${items} | xargs rm -f
@@ -123,7 +115,8 @@ install-lib:
 	install -D ${name} \
 		$(DESTDIR)$(prefix)/lib/${xname}
 
-install: all install-lib
+#with all, launchpad will do the same step
+install: install-lib
 
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${xname}
