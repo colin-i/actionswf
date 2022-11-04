@@ -12,7 +12,9 @@ conv_64=0
 #if modifying OFLAGS will lose inside data
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
-items = ${platform} actioncode actionparse actionpool actionutil bits character file storage util
+#this is like ld is linking, reason: ostrip is not adapted for this, there is another solutin with ocompiler and NOBITS
+#	maybe is a 0x1000 .o size rule only from libexte.a
+items = actioncode actionparse actionutil bits character file storage util ${platform} actionpool
 expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a
@@ -24,6 +26,7 @@ else
 endif
 
 debug=
+debugstrip=
 projname=actionswf${debug}
 name = ${projname}.so
 xname = lib${name}
@@ -33,11 +36,11 @@ prefname=${items_prefix}${name}
 
 $(eval obs = )
 $(eval eobs = )
-$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 $(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
+$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 $(eval logs = )
-$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
+$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 
 ATLDCOM = $(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}
 
@@ -52,12 +55,12 @@ ${name}:
 	@echo
 	$(AR) cr ${exte} ${obs}
 	${ATLDCOM}
-	wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py
+	if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	$(eval strp = )
-	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
+	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
 	ostrip ${name} ${strp}
-	python3 strip.py ${name} ${name}
+	python3 strip.py ${name} ${debugstrip}${name}
 endif
 
 %.o: %.s
