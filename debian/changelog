@@ -1,3 +1,9 @@
+actionswf (1-50) bionic; urgency=medium
+
+  * no wget
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Fri, 04 Nov 2022 14:41:57 +0200
+
 actionswf (1-49) bionic; urgency=medium
 
   * some bultin functions, including play...gotoAndPlay...trace
