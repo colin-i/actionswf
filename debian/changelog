@@ -1,4 +1,4 @@
-actionswf (1-48) bionic; urgency=medium
+actionswf (1-49) bionic; urgency=medium
 
   * some bultin functions, including play...gotoAndPlay...trace
 
