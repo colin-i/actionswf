@@ -133,3 +133,5 @@ uninstall:
 #make compile && make link syms= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
 #make syms= conv_64=0
 #make syms= conv_64=0 link
+
+#make debugstrip=_ strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py"
