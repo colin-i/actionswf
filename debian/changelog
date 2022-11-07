@@ -1,3 +1,9 @@
+actionswf (1-52) bionic; urgency=medium
+
+  * cc instead of ld for elf problems
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Mon, 07 Nov 2022 14:19:04 +0200
+
 actionswf (1-50) bionic; urgency=medium
 
   * no wget

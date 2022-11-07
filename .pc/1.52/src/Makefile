@@ -42,7 +42,7 @@ $(eval logs = )
 $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 
-ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
+ATLDCOM = $(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -entry DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}
 
 strippy=ostriputil
 
@@ -133,5 +133,3 @@ uninstall:
 #make compile && make link syms= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
 #make syms= conv_64=0
 #make syms= conv_64=0 link
-
-#make debugstrip=_ strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py"
