@@ -128,6 +128,8 @@ function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
         #to bytes
         add size 7
         div size 8
+
+	#this is no more than chars matrix
     set p_size# size
 endfunction
 

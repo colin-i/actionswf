@@ -791,7 +791,7 @@ const PlaceFlagHasCharacter=0x2
 #const PlaceFlagMove=0x1
     sd flags=PlaceFlagHasMatrix|PlaceFlagHasCharacter
     sd matrix
-    sd maxtrixsz
+    datax maxtrixsz#1
     call matrix_translate(#matrix,#maxtrixsz,x,y)
 
     sd size=5

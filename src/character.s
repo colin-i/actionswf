@@ -393,6 +393,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     call swf_mem_add(#TrackAsMenu,(BYTE))
     sd ActionOffset=2;add ActionOffset Characters_CharacterEndFlag_size
     call swf_mem_add(#ActionOffset,(WORD))
+
     call buttonrecord(1,0,0,(ButtonStateUp),state_def_id,1)
     call buttonrecord(1,0,0,(ButtonStateOver),state_over_id,2)
 	call buttonrecord(1,0,0,(ButtonStateDown|ButtonStateHitTest),state_down_id,3)
@@ -428,7 +429,7 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
 
     #PlaceMatrix
     sd matrix
-    sd maxtrixsz
+    datax maxtrixsz#1
     call matrix_translate(#matrix,#maxtrixsz,x,y)
     if writeflag==1
         call swf_mem_add(matrix,maxtrixsz)

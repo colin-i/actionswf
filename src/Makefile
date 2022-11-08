@@ -33,6 +33,7 @@ xname = lib${name}
 defname = ${projname}.def
 items_prefix=
 prefname=${items_prefix}${name}
+stripname=${debugstrip}${name}
 
 $(eval obs = )
 $(eval eobs = )
@@ -62,7 +63,7 @@ ${name}:
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
 	ostrip ${name} ${strp}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
-	${strippy} ${name} ${debugstrip}${name}
+	${strippy} ${name} ${stripname}
 endif
 
 %.o: %.s
@@ -104,6 +105,7 @@ clean:
 	-printf ' %s.es.log' ${expitems} | xargs rm -f
 	-printf ' %s.o' ${items} ${expitems} | xargs rm -f
 	-rm -f ${exte}
+	-rm -f ${stripname}
 	-rm -f ${name}
 	-rm -f ${projname}.dll
 	-rm -f ${defname}
@@ -134,4 +136,4 @@ uninstall:
 #make syms= conv_64=0
 #make syms= conv_64=0 link
 
-#make debugstrip=_ strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py"
+#make debugstrip=lib strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py"
