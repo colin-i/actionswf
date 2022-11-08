@@ -82,7 +82,7 @@ function edittext_layout(sd in_args)
     add s (DWORD);add in_args (DWORD);set s# in_args#
 endfunction
 function edittext_text(ss text)
-    sd s
+    sv s
     setcall s edittext_struct()
     add s (5*DWORD+sim64pointerSize)
     set s# text

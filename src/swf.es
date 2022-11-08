@@ -64,11 +64,11 @@ data dn_line#1;#no pad
 data xcurve#1
 data ycurve#1;#no pad
 
-str text#:/DWORD
+vstr text#1
 data font_id#1;data font_height#1;#no pad
 data font_vertical_offset#1;data font_color#1;#no pad
 
-str actions#:/DWORD
+vstr actions#1
 
 #width                  is the button width
 #height                 is the button height
@@ -233,12 +233,12 @@ endfunction
 #text
 
 #id
-functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sd structure)
+functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv structure)
 #sd bound_width  width of the text
 #sd bound_height height
 #ss variablename to change it with actionscript
 #sd flags        see include/text.h
-#sd structure    see edittext_struct()  from character.s, set the flags first
+#sv structure    see edittext_struct()  from character.s, set the flags first
     #CharacterID
     sd size=2
     #RECT
