@@ -841,7 +841,7 @@ function action_deffunction(sv codepointer)
     add fn_size (NumParams_size+codeSize_size)
     #
     sd NumParams=0
-    sv args
+    sd args
     set args codepointer
     while codepointer#!=(no_pointer)
         addcall fn_size strlen(codepointer#)

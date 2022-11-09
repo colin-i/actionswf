@@ -136,4 +136,4 @@ uninstall:
 #make syms= conv_64=0
 #make syms= conv_64=0 link
 
-#make debugstrip=lib strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py" OFLAGSEXTRA="function_name 1 nul_res_pref 1"
+#make debugstrip=lib strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py"
