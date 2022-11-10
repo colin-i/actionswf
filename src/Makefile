@@ -81,15 +81,10 @@ ounused:
 compile: ${obs} ${eobs}
 
 link:
-	if [ "${platform}" = "lin" ]; then \
-		$(AR) cr ${exte} ${obs}; \
-		${ATLDCOM}; \
+	if [ "${conv_64}" = "1" ]; then \
+		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	else \
-		if [ "${conv_64}" = "1" ]; then \
-			i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-		else \
-			x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-		fi \
+		x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
 #noleadingunderscore for exporting symbols
 
