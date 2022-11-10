@@ -1,3 +1,9 @@
+actionswf (1-55) bionic; urgency=medium
+
+  * readd i386
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Thu, 10 Nov 2022 07:51:06 +0200
+
 actionswf (1-54) bionic; urgency=medium
 
   * another 64 migration
