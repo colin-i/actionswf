@@ -5,9 +5,12 @@ ifndef OCOMP
 OCOMP=o
 endif
 
+ifndef conv_64
+conv_64=0
+endif
+
 OLINK=ounused
 syms=-s
-conv_64=0
 #OFLAGSEXTRA=
 #if modifying OFLAGS will lose inside data
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
@@ -19,21 +22,14 @@ expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a
 
-ifeq (${platform},win)
-	OFLAGS += inplace_reloc 0 include_sec 1
-else
-	OFLAGS += underscore_pref 1
-endif
-
 debug=
-debugstrip=
+restofname=lib
 projname=actionswf${debug}
 name = ${projname}.so
-xname = lib${name}
 defname = ${projname}.def
 items_prefix=
 prefname=${items_prefix}${name}
-stripname=${debugstrip}${name}
+stripname=${restofname}${name}
 
 $(eval obs = )
 $(eval eobs = )
@@ -43,27 +39,34 @@ $(eval logs = )
 $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 
-ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-
 strippy=ostriputil
 
 ifeq (${platform},win)
+OFLAGS += inplace_reloc 0 include_sec 1
 all: compile ounused link def
-else ifeq (${conv_64},1)
-all: compile ounused link
 else
+OFLAGS += underscore_pref 1
+#else ifeq (${conv_64},1)
+ifeq (${conv_64},1)
+ATLDCOM = $(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 all: compile ${name}
-${name}:
-	${OLINK} ${logs}
-	@echo
-	$(AR) cr ${exte} ${obs}
-	${ATLDCOM}
+else
+ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
+all: compile ${name} ${stripname}
+${stripname}:
 	$(eval strp = )
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
 	ostrip ${name} ${strp}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${stripname}
+endif
+${name}:
+	${OLINK} ${logs}
+	@echo
+	$(AR) cr ${exte} ${obs}
+	${ATLDCOM}
+	if [ "${conv_64}" = "1" ]; then cp ${name} ${stripname}; fi
 endif
 
 %.o: %.s
@@ -80,11 +83,7 @@ compile: ${obs} ${eobs}
 link:
 	if [ "${platform}" = "lin" ]; then \
 		$(AR) cr ${exte} ${obs}; \
-		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}; \
-		else \
-			${ATLDCOM}; \
-		fi \
+		${ATLDCOM}; \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
 			i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
@@ -120,13 +119,13 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${name} \
-		$(DESTDIR)$(prefix)/lib/${xname}
+	install -D ${stripname} \
+		$(DESTDIR)$(prefix)/lib/${stripname}
 
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${xname}
+	-rm -f $(DESTDIR)$(prefix)/lib/${stripname}
 
 .PHONY: all install clean distclean uninstall test
 
@@ -136,4 +135,4 @@ uninstall:
 #make syms= conv_64=0
 #make syms= conv_64=0 link
 
-#make debugstrip=lib strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py" OFLAGSEXTRA="function_name 1 nul_res_pref 1"
+#make strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py" OFLAGSEXTRA="function_name 1 nul_res_pref 1"

@@ -10,22 +10,23 @@ syms=-s
 conv_64=0
 OFLAGS=conv_64 ${conv_64}
 
+name=example
+linkname=actionswf
+linkfile=${linkname}.lib
+
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
+	stripname=lib${linkname}.so
 	ifeq (${conv_64},1)
 		OFLAGS += exit_end 1
 		# underscore_pref 1   win32 with _, can go back to this later
 	endif
 endif
 
-name=example
-linkname=actionswf
-linkfile=${linkname}.lib
-
 all: build exe
 
-build: ${name} uns lib lnk
+build: ${name} uns lib link
 
 uns:
 	${OLINK} ${name}.s.log
@@ -39,12 +40,12 @@ lib:
 		fi \
 	fi
 
-lnk:
+link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:actionswf.so; \
+			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${stripname}; \
 		else \
-			$(CC) ${syms} ${name}.o -o ${name} -L../src -l:actionswf.so; \
+			$(CC) ${syms} ${name}.o -o ${name} -L../src -l:${stripname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \

@@ -2,12 +2,12 @@ Source: actionswf
 Section: utils
 Priority: optional
 Maintainer: Botescu Costin <costin.botescu@gmail.com>
-Build-Depends: debhelper-compat (= 11), ocompiler, ostriputil
+Build-Depends: debhelper-compat (= 11), ocompiler, ostriputil [amd64]
 Standards-Version: 4.5.0
 Homepage: https://github.com/colin-i/actionswf
 
 Package: actionswf
-Architecture: amd64
+Architecture: amd64 i386
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Action Swf library
