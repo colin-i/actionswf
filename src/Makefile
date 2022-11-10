@@ -44,12 +44,21 @@ strippy=ostriputil
 ifeq (${platform},win)
 OFLAGS += inplace_reloc 0 include_sec 1
 all: compile ounused link def
+link:
+	if [ "${conv_64}" = "1" ]; then \
+		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+	else \
+		x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+	fi
+
 else
 OFLAGS += underscore_pref 1
 #else ifeq (${conv_64},1)
+
 ifeq (${conv_64},1)
 ATLDCOM = $(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 all: compile ${name}
+
 else
 ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
 all: compile ${name} ${stripname}
@@ -80,12 +89,6 @@ ounused:
 
 compile: ${obs} ${eobs}
 
-link:
-	if [ "${conv_64}" = "1" ]; then \
-		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-	else \
-		x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-	fi
 #noleadingunderscore for exporting symbols
 
 #obs =   :in case it is called after an object (make bits link)
