@@ -44,25 +44,16 @@ strippy=ostriputil
 ifeq (${platform},win)
 OFLAGS += inplace_reloc 0 include_sec 1
 all: compile ounused link def
-link:
-	if [ "${conv_64}" = "1" ]; then \
-		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-	else \
-		x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
-	fi
-
 else
 OFLAGS += underscore_pref 1
 #else ifeq (${conv_64},1)
-
 ifeq (${conv_64},1)
 ATLDCOM = $(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
-all: ${name}
-
+all: compile ${name}
 else
 ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-all: ${stripname}
-${stripname}: ${name}
+all: compile ${name} ${stripname}
+${stripname}:
 	$(eval strp = )
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
@@ -70,8 +61,7 @@ ${stripname}: ${name}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${stripname}
 endif
-
-${name}: compile
+${name}:
 	${OLINK} ${logs}
 	@echo
 	$(AR) cr ${exte} ${obs}
@@ -90,6 +80,17 @@ ounused:
 
 compile: ${obs} ${eobs}
 
+link:
+	if [ "${platform}" = "lin" ]; then \
+		$(AR) cr ${exte} ${obs}; \
+		${ATLDCOM}; \
+	else \
+		if [ "${conv_64}" = "1" ]; then \
+			i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		else \
+			x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		fi \
+	fi
 #noleadingunderscore for exporting symbols
 
 #obs =   :in case it is called after an object (make bits link)

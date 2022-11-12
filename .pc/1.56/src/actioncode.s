@@ -377,7 +377,7 @@ function action_code_write_conditions(sd codepointer)
                 setcall codepointer action_member_loop(codepointer,:)  #to pass the pointer
             else
                 #var or set variable
-                call action_push((ap_Constant8),codepointer#v^,-1)
+                call action_push((ap_Constant8),codepointer#,-1)
                 add codepointer :   #to pass the pointer
             endelse
             #
