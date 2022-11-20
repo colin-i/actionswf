@@ -64,7 +64,7 @@ function get_nr_of_forIn_statements()
 endfunction
 
 #name/null
-function action_code_write_builtin_names(sv codepointer,sv p_action)
+function action_code_write_builtin_names(sv codepointer,ss p_action)
 	set codepointer codepointer#
 	sd compare
 	vstr int="int"
@@ -599,9 +599,7 @@ endfunction
 #codepointer
 function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 	ss name
-	#these acts must stay on stack, can be builtin inside builtin
-	sd act
-	sd act2
+	chars act#1;chars act2#1
 	setcall name action_code_write_builtin_names(codepointer,#act)
 	if name!=(NULL)
 		sd test;set test codepointer
