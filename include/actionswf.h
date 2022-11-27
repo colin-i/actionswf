@@ -47,6 +47,7 @@ typedef struct ButtonData_str{
 #define WasStatic 0x400
 #define HTML 0x200
 #define UseOutlines 0x100
+#pragma pack(push,4)
 typedef struct EditText_str
 {
     int fontid;
@@ -61,6 +62,7 @@ typedef struct EditText_str
     int layout_indent;
     int layout_leading;
 } EditText;
+#pragma pack(pop)
 #define FontFlagsHasLayout 0x80
 #define FontFlagsShiftJIS 0x40
 #define FontFlagsSmallText 0x20
