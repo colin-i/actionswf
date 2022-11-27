@@ -92,6 +92,32 @@ endfunction
 
 #util
 
+function error(ss msg)
+    call string_nl_print(msg)
+    import "action_error" action_error
+    call action_error()
+
+    importx "freereset" freereset
+    call freereset()
+    #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
+    import "action_debug_free" action_debug_free
+    call action_debug_free()
+    #
+    import "file_get_content__resources_free" file_get_content__resources_free
+    call file_get_content__resources_free()
+
+    call file_resources_free()
+
+    ss p;setcall p erbool();set p# 1
+endfunction
+#function temporary_number();#p
+#    data n#1
+#    return #n
+#endfunction
+#function temporary_bool();#p
+#    data b=FALSE
+#    return #b
+#endfunction
 function string_nl_print(ss msg)
     call printEr(msg)
     chars nl={0xa,0}
@@ -283,12 +309,6 @@ endfunction
 
 #
 
-import "action_error" action_error
-importx "freereset" freereset
-import "action_debug_free" action_debug_free
-import "file_get_content__resources_free" file_get_content__resources_free
-
-
 
 
 
@@ -305,22 +325,6 @@ endfunction
 
 
 
-
-
-function error(ss msg)
-    call string_nl_print(msg)
-    call action_error()
-
-    call freereset()
-    #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
-    call action_debug_free()
-    #
-    call file_get_content__resources_free()
-
-    call file_resources_free()
-
-    ss p;setcall p erbool();set p# 1
-endfunction
 
 #
 function memrealloc(sd mem,sd size)
