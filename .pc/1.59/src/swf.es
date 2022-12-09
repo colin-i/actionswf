@@ -776,8 +776,7 @@ functionX swf_placeobject(sd refid,sd depth)
 #sd depth    depth value
      call swf_placeobject_coords(refid,depth,0,0)
 endfunction
-#                                                  if not data here, then will conflict at c language where we talk about int
-functionX swf_placeobject_coords(sd refid,sd depth,datax x,datax y)
+functionX swf_placeobject_coords(sd refid,sd depth,sd x,sd y)
 #sd refid
 #sd depth
 #sd x         x coordinate
