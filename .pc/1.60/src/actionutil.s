@@ -82,22 +82,24 @@ function escape_count(ss string,sd escape)
     sd escaped=0
     while string#!=0
         if string#==escape
+            if escaped==0
+                #
+                ss double_test
+                set double_test string
+                inc double_test
+                chars l="l";chars f="f";
+                if double_test#==l
+                    inc double_test
+                    if double_test#==f
+                        inc nr
+                    endif
+                endif
+                #
+                inc nr
+            endif
             xor escaped 1
         elseif escaped==1
-		inc nr
             set escaped 0
-
-		#this is not working nowadays, printf is searching for floats on xmm registers, kept as legacy
-		chars l="l"
-		if string#==l
-			chars f="f";
-			ss double_test=1
-			add double_test string
-			if double_test#==f
-				inc nr
-			endif
-		endif
-
         endelseif
         inc string
     endwhile
