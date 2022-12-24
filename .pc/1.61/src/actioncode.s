@@ -92,7 +92,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 		set p_action# (ActionAsciiToChar)
 		return chr
 	endif
-	vstr typeOf="typeof"
+	vstr typeOf="TypeOf"
 	setcall compare strcmp(codepointer,typeOf)
 	if compare==0
 		set p_action# (ActionTypeOf)

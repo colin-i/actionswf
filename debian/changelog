@@ -1,3 +1,9 @@
+actionswf (1-61) bionic; urgency=medium
+
+  * typeof instead of TypeOf
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sat, 24 Dec 2022 11:09:34 +0200
+
 actionswf (1-60) bionic; urgency=medium
 
   * counting was wrong there
