@@ -5,7 +5,7 @@ On Ubuntu from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
-Or the *manual installation step* from this link *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6* \
+Or the *manual installation step* from this link *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6*\
 Install:
 ```sh
 sudo apt-get install actionswf
@@ -22,7 +22,8 @@ On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/
 Compile with [O Compiler](https://github.com/colin-i/o)
 
 ## Info
-A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).
+A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
+Games by this program at https://www.kongregate.com/accounts/bitplayer/favorites?sort=gameplays
 
 ## Donations
 The *donations* section is here
