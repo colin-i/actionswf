@@ -29,7 +29,7 @@ name = ${projname}.so
 defname = ${projname}.def
 items_prefix=
 prefname=${items_prefix}${name}
-stripname=${restofname}${name}
+libname=${restofname}${name}
 
 $(eval obs = )
 $(eval eobs = )
@@ -40,6 +40,7 @@ $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 
 strippy=ostriputil
+nobits_virtual=1
 
 ifeq (${platform},win)
 OFLAGS += inplace_reloc 0 include_sec 1
@@ -61,14 +62,20 @@ all: ${name}
 
 else
 ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-all: ${stripname}
-${stripname}: ${name}
+all: ${libname}
+ifeq (${nobits_virtual},1)
+${libname}: ${name}
+	cp ${name} ${libname}
+	#is not with ln -s because will be one file install
+else
+${libname}: ${name}
 	$(eval strp = )
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
 	ostrip ${name} ${strp}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
-	${strippy} ${name} ${stripname}
+	${strippy} ${name} ${libname}
+endif
 endif
 
 ${name}: compile
@@ -76,7 +83,7 @@ ${name}: compile
 	@echo
 	$(AR) cr ${exte} ${obs}
 	${ATLDCOM}
-	if [ "${conv_64}" = "1" ]; then cp ${name} ${stripname}; fi
+	if [ "${conv_64}" = "1" ]; then cp ${name} ${libname}; fi
 endif
 
 %.o: %.s
@@ -103,7 +110,7 @@ clean:
 	-printf ' %s.es.log' ${expitems} | xargs rm -f
 	-printf ' %s.o' ${items} ${expitems} | xargs rm -f
 	-rm -f ${exte}
-	-rm -f ${stripname}
+	-rm -f ${libname}
 	-rm -f ${name}
 	-rm -f ${projname}.dll
 	-rm -f ${defname}
@@ -118,13 +125,13 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${stripname} \
-		$(DESTDIR)$(prefix)/lib/${stripname}
+	install -D ${libname} \
+		$(DESTDIR)$(prefix)/lib/${libname}
 
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${stripname}
+	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
 .PHONY: all install clean distclean uninstall test
 

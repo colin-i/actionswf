@@ -17,7 +17,7 @@ linkfile=${linkname}.lib
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
-	stripname=lib${linkname}.so
+	libname=lib${linkname}.so
 	ifeq (${conv_64},1)
 		OFLAGS += exit_end 1
 		# underscore_pref 1   win32 with _, can go back to this later
@@ -43,9 +43,9 @@ lib:
 link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${stripname}; \
+			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
 		else \
-			$(CC) ${syms} ${name}.o -o ${name} -L../src -l:${stripname}; \
+			$(CC) ${syms} ${name}.o -o ${name} -L../src -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \

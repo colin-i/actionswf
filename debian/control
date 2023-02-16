@@ -2,7 +2,8 @@ Source: actionswf
 Section: utils
 Priority: optional
 Maintainer: Botescu Costin <costin.botescu@gmail.com>
-Build-Depends: debhelper-compat (= 11), ocompiler, ostriputil [amd64]
+Build-Depends: debhelper-compat (= 11), ocompiler
+#, ostriputil [amd64]
 Standards-Version: 4.5.0
 Homepage: https://github.com/colin-i/actionswf
 
