@@ -56,7 +56,7 @@ functionX action(ss ac)
     call action_debug_free()
 endfunction
 import "action_format" action_format
-functionX actionf(ss buffer,ss *format)
+functionXx actionf(ss buffer,ss *format)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
@@ -73,7 +73,7 @@ functionX action_sprite(sd sprite,ss actions)
     call action(actions)
     call swf_actionblock((mem_exp_change_back))
 endfunction
-functionX actionf_sprite(sd sprite,ss buffer,ss *format)
+functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
