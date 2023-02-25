@@ -1,5 +1,7 @@
 
-platform = lin
+ifndef platform
+platform=lin
+endif
 
 ifndef OCOMP
 OCOMP=o
