@@ -9,10 +9,16 @@ ifndef conv_64
 conv_64=0
 endif
 
+ifndef OLINK
 OLINK=ounused
+endif
+
+ifndef syms
 syms=-s
+endif
+
 #OFLAGSEXTRA=
-#if modifying OFLAGS will lose inside data
+#if modifying OFLAGS will lose inside data (at kinetic is reversed: first that def, then this def)
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
 #this is like ld is linking, reason: ostrip is not adapted for this, there is another solutin with ocompiler and NOBITS
