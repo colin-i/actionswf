@@ -64,13 +64,15 @@ else
 OFLAGS += underscore_pref 1
 #else ifeq (${conv_64},1)
 
+all: ${libname}
+
 ifeq (${conv_64},1)
 ATLDCOM = $(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
-all: ${name}
+${libname}: ${name}
+	cp ${name} ${libname}
 
 else
 ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-all: ${libname}
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	cp ${name} ${libname}
@@ -84,14 +86,14 @@ ${libname}: ${name}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${libname}
 endif
+
 endif
 
-${name}: compile
+${name}: ${obs} ${eobs}
 	${OLINK} ${logs}
 	@echo
 	$(AR) cr ${exte} ${obs}
 	${ATLDCOM}
-	if [ "${conv_64}" = "1" ]; then cp ${name} ${libname}; fi
 endif
 
 %.o: %.s
@@ -114,9 +116,9 @@ def:
 	../fix/makedef ${defname}
 
 clean:
-	-printf ' %s.s.log' ${items} | xargs rm -f
-	-printf ' %s.es.log' ${expitems} | xargs rm -f
-	-printf ' %s.o' ${items} ${expitems} | xargs rm -f
+	-rm -f ${logs}
+	-rm -f ${obs}
+	-rm -f ${eobs}
 	-rm -f ${exte}
 	-rm -f ${libname}
 	-rm -f ${name}
