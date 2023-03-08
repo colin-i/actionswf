@@ -900,7 +900,7 @@ function action_compare(sd value,sd firstcompare)
         endelseif
         return (ActionEquals2)
     endif
-    #!
+    # !
     inc compares
     if compares#==value
         if firstcompare!=(NULL)
