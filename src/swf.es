@@ -792,18 +792,18 @@ const PlaceFlagHasCharacter=0x2
 #const PlaceFlagMove=0x1
     sd flags=PlaceFlagHasMatrix|PlaceFlagHasCharacter
     sd matrix
-    datax maxtrixsz#1
-    call matrix_translate(#matrix,#maxtrixsz,x,y)
+    datax matrixsz#1
+    call matrix_translate(#matrix,#matrixsz,x,y)
 
     sd size=5
-    add size maxtrixsz
+    add size matrixsz
     call swf_tag_recordheader_entry((PlaceObject2),size)
     call swf_mem_add(#flags,1)
     call swf_mem_add(#depth,2)
     #character id
     call swf_mem_add(#refid,2)
     #matrix
-    call swf_mem_add(matrix,maxtrixsz)
+    call swf_mem_add(matrix,matrixsz)
 endfunction
 functionX swf_removeobject(sd depth)
 #sd depth        depth for the removeobject2 tag

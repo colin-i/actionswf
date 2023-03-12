@@ -19,9 +19,20 @@ ifndef syms
 syms=-s
 endif
 
-#OFLAGSEXTRA=
+ifndef OSTRIP
+OSTRIP=ostrip
+endif
+
+ifndef nobits_virtual
+nobits_virtual=1
+endif
+
 #if modifying OFLAGS will lose inside data (at kinetic is reversed: first that def, then this def)
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
+
+ifeq (${nobits_virtual},0)
+OFLAGS+=nobits_virtual 0
+endif
 
 #this is like ld is linking, reason: ostrip is not adapted for this, there is another solutin with ocompiler and NOBITS
 #	maybe is a 0x1000 .o size rule only from libexte.a
@@ -48,7 +59,6 @@ $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
 
 strippy=ostriputil
-nobits_virtual=1
 
 ifeq (${platform},win)
 OFLAGS += inplace_reloc 0 include_sec 1
@@ -82,7 +92,7 @@ ${libname}: ${name}
 	$(eval strp = )
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
-	ostrip ${name} ${strp}
+	${OSTRIP} ${name} ${strp}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${libname}
 endif
@@ -128,6 +138,8 @@ clean:
 	-rm -f .data
 	-rm -f .text
 	-rm -f .rela.dyn
+	-rm -f .symtab
+	-rm -f .symtab_offset
 
 distclean: clean
 

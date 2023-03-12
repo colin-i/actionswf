@@ -429,12 +429,12 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
 
     #PlaceMatrix
     sd matrix
-    datax maxtrixsz#1
-    call matrix_translate(#matrix,#maxtrixsz,x,y)
+    datax matrixsz#1
+    call matrix_translate(#matrix,#matrixsz,x,y)
     if writeflag==1
-        call swf_mem_add(matrix,maxtrixsz)
+        call swf_mem_add(matrix,matrixsz)
     else
-        add size maxtrixsz
+        add size matrixsz
     endelse
 
     chars CXFORMWITHALPHA=0
