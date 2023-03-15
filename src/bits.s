@@ -96,7 +96,7 @@ function rect_prepare(sv p_out,sv p_size,sd width,sd height)  #p_size is a stack
     mult width 20
     mult height 20
     setcall NBits numbitsMax(width,height)
-    chars rect#31*4+5
+    char rect#31*4+5
     call bits_packs(#rect,5,NBits,(NBits_size),0,NBits,width,NBits,0,NBits,height,NBits)
     sd size=4
     mult size NBits
@@ -108,7 +108,7 @@ function rect_prepare(sv p_out,sv p_size,sd width,sd height)  #p_size is a stack
     set p_size# size
 endfunction
 function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
-    chars matrix#1+4+4
+    char matrix#1+4+4
     set p_dest# #matrix
     if x==0
         if y==0
@@ -129,7 +129,7 @@ function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
         add size 7
         div size 8
 
-	#this is no more than chars matrix
+	#this is no more than char matrix
     set p_size# size
 endfunction
 

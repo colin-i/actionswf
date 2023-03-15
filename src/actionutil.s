@@ -18,7 +18,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
     sd error_row=0
     #
     sd comments=0
-    chars lines_com_c1="*";chars lines_com_c2="/";ss test
+    char lines_com_c1="*";char lines_com_c2="/";ss test
     const line_comment=1
     const multiLine_comment=2
     #
@@ -88,9 +88,9 @@ function escape_count(ss string,sd escape)
             set escaped 0
 
 		#this is not working nowadays, printf is searching for floats on xmm registers, kept as legacy
-		chars l="l"
+		char l="l"
 		if string#==l
-			chars f="f";
+			char f="f";
 			ss double_test=1
 			add double_test string
 			if double_test#==f
@@ -147,7 +147,7 @@ function action_error()
     setcall row escape_action(ac,mem,p_c#)
     import "string_nl_print" string_nl_print
     #a small reserve for a number like 2 000 000 000
-    chars row_nr#dword_to_string_chars
+    char row_nr#dword_to_string_char
     call sprintf(#row_nr,"%u",row)
     call string_nl_print(#row_nr)
     call string_nl_print(p_c#)
@@ -351,7 +351,7 @@ import "error" error
 import "forward_values_expand" forward_values_expand
 function action_member_write(ss member)
     const dup_member=256
-    chars dup_data#dup_member
+    char dup_data#dup_member
     vstr code^dup_data
     sd len
     setcall len strlen(member)
@@ -404,7 +404,7 @@ function action_format(sv args)
     sd args_nr=2
     sv args_format
     set args_format args;incst args_format
-    chars e="%"
+    char e="%"
     addcall args_nr escape_count(args_format#,e)
     callex sprintf args args_nr
     call action(args#)

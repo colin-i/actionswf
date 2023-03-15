@@ -51,7 +51,7 @@ const negative_means_action_sprite_pool=0x80*0x100*0x100*0x100
 const fd_error=-1
 const fd_none=fd_error
 const not_an_id=-1
-const dword_to_string_chars=1+9+1
+const dword_to_string_char=1+9+1
 
 const End=0
 const ShowFrame=1

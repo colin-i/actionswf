@@ -20,7 +20,7 @@ import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
 #operations str
 function get_operations()
     const operations_begin=!
-    chars operations="+-*/%&|^<>?"
+    char operations="+-*/%&|^<>?"
     #subtract 1 is for the string termination
     const operations_size=!-operations_begin-1
     return #operations
@@ -43,7 +43,7 @@ import "is_numeric" is_numeric
 
 #strpbrk
 function action_code_membersplit(ss ac)
-    chars delims=".["
+    char delims=".["
     ss next
     setcall next strpbrk(ac,#delims)
     return next
@@ -138,7 +138,7 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
                 endif
                 #using the operations function
                 inc ac
-                chars closecompare=")"
+                char closecompare=")"
                 setcall ac action_code_row_parse_tool(ac,closecompare)
                 #if ac#!=closecompare
                 #    call error("close parenthesis expected")
@@ -352,7 +352,7 @@ function action_code_row_parse_instrument(ss ac)
     setcall pointer str_expression_at_start(ac,"return")
     if pointer!=ac
         call action_code_set((ActionReturn))
-        chars an_end=";"
+        char an_end=";"
         setcall ac action_code_row_parse_tool(pointer,an_end)
         return ac
     endif
@@ -386,9 +386,9 @@ function action_parse_pack(ss ac,sd endChar)
         endif
     endelse
     sd op
-    chars set={Equals}
-    chars secondChar#1
-    chars *term=0
+    char set={Equals}
+    char secondChar#1
+    char *term=0
     set secondChar endChar
     ss delims^set
 
@@ -555,14 +555,14 @@ endfunction
 #pointer
 function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_bool)  #p_op is pointing at a stack variable
     sd bool
-    #can be on the stack but chars are low values; ends are set again when recursivity
-    chars oprs#operations_size
-    chars *=Openingbracket
-    chars *=Exclamationmark
-    chars *=Equals
-    chars end#1
-    chars end2#1
-    chars *term=0
+    #can be on the stack but char is low value; ends are set again when recursivity
+    char oprs#operations_size
+    char *=Openingbracket
+    char *=Exclamationmark
+    char *=Equals
+    char end#1
+    char end2#1
+    char *term=0
     #
     sd is_compare_ptr
     setcall is_compare_ptr compare_bool_pointer()
@@ -699,7 +699,7 @@ function action_code_take_main(ss ac,sv p_op,ss delims) #p_op is pointing at a s
         return pointer
     endif
     #a variable(a.b.c[1+d])
-    chars neg="-"
+    char neg="-"
     if pointer#==neg
         inc pointer
     endif
@@ -745,8 +745,8 @@ import "str_escape" str_escape
 #next/0
 function action_code_str(ss ac)
     sd delim
-    chars stringdelim="\""
-    chars stringdelim2="'"
+    char stringdelim="\""
+    char stringdelim2="'"
     set delim stringdelim
     if ac#!=stringdelim
         if ac#!=stringdelim2
@@ -782,7 +782,7 @@ endfunction
 #bool
 function numeric_code(ss ac)
     ss pointer;set pointer ac
-    chars neg="-"
+    char neg="-"
     if pointer#==neg
         inc pointer
     endif
@@ -793,7 +793,7 @@ function numeric_code(ss ac)
     data value_low#1;data value_high#1
     #
     ss decimal_symbol_test
-    chars dot="."
+    char dot="."
     setcall decimal_symbol_test strchr(pointer,dot)
     if decimal_symbol_test!=(NULL)
         call action_code_set((ap_double))
@@ -808,7 +808,7 @@ function numeric_code(ss ac)
     ss hextest
     set hextest pointer
     inc hextest
-    chars hex="x"
+    char hex="x"
     if hextest#==hex
         call sscanf(ac,"%x",#value_low)
     else
@@ -819,8 +819,8 @@ function numeric_code(ss ac)
 endfunction
 function action_code_member(ss ac)
     vstr delims=".["
-    chars dot=".";chars sqbrace_start="["
-    chars sqbrace_end="]"
+    char dot=".";char sqbrace_start="["
+    char sqbrace_end="]"
     while ac#!=0
         sd pos
         setcall pos strcspn(ac,delims)
@@ -1122,7 +1122,7 @@ function action_code_parse_leftfunction(ss ac)
     endif
     #a call
     setcall ac action_code_parse_new_or_call(ac,(call_action_left))
-    chars end=";"
+    char end=";"
     if ac#==end
         inc ac
     endif
@@ -1178,8 +1178,8 @@ function action_code_parse_function_arguments(ss pointer)
     #arguments
     # this was for what? sd math_values
     # setcall math_values action_code_get()
-    chars comma=","
-    chars close=")"
+    char comma=","
+    char close=")"
     inc pointer
     if pointer#==close
         inc pointer
@@ -1244,7 +1244,7 @@ function action_code_parse_deffunction(ss ac)
     call action_code_set((function_action))
     ss name_start
     set name_start pointer
-    chars startsign="("
+    char startsign="("
     ss args
     setcall args strchr(pointer,startsign)
     if args==(NULL)
@@ -1278,7 +1278,7 @@ endfunction
 #pointer
 function action_code_parse_function_defarguments(ss ac)
     vstr argsdelims=",)"
-    chars close=")"
+    char close=")"
     inc ac
     if ac#==close
         inc ac

@@ -12,9 +12,9 @@ function args_advance(sv p_args)
     add p_args# (DWORD)
     return value#
 endfunction
-const max_chars_records=256
+const max_char_records=256
 function shapewithstyle_records()
-    chars shapewithstyle_record#max_chars_records
+    char shapewithstyle_record#max_char_records
     return #shapewithstyle_record
 endfunction
 
@@ -48,10 +48,10 @@ const sim64pointerSize=pointer_rest
 function edittext_struct()
     data fontid#1
     data *font_height#1
-    str *fontclassname#1;chars *sim64pointer#sim64pointerSize
+    str *fontclassname#1;char *sim64pointer#sim64pointerSize
     data *rgba#1
     data *maxlength#1
-    str *initialtext#1;chars *sim64pointer#sim64pointerSize
+    str *initialtext#1;char *sim64pointer#sim64pointerSize
     data *layout_align#1
     data *layout_leftmargin#1
     data *layout_rightmargin#1
@@ -133,7 +133,7 @@ function shape_records_bits(sd value,sd size,sv p_dest_pos)
     sd pointer
     set pointer p_dest_pos#
     subcall pointer shapewithstyle_records()
-    if pointer==(max_chars_records)
+    if pointer==(max_char_records)
     #was >=
         call error("too many arguments at shape")
     endif
@@ -373,8 +373,8 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
 
     add size Characters_CharacterEndFlag_size
 
-    chars BUTTONCONDACTION={0,0};#CondActionSize
-    chars *={8,0};#CondOverDownToOverUp
+    char BUTTONCONDACTION={0,0};#CondActionSize
+    char *={8,0};#CondOverDownToOverUp
     const BUTTONCONDACTION_header_size=2+2
     #is action,pool and sprite, it's more code to get action,pool only
     import "new_sprite_id" new_sprite_id
@@ -389,7 +389,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     sd ButtonId
     setcall ButtonId identifiers_get()
     call swf_mem_add(#ButtonId,2)
-    chars TrackAsMenu=0
+    char TrackAsMenu=0
     call swf_mem_add(#TrackAsMenu,(BYTE))
     sd ActionOffset=2;add ActionOffset Characters_CharacterEndFlag_size
     call swf_mem_add(#ActionOffset,(WORD))
@@ -400,7 +400,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     if noText==(FALSE)
         call buttonrecord(1,0,y,(ButtonStateUp|ButtonStateOver|ButtonStateDown|ButtonStateHitTest),text_id,4)
     endif
-    chars CharacterEndFlag=0
+    char CharacterEndFlag=0
     call swf_mem_add(#CharacterEndFlag,1)
     import "write_action" write_action
     call swf_mem_add(#BUTTONCONDACTION,(BUTTONCONDACTION_header_size))
@@ -414,9 +414,9 @@ endfunction
 function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
     #ButtonReserved[2]=0,ButtonHasBlendMode[1]=0,ButtonHasFilterList[1]=0
     #states[4]
-    chars bits#1
-    chars CharacterID#2
-    chars PlaceDepth#2
+    char bits#1
+    char CharacterID#2
+    char PlaceDepth#2
 
     sd size=1+2+2
 
@@ -437,7 +437,7 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
         add size matrixsz
     endelse
 
-    chars CXFORMWITHALPHA=0
+    char CXFORMWITHALPHA=0
     if writeflag==1
         call swf_mem_add(#CXFORMWITHALPHA,(BYTE))
     else

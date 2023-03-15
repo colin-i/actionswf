@@ -94,7 +94,7 @@ endfunction
 
 function string_nl_print(ss msg)
     call printEr(msg)
-    chars nl={0xa,0}
+    char nl={0xa,0}
     call printEr(#nl)
 endfunction
 
@@ -148,8 +148,8 @@ endfunction
 
 #bool
 function is_numeric(sd char)
-    chars min="0"
-    chars max="9"
+    char min="0"
+    char max="9"
     if char<min
         return (FALSE)
     elseif char<=max
@@ -241,7 +241,7 @@ function str_expression_at_start_withEndCare(ss ac,ss expression)
     if pointer==ac
         return ac
     endif
-    chars term=";"
+    char term=";"
     if pointer#==term
         inc pointer
     endif
@@ -510,7 +510,7 @@ function str_escape(ss src,ss dest,sd delim)
     #elseif src#==delim2
     #    set loop 0
     else
-        chars escape="\\"
+        char escape="\\"
         while src#==escape
             if escapes==0
                 set escapes 1

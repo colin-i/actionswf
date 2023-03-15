@@ -182,10 +182,10 @@ functionX swf_font(ss fontname,sd font_flags)
 #sd font_flags  = prog.h file is with the flags
     const font_hd_start=!
 
-    chars id#2
-    chars Flags#1
-    chars *Language=0
-    chars FontNameLen#1
+    char id#2
+    char Flags#1
+    char *Language=0
+    char FontNameLen#1
 
     const font_hd_start_size=!-font_hd_start
     vdata font_hd_start^id
@@ -214,10 +214,10 @@ functionX swf_font(ss fontname,sd font_flags)
     call swf_mem_add(fontname,FontNameLen)
     call swf_mem_add(#NumGlyphs,2)
     if has_layout!=0
-        chars FontAscent={0,0}
-        chars *FontDescent={0,0}
-        chars *FontLeading={0,0}
-        chars *KerningCount={0,0}
+        char FontAscent={0,0}
+        char *FontDescent={0,0}
+        char *FontLeading={0,0}
+        char *KerningCount={0,0}
         call swf_mem_add(#FontAscent,(2+2+2+2))
     endif
     return fontid
@@ -361,11 +361,11 @@ functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv st
         mult layout_rightmargin 20
         mult layout_indent 20
         mult layout_leading 20
-        chars l_align#1
-        chars l_leftmargin#2
-        chars l_rightmargin#2
-        chars l_indent#2
-        chars l_leading#2
+        char l_align#1
+        char l_leftmargin#2
+        char l_rightmargin#2
+        char l_indent#2
+        char l_leading#2
         set l_align layout_align
         call dword_to_word_arg(layout_leftmargin,#l_leftmargin)
         call dword_to_word_arg(layout_rightmargin,#l_rightmargin)
@@ -419,8 +419,8 @@ functionX swf_shape(sd width,sd height,sd args)
     add shape_size rect_size
 
     #SHAPEWITHSTYLE
-    chars FillStyleCount#1
-        chars FillStyleType#1
+    char FillStyleCount#1
+        char FillStyleType#1
     #
         data data#3
     vdata fillstyles^FillStyleCount
@@ -449,15 +449,15 @@ functionX swf_shape(sd width,sd height,sd args)
             #rotate is 0
             #translate nbits is 0
             call bits_packs(fill_pointer,6,1,1,(predef_nbits),(NBits_size),(predef_XYscale),(predef_nbits),(predef_XYscale),(predef_nbits),0,1,0,(NBits_size))
-            #chars ref_id#2
-            #chars matrix#7
+            #char ref_id#2
+            #char matrix#7
             add fillstyles_size (2+7)
         endelse
     endif
     add shape_size fillstyles_size
     #
-    chars LineStyleCount#1
-    chars line_points#2
+    char LineStyleCount#1
+    char line_points#2
     data color#1
     vdata linestyles^LineStyleCount
     sd linestyles_size=1
@@ -630,8 +630,8 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
     if size<8
         call error("missing image header")
     endif
-    chars hd_magic1={D,B,l,1};vdata magic1^hd_magic1
-    chars hd_magic2={D,B,l,2};vdata magic2^hd_magic2
+    char hd_magic1={D,B,l,1};vdata magic1^hd_magic1
+    char hd_magic2={D,B,l,2};vdata magic2^hd_magic2
     if mem#!=magic1#
     if mem#!=magic2#
         call printEr("expecting dbl(define bits lossless 1 or 2)header; filepath: ")
@@ -733,18 +733,18 @@ functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
 
     #F=uncompressed, C=ZLib
 const hd_start=!
-    chars *=F
-    chars *={W,S}
-    chars *version=8
+    char *=F
+    char *={W,S}
+    char *version=8
 const file_sz_off=!
     data *FileLength#1
 data size=!-hd_start
 vdata hd_pack%hd_start
     #rect
 const hd2=!
-    chars *FrameRate=0
-        chars FrameRate#1
-    chars *FrameCount={1,0}
+    char *FrameRate=0
+        char FrameRate#1
+    char *FrameCount={1,0}
 data size2=!-hd2
 vdata hd_pack2%hd2
 
@@ -760,10 +760,10 @@ vdata hd_pack2%hd2
     call swf_mem_add(hd_pack2,size2)
     #
 
-    chars setbackgroundtag#2
-    chars red#1
-    chars green#1
-    chars blue#1
+    char setbackgroundtag#2
+    char red#1
+    char green#1
+    char blue#1
 
     set blue backgroundcolor
     sd g_color=0xff00;and g_color backgroundcolor;div g_color 0x100;set green g_color

@@ -262,15 +262,15 @@ function swf_actionblock_add(sd value,sd size)
     call swf_actionblock((mem_exp_add),value,size)
 endfunction
 function actionrecordheader(sd tag,sd size)
-    chars t#1
-    chars length#2
+    char t#1
+    char length#2
     set t tag
     call dword_to_word_arg(size,#length)
     call swf_actionblock_add(#t,3)
 endfunction
 function swf_actionrecordheader(sd tag,sd size)
-    chars t#1
-    chars length#2
+    char t#1
+    char length#2
     set t tag
     call dword_to_word_arg(size,#length)
     call swf_mem_add(#t,3)
