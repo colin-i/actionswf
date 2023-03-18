@@ -12,8 +12,7 @@ functionx erbool_reset()
 endfunction
 
 functionx freereset()
+#this is called by user only if want to abort after some calls
 	import "freestart" freestart
-	import "freelater" freelater
 	call freestart()
-	call freelater()
 endfunction
