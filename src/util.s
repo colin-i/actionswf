@@ -283,6 +283,15 @@ endfunction
 
 #
 
+function freelater()
+    #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
+    call action_debug_free()
+    #
+    call file_get_content__resources_free()
+
+    call file_resources_free()
+endfunction
+
 import "action_error" action_error
 importx "freereset" freereset
 import "action_debug_free" action_debug_free
@@ -312,12 +321,6 @@ function error(ss msg)
     call action_error()
 
     call freereset()
-    #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
-    call action_debug_free()
-    #
-    call file_get_content__resources_free()
-
-    call file_resources_free()
 
     ss p;setcall p erbool();set p# 1
 endfunction

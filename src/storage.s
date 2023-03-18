@@ -44,6 +44,13 @@ function exportsId()
     return #exports
 endfunction
 
+function freestart()
+	import "debug_free" debug_free
+	call debug_free()
+    #free and set initial null/-1.....
+    call swf_mem((mem_exp_free))
+endfunction
+
 import "mem_free" mem_free
 import "action_code_values_free" action_code_values_free
 import "file_close" file_close

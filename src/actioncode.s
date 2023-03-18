@@ -207,11 +207,6 @@ endfunction
 
 #entries write
 
-function action__code(sd mathpointer)
-    while mathpointer#!=(math_end)
-        setcall mathpointer action__code_row(mathpointer)
-    endwhile
-endfunction
 import "action_push" action_push
 import "action_one" action_one
 import "action_member_loop" action_member_loop

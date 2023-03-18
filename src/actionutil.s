@@ -11,6 +11,19 @@ import "spaces" spaces
 
 #strings
 
+#0 yes  1 no
+function row_termination(sv p_ac,sv p_row)
+	ss ac;set ac p_ac#
+	if ac#==0xa
+		inc p_row#
+		return 0
+	elseif ac#==0xd3
+		inc ac;if ac#==0xa;set p_ac# ac;endif
+		inc p_row#
+		return 0
+	endelseif
+	return 1
+endfunction
 #error_row
 function escape_action(ss ac,ss pointer,ss stop_pointer)
     sd row=1
@@ -41,32 +54,32 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
             endif
         endif
         #
+	import "debug_phase_init" debug_phase_init
         while loop2==1
-            if ac#==0xa
-                set loop2 0
-                inc row
-            elseif ac#==0xd
-                set loop2 0
-                set test ac;inc test;if test#==0xa;inc ac;endif
-                inc row
-            elseif ac#==0
-                set loop2 0
-                set loop1 0
-                set pointer# 0
-            else
-                if comments==0
-                    if pointer==stop_pointer
-                        set error_row row
-                    else
-                        set pointer# ac#
-                    endelse
-                    inc pointer
-                elseif comments==(multiLine_comment)
-                    if ac#==lines_com_c1
-                        set test ac;inc test;if test#==lines_com_c2;set comments 0;inc ac;endif
-                    endif
-                endelseif
-            endelse
+		setcall loop2 row_termination(#ac,#row)
+		if loop2==1
+			if ac#==0
+				set loop2 0
+				set loop1 0
+				set pointer# 0
+				call debug_phase_init(pointer)
+			else
+				if comments==0
+				    if pointer==stop_pointer
+				        set error_row row
+				    else
+				        set pointer# ac#
+				    endelse
+				    inc pointer
+				elseif comments==(multiLine_comment)
+				    if ac#==lines_com_c1
+				        set test ac;inc test;if test#==lines_com_c2;set comments 0;inc ac;endif
+				    endif
+				endelseif
+			endelse
+		else
+			call debug_phase_init(pointer)
+		endelse
             inc ac
         endwhile
 	if error_row!=0

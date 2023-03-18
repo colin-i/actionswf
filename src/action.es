@@ -15,7 +15,7 @@ importaftercall ebool
 
 #this/an action
 
-import "action__code" action__code
+import "action__code_row" action__code_row
 import "action_code_set" action_code_set
 import "action_code_row" action_code_row
 import "dupreserve_string" dupreserve_string
@@ -38,6 +38,10 @@ functionX action(ss ac)
     setcall p_action_errors action_debug((TRUE))
     set p_action_errors# (TRUE)
 	sv cursor;set cursor p_action_errors;add cursor (DWORD);set cursor# ac;add cursor :;set cursor# mem
+
+	import "debug_action_init" debug_action_init
+	call debug_action_init(ac)
+
     call escape_action(ac,mem,0)
     while mem#!=0
         setcall mem action_code_row(mem,(FALSE))
@@ -49,8 +53,10 @@ functionX action(ss ac)
 
     call brace_blocks_end()
 
-    #                 code_values are not reallocated
-    call action__code(p_values)
+	#                 code_values are not reallocated
+	while p_values#!=(math_end)
+		setcall p_values action__code_row(p_values)
+	endwhile
 
     #free mem ok,another free can be at errors
     call action_debug_free()

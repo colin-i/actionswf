@@ -23,13 +23,13 @@ import "word_arg_to_dword" word_arg_to_dword
 import "file_get_content__resources_free" file_get_content__resources_free
 import "file_resources_set" file_resources_set
 import "file_resources_free" file_resources_free
-importx "freereset" freereset
 import "struct_ids" struct_ids
 import "matrix_translate" matrix_translate
 import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "free_sprite_id" free_sprite_id
 import "block_reset_size" block_reset_size
+import "freestart" freestart
 
 
 
@@ -721,10 +721,13 @@ functionX swf_done()
     call swf_actionblock((mem_exp_part_done));#in case there are remaining actions
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
-    call freereset()
+    call freestart()
 endfunction
 
 functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
+	call swf_new_ex(path,width,height,backgroundcolor,fps,(FALSE))
+endfunction
+functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add_debug)
 #ss path             file out pathname
 #sd width
 #sd height
@@ -748,8 +751,10 @@ const hd2=!
 data size2=!-hd2
 vdata hd_pack2%hd2
 
-    #
+	import "debug_init" debug_init
+	call debug_init(add_debug)
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
+
     #identifiers for swf
     call identifiers_set(1);#font with id 0 isn't visible in the placements
 
