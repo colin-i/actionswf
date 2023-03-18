@@ -293,7 +293,9 @@ function freelater()
 endfunction
 
 import "action_error" action_error
-import "freestart" freestart
+
+import "freereset" freereset   #..x with no args
+
 import "action_debug_free" action_debug_free
 import "file_get_content__resources_free" file_get_content__resources_free
 
@@ -320,7 +322,7 @@ function error(ss msg)
     call string_nl_print(msg)
     call action_error()
 
-	call freestart()
+	call freereset()
 	call freelater()
 
     ss p;setcall p erbool();set p# 1

@@ -29,7 +29,7 @@ import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "free_sprite_id" free_sprite_id
 import "block_reset_size" block_reset_size
-import "freestart" freestart
+import "freereset" freereset   #..x with no args
 
 
 
@@ -721,7 +721,7 @@ functionX swf_done()
     call swf_actionblock((mem_exp_part_done));#in case there are remaining actions
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
-    call freestart()
+    call freereset()
 endfunction
 
 functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
