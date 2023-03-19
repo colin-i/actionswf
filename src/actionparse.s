@@ -117,7 +117,9 @@ const sar_shr=Greaterthan
 const ifElse_sign=Questionmark
 #pointer
 function action_code_row(ss ac,sd a_block_detected)
-    setcall ac action_code_row_ex(ac,a_block_detected,-1)
+	setcall ac action_code_row_ex(ac,a_block_detected,-1)
+	import "debug_phase_parse" debug_phase_parse
+	call debug_phase_parse(ac)
     return ac
 endfunction
 #pointer

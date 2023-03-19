@@ -25,6 +25,10 @@ function debug_mark_get()
 	return b
 endfunction
 
+function debug_end()
+	valuex a#1
+	return #a
+endfunction
 
 function debug_phase_init(ss pointer)
 	sv of%%p_offsets
@@ -34,8 +38,26 @@ function debug_phase_init(ss pointer)
 		call debug_mark_add()
 	endif
 endfunction
-#function debug_phase_parse()
-#endfunction
+function debug_phase_parse(ss pointer)
+	sv of%%p_offsets
+	if of#!=(NULL)
+		import "action_code_values_index" action_code_values_index
+		sd x;setcall x action_code_values_index()
+		set x x#
+		sv end;setcall end debug_end()
+		set end end#
+		sv a;setcall a debug_mark_get()
+		setcall a debug_mark_get()
+		while a#!=end           # != end? it's not with spaces at end, therefore ";   \nabc" can go wrong
+			set a#d^ x   #x is index, 0,1..n
+			if a#>=^pointer   # and > ? same like above
+				break
+			endif
+			call debug_mark_add()
+			setcall a debug_mark_get()
+		endwhile
+	endif
+endfunction
 #function debug_phase_code()
 #endfunction
 
@@ -48,6 +70,12 @@ function debug_free()
 	endif
 endfunction
 
+function debug_action_parse()
+	sv of%%p_offsets
+	if of#!=(NULL)
+		call debug_mark_start()  #second iteration
+	endif
+endfunction
 
 import "row_termination" row_termination
 
@@ -76,5 +104,10 @@ function debug_action_init(ss ac)
 		import "memrealloc" memrealloc
 		setcall of# memrealloc(of#,row)
 		call debug_mark_start()  #prepare for first iteration
+
+		#store end, more at phase_parse
+		add row of#
+		sv end;setcall end debug_end()
+		set end# row
 	endif
 endfunction

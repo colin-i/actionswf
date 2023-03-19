@@ -43,6 +43,10 @@ functionX action(ss ac)
 	call debug_action_init(ac)
 
     call escape_action(ac,mem,0)
+
+	import "debug_action_parse" debug_action_parse
+	call debug_action_parse()
+
     while mem#!=0
         setcall mem action_code_row(mem,(FALSE))
     endwhile
