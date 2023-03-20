@@ -118,8 +118,6 @@ const ifElse_sign=Questionmark
 #pointer
 function action_code_row(ss ac,sd a_block_detected)
 	setcall ac action_code_row_ex(ac,a_block_detected,-1)
-	import "debug_phase_parse" debug_phase_parse
-	call debug_phase_parse(ac)
     return ac
 endfunction
 #pointer
@@ -155,6 +153,9 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
         endif
     endwhile
     setcall ac action_code_row_parse(ac,a_block_detected,else_index)
+	import "debug_phase_parse" debug_phase_parse
+	#around: else if(2==2){return 2;}else{return 3;}, with \n-s,this here and not at action_code_row,a lot of breakpoints
+	call debug_phase_parse(ac)
     return ac
 endfunction
 #pointer

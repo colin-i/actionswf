@@ -25,13 +25,15 @@ function debug_mark_get()
 	return b
 endfunction
 
-function debug_end()
+#function debug_end();valuex a#1;return #a;endfunction
+
+function debug_target()
 	valuex a#1
 	return #a
 endfunction
 
 function debug_phase_init(ss pointer)
-	sv of%%p_offsets
+	sv of%p_offsets
 	if of#!=(NULL)
 		sv a;setcall a debug_mark_get()
 		set a# pointer
@@ -39,39 +41,49 @@ function debug_phase_init(ss pointer)
 	endif
 endfunction
 function debug_phase_parse(ss pointer)
-	sv of%%p_offsets
+	sv of%p_offsets
 	if of#!=(NULL)
-		import "action_code_values_index" action_code_values_index
-		sd x;setcall x action_code_values_index()
-		set x x#
-		sv end;setcall end debug_end()
-		set end end#
-		sv a;setcall a debug_mark_get()
-		setcall a debug_mark_get()
-		while a#!=end           # != end? it's not with spaces at end, therefore ";   \nabc" can go wrong
-			set a#d^ x   #x is index, 0,1..n
-			if a#>=^pointer   # and > ? same like above
-				break
-			endif
-			call debug_mark_add()
-			setcall a debug_mark_get()
-		endwhile
+		sv a
+		sv start;setcall start debug_mark_get()
+		sv target;setcall target debug_target()
+		if target#==(NULL)
+		#need to know empty rows
+			set a start
+			while pointer>a#
+				incst a
+			endwhile
+			set target# a
+		else
+			set a target#
+		endelse
+		if pointer>=^a#  # and > ? it's not with spaces at end, therefore ";   \nabc" can go wrong
+			import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
+			sd x;setcall x action_code_get()
+			while start#<^pointer   #or a
+				set start# x
+				call debug_mark_add()
+				setcall start debug_mark_get()
+			endwhile
+		endif
 	endif
 endfunction
-#function debug_phase_code()
-#endfunction
+function debug_phase_code(sd *codepointer)
+	sv of%p_offsets
+	if of#!=(NULL)
+	endif
+endfunction
 
 import "mem_free" mem_free
 
 function debug_free()
-	sv of%%p_offsets
+	sv of%p_offsets
 	if of#!=(NULL)
 		call mem_free(of)
 	endif
 endfunction
 
 function debug_action_parse()
-	sv of%%p_offsets
+	sv of%p_offsets
 	if of#!=(NULL)
 		call debug_mark_start()  #second iteration
 	endif
@@ -86,14 +98,14 @@ importaftercall ebool
 import "memalloc" memalloc
 
 function debug_init(sd bool)
-	sv of%%p_offsets
+	sv of%p_offsets
 	if bool==(TRUE)
 		setcall of# memalloc(0)
 	endif
 endfunction
 
 function debug_action_init(ss ac)
-	sv of%%p_offsets
+	sv of%p_offsets
 	if of#!=(NULL)
 		sd row=1     #at least one row, example: row 1,3 actions
 		while ac#!=0
@@ -106,8 +118,10 @@ function debug_action_init(ss ac)
 		call debug_mark_start()  #prepare for first iteration
 
 		#store end, more at phase_parse
-		add row of#
-		sv end;setcall end debug_end()
-		set end# row
+		#add row of#;;sv end;setcall end debug_end();;set end# row
+
+		#set target to 0, for recognizing blank rows
+		sv target;setcall target debug_target()
+		set target# (NULL)
 	endif
 endfunction

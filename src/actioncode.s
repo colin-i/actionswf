@@ -147,6 +147,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	return (NULL)
 endfunction
 
+import "debug_phase_code" debug_phase_code
 
 
 
@@ -214,6 +215,12 @@ import "brace_blocks_add_write" brace_blocks_add_write
 import "brace_blocks_remove_write" brace_blocks_remove_write
 #position
 function action__code_row(sd codepointer)
+	setcall codepointer action__code_row_ex(codepointer)
+	call debug_phase_code(codepointer)
+	return codepointer
+endfunction
+#position
+function action__code_row_ex(sd codepointer)
     sd pointer
     set pointer codepointer
     setcall pointer action_code_write_conditions(codepointer)
@@ -801,6 +808,7 @@ function action_definefunction(sd codepointer)
     endif
     add codepointer (DWORD)
     setcall codepointer action_deffunction(codepointer)
+	call debug_phase_code(codepointer)
     #a function marker for return and for..in case
     sd block;setcall block cond_blocks();set block# (brace_blocks_function);call brace_blocks_counter_inc()
     #
