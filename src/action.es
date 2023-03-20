@@ -44,8 +44,8 @@ functionX action(ss ac)
 
     call escape_action(ac,mem,0)
 
-	import "debug_action_parse" debug_action_parse
-	call debug_action_parse()
+	import "debug_action_phase" debug_action_phase
+	call debug_action_phase()
 
     while mem#!=0
         setcall mem action_code_row(mem,(FALSE))
@@ -56,6 +56,8 @@ functionX action(ss ac)
     set p_action_errors# (FALSE)
 
     call brace_blocks_end()
+
+	call debug_action_phase()
 
 	#                 code_values are not reallocated
 	while p_values#!=(math_end)

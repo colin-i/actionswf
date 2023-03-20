@@ -25,8 +25,6 @@ function debug_mark_get()
 	return b
 endfunction
 
-#function debug_end();valuex a#1;return #a;endfunction
-
 function debug_target()
 	valuex a#1
 	return #a
@@ -64,6 +62,9 @@ function debug_phase_parse(ss pointer)
 				call debug_mark_add()
 				setcall start debug_mark_get()
 			endwhile
+			set start# x      #also,set for this row, can be the only set
+			call debug_mark_add()
+			set target# (NULL)
 		endif
 	endif
 endfunction
@@ -82,10 +83,10 @@ function debug_free()
 	endif
 endfunction
 
-function debug_action_parse()
+function debug_action_phase()
 	sv of%p_offsets
 	if of#!=(NULL)
-		call debug_mark_start()  #second iteration
+		call debug_mark_start()  #second and third iteration
 	endif
 endfunction
 
@@ -115,10 +116,8 @@ function debug_action_init(ss ac)
 		mult row :
 		import "memrealloc" memrealloc
 		setcall of# memrealloc(of#,row)
-		call debug_mark_start()  #prepare for first iteration
 
-		#store end, more at phase_parse
-		#add row of#;;sv end;setcall end debug_end();;set end# row
+		call debug_mark_start()  #prepare for first iteration
 
 		#set target to 0, for recognizing blank rows
 		sv target;setcall target debug_target()

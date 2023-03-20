@@ -808,7 +808,10 @@ function action_definefunction(sd codepointer)
     endif
     add codepointer (DWORD)
     setcall codepointer action_deffunction(codepointer)
+
+	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
+
     #a function marker for return and for..in case
     sd block;setcall block cond_blocks();set block# (brace_blocks_function);call brace_blocks_counter_inc()
     #
