@@ -37,7 +37,14 @@ function file_close(sd p_file)
     set p_file# (fd_none)
 endfunction
 
+importx "fclose" fclose
 
+function f_close(sv p_file)
+	call fclose(p_file#)
+	set p_file# (NULL)
+endfunction
+
+importx "free" free
 
 
 
@@ -121,4 +128,25 @@ function file_write(sd file,sd buffer,sd size)
     endif
     vstr er="File write error"
     call error(er)
+endfunction
+
+importx "fopen" fopen
+
+function f_open_mem(sd path,sd format)
+	sd f;setcall f fopen(path,format)
+	if f==(NULL)
+		call free(path)
+		call error("fopen error")
+	endif
+	call free(path)
+	return f
+endfunction
+
+importx "fprintf" fprintf
+
+function f_printf2(sd file,sd format,sd p1,sd p2)
+	sd r;setcall r fprintf(file,format,p1,p2)
+	if r==-1
+		call error("fprintf error")
+	endif
 endfunction

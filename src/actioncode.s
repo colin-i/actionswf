@@ -147,15 +147,11 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	return (NULL)
 endfunction
 
-import "debug_phase_code" debug_phase_code
-
-
-
-
-
 
 
 importaftercall ebool
+
+import "debug_phase_code" debug_phase_code
 
 function action_code_values_init()
     import "memalloc" memalloc

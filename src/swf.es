@@ -752,7 +752,7 @@ data size2=!-hd2
 vdata hd_pack2%hd2
 
 	import "debug_init" debug_init
-	call debug_init(add_debug)
+	call debug_init(add_debug,path)
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
 
     #identifiers for swf
