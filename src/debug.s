@@ -92,6 +92,13 @@ function debug_phase_parse(ss pointer)
 		set target# (NULL)
 	endif
 endfunction
+function debug_phase_code_add()
+	sv of%p_offsets
+	if of#!=(NULL)
+		sd acts;setcall acts debug_actions()
+		inc acts#
+	endif
+endfunction
 
 function debug_action_phase()
 	sv of%p_offsets
@@ -141,7 +148,7 @@ function debug_action_init(ss ac)
 
 		#out rows\nac\n
 		sv file%p_debug_file
-		char f={Percent,l,u,LineFeed,Percent,s,Nullchar}
+		char f={Percent,l,u,LineFeed,Percent,s,LineFeed,Nullchar}
 		call f_printf2(file#,#f,row,start)
 
 		mult row :
@@ -185,7 +192,7 @@ function debug_phase_code(sd codepointer)
 			sv file%p_debug_file
 			char f={Percent,l,u,Comma,Percent,u,LineFeed,Nullchar}   #must escape \n or something
 			call f_printf2(file#,#f,b,acts#)
-			#set acts# 0
+			set acts# 0
 		endif
 	endif
 endfunction
