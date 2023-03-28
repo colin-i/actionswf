@@ -5,9 +5,9 @@ importx "sprintf" sprintf
 
 #a simple shape moving on the stage example
 
-warning off
+orphan off
 include "../dev/import.h"
-warning on
+orphan on
 
 const width=640
 const height=480
