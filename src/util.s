@@ -383,7 +383,7 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     #    set allsize sz_test
         setcall block memrealloc(block,sz_test)  #allsize
         set p_block# block
-        set block# sz_test  #allsize
+        set block# sz_test  ##allsize
     endif
     sd pointer
     set pointer block

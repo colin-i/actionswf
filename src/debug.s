@@ -87,7 +87,7 @@ function debug_phase_parse(ss pointer)
 			call debug_mark_add()
 			setcall start debug_mark_get()
 		endwhile
-		set start# x      #also,set for this row, can be the only set
+		set start# x      ##also,set for this row, can be the only set
 		call debug_mark_add()
 		set target# (NULL)
 	endif
