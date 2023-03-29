@@ -14,10 +14,10 @@ import "spaces" spaces
 #0 yes  1 no
 function row_termination(sv p_ac,sv p_row)
 	ss ac;set ac p_ac#
-	if ac#==0xa
+	if ac#==(LineFeed)
 		inc p_row#
 		return 0
-	elseif ac#==0xd3
+	elseif ac#==(CarriageReturn)
 		inc ac;if ac#==0xa;set p_ac# ac;endif
 		inc p_row#
 		return 0
