@@ -16,7 +16,7 @@ OLINK=ounused
 endif
 
 ifndef syms
-syms=-s
+syms="-O3 -s"
 endif
 
 ifndef OSTRIP
