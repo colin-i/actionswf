@@ -15,8 +15,8 @@ ifndef OLINK
 OLINK=ounused
 endif
 
-ifndef syms
-syms=-O1 -s
+ifndef linkerflags
+linkerflags=-O1 -s
 endif
 
 ifndef OSTRIP
@@ -65,9 +65,9 @@ OFLAGS += inplace_reloc 0 include_sec 1
 all: compile ounused link def
 link:
 	if [ "${conv_64}" = "1" ]; then \
-		i686-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		i686-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	else \
-		x86_64-w64-mingw32-ld --no-leading-underscore ${syms} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		x86_64-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
 
 else
@@ -77,12 +77,12 @@ OFLAGS += underscore_pref 1
 all: ${libname}
 
 ifeq (${conv_64},1)
-ATLDCOM = $(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 ${libname}: ${name}
 	cp ${name} ${libname}
 
 else
-ATLDCOM = $(CC) ${syms} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
+ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	cp ${name} ${libname}
@@ -159,8 +159,8 @@ uninstall:
 
 .NOTPARALLEL:
 
-#make compile && make link syms= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
-#make syms= conv_64=0
-#make syms= conv_64=0 link
+#make compile && make link linkerflags= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
+#make linkerflags= conv_64=0
+#make linkerflags= conv_64=0 link
 
 #make strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py" OFLAGSEXTRA="function_name 1 nul_res_pref 1"

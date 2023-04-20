@@ -6,7 +6,7 @@ OCOMP=o
 endif
 
 OLINK=ounused
-syms=-s
+linkerflags=-s
 conv_64=0
 OFLAGS=conv_64 ${conv_64}
 
@@ -43,18 +43,18 @@ lib:
 link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${syms} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
+			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
 		else \
-			$(CC) ${syms} ${name}.o -o ${name} -L../src -l:${libname}; \
+			$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
-			i686-w64-mingw32-ld ${syms} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+			i686-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 		else \
-			x86_64-w64-mingw32-ld ${syms} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+			x86_64-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 		fi \
 	fi
-#$(LD) ${syms} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:actionswf.so; \
+#$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:actionswf.so; \
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
