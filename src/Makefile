@@ -16,7 +16,8 @@ OLINK=ounused
 endif
 
 ifndef linkerflags
-linkerflags=-O1 -s
+linkerflags=-s
+#-O0 to 3 is same at .so here
 endif
 
 ifndef OSTRIP
