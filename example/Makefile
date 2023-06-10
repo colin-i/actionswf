@@ -17,7 +17,7 @@ linkfile=${linkname}.lib
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0 include_sec 1
 else
-	libname=lib${linkname}.so
+	libname=${linkname}.so
 	ifeq (${conv_64},1)
 		OFLAGS += exit_end 1
 		# underscore_pref 1   win32 with _, can go back to this later
