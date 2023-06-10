@@ -1,2 +1,3 @@
 
+#cd ~/Desktop/ostriputil/ostriputil-1; ./i
 nobits_virtual=0 OCOMP=~/o/ocompiler-1/src/o OSTRIP=~/o/ocompiler-1/ostrip/ostrip make OFLAGSEXTRA="nul_res_pref 1"
