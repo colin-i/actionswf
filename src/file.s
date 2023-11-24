@@ -13,7 +13,7 @@ import "printEr" printEr
 
 function file_get_content__resources(sd trueIsSet_falseIsFree,sd fileIn,sd memIn)
     data file=fd_none;vdata mem=NULL
-    if trueIsSet_falseIsFree==(TRUE)
+    if trueIsSet_falseIsFree=(TRUE)
         if fileIn!=(fd_none);set file fileIn
         else;set mem memIn;endelse
     else
@@ -59,7 +59,7 @@ function file_open(ss filepath,sd flags)
     sd creat_test;set creat_test flags;and creat_test (flag_O_CREAT);if creat_test!=0
         set permission (flag_pmode);endif
     SetCall file open(filepath,flags,permission)
-    if file==(fd_error)
+    if file=(fd_error)
         call printEr("File: \"")
         call printEr(filepath)
         call error("\" cannot be opened")
@@ -69,7 +69,7 @@ endfunction
 function file_seek(sd file,sd off,sd method)
     sd seekint
     setcall seekint lseek(file,off,method)
-    If seekint==-1
+    If seekint=-1
         vstr seekerr="File seek error"
         call error(seekerr)
     endif
@@ -78,7 +78,7 @@ endfunction
 function file_tell(sd file)
     sd sz
     setcall sz lseek(file,0,(SEEK_CUR))
-    if sz==-1
+    if sz=-1
         vstr tellerr="File tell error"
         call error(tellerr)
     endif
@@ -118,12 +118,12 @@ endfunction
 #write
 
 function file_write(sd file,sd buffer,sd size)
-    if size==0
+    if size=0
         return (void)
     endif
     sd len
     setcall len write(file,buffer,size)
-    if len==size
+    if len=size
         return (void)
     endif
     vstr er="File write error"
@@ -134,7 +134,7 @@ importx "fopen" fopen
 
 function f_open_mem(sd path,sd format)
 	sd f;setcall f fopen(path,format)
-	if f==(NULL)
+	if f=(NULL)
 		call free(path)
 		call error("fopen error")
 	endif
@@ -146,7 +146,7 @@ importx "fprintf" fprintf
 
 function f_printf2(sd file,sd format,sd p1,sd p2)
 	sd r;setcall r fprintf(file,format,p1,p2)
-	if r==-1
+	if r=-1
 		call error("fprintf error")
 	endif
 endfunction

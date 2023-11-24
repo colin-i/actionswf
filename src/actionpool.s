@@ -66,7 +66,7 @@ function actionpool_getvalue(ss value)
     sd nr
     sd newlen
     setcall newlen strlen(value)
-    if size==0
+    if size=0
     #add the pools header and count=1, later add value for count=1
         sd onevalue=1
         call swf_mem_add(#onevalue,2)
@@ -81,10 +81,10 @@ function actionpool_getvalue(ss value)
         while count!=0
             sd len
             setcall len strlen(mem)
-            if len==newlen
+            if len=newlen
                 sd comp
                 setcall comp memcmp(mem,value,len)
-                if comp==0
+                if comp=0
                     sub nr count
                     return nr
                 endif

@@ -123,7 +123,7 @@ vstr actions#1
     sd noText=FALSE;sd text_id
     data t_null={0,0}
     sd b;setcall b memcmp(#t_null,#text,:)
-    if b==0
+    if b=0
         set noText (TRUE)
         set bmem# noText
     else
@@ -164,7 +164,7 @@ functionX swf_button_last(ss newtext,ss actions)
     setcall bmem button_mem()
     call memcpy(#shape_up,bmem,(9*DWORD))
 
-    if noText==(FALSE)
+    if noText=(FALSE)
         sd newtext_id
         setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,font_color)
     endif
@@ -386,9 +386,9 @@ functionX swf_shape(sd width,sd height,sd args)
 #sd width
 #sd height
 #sd args        see swf_shape_basic or swf_image(last part) for example, or see shape_records_add and it's sub-functions to see how the swf SHAPERECORD is added
-    if width==0
+    if width=0
         call error("shape width 0 not allowed")
-    elseif height==0
+    elseif height=0
         call error("shape height 0 not allowed")
     endelseif
     sd fillstyle
@@ -430,7 +430,7 @@ functionX swf_shape(sd width,sd height,sd args)
         set FillStyleCount 1
         set FillStyleType fillstyle
         add fillstyles_size 1
-        if fillstyle==(solid_fill)
+        if fillstyle=(solid_fill)
             setcall data dword_swap(fillarg)
             add fillstyles_size (DWORD)
         else
@@ -564,7 +564,7 @@ functionX swf_shape_border(sd width,sd height,sd linesize,sd linecolor)
     mult neg_w width
     mult neg_h height
     #
-    if linesize==0;call error("is useless to call shape_border with linesize=0");endif
+    if linesize=0;call error("is useless to call shape_border with linesize=0");endif
     data border=no_fill
     data l_w#1
         set l_w linesize
@@ -638,7 +638,7 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
         call error(imagepath)
     endif;endif
     sd header=DefineBitsLossless2
-    if mem#==magic1#
+    if mem#=magic1#
         set header (DefineBitsLossless)
     endif
     set cursor mem
@@ -929,7 +929,7 @@ functionX swf_exports_add(sd id,ss name)
     sd size
     setcall size block_get_size(block)
     sd counter
-    if size==0
+    if size=0
         set counter 1
         call swf_mem_add(#counter,(WORD))
     else

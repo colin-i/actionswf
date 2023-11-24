@@ -161,7 +161,7 @@ endfunction
 function part_of_variable(sd value)
     sd bool
     setcall bool is_numeric(value)
-    if bool==(TRUE)
+    if bool=(TRUE)
         return (TRUE)
     endif
     setcall bool is_letter(value)
@@ -173,7 +173,7 @@ function is_letter(sd value)
         return (FALSE)
     elseif value<=(Z)
         return (TRUE)
-    elseif value==(_)
+    elseif value=(_)
         return (TRUE)
     elseif value<(a)
         return (FALSE)
@@ -193,7 +193,7 @@ function str_next(ss s,ss delims,sv p_op)  #p_op is pointing at a stack variable
     set x s
     add x pos
     set p_op# x#
-    if x#==0
+    if x#=0
         return x
     endif
     set x# 0
@@ -211,7 +211,7 @@ function str_at_str_start(ss s1,ss s2)
     endif
     sd comp
     setcall comp memcmp(s1,s2,l2)
-    if comp==0
+    if comp=0
         return (TRUE)
     endif
     return (FALSE)
@@ -221,14 +221,14 @@ endfunction
 function str_expression_at_start(ss string,ss expression)
     sd bool
     setcall bool str_at_str_start(string,expression)
-    if bool==(FALSE)
+    if bool=(FALSE)
         return string
     endif
     ss next
     set next string
     addcall next strlen(expression)
     setcall bool part_of_variable(next#)
-    if bool==(TRUE)
+    if bool=(TRUE)
         return string
     endif
     setcall next spaces(next)
@@ -238,11 +238,11 @@ endfunction
 function str_expression_at_start_withEndCare(ss ac,ss expression)
     ss pointer
     setcall pointer str_expression_at_start(ac,expression)
-    if pointer==ac
+    if pointer=ac
         return ac
     endif
     char term=";"
-    if pointer#==term
+    if pointer#=term
         inc pointer
     endif
     return pointer
@@ -250,7 +250,7 @@ endfunction
 
 #str
 function spaces(ss str)
-    while 1==1
+    while 1=1
         if str#!=(Space)
             if str#!=(HorizontalTab)
                 return str
@@ -266,7 +266,7 @@ endfunction
 import "file_close" file_close
 function file_resources(sd trueIsSet_falseIsFree,sd fileIn)
     data file=fd_none
-    if trueIsSet_falseIsFree==(TRUE)
+    if trueIsSet_falseIsFree=(TRUE)
         set file fileIn
     else
         if file!=(fd_none)
@@ -334,7 +334,7 @@ function memrealloc(sd mem,sd size)
     sd ptr;sd n=NULL
     setcall ptr realloc(mem,size)
     sd comp;setcall comp memcmp(#ptr,#n,:)
-    if comp==0
+    if comp=0
         call error("realloc failed")
     endif
     return ptr
@@ -403,7 +403,7 @@ function struct_ids(sd proc,sd id)
     data counter=0
     sv ac_ptr
     sv pointer
-    if proc==(ids_all_free)
+    if proc=(ids_all_free)
         #starting with ids_all_free:
         #                #counter increment#, then null at ac,pools
         #   mem_free at struct_ids_action_expand
@@ -416,20 +416,20 @@ function struct_ids(sd proc,sd id)
             setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
         endwhile
         return (void)
-    elseif proc==(ids_counter)
+    elseif proc=(ids_counter)
         return counter
     endelseif
 
     sd ident
-    if proc==(ids_set)
+    if proc=(ids_set)
         set ident counter
     else
         set ident id
     endelse
     setcall pointer move_to_n_pointer(strct,ident)
-    if proc==(ids_set)
+    if proc=(ids_set)
     #id
-        if counter==(max_structures)
+        if counter=(max_structures)
             call error("too many objects")
         endif
         sv iter
@@ -439,7 +439,7 @@ function struct_ids(sd proc,sd id)
         while iter!=strct
         #can be in a free place
             sub iter :
-            if iter#==0
+            if iter#=0
                 set iter# newblock
                 sub iter strct
                 div iter :
@@ -454,10 +454,10 @@ function struct_ids(sd proc,sd id)
         setcall ac_ptr struct_ids_actionpool((ids_get_pointer),c);set ac_ptr# (NULL)
         #counter increment#
         return ident
-    elseif proc==(ids_get_pointer)
+    elseif proc=(ids_get_pointer)
         if ident>=counter;call error("Unexistent input id.");endif
         return pointer
-    elseif proc==(ids_get)
+    elseif proc=(ids_get)
         return pointer#
     else
     #if proc==(ids_free)
@@ -476,15 +476,15 @@ function struct_ids_actionpool(sd proc,sd id)
 endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
     sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
-    if proc==(ids_set)
+    if proc=(ids_set)
         setcall pointer# def_data()
-    elseif proc==(ids_get_pointer)
+    elseif proc=(ids_get_pointer)
         #call to verify if the user input has a wrong id
         sd c;setcall c struct_ids((ids_counter))
         if id>=c;call error("Unregistered input id.");endif
         #
         return pointer
-    elseif proc==(ids_get)
+    elseif proc=(ids_get)
         return pointer#
     else
     #if proc==(ids_free)
@@ -510,15 +510,15 @@ function str_escape(ss src,ss dest,sd delim)
     sd loop=1
     sd escapes=0
     inc src
-    while loop==1
-    if src#==delim
+    while loop=1
+    if src#=delim
         set loop 0
     #elseif src#==delim2
     #    set loop 0
     else
         char escape="\\"
-        while src#==escape
-            if escapes==0
+        while src#=escape
+            if escapes=0
                 set escapes 1
             else
                 set dest# src#
@@ -527,10 +527,10 @@ function str_escape(ss src,ss dest,sd delim)
             endelse
             inc src
         endwhile
-        if src#==0
+        if src#=0
             call error("end string expected")
         endif
-        if escapes==1
+        if escapes=1
             set dest# src#
             inc src
             inc dest

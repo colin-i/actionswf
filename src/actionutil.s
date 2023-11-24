@@ -14,11 +14,11 @@ import "spaces" spaces
 #0 yes  1 no
 function row_termination(sv p_ac,sv p_row)
 	ss ac;set ac p_ac#
-	if ac#==(LineFeed)
+	if ac#=(LineFeed)
 		inc p_row#
 		return 0
-	elseif ac#==(CarriageReturn)
-		inc ac;if ac#==0xa;set p_ac# ac;endif
+	elseif ac#=(CarriageReturn)
+		inc ac;if ac#=0xa;set p_ac# ac;endif
 		inc p_row#
 		return 0
 	endelseif
@@ -35,19 +35,19 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
     const line_comment=1
     const multiLine_comment=2
     #
-    while loop1==1
+    while loop1=1
         sd loop2=1
         setcall ac spaces(ac)
         #
         if comments!=(multiLine_comment)
             set comments 0
-            if ac#==(Slash)
+            if ac#=(Slash)
                 set test ac
                 inc test
-                if test#==(Slash)
+                if test#=(Slash)
                     set comments (line_comment)
                     add ac 2
-                elseif test#==lines_com_c1
+                elseif test#=lines_com_c1
                     set comments (multiLine_comment)
                     add ac 2
                 endelseif
@@ -55,25 +55,25 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
         endif
         #
 	import "debug_phase_init" debug_phase_init
-        while loop2==1
+        while loop2=1
 		setcall loop2 row_termination(#ac,#row)
-		if loop2==1
-			if ac#==0
+		if loop2=1
+			if ac#=0
 				set loop2 0
 				set loop1 0
 				set pointer# 0
 				call debug_phase_init(pointer)
 			else
-				if comments==0
-				    if pointer==stop_pointer
+				if comments=0
+				    if pointer=stop_pointer
 				        set error_row row
 				    else
 				        set pointer# ac#
 				    endelse
 				    inc pointer
-				elseif comments==(multiLine_comment)
-				    if ac#==lines_com_c1
-				        set test ac;inc test;if test#==lines_com_c2;set comments 0;inc ac;endif
+				elseif comments=(multiLine_comment)
+				    if ac#=lines_com_c1
+				        set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
 				    endif
 				endelseif
 			endelse
@@ -94,19 +94,19 @@ function escape_count(ss string,sd escape)
     sd nr=0
     sd escaped=0
     while string#!=0
-        if string#==escape
+        if string#=escape
             xor escaped 1
-        elseif escaped==1
+        elseif escaped=1
 		inc nr
             set escaped 0
 
 		#this is not working nowadays, printf is searching for floats on xmm registers, kept as legacy
 		char l="l"
-		if string#==l
+		if string#=l
 			char f="f";
 			ss double_test=1
 			add double_test string
-			if double_test#==f
+			if double_test#=f
 				inc nr
 			endif
 		endif
@@ -123,7 +123,7 @@ function action_debug(sd is_on)
     data action_errors=FALSE
     vstr *#1
     vstr m=NULL
-    if is_on==(FALSE)
+    if is_on=(FALSE)
         #set there and here, here good at errors and comeback
         set action_errors (FALSE)
         import "mem_free" mem_free
@@ -144,7 +144,7 @@ endfunction
 function action_error()
     sd p_action_errors
     setcall p_action_errors action_debug((TRUE))
-    if p_action_errors#==(FALSE)
+    if p_action_errors#=(FALSE)
         return (void)
     endif
 
@@ -192,7 +192,7 @@ function pool_size(sd id)
     sd poolsize
     setcall poolsize block_get_size(poolblock)
     #detected at button actions="", swfdump giving error without "if poolsize!=0"
-    if poolsize==0;return 0;endif
+    if poolsize=0;return 0;endif
     #add header
     add poolsize (1+2)
     return poolsize
@@ -217,15 +217,15 @@ function action_push(sd factors)
 	sd size=0
 	while iter#!=-1
 		inc size
-		if iter#==(ap_Integer)
+		if iter#=(ap_Integer)
 			add size (DWORD)
 			incst iter
-		elseif iter#==(ap_double)
+		elseif iter#=(ap_double)
 			add size (QWORD)
 			add iter (2*:)
-		elseif iter#==(ap_Null)
+		elseif iter#=(ap_Null)
 		#skip
-		elseif iter#==(ap_Undefined)
+		elseif iter#=(ap_Undefined)
 		#skip
 		else
 		#if iter#==(ap_RegisterNumber)
@@ -235,7 +235,7 @@ function action_push(sd factors)
 			sd value
 			set value iter#
 			incst iter
-			if value==(ap_Constant8)
+			if value=(ap_Constant8)
 			#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
 				sd translated_id
 				setcall translated_id actionpool_value(iter#v^)
@@ -252,7 +252,7 @@ function action_push(sd factors)
 	sd cursor^factors
 	while cursor#!=-1
 		#test here Constant8 to Constant16
-		if cursor#==(ap_Constant8)
+		if cursor#=(ap_Constant8)
 			sv pointer
 			set pointer cursor
 			incst pointer
@@ -268,23 +268,23 @@ function action_push(sd factors)
 
 		call swf_actionblock_add(cursor,1)
 
-		if cursor#==(ap_Integer)
+		if cursor#=(ap_Integer)
 			incst cursor
 			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#==(ap_double)
+		elseif cursor#=(ap_double)
 			incst cursor
 			call swf_actionblock_add(cursor,(DWORD))
 			incst cursor
 			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#==(ap_RegisterNumber)
+		elseif cursor#=(ap_RegisterNumber)
 			incst cursor
 			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#==(ap_Boolean)
+		elseif cursor#=(ap_Boolean)
 			incst cursor
 			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#==(ap_Null)
+		elseif cursor#=(ap_Null)
 		#skip
-		elseif cursor#==(ap_Undefined)
+		elseif cursor#=(ap_Undefined)
 		#skip
 		else
 		#if cursor#==(ap_Constant8)
@@ -326,14 +326,14 @@ import "action_get_one" action_get_one
 #the position where the mathpointer reachs
 function action_member_loop(sd mathpointer,sd endoffset)
     call action_get_one(mathpointer#v^)
-    while 1==1
+    while 1=1
         add mathpointer :  #to pass the pointer
         #
-        while mathpointer#==(square_bracket_start)
+        while mathpointer#=(square_bracket_start)
         #multi-dim arrays
             add mathpointer (DWORD)
             setcall mathpointer action_code_right_util(mathpointer)
-            if endoffset==(get_member)
+            if endoffset=(get_member)
                 call action_one((ActionGetMember))
             else
                 if mathpointer#v^!=(no_pointer)
@@ -348,7 +348,7 @@ function action_member_loop(sd mathpointer,sd endoffset)
         set endtest mathpointer
         add endtest endoffset
         #
-        if endtest#==(no_pointer)
+        if endtest#=(no_pointer)
             if endoffset!=(no_pointer)
                 #push to set later
                 call action_push((ap_Constant8),mathpointer#v^,-1)
@@ -406,7 +406,7 @@ function pool_wr(sd id)
     sd poolsize
     setcall poolsize block_get_size(poolblock)
     #detected at button actions="", swfdump giving error without "if poolsize!=0"
-    if poolsize==0;return 0;endif
+    if poolsize=0;return 0;endif
     sd poolmem
     setcall poolmem block_get_mem(poolblock)
     call swf_actionrecordheader((ActionConstantPool),poolsize)

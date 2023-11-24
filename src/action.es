@@ -25,7 +25,7 @@ functionX action(ss ac)
     sd p_values
     setcall p_values action_code_values()
     import "error" error
-    if p_values==(NULL);call error("Don't call the action now.");endif
+    if p_values=(NULL);call error("Don't call the action now.");endif
     #
     sd nr
     setcall nr action_code_values_index()

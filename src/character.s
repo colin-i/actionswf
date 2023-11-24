@@ -33,10 +33,10 @@ endfunction
 #get:fill/lin
 function NumFill_NumLin(sd set_get,sd fill,sd lin)
     data NFill_NLin#1
-    if set_get==0
+    if set_get=0
         set NFill_NLin lin;mult fill 0x10;or NFill_NLin fill
     else
-        if fill==(FALSE);set lin NFill_NLin;and lin 0x0F;return lin
+        if fill=(FALSE);set lin NFill_NLin;and lin 0x0F;return lin
         else;set fill NFill_NLin;div fill 0x10;return fill;endelse
     endelse
 endfunction
@@ -133,7 +133,7 @@ function shape_records_bits(sd value,sd size,sv p_dest_pos)
     sd pointer
     set pointer p_dest_pos#
     subcall pointer shapewithstyle_records()
-    if pointer==(max_char_records)
+    if pointer=(max_char_records)
     #was >=
         call error("too many arguments at shape")
     endif
@@ -146,12 +146,12 @@ function shape_records_add(sd p_dest_pos,sd p_args)
     sd edge
     setcall edge args_advance(p_args)
     call shape_records_bits(edge,1,p_dest_pos)
-    if edge==0
+    if edge=0
     #StyleChangeRecord,#EndShapeRecord
         sd flags
         setcall flags args_advance(p_args)
         call shape_records_bits(flags,5,p_dest_pos)
-        if flags==0
+        if flags=0
         #EndShapeRecord
             return (void)
         endif
@@ -182,7 +182,7 @@ function shape_records_add(sd p_dest_pos,sd p_args)
 endfunction
 function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
     and flags (StateMoveTo)
-    if flags==0
+    if flags=0
         return (void)
     endif
     sd x
@@ -201,7 +201,7 @@ function shape_records_add_edge(sd p_dest_pos,sd p_args)
     sd straight_edge
     setcall straight_edge args_advance(p_args)
     call shape_records_bits(straight_edge,1,p_dest_pos)
-    if straight_edge==1
+    if straight_edge=1
         call shape_records_add_edge_straight(p_dest_pos,p_args)
     else
         call shape_records_add_edge_curved(p_dest_pos,p_args)
@@ -219,16 +219,16 @@ function shape_records_add_edge_straight(sd p_dest_pos,sd p_args)
     if width!=0;if height!=0;set GeneralLineFlag 1;endif;endif
     call shape_records_bits(GeneralLineFlag,1,p_dest_pos)
     #Vert(1)/Horz(0)
-    if GeneralLineFlag==0
+    if GeneralLineFlag=0
         sd vertical=1;if width!=0;set vertical 0;endif
         call shape_records_bits(vertical,1,p_dest_pos)
     endif
     #DeltaX SB[NumBits+2]
-    sd DeltaX=TRUE;if GeneralLineFlag==0;if vertical==1;set DeltaX (FALSE);endif;endif
-    if DeltaX==(TRUE);call shape_records_bits(width,counter,p_dest_pos);endif
+    sd DeltaX=TRUE;if GeneralLineFlag=0;if vertical=1;set DeltaX (FALSE);endif;endif
+    if DeltaX=(TRUE);call shape_records_bits(width,counter,p_dest_pos);endif
     #DeltaY SB[NumBits+2]
-    sd DeltaY=TRUE;if GeneralLineFlag==0;if vertical==0;set DeltaY (FALSE);endif;endif
-    if DeltaY==(TRUE);call shape_records_bits(height,counter,p_dest_pos);endif
+    sd DeltaY=TRUE;if GeneralLineFlag=0;if vertical=0;set DeltaY (FALSE);endif;endif
+    if DeltaY=(TRUE);call shape_records_bits(height,counter,p_dest_pos);endif
 endfunction
 function shape_records_add_edge_curved(sd p_dest_pos,sd p_args)
     sd control_x
@@ -280,7 +280,7 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
     sub height_variable ycurve
 
     data header#4
-    sd struct^header;if lineheight==0;add struct (DWORD);endif
+    sd struct^header;if lineheight=0;add struct (DWORD);endif
     sd cursor;set cursor struct
     set cursor# (solid_fill)
     add cursor (DWORD);set cursor# fillcolor
@@ -366,7 +366,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     sd Characters_CharacterEndFlag_size
     setcall Characters_CharacterEndFlag_size buttonrecord(0,0,0)
     mult Characters_CharacterEndFlag_size 3
-    if noText==(FALSE)
+    if noText=(FALSE)
         addcall Characters_CharacterEndFlag_size buttonrecord(0,0,y)
     endif
     inc Characters_CharacterEndFlag_size
@@ -397,7 +397,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     call buttonrecord(1,0,0,(ButtonStateUp),state_def_id,1)
     call buttonrecord(1,0,0,(ButtonStateOver),state_over_id,2)
 	call buttonrecord(1,0,0,(ButtonStateDown|ButtonStateHitTest),state_down_id,3)
-    if noText==(FALSE)
+    if noText=(FALSE)
         call buttonrecord(1,0,y,(ButtonStateUp|ButtonStateOver|ButtonStateDown|ButtonStateHitTest),text_id,4)
     endif
     char CharacterEndFlag=0
@@ -420,7 +420,7 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
 
     sd size=1+2+2
 
-    if writeflag==1
+    if writeflag=1
         set bits states
         call dword_to_word_arg(id,#CharacterID)
         call dword_to_word_arg(depth,#PlaceDepth)
@@ -431,20 +431,20 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
     sd matrix
     datax matrixsz#1
     call matrix_translate(#matrix,#matrixsz,x,y)
-    if writeflag==1
+    if writeflag=1
         call swf_mem_add(matrix,matrixsz)
     else
         add size matrixsz
     endelse
 
     char CXFORMWITHALPHA=0
-    if writeflag==1
+    if writeflag=1
         call swf_mem_add(#CXFORMWITHALPHA,(BYTE))
     else
         add size (BYTE)
     endelse
 
-    if writeflag==0
+    if writeflag=0
         return size
     endif
 endfunction

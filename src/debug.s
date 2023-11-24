@@ -66,7 +66,7 @@ function debug_phase_parse(ss pointer)
 		sv a
 		sv start;setcall start debug_mark_get()
 		sv target;setcall target debug_target()
-		if target#==(NULL)
+		if target#=(NULL)
 		#need to know empty rows
 			set a start
 			while pointer>a#
@@ -121,7 +121,7 @@ import "f_open_mem" f_open_mem
 
 function debug_init(sd bool,sd path)
 	sv of%p_offsets
-	if bool==(TRUE)
+	if bool=(TRUE)
 		setcall of# memalloc(0)
 
 		sd a;setcall a strlen(path)
@@ -174,13 +174,13 @@ function debug_phase_code(sd codepointer)
 	sv of%p_offsets
 	if of#!=(NULL)
 		sv a;setcall a debug_mark_get()
-		if codepointer==a#   #can also be smaller
+		if codepointer=a#   #can also be smaller
 			sv b;set b a
 			sv end;setcall end debug_end()
-			while codepointer==b#
+			while codepointer=b#
 				call debug_mark_add()
 				setcall b debug_mark_get()
-				if b==end#
+				if b=end#
 					break
 				endif
 			endwhile

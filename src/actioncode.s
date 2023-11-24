@@ -54,9 +54,9 @@ function get_nr_of_forIn_statements()
     while counter>0
         dec counter
         sub block (DWORD)
-        if block#==(brace_blocks_function)
+        if block#=(brace_blocks_function)
             return nr
-        elseif block#==(for_marker)
+        elseif block#=(for_marker)
             inc nr
         endelseif
     endwhile
@@ -69,62 +69,62 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	sd compare
 	vstr int="int"
 	setcall compare strcmp(codepointer,int)
-	if compare==0
+	if compare=0
 		set p_action# (ActionToInteger)
 		return int
 	endif
 	vstr rnd="random"
 	setcall compare strcmp(codepointer,rnd)
-	if compare==0
+	if compare=0
 	#0�(maximum-1)
 		set p_action# (ActionRandomNumber)
 		return rnd
 	endif
 	vstr ascii="ord"
 	setcall compare strcmp(codepointer,ascii)
-	if compare==0
+	if compare=0
 		set p_action# (ActionCharToAscii)
 		return ascii
 	endif
 	vstr chr="chr"
 	setcall compare strcmp(codepointer,chr)
-	if compare==0
+	if compare=0
 		set p_action# (ActionAsciiToChar)
 		return chr
 	endif
 	vstr typeOf="typeof"
 	setcall compare strcmp(codepointer,typeOf)
-	if compare==0
+	if compare=0
 		set p_action# (ActionTypeOf)
 		return typeOf
 	endif
 	vstr stop="stop"
 	setcall compare strcmp(codepointer,stop)
-	if compare==0
+	if compare=0
 		set p_action# (ActionStop)
 		return stop
 	endif
 	vstr play="play"
 	setcall compare strcmp(codepointer,play)
-	if compare==0
+	if compare=0
 		set p_action# (ActionPlay)
 		return play
 	endif
 	vstr nframe="nextFrame"
 	setcall compare strcmp(codepointer,nframe)
-	if compare==0
+	if compare=0
 		set p_action# (ActionNextFrame)
 		return nframe
 	endif
 	vstr pframe="prevFrame"
 	setcall compare strcmp(codepointer,pframe)
-	if compare==0
+	if compare=0
 		set p_action# (ActionPreviousFrame)
 		return pframe
 	endif
 	vstr goto="gotoAndStop"
 	setcall compare strcmp(codepointer,goto)
-	if compare==0
+	if compare=0
 		set p_action# (ActionGotoFrame)
 		inc p_action
 		set p_action# (ActionEndFlag)   #even if it's playing, it will stop, no ActionStop here
@@ -132,7 +132,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	endif
 	vstr gotop="gotoAndPlay"
 	setcall compare strcmp(codepointer,gotop)
-	if compare==0
+	if compare=0
 		set p_action# (ActionGotoFrame)
 		inc p_action
 		set p_action# (ActionPlay)
@@ -140,7 +140,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	endif
 	vstr trace="trace"
 	setcall compare strcmp(codepointer,trace)
-	if compare==0
+	if compare=0
 		set p_action# (ActionTrace)
 		return trace
 	endif
@@ -180,7 +180,7 @@ function action_code_set_ex(sd value,sd size)
 	sd pointer
 	setcall pointer action_code_values()
 	add pointer to
-	if size==1
+	if size=1
 		set pointer# value
 	else
 		set pointer#v^ value
@@ -229,33 +229,33 @@ function action__code_row_ex(sd codepointer)
     endif
     sd attrib
     set attrib codepointer#
-    if attrib==(ActionReturn)
+    if attrib=(ActionReturn)
         add codepointer (DWORD)
         call close_scope_forIn_statements()
         setcall codepointer action_code_right_util(codepointer)
         call action_one((ActionReturn))
         return codepointer
-    elseif attrib==(block_end)
+    elseif attrib=(block_end)
         add codepointer (DWORD)
-        if codepointer#==(else_flag)
+        if codepointer#=(else_flag)
             call action_code_else_add()
             add codepointer (DWORD)
         else
             call brace_blocks_remove_write()
         endelse
         return codepointer
-    elseif attrib==(block_else_end)
+    elseif attrib=(block_else_end)
         setcall codepointer action_code_conditions_end(codepointer)
         return codepointer
-    elseif attrib==(whileblock_end)
+    elseif attrib=(whileblock_end)
         import "brace_blocks_remove_write_jump" brace_blocks_remove_write_jump
         call brace_blocks_remove_write_jump()
         add codepointer (DWORD)
         return codepointer
-    elseif attrib==(break_flag)
+    elseif attrib=(break_flag)
         call action_code_break()
         add codepointer (DWORD);return codepointer
-    elseif attrib==(continue_flag)
+    elseif attrib=(continue_flag)
         call action_code_continue()
         add codepointer (DWORD);return codepointer
     endelseif
@@ -270,38 +270,38 @@ function action_code_pack(sd codepointer)
     sd is_member=FALSE
     sd need_right=TRUE
     sd need_pop=FALSE
-    if attrib==(ActionSetMember)
+    if attrib=(ActionSetMember)
         set is_member (TRUE)
-    elseif attrib==(ActionDelete)
+    elseif attrib=(ActionDelete)
         set is_member (TRUE)
         set need_right (FALSE)
         set need_pop (TRUE)
-    elseif attrib==(ActionDefineLocal2)
+    elseif attrib=(ActionDefineLocal2)
         set need_right (FALSE)
-    elseif attrib==(ActionDelete2)
+    elseif attrib=(ActionDelete2)
         set need_right (FALSE)
         set need_pop (TRUE)
     endelseif
     #
-    if is_member==(TRUE)
+    if is_member=(TRUE)
         setcall codepointer action_member_loop(codepointer,:)   #to pass the pointer
     else
     #definelocal or setvariable or delete2
         call action_push((ap_Constant8),codepointer#v^,-1)
         add codepointer :  #to pass the pointer
     endelse
-    if need_right==(TRUE)
-        if codepointer#==(ActionIncrement)
+    if need_right=(TRUE)
+        if codepointer#=(ActionIncrement)
             add codepointer (DWORD)
             call action_code_inc_dec((ActionIncrement),attrib)
-        elseif codepointer#==(ActionDecrement)
+        elseif codepointer#=(ActionDecrement)
             add codepointer (DWORD)
             call action_code_inc_dec((ActionDecrement),attrib)
-        elseif codepointer#==(mixt_equal)
+        elseif codepointer#=(mixt_equal)
             #+= .. ^= ..
             add codepointer (DWORD)
             sd mixt_op;set mixt_op codepointer#;add codepointer (DWORD)
-            if attrib==(ActionSetVariable);call action_code_dupGet_var()
+            if attrib=(ActionSetVariable);call action_code_dupGet_var()
             else;call action_code_dupGet_member();endelse
             setcall codepointer action_code_right(codepointer)
             call action_one(mixt_op)
@@ -310,7 +310,7 @@ function action_code_pack(sd codepointer)
         endelse
     endif
     call action_one(attrib)
-    if need_pop==(TRUE)
+    if need_pop=(TRUE)
         call action_one((ActionPop))
     endif
     return codepointer
@@ -318,7 +318,7 @@ endfunction
 import "actionrecordheader" actionrecordheader
 import "swf_actionblock_add" swf_actionblock_add
 function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember)
-    if setvar_or_setmember==(ActionSetVariable)
+    if setvar_or_setmember=(ActionSetVariable)
         call action_code_dupGet_var()
         call action_one(inc_dec)
     else
@@ -352,7 +352,7 @@ import "resolve_dummy_jump" resolve_dummy_jump
 function action_code_write_conditions(sd codepointer)
     #verify for condition tag
     sd cond;set cond codepointer#
-    if cond==(for_marker)
+    if cond=(for_marker)
         add codepointer (DWORD)
         if codepointer#!=(for_three)
             call action_push((ap_Constant8),codepointer#v^,-1);add codepointer :   #to pass the pointer
@@ -371,7 +371,7 @@ function action_code_write_conditions(sd codepointer)
             #
             sd attr2;set attr2 codepointer#;add codepointer (DWORD)
             #
-            if attr2==(ActionSetMember)
+            if attr2=(ActionSetMember)
                 setcall codepointer action_member_loop(codepointer,:)  #to pass the pointer
             else
                 #var or set variable
@@ -399,10 +399,10 @@ function action_code_write_conditions(sd codepointer)
         import "write_forward_offset" write_forward_offset
         sub sizeOff (WORD)
         call write_forward_offset(sizeOff)
-    elseif cond==(while_marker)
+    elseif cond=(while_marker)
         call add_while_top_off((while_marker))
         add codepointer (DWORD)
-    elseif cond==(ActionIf)
+    elseif cond=(ActionIf)
         add codepointer (DWORD)
     else
         return codepointer
@@ -433,7 +433,7 @@ const forIn_ifBreak_size=3+1+1+3+2
 function action_code_break()
     sd c_block;setcall c_block prepare_space_for_break()
     sd p_type;set p_type c_block;sub p_type (2*DWORD)
-    if p_type#==(while_marker)
+    if p_type#=(while_marker)
         call write_jump(0)
     else
         call action_push((ap_Null),-1)
@@ -445,7 +445,7 @@ function action_code_break()
     setcall memblock brace_blocks_get_memblock()
     setcall c_block# block_get_size(memblock);sub c_block# (WORD)
     #
-    if p_type#==(for_marker);call write_jump((-2-3-forIn_ifBreak_size));endif
+    if p_type#=(for_marker);call write_jump((-2-3-forIn_ifBreak_size));endif
     #
     call brace_blocks_counter_inc()
 endfunction
@@ -476,7 +476,7 @@ function prepare_space_for_break()
     sd copy_cursor;set copy_cursor c_blocks
     while counter>0
         sub c_blocks (DWORD)
-        if c_blocks#==0
+        if c_blocks#=0
             add c_blocks (DWORD)
             sd cursor;set cursor copy_cursor;sub cursor (DWORD)
             while copy_cursor!=c_blocks
@@ -505,7 +505,7 @@ function action_code_continue()
     sd c;setcall c brace_blocks_counter();sd counter;set counter c#
     while counter>0
         sub c_blocks (DWORD)
-        if c_blocks#==0
+        if c_blocks#=0
             #the loop type and to the offset to jump from here
             sub c_blocks (2*DWORD)
             sd off_to_jump;set off_to_jump c_blocks#
@@ -553,7 +553,7 @@ function action_code_write_function(sd codepointer)
 	endif
 	sd want_return=FALSE
 	setcall codepointer action_code_write_function_call(codepointer,#want_return)
-	if want_return==(FALSE)  #can be modified inside
+	if want_return=(FALSE)  #can be modified inside
 		call action_one((ActionPop))
 	endif
 	return codepointer
@@ -570,7 +570,7 @@ function action_code_write_function_call(sv codepointer,sd pwant_return)
     sd member
     set member codepointer#
     setcall codepointer action_code_new_or_call(codepointer)
-    if member==0
+    if member=0
         call action_one((ActionCallFunction))
     else
         call action_one((ActionCallMethod))
@@ -589,7 +589,7 @@ function action_code_write_builtin_function(sv codepointer,sd pwant_return)
     #
     sd cursor
     setcall cursor action_code_write_builtin_set(pointer,pwant_return)
-    if cursor==pointer
+    if cursor=pointer
         return codepointer
     endif
     return cursor
@@ -606,15 +606,15 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 		add test :   #to pass the pointer
 		if test#!=(args_end)
 			if act!=(ActionGotoFrame)
-				if act==(ActionTrace)
-					if pwant_return#==(TRUE)  #same like at gotoAndStop
+				if act=(ActionTrace)
+					if pwant_return#=(TRUE)  #same like at gotoAndStop
 						return codepointer
 					endif
 				endif
 				setcall test action_code_right_util(test)
-				if test#==(args_end)
+				if test#=(args_end)
 					call action_one(act)
-					if act==(ActionTrace)
+					if act=(ActionTrace)
 						set pwant_return# (TRUE)  #to skip pop
 					endif
 					add test (DWORD)
@@ -625,15 +625,15 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 				call error(builtin)
 			endif
 			#here is another format, if the first is not unsigned 16 then call movie clip function instead of actiongotoframe
-			if test#==(ap_Integer)
+			if test#=(ap_Integer)
 				add test (DWORD)
 				if test#<=^0xffFF #attention at negative numbers, ignoring gotoandstop mc behaviour
 					sd val;set val test#
 					add test (DWORD)
-					if test#==(math_end)
+					if test#=(math_end)
 						add test (DWORD)
-						if test#==(args_end)
-							if pwant_return#==(FALSE)   #can be in a ...=gotoAndStop+... attribution and add extra code there
+						if test#=(args_end)
+							if pwant_return#=(FALSE)   #can be in a ...=gotoAndStop+... attribution and add extra code there
 								#                      because ActionGotoFrame is not pushing a return value
 								call actionrecordheader(act,(WORD))
 								call swf_actionblock_add(#val,(WORD))
@@ -652,7 +652,7 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 				endif
 			endif
 		elseif act<=(ActionStop)  #this is skipping 1,2,3 but there are no actions in the model
-			if pwant_return#==(FALSE)  #same like at gotoAndStop
+			if pwant_return#=(FALSE)  #same like at gotoAndStop
 				call action_one(act)
 				set pwant_return# (TRUE)  #to skip pop
 				add test (DWORD)
@@ -688,12 +688,12 @@ function action_code_right(sd codepointer)
 endfunction
 #codepointer
 function action_code_right_util(sd codepointer)
-    if codepointer#==(new_action)
+    if codepointer#=(new_action)
         add codepointer (DWORD)
         sd member
         set member codepointer#v^
         setcall codepointer action_code_new_or_call(codepointer)
-        if member==0
+        if member=0
             call action_one((ActionNewObject))
         else
             call action_one((ActionNewMethod))
@@ -707,12 +707,12 @@ function action_code_right_util(sd codepointer)
         sd operation
         set operation codepointer#
         add codepointer (DWORD)
-        if operation==(compare_action)
+        if operation=(compare_action)
             set compare_op_1 codepointer#
             add codepointer (DWORD)
             set compare_op_2 codepointer#
             add codepointer (DWORD)
-        elseif operation==(ifElse_start)
+        elseif operation=(ifElse_start)
             call write_ifjump_withNot()
             setcall codepointer action_code_right_util(codepointer)
             call action_code_else_add()
@@ -734,12 +734,12 @@ endfunction
 
 #codepointer
 function action_code_right_number(sd codepointer)
-    if codepointer#==(parenthesis_start)
+    if codepointer#=(parenthesis_start)
         add codepointer (DWORD)
         setcall codepointer action_code_right_util(codepointer)
         return codepointer
     endif
-    if codepointer#==(call_action_right)
+    if codepointer#=(call_action_right)
 		sd want_return=TRUE
         setcall codepointer action_code_write_function_call(codepointer,#want_return)
         return codepointer
@@ -747,16 +747,16 @@ function action_code_right_number(sd codepointer)
     sd attrib
     set attrib codepointer#
     add codepointer (DWORD)
-    if attrib==(ActionGetMember)
+    if attrib=(ActionGetMember)
         setcall codepointer action_member_loop(codepointer,(get_member))
     else
-        if attrib==(ActionGetVariable)
+        if attrib=(ActionGetVariable)
             call action_one_command(codepointer#v^)
             add codepointer (pointer_rest)
-        elseif attrib==(ap_double)
+        elseif attrib=(ap_double)
             sd low;set low codepointer#;add codepointer (DWORD)
             call action_push(attrib,low,codepointer#,-1)
-        elseif attrib==(ap_Integer)
+        elseif attrib=(ap_Integer)
             call action_push(attrib,codepointer#,-1)
         else
         #ap_Constant8
@@ -771,22 +771,22 @@ function action_one_command(ss command)
     sd compare
     #
     setcall compare strcmp("null",command)
-    if compare==0
+    if compare=0
         call action_push((ap_Null),-1)
         return (void)
     endif
     setcall compare strcmp("undefined",command)
-    if compare==0
+    if compare=0
         call action_push((ap_Undefined),-1)
         return (void)
     endif
     setcall compare strcmp("true",command)
-    if compare==0
+    if compare=0
         call action_push((ap_Boolean),1,-1)
         return (void)
     endif
     setcall compare strcmp("false",command)
-    if compare==0
+    if compare=0
         call action_push((ap_Boolean),0,-1)
         return (void)
     endif

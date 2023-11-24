@@ -31,11 +31,11 @@ function action_parse_utilEndTypes(sd op,sv p_op,sd endtype1,sd endtype2)  #p_op
     #when p_op is set, is to store the multiple kind of endtypes
     if p_op!=0
         set p_op# op
-        if op==endtype2
+        if op=endtype2
             return (TRUE)
         endif
     endif
-    if op==endtype1;return (TRUE);endif
+    if op=endtype1;return (TRUE);endif
     return (FALSE)
 endfunction
 
@@ -132,7 +132,7 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
         set atstart ac
         setcall ac action_parse_conditions(ac,#flags,#for_detected)
         if atstart!=ac
-            if for_detected==0
+            if for_detected=0
                 if ac#!=(Openparenthesis)
                     call error("open parenthesis sign expected")
                 endif
@@ -145,7 +145,7 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
                 #endif
             endif
             #important settings
-            if a_block_detected==(TRUE)
+            if a_block_detected=(TRUE)
                 or flags (consecutive_flag)
             endif
             call brace_blocks_add_parse(flags)
@@ -177,7 +177,7 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
     else
     #for
         setcall pointer str_expression_at_start(ac,"for")
-        if pointer==ac;return pointer;endif
+        if pointer=ac;return pointer;endif
         #
         call action_code_set((for_marker))
         set p_flags# (while_marker)
@@ -198,7 +198,7 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
             call action_code_set((for_three))
             #ac X;x;x
             set cursor pointer;add cursor pos2
-            if cursor#==0
+            if cursor#=0
                 call error("expecting ';' at for loop, first part")
             endif
                             #is for for(;x;x) the !=
@@ -210,7 +210,7 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
             set pointer cursor
             setcall pos2 strcspn(pointer,";")
             add cursor pos2
-            if cursor#==0
+            if cursor#=0
                 call error("expecting ';' at for loop, second part")
             endif
             #cursor x;x;X
@@ -226,19 +226,19 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         setcall pointer str_expression_at_start(pointer,"var")
         setcall pos1 strcspn(pointer," ")
         set cursor pointer;add cursor pos1
-        if cursor#==0
+        if cursor#=0
             call error("expecting 'space' at for loop")
         endif
         set cursor# 0
         inc cursor;setcall cursor spaces(cursor)
         setcall marker str_expression_at_start(cursor,"in")
-        if marker==cursor
+        if marker=cursor
             call error("expecting 'in' at for loop")
         endif
         setcall pos1 strcspn(marker,")")
         set cursor marker
         add cursor pos1
-        if cursor#==0
+        if cursor#=0
             call error("expecting Close Parenthesis at for loop")
         endif
         set cursor# 0
@@ -258,14 +258,14 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
 endfunction
 #pointer
 function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
-    if ac#==(Openingbrace)
-        if a_block_detected==(FALSE)
+    if ac#=(Openingbrace)
+        if a_block_detected=(FALSE)
             call brace_blocks_add_parse((normal_marker))
         endif
         inc ac
         return ac
-    elseif ac#==(Closingbrace)
-        if a_block_detected==(TRUE)
+    elseif ac#=(Closingbrace)
+        if a_block_detected=(TRUE)
             call error("unexpected closing brace sign after code block opened")
         endif
         inc ac
@@ -273,7 +273,7 @@ function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
         return ac
     endelseif
     setcall ac action_code_row_parse_instrument(ac)
-    if a_block_detected==(TRUE)
+    if a_block_detected=(TRUE)
     #ex: if(a==b)x=3;
         setcall ac else_verify(ac,else_index)
     endif
@@ -293,7 +293,7 @@ function else_verify(ss ac,sd else_index)
     setcall p_ind brace_blocks_counter()
     set c_ind p_ind#
     #opened else index same with current index: return at else
-    if else_index==c_ind
+    if else_index=c_ind
         return ac
     endif
 
@@ -301,7 +301,7 @@ function else_verify(ss ac,sd else_index)
 
     ss pointer
     setcall pointer else_elseif_expression(ac,#bool_is_elseif)
-    if pointer==ac
+    if pointer=ac
         return ac
     endif
     while pointer!=ac
@@ -314,7 +314,7 @@ function else_verify(ss ac,sd else_index)
         while ind!=c_ind
 			ss the_new_pointer;set the_new_pointer pointer
             setcall the_new_pointer action_code_row_ex(pointer,(FALSE),ind)
-			if the_new_pointer==pointer;call error("Else not closed");endif
+			if the_new_pointer=pointer;call error("Else not closed");endif
 			set pointer the_new_pointer
             #
             setcall p_ind brace_blocks_counter()
@@ -323,7 +323,7 @@ function else_verify(ss ac,sd else_index)
         set ac pointer
         sd prev_else_elseif;set prev_else_elseif bool_is_elseif
         setcall pointer else_elseif_expression(ac,#bool_is_elseif)
-        if prev_else_elseif==(FALSE);if bool_is_elseif==(TRUE)
+        if prev_else_elseif=(FALSE);if bool_is_elseif=(TRUE)
             call error("not expecting Else and then Else If")
         endif;endif
     endwhile
@@ -335,11 +335,11 @@ function else_elseif_expression(ss ac,sd p_elseif)
     set p_elseif# (FALSE)
     ss pointer
     setcall pointer str_expression_at_start(ac,"else")
-    if pointer==ac
+    if pointer=ac
         return ac
     endif
     setcall ac str_expression_at_start(pointer,"if")
-    if pointer==ac
+    if pointer=ac
         return pointer
     endif
     set p_elseif# (TRUE)
@@ -396,8 +396,8 @@ function action_parse_pack(ss ac,sd endChar)
     ss delims^set
 
     setcall ac str_next(pointer,delims,#op)
-    if isnewvar==(TRUE)
-        if op==set
+    if isnewvar=(TRUE)
+        if op=set
             call action_code_set((ActionDefineLocal))
             call action_code_set_pointer(pointer)
         else
@@ -406,7 +406,7 @@ function action_parse_pack(ss ac,sd endChar)
             return ac
         endelse
     else
-        if isdelete==(FALSE)
+        if isdelete=(FALSE)
             sd inc_dec
             if op!=set
                 set inc_dec 0
@@ -422,16 +422,16 @@ function action_parse_pack(ss ac,sd endChar)
                 sub another_test pointer
                 #test for some size for ++ or --
                 if another_test>0
-                    if test#==(Plus)
+                    if test#=(Plus)
                         inc test
-                        if test#==(Plus)
+                        if test#=(Plus)
                             set inc_dec (ActionIncrement)
                             dec test
                             set test# 0
                         endif
-                    elseif test#==(Hyphen)
+                    elseif test#=(Hyphen)
                         inc test
-                        if test#==(Hyphen)
+                        if test#=(Hyphen)
                             set inc_dec (ActionDecrement)
                             dec test
                             set test# 0
@@ -439,7 +439,7 @@ function action_parse_pack(ss ac,sd endChar)
                     endelseif
                 endif
                 #if not ++ or -- return the current location (x;heatMaker;)
-                if inc_dec==0
+                if inc_dec=0
                     return ac
                 endif
             else
@@ -447,7 +447,7 @@ function action_parse_pack(ss ac,sd endChar)
                 sd mixt_action;setcall mixt_action action_parse_test_mixt_equal(pointer,ac)
             endelse
             call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
-            if op==set
+            if op=set
             #mixt or not mixt
                 if mixt_action!=0
                     call action_code_set((mixt_equal))
@@ -469,7 +469,7 @@ endfunction
 function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
     ss test
     setcall test action_code_membersplit(pointer)
-    if test==(NULL)
+    if test=(NULL)
         call action_code_set(ac1)
         call action_code_set_pointer(pointer)
     else
@@ -486,23 +486,23 @@ function action_parse_test_mixt_equal(ss start,ss ac)
     if dif<=0
         return 0
     endif
-    if ac#==0
+    if ac#=0
         #0 can be set(qw['z']=x will be 00x) and at strchr will not be NULL
         return 0
     endif
     ss operations;setcall operations get_operations()
     ss p_op;setcall p_op strchr(operations,ac#)
-    if p_op==(NULL);return 0;endif;sd op;set op p_op#
-    if op==(shl);ss missing_shl="expecting value and <<"
+    if p_op=(NULL);return 0;endif;sd op;set op p_op#
+    if op=(shl);ss missing_shl="expecting value and <<"
         dec ac
-        if ac==start
+        if ac=start
             call error(missing_shl)
         elseif ac#!=(shl)
             call error(missing_shl)
         endelseif
-    elseif op==(sar_shr);ss missing_sar_shr="expecting value and >>"
+    elseif op=(sar_shr);ss missing_sar_shr="expecting value and >>"
         dec ac
-        if ac==start
+        if ac=start
             call error(missing_sar_shr)
         elseif ac#!=(sar_shr)
             call error(missing_sar_shr)
@@ -536,7 +536,7 @@ endfunction
 
 #pointer
 function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
-    if ac#==0
+    if ac#=0
         call error("expeting a number, variables operations")
     endif
     #a new object
@@ -545,12 +545,12 @@ function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
     if pointer!=ac
         setcall ac action_code_parse_new_or_call(pointer,(new_action))
         sd bool;setcall bool action_parse_utilEndTypes(ac#,p_op,endtype1,endtype2)
-        if bool==(TRUE);inc ac;endif
+        if bool=(TRUE);inc ac;endif
         return ac
     endif
     sd ifElse_bool=FALSE
     setcall ac action_parse_loop(ac,p_op,endtype1,endtype2,#ifElse_bool)
-    if ifElse_bool==(FALSE)
+    if ifElse_bool=(FALSE)
         call action_code_set((math_end))
     endif
     return ac
@@ -572,10 +572,10 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     #
     vstr op_set^oprs
     ss ops;setcall ops get_operations();call memcpy(op_set,ops,(operations_size))
-    while 1==1
+    while 1=1
         sd op
         sd was_parenthesis=0
-        if ac#==(Openparenthesis)
+        if ac#=(Openparenthesis)
             call action_code_set((parenthesis_start))
             inc ac
             setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
@@ -587,9 +587,9 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
         set end endtype1
         set end2 endtype2
         #
-        if was_parenthesis==0
+        if was_parenthesis=0
             setcall ac action_code_take_main(ac,#op,op_set)
-            if op==(ifElse_sign)
+            if op=(ifElse_sign)
                 inc ac
                 call action_code_set((ifElse_start))
                 set p_ifElse_bool# (TRUE)
@@ -600,17 +600,17 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
         endif
         #
         setcall ac action_code_extended_operations(ac,op)
-        if is_compare_ptr#==(TRUE)
+        if is_compare_ptr#=(TRUE)
             set is_compare_ptr# (FALSE)
         else
-            if op==0
+            if op=0
                 if p_op!=0
                     set p_op# op
                 endif
                 return ac
             else
                 setcall bool action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
-                if bool==(TRUE);return ac;endif
+                if bool=(TRUE);return ac;endif
             endelse
             sd x;setcall x action_parse_take_action(op,ac)
             call action_code_set(x)
@@ -621,23 +621,23 @@ endfunction
 function action_parse_take_action(sd op,ss ac)
     sd x
     ss test
-    if op==(add);set x (ActionAdd2)
-    elseif op==(sub);set x (ActionSubtract)
-    elseif op==(mlt);set x (ActionMultiply)
-    elseif op==(div);set x (ActionDivide)
-    elseif op==(modulo);set x (ActionModulo)
-    elseif op==(and)
+    if op=(add);set x (ActionAdd2)
+    elseif op=(sub);set x (ActionSubtract)
+    elseif op=(mlt);set x (ActionMultiply)
+    elseif op=(div);set x (ActionDivide)
+    elseif op=(modulo);set x (ActionModulo)
+    elseif op=(and)
         set test ac;dec test
-        if test#==(and);set x (ActionAnd);else;set x (ActionBitAnd);endelse
-    elseif op==(or)
+        if test#=(and);set x (ActionAnd);else;set x (ActionBitAnd);endelse
+    elseif op=(or)
         set test ac;dec test
-        if test#==(or);set x (ActionOr);else;set x (ActionBitOr);endelse
-    elseif op==(xor);set x (ActionBitXor)
-    elseif op==(shl);set x (ActionBitLShift)
-    elseif op==(sar_shr)
+        if test#=(or);set x (ActionOr);else;set x (ActionBitOr);endelse
+    elseif op=(xor);set x (ActionBitXor)
+    elseif op=(shl);set x (ActionBitLShift)
+    elseif op=(sar_shr)
         set test ac
         sub test 2
-        if test#==0;set x (ActionBitRShift)
+        if test#=0;set x (ActionBitRShift)
         else;set x (ActionBitURShift);endelse
     else
         #at "qwer"x can be x
@@ -663,10 +663,10 @@ function action_code_extended_operations(ss pointer,sd op)
     endif
 
     #shl/shr/sar / && ||
-    if op==(shl)
+    if op=(shl)
         inc pointer
         if pointer#!=(shl);call error("expecting <<");endif
-    elseif op==(sar_shr)
+    elseif op=(sar_shr)
         inc pointer
         if pointer#!=(sar_shr);call error("expecting >>");endif
         inc pointer
@@ -674,9 +674,9 @@ function action_code_extended_operations(ss pointer,sd op)
         #not >>> case
             dec pointer
         endif
-    elseif op==(and)
+    elseif op=(and)
         inc pointer;if pointer#!=(and);dec pointer;endif
-    elseif op==(or)
+    elseif op=(or)
         inc pointer;if pointer#!=(or);dec pointer;endif
     endelseif
 
@@ -703,13 +703,13 @@ function action_code_take_main(ss ac,sv p_op,ss delims) #p_op is pointing at a s
     endif
     #a variable(a.b.c[1+d])
     char neg="-"
-    if pointer#==neg
+    if pointer#=neg
         inc pointer
     endif
     sd pos
     setcall pos strcspn(pointer,delims)
     add pointer pos
-    while pointer#==(Openingbracket)
+    while pointer#=(Openingbracket)
         setcall pointer brackets_test(pointer)
         #continue with the member
         setcall pos strcspn(pointer,delims)
@@ -724,15 +724,15 @@ endfunction
 #pointer
 function brackets_test(ss pointer)
     sd multidim=1
-    while multidim==1
+    while multidim=1
         sd openedbrackets=1
         while openedbrackets>0
             inc pointer
-            if pointer#==(Openingbracket)
+            if pointer#=(Openingbracket)
                 inc openedbrackets
-            elseif pointer#==(Closingbracket)
+            elseif pointer#=(Closingbracket)
                 dec openedbrackets
-            elseif pointer#==0
+            elseif pointer#=0
                 call error("unclosed bracket detected")
             endelseif
         endwhile
@@ -769,12 +769,12 @@ function action_code_str(ss ac)
 endfunction
 function action_code_take(ss ac)
     sd b;setcall b numeric_code(ac)
-    if b==(TRUE)
+    if b=(TRUE)
         return (void)
     endif
     ss test
     setcall test action_code_membersplit(ac)
-    if test==0
+    if test=0
         call action_code_set((ActionGetVariable))
         call action_code_set_pointer(ac)
     else
@@ -786,7 +786,7 @@ endfunction
 function numeric_code(ss ac)
     ss pointer;set pointer ac
     char neg="-"
-    if pointer#==neg
+    if pointer#=neg
         inc pointer
     endif
     sd bool
@@ -812,7 +812,7 @@ function numeric_code(ss ac)
     set hextest pointer
     inc hextest
     char hex="x"
-    if hextest#==hex
+    if hextest#=hex
         call sscanf(ac,"%x",#value_low)
     else
         call sscanf(ac,"%u",#value_low)
@@ -834,13 +834,13 @@ function action_code_member(ss ac)
             add pointer pos
             call action_code_set_pointer(ac)
         endif
-        if pointer#==sqbrace_start
+        if pointer#=sqbrace_start
             set pointer# 0
             inc pointer
             call action_code_set((square_bracket_start))
             setcall pointer action_code_row_parse_tool(pointer,sqbrace_end)
         endif
-        if pointer#==dot
+        if pointer#=dot
             set pointer# 0
             inc pointer
         endif
@@ -859,20 +859,20 @@ function action_compare(sd value,sd firstcompare)
     ss compares
     setcall compares compares_signs()
     #<
-    if compares#==value
+    if compares#=value
         if firstcompare!=(NULL)
                                            #is shl
-            if firstcompare==(ActionLess2);return 2
+            if firstcompare=(ActionLess2);return 2
             else;call error("not expeting < here");endelse
         endif
         return (ActionLess2)
     endif
     #>
     inc compares
-    if compares#==value
+    if compares#=value
         if firstcompare!=(NULL)
                                              #is sar_shr
-            if firstcompare==(ActionGreater);return 2
+            if firstcompare=(ActionGreater);return 2
             else;call error("not expeting > here");endelse
         endif
         return (ActionGreater)
@@ -883,20 +883,20 @@ function action_compare(sd value,sd firstcompare)
     endif
     #=
     inc compares
-    if compares#==value
-        if firstcompare==(ActionLess2)
+    if compares#=value
+        if firstcompare=(ActionLess2)
             call action_code_set((ActionGreater))
             call action_code_set((ActionNot))
             return 1
-        elseif firstcompare==(ActionGreater)
+        elseif firstcompare=(ActionGreater)
             call action_code_set((ActionLess2))
             call action_code_set((ActionNot))
             return 1
-        elseif firstcompare==(ActionEquals2)
+        elseif firstcompare=(ActionEquals2)
             call action_code_set((ActionEquals2))
             call action_code_set(0)
             return 1
-        elseif firstcompare==(ActionNot)
+        elseif firstcompare=(ActionNot)
             call action_code_set((ActionEquals2))
             call action_code_set((ActionNot))
             return 1
@@ -905,22 +905,22 @@ function action_compare(sd value,sd firstcompare)
     endif
     # !
     inc compares
-    if compares#==value
+    if compares#=value
         if firstcompare!=(NULL)
             call error("not expecting ! here")
         endif
         return (ActionNot)
     endif
     #another char
-    if firstcompare==(NULL)
+    if firstcompare=(NULL)
         #call error("expecting a comparison")
         return (NULL)
-    elseif firstcompare==(ActionEquals2)
+    elseif firstcompare=(ActionEquals2)
         call error("expecting a == comparison")
-    elseif firstcompare==(ActionNot)
+    elseif firstcompare=(ActionNot)
         call error("expecting a != comparison")
     endelseif
-    if firstcompare==(ActionLess2)
+    if firstcompare=(ActionLess2)
         call action_code_set((ActionLess2))
         call action_code_set(0)
     else
@@ -936,7 +936,7 @@ endfunction
 function brace_blocks_counter_inc()
     sd c
     setcall c brace_blocks_counter()
-    if c#==(brace_blocks_max)
+    if c#=(brace_blocks_max)
     #was >=
         call error("too many blocks: {}")
     endif
@@ -968,9 +968,9 @@ function brace_blocks_remove_parse_else()
     dec i
     setcall p_type cond_blocks_at_index(i)
     set type p_type#
-    if type==(else_flag)
+    if type=(else_flag)
         sd else_number=0
-        while type==(else_flag)
+        while type=(else_flag)
             inc else_number
             dec p_i#
             if i!=0
@@ -989,13 +989,13 @@ function brace_blocks_remove_parse()
     sd p_type
     sd type
     sd consecutive=consecutive_flag
-    while consecutive==(consecutive_flag)
+    while consecutive=(consecutive_flag)
         call brace_blocks_counter_dec()
         #
         setcall p_type cond_blocks()
         setcall type type_consecutive(p_type#,#consecutive)
         if type!=(normal_marker)
-            if type==(while_marker)
+            if type=(while_marker)
                 call action_code_set((whileblock_end))
             else
                 call action_code_set((block_end))
@@ -1101,10 +1101,10 @@ function resolve_dummy_jump(sd jumpoffset)
     inc mem;set mem# byte
 endfunction
 function brace_blocks_remove_write_loopIfJumps_at_current_offset()
-    while 1==1
+    while 1=1
         sd ifoffset
         setcall ifoffset brace_blocks_remove_write_offset()
-        if ifoffset==0
+        if ifoffset=0
             #also remove the type of loop
             call brace_blocks_counter_dec()
             return (void)
@@ -1126,7 +1126,7 @@ function action_code_parse_leftfunction(ss ac)
     #a call
     setcall ac action_code_parse_new_or_call(ac,(call_action_left))
     char end=";"
-    if ac#==end
+    if ac#=end
         inc ac
     endif
     return ac
@@ -1139,17 +1139,17 @@ function action_code_parse_new_or_call(ss ac,sd type)
     ss last_dot=0
     sd bool
     setcall bool part_of_variable(pointer#)
-    while bool==(TRUE)
+    while bool=(TRUE)
         inc pointer
         setcall bool part_of_variable(pointer#)
-        if bool==(FALSE)
-            if pointer#==(Openingbracket)
+        if bool=(FALSE)
+            if pointer#=(Openingbracket)
                 setcall pointer brackets_test(pointer)
             endif
-            if pointer#==(Period)
+            if pointer#=(Period)
                 set last_dot pointer
                 set bool (TRUE)
-            elseif pointer#==(Openparenthesis)
+            elseif pointer#=(Openparenthesis)
                 setcall pointer action_code_parse_function_detected(ac,last_dot,pointer,type)
                 return pointer
             endelseif
@@ -1184,7 +1184,7 @@ function action_code_parse_function_arguments(ss pointer)
     char comma=","
     char close=")"
     inc pointer
-    if pointer#==close
+    if pointer#=close
         inc pointer
         return pointer
     endif
@@ -1209,7 +1209,7 @@ function action_code_parse_function_arguments(ss pointer)
     sd op=0
     while op!=close
         setcall pointer action_code_row_parse_tool_util(pointer,#op,comma,close)
-        if op==0
+        if op=0
             call error("close the function arguments sign expected: )")
         endif
         #
@@ -1241,7 +1241,7 @@ endfunction
 function action_code_parse_deffunction(ss ac)
     ss pointer
     setcall pointer str_expression_at_start(ac,"function")
-    if pointer==ac
+    if pointer=ac
         return ac
     endif
     call action_code_set((function_action))
@@ -1250,7 +1250,7 @@ function action_code_parse_deffunction(ss ac)
     char startsign="("
     ss args
     setcall args strchr(pointer,startsign)
-    if args==(NULL)
+    if args=(NULL)
         call error("start sign expected at function definition: (")
     endif
     set args# 0
@@ -1269,7 +1269,7 @@ function action_code_parse_deffunction(ss ac)
     setcall index_current brace_blocks_counter()
     set index_current index_current#
     while index_atstart<=index_current
-        if pointer#==0
+        if pointer#=0
             call error("A define function was unclosed")
         endif
         setcall pointer action_code_row(pointer,(FALSE))
@@ -1283,7 +1283,7 @@ function action_code_parse_function_defarguments(ss ac)
     vstr argsdelims=",)"
     char close=")"
     inc ac
-    if ac#==close
+    if ac#=close
         inc ac
         return ac
     endif
@@ -1293,7 +1293,7 @@ function action_code_parse_function_defarguments(ss ac)
         setcall pos strcspn(ac,argsdelims)
         call action_code_set_pointer(ac)
         add ac pos
-        if ac#==0
+        if ac#=0
             call error("close the function arguments sign expected: )")
         endif
         set op ac#

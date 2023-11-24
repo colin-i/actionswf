@@ -31,7 +31,7 @@ function bits_bigendian(sd value,sd size,sv p_dest,sd p_pos)
     inc iter
     div iter 2
     while iter!=0
-        if pos==0x80
+        if pos=0x80
             set dest# 0
         endif
         sd test
@@ -41,7 +41,7 @@ function bits_bigendian(sd value,sd size,sv p_dest,sd p_pos)
             or dest# pos
         endif
         div pos 2
-        if pos==0
+        if pos=0
             set pos 0x80
             inc dest
         endif
@@ -63,7 +63,7 @@ function num_bits(sd value)
         sd test
         set test mask
         and test value
-        if sign==0
+        if sign=0
             if test!=0
                 return i
             endif
@@ -110,8 +110,8 @@ endfunction
 function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
     char matrix#1+4+4
     set p_dest# #matrix
-    if x==0
-        if y==0
+    if x=0
+        if y=0
             set matrix 0
             set p_size# 1
             return (void)

@@ -88,11 +88,11 @@ function swf_mem(sd proc,sd arg,sd len)
     data main_id#1
     vdata call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
-    if proc==(mem_exp_change_back)
+    if proc=(mem_exp_change_back)
         set id main_id
         set call_struct c_main
         return (void)
-    elseif proc==(mem_exp_init)
+    elseif proc=(mem_exp_init)
     #arg is file
     #len is filelength offset
         if path_mem!=(NULL)
@@ -117,7 +117,7 @@ function swf_mem(sd proc,sd arg,sd len)
         set filelength_offset len
         #
         return (void)
-    elseif proc==(mem_exp_free)
+    elseif proc=(mem_exp_free)
         if path_mem!=(NULL)
             #0
             call mem_free(#path_mem)
@@ -136,16 +136,16 @@ function swf_mem(sd proc,sd arg,sd len)
         endif
         return (void)
     endelseif
-    if path_mem==(NULL)
+    if path_mem=(NULL)
     #swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
         call error("there isn't a swf started")
     endif
-    if proc==(mem_exp_add)
+    if proc=(mem_exp_add)
         #blockMain blockPool
         sv p_block
         setcall p_block call_struct((ids_get_pointer),id)
         call mem_block_add(p_block,arg,len)
-    elseif proc==(mem_exp_change)
+    elseif proc=(mem_exp_change)
         if arg<0;set call_struct c_pool
             xor arg (negative_means_action_sprite_pool)
         else;set call_struct c_main;endelse
@@ -206,7 +206,7 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
     data id#1
     data id_back#1
     sd poolid
-    if proc==(mem_exp_change)
+    if proc=(mem_exp_change)
         #must verify to be a valid user input id
         call struct_ids_actionpool((ids_get_pointer),id)
         #
@@ -215,7 +215,7 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
         setcall poolid actionpoolid()
         set poolid# id
         return (void)
-    elseif proc==(mem_exp_change_back)
+    elseif proc=(mem_exp_change_back)
         set id id_back
         #
         sd root_poolid
@@ -223,7 +223,7 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
         setcall poolid actionpoolid()
         set poolid# root_poolid#
         return (void)
-    elseif proc==(mem_exp_init)
+    elseif proc=(mem_exp_init)
         set id arg
         set id_back id
         call struct_ids_action((ids_set),id)
@@ -234,9 +234,9 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
     endelseif
     sv p_block
     setcall p_block struct_ids_action((ids_get_pointer),id)
-    if proc==(mem_exp_add)
+    if proc=(mem_exp_add)
         call mem_block_add(p_block,arg,newmem_len)
-    elseif proc==(mem_exp_part_done)
+    elseif proc=(mem_exp_part_done)
         sd block
         set block p_block#
         sd size
@@ -299,7 +299,7 @@ endfunction
 function exportsId_get()
     sd e
     setcall e exportsId()
-    if e#==(not_an_id);call error("Do not call the exports at this moment.");endif
+    if e#=(not_an_id);call error("Do not call the exports at this moment.");endif
     return e#
 endfunction
 
