@@ -4,3 +4,14 @@ The program is a set of objects made with O Language.
 A swf with actionscript example is in the example folder for static o language.
 The include/actionswf.h is for c/c++ language. dev/import.h are the imports for o language.
 The files swf.es and action.es has the main functions that can be used; functions from tool.es can be used in rare situations.
+When using the debug option, action and action_sprite calls are logged. The syntax is as follow:
+
+Number
+TextLines
+{NumberA,NumberB}
+
+Where:
+Number is the number of lines that TextLines has.
+TextLines is the text like in action[_sprite] call.
+NumberA lines, then NumberA1+...+NumberAN<=Number, less only when last line(s) is/are blank(s).
+NumberB is the number of actions encountered in NumberA

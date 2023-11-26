@@ -1,23 +1,22 @@
 format elfobj64
 
+#a simple shape moving on the stage example
+
 #win32 with _
 importx "sprintf" sprintf
 
-#a simple shape moving on the stage example
-
-orphan off
-include "../dev/import.h"
-orphan on
+einclude "../dev/import.h"
 
 const width=640
 const height=480
-
 const shape_lat=40
 
-####################
-entry main()
 
-call swf_new("example.swf",(width),(height),0x001100,24)
+
+####################
+
+entry main()
+call swf_new_ex("example.swf",(width),(height),0x001100,24,1)
 
 sd shape
 setcall shape swf_shape_basic((shape_lat),(shape_lat),0xffeeFEff,0x11FF22ff)
@@ -26,7 +25,6 @@ sd movie_preid
 setcall movie_preid swf_sprite_new()
 
 call swf_sprite_placeobject(movie_preid,shape,1)
-
 call swf_sprite_showframe(movie_preid)
 
 char data#512
@@ -43,7 +41,9 @@ if(this._y>=bottom)_root.y_coef=_root.y_coef*-1;
 else if(this._y<=top)_root.y_coef=_root.y_coef*-1;
 this._y=move*_root.y_coef+this._y;
 ")
+
 call swf_sprite_showframe(movie_preid)
+
 sd movie
 setcall movie swf_sprite_done(movie_preid)
 

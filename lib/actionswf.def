@@ -17,6 +17,7 @@ swf_dbl_width
 swf_dbl_height
 swf_done
 swf_new
+swf_new_ex
 swf_placeobject
 swf_placeobject_coords
 swf_removeobject

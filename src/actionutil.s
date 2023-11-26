@@ -204,7 +204,7 @@ endfunction
 
 importaftercall ebool
 
-importx "action" action
+import "action_base" action_base
 
 import "swf_actionblock_add" swf_actionblock_add
 import "actionrecordheader" actionrecordheader
@@ -422,5 +422,5 @@ function action_format(sv args)
     char e="%"
     addcall args_nr escape_count(args_format#,e)
     callex sprintf args args_nr
-    call action(args#)
+    call action_base(args#)
 endfunction

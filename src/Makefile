@@ -37,7 +37,7 @@ endif
 
 #this is like ld is linking, reason: ostrip is not adapted for this, there is another solutin with ocompiler and NOBITS
 #	maybe is a 0x1000 .o size rule only from libexte.a
-items = actioncode actionparse actionutil bits character file storage util ${platform} actionpool debug
+items = actioncode actionparse actionutil bits character file storage util ${platform} actionpool debug faction
 expitems = action swf tool ../shared/action_dllmain
 
 exte=libexte.a

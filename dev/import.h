@@ -36,6 +36,7 @@ importX "swf_dbl_height" swf_dbl_height
 #utils
 importX "swf_done" swf_done
 importX "swf_new" swf_new
+importX "swf_new_ex" swf_new_ex
 importX "swf_placeobject" swf_placeobject
 importX "swf_placeobject_coords" swf_placeobject_coords
 importX "swf_removeobject" swf_removeobject

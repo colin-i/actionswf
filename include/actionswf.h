@@ -125,6 +125,7 @@ int swf_dbl_height(char* imagepath);
 
 void swf_done();
 void swf_new(char* path,int width,int height,int backgroundcolor,int fps);
+void swf_new_ex(char* path,int width,int height,int backgroundcolor,int fps,int is_debug);
 void swf_placeobject(int refid,int depth);
 void swf_placeobject_coords(int refid,int depth,int x,int y);
 void swf_removeobject(int depth);
