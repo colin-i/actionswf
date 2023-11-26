@@ -133,7 +133,7 @@ function debug_init(sd bool,sd path)
 	endif
 endfunction
 
-import "f_printf2" f_printf2
+import "f_printf" f_printf
 
 function debug_action_init(ss ac)
 	sv of%p_offsets
@@ -149,7 +149,7 @@ function debug_action_init(ss ac)
 		#out rows\nac\n
 		sv file%p_debug_file
 		char f={Percent,l,u,LineFeed,Percent,s,LineFeed,Nullchar}
-		call f_printf2(file#,#f,row,start)
+		call f_printf((fprintf_min+2),file#,#f,row,start)
 
 		mult row :
 		import "memrealloc" memrealloc
@@ -191,8 +191,16 @@ function debug_phase_code(sd codepointer)
 			sd acts;setcall acts debug_actions()
 			sv file%p_debug_file
 			char f={Percent,l,u,Comma,Percent,u,LineFeed,Nullchar}   #must escape \n or something
-			call f_printf2(file#,#f,b,acts#)
+			call f_printf((fprintf_min+2),file#,#f,b,acts#)
 			set acts# 0
 		endif
 	endif
 endfunction
+
+function debug_base(sd id)
+	sv of%p_offsets
+	if of#!=(NULL)
+		sv file%p_debug_file
+		call f_printf((fprintf_min+1),file#,"%u\n",id) #swf_button is calling action_sprite
+	end
+end

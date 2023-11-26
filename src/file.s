@@ -144,8 +144,11 @@ endfunction
 
 importx "fprintf" fprintf
 
-function f_printf2(sd file,sd format,sd p1,sd p2)
-	sd r;setcall r fprintf(file,format,p1,p2)
+function f_printf_in(sd p,sd nr)
+	callex fprintf p nr ##callexret
+end
+function f_printf(sd nr,sd file,sd format) #...
+	sd r;set r f_printf_in(#file,nr)
 	if r=-1
 		call error("fprintf error")
 	endif
