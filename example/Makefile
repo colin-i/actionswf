@@ -70,6 +70,7 @@ clean:
 	-rm -f ${name}
 	-rm -f ${name}.exe
 	-rm -f ${linkfile}
+	-rm -f ${name}.swf.log
 
 distclean: clean
 

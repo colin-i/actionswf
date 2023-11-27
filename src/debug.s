@@ -111,6 +111,7 @@ import "row_termination" row_termination
 
 importx "strlen" strlen
 importx "sprintf" sprintf
+importx "fwrite" fwrite
 
 
 
@@ -118,6 +119,7 @@ importaftercall ebool
 
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
+import "error" error
 
 function debug_init(sd bool,sd path)
 	sv of%p_offsets
@@ -197,10 +199,24 @@ function debug_phase_code(sd codepointer)
 	endif
 endfunction
 
+function debug_base_core(sd id)
+	sv file%p_debug_file
+	call f_printf((fprintf_min+1),file#,"%u\n",id) #swf_button is calling action_sprite
+end
 function debug_base(sd id)
 	sv of%p_offsets
 	if of#!=(NULL)
+		call debug_base_core(id)
+	end
+end
+function debug_show(sd id)
+	sv of%p_offsets
+	if of#!=(NULL)
+		call debug_base_core(id)
 		sv file%p_debug_file
-		call f_printf((fprintf_min+1),file#,"%u\n",id) #swf_button is calling action_sprite
+		sd items;set items fwrite("\n",1,1,file#) #...size,items...
+		if items!=1
+			call error("fwrite error")
+		end
 	end
 end

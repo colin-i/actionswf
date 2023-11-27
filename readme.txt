@@ -11,6 +11,11 @@ TextLinesNumber
 TextLines
 {NumberA,NumberB}
 
+Or
+
+SpriteId
+(here is a blank row, not TextLinesNumber, representing a ShowFrame, to differentiate DoAction tags)
+
 Where:
 SpriteId or 0 for root.
 TextLinesNumber is the number of lines that TextLines has.

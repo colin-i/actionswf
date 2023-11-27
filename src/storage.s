@@ -61,13 +61,7 @@ import "dword_to_word_arg" dword_to_word_arg
 
 
 
-
-
 importaftercall ebool
-
-
-
-
 
 
 
@@ -76,6 +70,7 @@ import "struct_ids_actionpool" struct_ids_actionpool
 import "struct_ids_action" struct_ids_action
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
+import "debug_show" debug_show
 
 function swf_mem(sd proc,sd arg,sd len)
     vdata path_mem=NULL
@@ -237,21 +232,24 @@ function swf_actionblock(sd proc,sd arg,sd newmem_len)
     if proc=(mem_exp_add)
         call mem_block_add(p_block,arg,newmem_len)
     elseif proc=(mem_exp_part_done)
-        sd block
-        set block p_block#
-        sd size
-        setcall size block_get_size(block)
-        if size!=0
-            import "write_action" write_action
-            sd tagsz
-            setcall tagsz action_size(id)
-            call swf_tag_recordheader_entry((DoAction),tagsz)
-            call write_action(id)
-            sd poolblock
-            setcall poolblock actionpool_currentblock()
-            call block_reset_size(poolblock)
-            call block_reset_size(block)
-        endif
+		#id is 0/spriteid
+		call debug_show(id)
+
+		sd block
+		set block p_block#
+		sd size
+		setcall size block_get_size(block)
+		if size!=0
+			import "write_action" write_action
+			sd tagsz
+			setcall tagsz action_size(id)
+			call swf_tag_recordheader_entry((DoAction),tagsz)
+			call write_action(id)
+			sd poolblock
+			setcall poolblock actionpool_currentblock()
+			call block_reset_size(poolblock)
+			call block_reset_size(block)
+		endif
     else
     #if proc==(mem_exp_get_block)
         return p_block#
