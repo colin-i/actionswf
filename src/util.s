@@ -67,7 +67,7 @@ function dword_swap(sd value)
     and third (0xff00*0x100)
 
     set last value
-    and last (0xff00*0x100*0x100)
+    and last (0xff00<<8<<8)
 
     sd res=0x100*0x100*0x100
     mult res al

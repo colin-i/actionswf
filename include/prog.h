@@ -47,7 +47,7 @@ const ids_get_pointer=3
 const ids_all_free=4
 const ids_counter=5
 
-const negative_means_action_sprite_pool=0x80*0x100*0x100*0x100
+const negative_means_action_sprite_pool=0x80<<8<<8<<8
 const fd_error=-1
 const fd_none=fd_error
 const not_an_id=-1

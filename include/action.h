@@ -82,9 +82,9 @@ const ifElse_start=0xfe0EE0e0
 
 const brace_blocks_function=0x7fFFffFF
 
-const to_flags=0x100*0x100*0x100
-const consecutive_flag=0x80*to_flags
-const else_flag=0x40*to_flags
+const to_flags=24
+const consecutive_flag=0x80<<to_flags
+const else_flag=0x40<<to_flags
 #const all_flags=consecutive_flag|else_flag
 const normal_marker=0x01010202
 const if_marker=0x03030404
