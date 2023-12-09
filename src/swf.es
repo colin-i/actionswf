@@ -180,14 +180,14 @@ endfunction
 functionX swf_font(ss fontname,sd font_flags)
 #ss fontname    = a string with the browser font, for example "_sans"
 #sd font_flags  = prog.h file is with the flags
-    const font_hd_start=!
+    const font_hd_start=\
 
     char id#2
     char Flags#1
     char *Language=0
     char FontNameLen#1
 
-    const font_hd_start_size=!-font_hd_start
+    const font_hd_start_size=\-font_hd_start
     vdata font_hd_start^id
 
     data NumGlyphs=0
@@ -735,20 +735,20 @@ functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add
 #sd fps              swf frames per second
 
     #F=uncompressed, C=ZLib
-const hd_start=!
+const hd_start=\
     char *=F
     char *={W,S}
     char *version=8
-const file_sz_off=!
+const file_sz_off=\
     data *FileLength#1
-data size=!-hd_start
+data size=\-hd_start
 vdata hd_pack%hd_start
     #rect
-const hd2=!
+const hd2=\
     char *FrameRate=0
         char FrameRate#1
     char *FrameCount={1,0}
-data size2=!-hd2
+data size2=\-hd2
 vdata hd_pack2%hd2
 
 	import "debug_init" debug_init

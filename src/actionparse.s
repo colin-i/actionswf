@@ -19,10 +19,10 @@ import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
 
 #operations str
 function get_operations()
-    const operations_begin=!
+    const operations_begin=\
     char operations="+-*/%&|^<>?"
     #subtract 1 is for the string termination
-    const operations_size=!-operations_begin-1
+    const operations_size=\-operations_begin-1
     return #operations
 endfunction
 
