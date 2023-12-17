@@ -16,7 +16,7 @@ OLINK=ounused
 endif
 
 ifndef linkerflags
-linkerflags=-s
+linkerflags=-O3 -s
 #-O0 to 3 is same at .so here
 endif
 
