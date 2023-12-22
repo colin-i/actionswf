@@ -81,7 +81,7 @@ function swf_mem(sd proc,sd arg,sd len)
 
     data id#1
     data main_id#1
-    vdata call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
+    value call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
     if proc=(mem_exp_change_back)
         set id main_id

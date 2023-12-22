@@ -187,7 +187,7 @@ function action_code_set_ex(sd value,sd size)
 	endelse
 	set nr# x
 endfunction
-function forward_values_expand(sd forward,sd data)
+function forward_values_expand(sv forward,sd data)
     sd currentnr
     sd p_currentnr
     setcall p_currentnr action_code_values_index()
