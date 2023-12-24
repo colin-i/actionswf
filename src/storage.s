@@ -61,7 +61,7 @@ import "dword_to_word_arg" dword_to_word_arg
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 
 

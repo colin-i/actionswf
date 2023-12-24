@@ -149,7 +149,7 @@ endfunction
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "debug_phase_code" debug_phase_code
 

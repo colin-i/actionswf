@@ -6,7 +6,7 @@ include "../include/prog.h"
 import "swf_actionblock" swf_actionblock
 
 
-importaftercall ebool
+aftercallimport ebool
 
 #this/an action
 

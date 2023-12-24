@@ -113,7 +113,7 @@ import "action_size" action_size
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 importx "swf_text" swf_text
 importx "swf_shape" swf_shape

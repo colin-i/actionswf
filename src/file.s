@@ -55,7 +55,7 @@ end
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "error" error
 

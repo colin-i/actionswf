@@ -34,7 +34,7 @@ import "freereset" freereset   #..x with no args
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "swf_tag" swf_tag
 import "swf_mem" swf_mem

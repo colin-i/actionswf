@@ -99,7 +99,7 @@ import "action_code_values_index" action_code_values_index
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "action_code_set" action_code_set
 import "action_code_set_pointer" action_code_set_pointer

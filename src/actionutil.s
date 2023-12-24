@@ -202,7 +202,7 @@ endfunction
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "action_base" action_base
 

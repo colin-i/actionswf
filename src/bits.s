@@ -137,7 +137,7 @@ endfunction
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 
 

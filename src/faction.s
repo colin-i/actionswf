@@ -11,7 +11,7 @@ import "action_debug_free" action_debug_free
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 #this/an action
 

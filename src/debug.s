@@ -115,7 +115,7 @@ importx "fwrite" fwrite
 
 
 
-importaftercall ebool
+aftercallimport ebool
 
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
