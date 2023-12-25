@@ -10,7 +10,7 @@ call 64\build.bat
 
 cd example
 
-o example.s
+o example.oc
 objcopy --input-target=elf32-i386 example.o --output-target=elf64-x86-64 exampleX.o
 
 cd ..

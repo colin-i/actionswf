@@ -13,7 +13,7 @@ call dev\build.bat
 cd example
 change_format.exe "Format ElfObj64"
 
-o example32.s
+o example32.oc
 
 cd ..
 

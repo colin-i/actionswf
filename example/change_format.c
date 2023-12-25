@@ -30,7 +30,7 @@ void files(int x){
 	for(i=0;i<length;i++){
 		if(content[i]==','){
 			content[i]=0;
-			sprintf(z,"%s.s",&content[p]);fwr(z);
+			sprintf(z,"%s.oc",&content[p]);fwr(z);
 			p=i+1;
 		}
 	}
@@ -44,7 +44,7 @@ void main(int argc,char** argv)
 	format=argv[1];
 
 	_chdir("../");_chdir("shared");
-	fwr("action_dllmain.s");
+	fwr("action_dllmain.oc");
 
 	_chdir("../");_chdir("src");
 	files(1);files(2);

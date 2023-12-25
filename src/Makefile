@@ -56,8 +56,8 @@ $(eval eobs = )
 $(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.o))
 $(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 $(eval logs = )
-$(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.es.log))
-$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.s.log))
+$(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.eoc.log))
+$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.oc.log))
 
 strippy=ostriputil
 
@@ -91,8 +91,8 @@ ${libname}: ${name}
 else
 ${libname}: ${name}
 	$(eval strp = )
-	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.es.log ${items_prefix}${var}.o))
-	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.s.log ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.eoc.log ${items_prefix}${var}.o))
+	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.oc.log ${items_prefix}${var}.o))
 	${OSTRIP} ${name} ${strp}
 	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${libname}
@@ -107,9 +107,9 @@ ${name}: ${obs} ${eobs}
 	${ATLDCOM}
 endif
 
-%.o: %.s
+%.o: %.oc
 	${OCOMP} $< ${OFLAGS}
-%.o: %.es
+%.o: %.eoc
 	${OCOMP} $< ${OFLAGS}
 
 ounused:

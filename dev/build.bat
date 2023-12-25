@@ -1,4 +1,4 @@
-o.exe "shared/action_dllmain.s"
+o.exe "shared/action_dllmain.oc"
 
 set files_src=./src/
 
@@ -8,7 +8,7 @@ goto go
 :sub1
 if "%1"=="" exit /b
 
-o.exe %files_src%%1.s
+o.exe %files_src%%1.oc
 
 shift
 goto :sub1

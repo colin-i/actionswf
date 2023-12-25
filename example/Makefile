@@ -29,7 +29,7 @@ all: build exe
 build: ${name} uns lib link
 
 uns:
-	${OLINK} ${name}.s.log
+	${OLINK} ${name}.oc.log
 
 lib:
 	if [ "${platform}" = "win" ]; then \
@@ -61,11 +61,11 @@ exe:
 		export LD_LIBRARY_PATH=../src; ./example; \
 	fi
 
-%: %.s
+%: %.oc
 	${OCOMP} $< ${OFLAGS}
 
 clean:
-	-rm -f ${name}.s.log
+	-rm -f ${name}.oc.log
 	-rm -f ${name}.o
 	-rm -f ${name}
 	-rm -f ${name}.exe

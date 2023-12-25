@@ -238,7 +238,7 @@ functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv st
 #sd bound_height height
 #ss variablename to change it with actionscript
 #sd flags        see include/text.h
-#sv structure    see edittext_struct()  from character.s, set the flags first
+#sv structure    see edittext_struct()  from character.oc, set the flags first
     #CharacterID
     sd size=2
     #RECT
