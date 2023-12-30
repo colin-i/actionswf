@@ -11,10 +11,13 @@ TextLinesNumber
 TextLines
 {NumberA,NumberB}
 
-Or
+SpriteId
+(here is a blank row)
+(another one, here is a ShowFrame)
 
 SpriteId
-(here is a blank row, not TextLinesNumber, representing a ShowFrame, to differentiate DoAction tags)
+(blank row)
+FinalSpriteId
 
 Where:
 SpriteId or 0 for root.
@@ -22,3 +25,4 @@ TextLinesNumber is the number of lines that TextLines has.
 TextLines is the text like in action[_sprite] call.
 NumberA lines, then NumberA1+...+NumberAN<=TextLinesNumber, less only when last line(s) is/are blank(s).
 NumberB is the number of actions encountered in NumberA
+FinalSpriteId is the if from the swf

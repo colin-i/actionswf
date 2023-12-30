@@ -103,3 +103,6 @@ Const _open_write_base=_O_WRONLY|flag_O_BINARY|flag_O_CREAT
 Const _open_write=_open_write_base|_O_TRUNC
 
 const fprintf_min=2  #file,format plus ...
+
+const from_show=0
+const from_done=1

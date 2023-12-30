@@ -213,10 +213,13 @@ function debug_show(sd id)
 	sv of%p_offsets
 	if of#!=(NULL)
 		call debug_base_core(id)
-		sv file%p_debug_file
-		sd items;set items fwrite("\n",1,1,file#) #...size,items...
-		if items!=1
-			call error("fwrite error")
-		end
+		call debug_write("\n\n",2)
+	end
+end
+function debug_write(ss s,sd d)
+	sv file%p_debug_file
+	sd items;set items fwrite(s,d,1,file#) #...size,items...
+	if items!=1
+		call error("fwrite error")
 	end
 end
