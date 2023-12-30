@@ -855,11 +855,8 @@ functionX swf_sprite_done(sd spriteid)
 
     call free_sprite_id(spriteid)
 
-	import "debug_base" debug_base
-	import "debug_write" debug_write
-	call debug_base(spriteid)
-	call debug_write("\n",1)
-	call debug_base(id)
+	import "debug_spritedone" debug_spritedone
+	call debug_spritedone(spriteid,id)
 
     return id
 endfunction

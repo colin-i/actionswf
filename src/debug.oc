@@ -223,3 +223,11 @@ function debug_write(ss s,sd d)
 		call error("fwrite error")
 	end
 end
+function debug_spritedone(sd p,sd i)
+	sv of%p_offsets
+	if of#!=(NULL)
+		call debug_base_core(p)
+		call debug_write("\n",1)
+		call debug_base_core(i)
+	end
+end
