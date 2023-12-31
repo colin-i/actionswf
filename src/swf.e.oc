@@ -7,9 +7,13 @@ importx "memcpy" memcpy
 importx "strlen" strlen
 importx "memcmp" memcmp
 
-import "printEr" printEr
 import "identifiers_set" identifiers_set
 import "identifiers_get" identifiers_get
+import "swf_frames_reg" swf_frames_reg
+import "swf_frames_pointer" swf_frames_pointer
+import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
+
+import "printEr" printEr
 import "rect_prepare" rect_prepare
 import "button_mem" button_mem
 
@@ -718,14 +722,17 @@ endfunction
 import "exportsId_get" exportsId_get
 functionX swf_done()
     call swf_exports_done();#remaining exports?
-    call swf_actionblock((mem_exp_part_done),(from_done));#in case there are remaining actions
+
+	sd p;set p swf_frames_pointer()
+	call swf_actionblock((mem_exp_part_done),(from_done),p);#in case there are remaining actions
+
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
     call freereset()
 endfunction
 
 functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
-	call swf_new_ex(path,width,height,backgroundcolor,fps,(FALSE))
+	call swf_new_ex(path,width,height,backgroundcolor,fps,(debug_none))
 endfunction
 functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add_debug)
 #ss path             file out pathname
@@ -747,7 +754,7 @@ vdata hd_pack%hd_start
 const hd2=\
     char *FrameRate=0
         char FrameRate#1
-    char *FrameCount={1,0}
+    char *FrameCount={0,0}  #will be incremented at least once
 data size2=\-hd2
 vdata hd_pack2%hd2
 
@@ -764,6 +771,8 @@ vdata hd_pack2%hd2
     set FrameRate fps
     call swf_mem_add(hd_pack2,size2)
     #
+
+	call swf_frames_reg() #is a rect with nbits above, ..., faster here
 
     char setbackgroundtag#2
     char red#1
@@ -817,10 +826,11 @@ functionX swf_removeobject(sd depth)
     call swf_mem_add(#depth,2)
 endfunction
 
+import "swf_showframe_base" swf_showframe_base
+
 functionX swf_showframe()
-#showframe tag
-    call swf_actionblock((mem_exp_part_done),(from_show))
-    call swf_tag_recordheader_entry((ShowFrame),0)
+	sd p;set p swf_frames_pointer()
+	call swf_showframe_base(p)
 endfunction
 
 ######################
@@ -832,7 +842,10 @@ functionX swf_sprite_done(sd spriteid)
 #sd spriteid        pre-id created with swf_sprite_new
     call swf_mem((mem_exp_change),spriteid)
     call swf_actionblock((mem_exp_change),spriteid)
-    call swf_actionblock((mem_exp_part_done),(from_done));#in case there are remaining actions
+
+	sd p;setcall p swf_sprite_frames_pointer(spriteid)
+	call swf_actionblock((mem_exp_part_done),(from_done),p);#in case there are remaining actions
+
     call swf_actionblock((mem_exp_change_back))
     import "swf_tag_end" swf_tag_end
     call swf_tag_end()
@@ -898,19 +911,9 @@ endfunction
 functionX swf_sprite_showframe(sd spriteid)
 #sd spriteid   pre-id
     call swf_mem((mem_exp_change),spriteid)
-    #
-    sd sprite
-    setcall sprite struct_ids((ids_get),spriteid)
-    sd mem
-    setcall mem block_get_mem(sprite)
-    add mem (WORD)
-    sd frames
-    setcall frames word_arg_to_dword(mem)
-    inc frames
-    call dword_to_word_arg(frames,mem)
-    #
     call swf_actionblock((mem_exp_change),spriteid)
-    call swf_showframe()
+	sd p;setcall p swf_sprite_frames_pointer(spriteid)
+	call swf_showframe_base(p)
     call swf_actionblock((mem_exp_change_back))
     call swf_mem((mem_exp_change_back))
 endfunction

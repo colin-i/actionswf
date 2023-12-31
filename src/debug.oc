@@ -121,9 +121,9 @@ import "memalloc" memalloc
 import "f_open_mem" f_open_mem
 import "error" error
 
-function debug_init(sd bool,sd path)
+function debug_init(sd flags,sd path)
 	sv of%p_offsets
-	if bool=(TRUE)
+	if flags!=(debug_none)
 		setcall of# memalloc(0)
 
 		sd a;setcall a strlen(path)
