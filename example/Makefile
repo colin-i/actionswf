@@ -7,20 +7,23 @@ endif
 
 OLINK=ounused
 linkerflags=-s
+
+ifndef conv_64
 conv_64=0
-OFLAGS=conv_64 ${conv_64}
+endif
 
 name=example
+OFLAGS=conv_64 ${conv_64}
 linkname=actionswf
 linkfile=${linkname}.lib
 
 ifeq (${platform},win)
-	OFLAGS += inplace_reloc 0 include_sec 1
+	OFLAGS += inplace_reloc 0
 else
 	libname=${linkname}.so
+	OFLAGS += underscore_pref 1
 	ifeq (${conv_64},1)
-		OFLAGS += exit_end 1
-		# underscore_pref 1   win32 with _, can go back to this later
+		OFLAGS += exit_end 1 include_sec 1
 	endif
 endif
 
