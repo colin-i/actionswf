@@ -64,7 +64,7 @@ function get_nr_of_forIn_statements()
 endfunction
 
 #name/null
-function action_code_write_builtin_names(sv codepointer,sv p_action)
+function action_code_write_builtin_names(sv codepointer,sv p_action) #action is value only because is working with stack
 	set codepointer codepointer#
 	sd compare
 	vstr int="int"
@@ -126,7 +126,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	setcall compare strcmp(codepointer,goto)
 	if compare=0
 		set p_action# (ActionGotoFrame)
-		inc p_action
+		incst p_action
 		set p_action# (ActionEndFlag)   #even if it's playing, it will stop, no ActionStop here
 		return goto
 	endif
@@ -134,7 +134,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action)
 	setcall compare strcmp(codepointer,gotop)
 	if compare=0
 		set p_action# (ActionGotoFrame)
-		inc p_action
+		incst p_action
 		set p_action# (ActionPlay)
 		return gotop
 	endif

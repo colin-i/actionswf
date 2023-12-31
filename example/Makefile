@@ -58,7 +58,7 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		export LD_LIBRARY_PATH=../src; ./example; \
+		export LD_LIBRARY_PATH=../src; ./${name} 1; \
 	fi
 
 %: %.oc
@@ -85,4 +85,4 @@ test:
 
 .NOTPARALLEL:
 
-#LD_LIBRARY_PATH=/home/bc/s/actionswf-1/src ./example
+#LD_LIBRARY_PATH=/home/bc/s/actionswf-1/src ./${name} 0
