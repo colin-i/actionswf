@@ -1,3 +1,9 @@
+actionswf (1-65) bionic; urgency=medium
+
+  * 1 frame and log less
+
+ -- bc <bc@bc-Type1ProductConfigId>  Sun, 31 Dec 2023 19:37:43 +0200
+
 actionswf (1-64) bionic; urgency=medium
 
   * fix example32
