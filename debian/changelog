@@ -1,3 +1,9 @@
+actionswf (1-64) bionic; urgency=medium
+
+  * fix example32
+
+ -- bc <bc@bc-Type1ProductConfigId>  Sun, 31 Dec 2023 17:45:31 +0200
+
 actionswf (1-63) bionic; urgency=medium
 
   * fix gotoand...
