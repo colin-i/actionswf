@@ -261,24 +261,16 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         call mem_block_add(p_block,arg,arg2)
     elseif proc=(mem_exp_part_done)
 		sd frames
-		if arg=(from_show)
-			#id is 0/spriteid
-			call debug_show(id)
-			setcall frames word_arg_to_dword(arg2)
-			inc frames
-			call dword_to_word_arg(frames,arg2)
-		endif
+		setcall frames word_arg_to_dword(arg2)
+
 		sd block
 		set block p_block#
 		sd size
 		setcall size block_get_size(block)
-		if size!=0
-			if arg=(from_done)
-				call debug_show(id)  #even if is not a ShowFrame in the swf, ffdec or player will frame index them
-				setcall frames word_arg_to_dword(arg2)
-				inc frames
-				call dword_to_word_arg(frames,arg2)
-			endif
+		if size!=0  #here is an ending from show or done with size
+			inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
+			call dword_to_word_arg(frames,arg2)
+
 			import "write_action" write_action
 			sd tagsz
 			setcall tagsz action_size(id)
@@ -288,7 +280,14 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			setcall poolblock actionpool_currentblock()
 			call block_reset_size(poolblock)
 			call block_reset_size(block)
-		endif
+		elseif arg=(from_show)  #here is an ending from show with no size
+			call debug_show(id) #id is 0/spriteid, this is good at debugger to keep the count of frames
+			inc frames
+			call dword_to_word_arg(frames,arg2)
+		elseif frames=0    #here is an ending from done with no size and no previous show
+			inc frames  ##a default frame, how was before at root, and at sprite is ok
+			call dword_to_word_arg(frames,arg2)
+		endelseif
     else
     #if proc==(mem_exp_get_block)
         return p_block#
