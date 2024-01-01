@@ -6,6 +6,7 @@ include "../include/prog.h"
 import "swf_actionblock" swf_actionblock
 
 import "alt_action" alt_action
+import "file_get_content__resources_free" file_get_content__resources_free
 
 aftercallimport ebool
 
@@ -21,6 +22,9 @@ functionX action(ss ac)
 	if alt_ac!=(NULL)  #can be two action() same DoAction
 		call debug_base(0)
 		call action_base(alt_ac)
+		if alt_ac!=ac
+			call file_get_content__resources_free()
+		end
 	end
 endfunction
 functionXx actionf(ss buffer,ss *format)
@@ -30,10 +34,11 @@ functionXx actionf(ss buffer,ss *format)
 	sd alt_ac;set alt_ac alt_action(buffer,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
-		if alt_ac=buffer
+		if buffer=alt_ac
 			call action_format(#buffer)
 		else
 			call action_base(alt_ac)
+			call file_get_content__resources_free()
 		end
 	end
 endfunction
@@ -48,6 +53,9 @@ functionX action_sprite(sd sprite,ss actions)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call action_base(alt_ac)
+		if alt_ac!=actions
+			call file_get_content__resources_free()
+		end
 	end
 	call swf_actionblock((mem_exp_change_back))
 endfunction
@@ -59,10 +67,11 @@ functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
 	sd alt_ac;set alt_ac alt_action(buffer,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
-		if alt_ac=buffer
+		if buffer=alt_ac
 			call action_format(#buffer)
 		else
 			call action_base(alt_ac)
+			call file_get_content__resources_free()
 		end
 	end
 	call swf_actionblock((mem_exp_change_back))
