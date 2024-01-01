@@ -108,3 +108,8 @@ const from_show=0
 const from_done=1
 
 const debug_none=0
+#const debug_log=0x1
+const debug_alt=0x2
+
+const max_structures=999
+const ids_str_len=3 #"999"

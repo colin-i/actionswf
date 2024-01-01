@@ -14,7 +14,7 @@ function args_advance(sv p_args)
 endfunction
 const max_char_records=256
 function shapewithstyle_records()
-    char shapewithstyle_record#max_char_records
+    charx shapewithstyle_record#max_char_records
     return #shapewithstyle_record
 endfunction
 

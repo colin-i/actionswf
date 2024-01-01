@@ -77,7 +77,7 @@ function cond_blocks()
     return blocks
 endfunction
 function cond_blocks_at_index(sd i)
-    data blocks_mem#brace_blocks_max
+    datax blocks_mem#brace_blocks_max
     sd blocks^blocks_mem
     #
     mult i (cond_block_size)

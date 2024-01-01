@@ -396,9 +396,8 @@ endfunction
 
 #structure ids
 
-const max_structures=100
 function struct_ids(sd proc,sd id)
-    vdata structures#max_structures
+    vdatax structures#max_structures
     vdata strct^structures
     data counter=0
     sv ac_ptr
@@ -465,12 +464,12 @@ function struct_ids(sd proc,sd id)
     endelse
 endfunction
 function struct_ids_action(sd proc,sd id)
-    vdata action_structures#max_structures
+    vdatax action_structures#max_structures
     sd v;setcall v struct_ids_expand(proc,id,#action_structures)
     return v
 endfunction
 function struct_ids_actionpool(sd proc,sd id)
-    vdata actionpool_structures#max_structures
+    vdatax actionpool_structures#max_structures
     sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
     return v
 endfunction

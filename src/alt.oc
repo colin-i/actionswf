@@ -1,0 +1,41 @@
+
+format elfobj64
+
+include "../include/prog.h"
+
+importx "strrchr" strrchr
+importx "strcpy" strcpy
+importx "memcpy" memcpy
+
+function alt_action(sd orig_action)
+	value folder#1
+	if folder!=(NULL);i3
+	end
+	return orig_action
+end
+
+aftercallimport ebool
+
+import "memalloc" memalloc
+
+function alt_init(sd flags,sd path,vstr concat_point)
+	and flags (debug_alt)
+	if flags=(debug_alt)
+		sd r;set r strrchr(path,(Period))
+		if r!=(NULL)
+			sub r path
+			set concat_point r
+		end
+		sd finalsize=4+1+ids_str_len+1+5+1  #ext separator ids _ word_str_len ... null
+		add finalsize concat_point
+
+		setcall alt_action.folder memalloc(finalsize)
+		call memcpy(alt_action.folder,path,concat_point)
+		add concat_point alt_action.folder
+		call strcpy(concat_point,".dbg")
+		add concat_point 4;set concat_point# (path_separator)
+		#will be more here
+		ret
+	end
+	set alt_action.folder (NULL)
+end
