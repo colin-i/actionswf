@@ -73,30 +73,26 @@ function file_open(ss filepath,sd flags)
     EndIf
     return file
 endfunction
+#offset
 function file_seek(sd file,sd off,sd method)
     sd seekint
-    setcall seekint lseek(file,off,method)
+	setcall seekint lseek(file,off,method) #Some devices are incapable of seeking and POSIX does not specify which devices must support lseek
+	#in the rest: a normal error will be when file is to large and seeking there
     If seekint=-1
         vstr seekerr="File seek error"
         call error(seekerr)
     endif
+	return seekint
 endfunction
-#sz
-function file_tell(sd file)
-    sd sz
-    setcall sz lseek(file,0,(SEEK_CUR))
-    if sz=-1
-        vstr tellerr="File tell error"
-        call error(tellerr)
-    endif
-    return sz
+#offset
+function file__seek(sd file,sd method)
+	callret file_seek(file,0,method) #here return is what file_seek is returning
 endfunction
 #size
 function filesize(sd file)
-    call file_seek(file,0,(SEEK_END))
     sd len
-    setcall len file_tell(file)
-    call file_seek(file,0,(SEEK_SET))
+	set len file__seek(file,(SEEK_END))
+    call file__seek(file,(SEEK_SET))
     return len
 endfunction
 
