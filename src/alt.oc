@@ -6,12 +6,19 @@ include "../include/prog.h"
 importx "strrchr" strrchr
 importx "strcpy" strcpy
 importx "memcpy" memcpy
+importx "sprintf" sprintf
 
-function alt_action(sd orig_action)
-	value folder#1
-	if folder!=(NULL);i3
+import "swf_frames_pointer" swf_frames_pointer
+import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
+import "file_get_content__resources_free" file_get_content__resources_free
+import "word_arg_to_dword" word_arg_to_dword
+import "mem_free" mem_free
+
+function alt_free()
+	value folder=NULL
+	if alt_free!=(NULL)
+		call mem_free(#folder)
 	end
-	return orig_action
 end
 
 aftercallimport ebool
@@ -29,13 +36,33 @@ function alt_init(sd flags,sd path,vstr concat_point)
 		sd finalsize=4+1+ids_str_len+1+5+1  #ext separator ids _ word_str_len ... null
 		add finalsize concat_point
 
-		setcall alt_action.folder memalloc(finalsize)
-		call memcpy(alt_action.folder,path,concat_point)
-		add concat_point alt_action.folder
+		setcall alt_free.folder memalloc(finalsize)
+		call memcpy(alt_free.folder,path,concat_point)
+		add concat_point alt_free.folder
 		call strcpy(concat_point,".dbg")
 		add concat_point 4;set concat_point# (path_separator)
-		#will be more here
+		inc concat_point
 		ret
 	end
-	set alt_action.folder (NULL)
+	set alt_free.folder (NULL)
+end
+
+import "file_get_content" file_get_content
+
+function alt_action(sd orig_action,sd preid)
+	if alt_free.folder!=(NULL)
+		sw p
+		if preid!=0
+			set p swf_sprite_frames_pointer(preid)
+		else
+			set p swf_frames_pointer()
+		end
+		sd f;set f word_arg_to_dword(p)
+		inc f  ##index 0 is frame 1 at ffdec
+		call sprintf(alt_init.concat_point,"%u_%u",preid,f)
+		sd mem;sd size
+		set mem file_get_content(alt_free.folder,#size)
+		call file_get_content__resources_free()
+	end
+	return orig_action
 end

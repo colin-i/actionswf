@@ -17,7 +17,7 @@ import "debug_base" debug_base
 
 functionX action(ss ac)
 #ss ac       actionscript string to be parsed
-	sd alt_ac;set alt_ac alt_action(ac)
+	sd alt_ac;set alt_ac alt_action(ac,0)
 	if alt_ac!=(NULL)  #can be two action() same DoAction
 		call debug_base(0)
 		call action_base(alt_ac)
@@ -27,7 +27,7 @@ functionXx actionf(ss buffer,ss *format)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
-	sd alt_ac;set alt_ac alt_action(buffer)
+	sd alt_ac;set alt_ac alt_action(buffer,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
 		if alt_ac=buffer
@@ -44,7 +44,7 @@ functionX action_sprite(sd sprite,ss actions)
 #sd sprite    sprite id
 #ss actions   same as action
 	call swf_actionblock((mem_exp_change),sprite)  #change also for alt_action to know current frame
-	sd alt_ac;set alt_ac alt_action(actions)
+	sd alt_ac;set alt_ac alt_action(actions,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call action_base(alt_ac)
@@ -56,7 +56,7 @@ functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
 #ss buffer    same as actionf
 #ss format    same as actionf
 	call swf_actionblock((mem_exp_change),sprite)
-	sd alt_ac;set alt_ac alt_action(buffer)
+	sd alt_ac;set alt_ac alt_action(buffer,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		if alt_ac=buffer
