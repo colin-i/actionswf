@@ -60,8 +60,8 @@ function alt_action(sd orig_action,sd preid)
 		sd f;set f word_arg_to_dword(p)
 		inc f  ##index 0 is frame 1 at ffdec
 		call sprintf(alt_init.concat_point,"%u_%u",preid,f)
-		sd mem;sd size
-		set mem file_get_content(alt_free.folder,#size)
+		sd mem
+		set mem file_get_content(alt_free.folder,(NULL))
 		call file_get_content__resources_free()
 	end
 	return orig_action

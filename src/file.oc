@@ -104,15 +104,26 @@ endfunction
 import "memalloc" memalloc
 #mem
 function file_get_content(ss filepath,sv p_size)  #size is a stack variable
-    sd file
-    setcall file file_open(filepath,(_open_read))
-    call file_get_content__resources((TRUE),file)
-    setcall p_size# filesize(file)
-    sd mem
-    setcall mem memalloc(p_size#)
-    call file_get_content__resources((TRUE),(fd_none),mem)
-    call file_read(file,mem,p_size#)
-    return mem
+	sd file
+	setcall file file_open(filepath,(_open_read))
+	call file_get_content__resources((TRUE),file)
+	sd mem; ss size
+	set size filesize(file)
+	if p_size!=(NULL)
+		set p_size# size
+		setcall mem memalloc(size)
+	else
+		inc size
+		setcall mem memalloc(size)
+		dec size
+	end
+	call file_get_content__resources((TRUE),(fd_none),mem)
+	call file_read(file,mem,size)
+	if p_size=(NULL)
+		add size mem
+		set size# (Nullchar)
+	end
+	return mem
 endfunction
 function file_read(sd file,sd mem,sd size)
     sd read_sz
