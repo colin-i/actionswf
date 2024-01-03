@@ -402,7 +402,9 @@ function struct_ids(sd proc,sd id)
     data counter=0
     sv ac_ptr
     sv pointer
-    if proc=(ids_all_free)
+	if proc=(ids_counter)
+		return counter
+	elseif proc=(ids_all_free)
         #starting with ids_all_free:
         #                #counter increment#, then null at ac,pools
         #   mem_free at struct_ids_action_expand
@@ -415,36 +417,36 @@ function struct_ids(sd proc,sd id)
             setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
         endwhile
         return (void)
-    elseif proc=(ids_counter)
-        return counter
-    endelseif
+	endelseif
 
     sd ident
-    if proc=(ids_set)
-        set ident counter
-    else
-        set ident id
-    endelse
+	if proc!=(ids_set)
+		set ident id
+	else
+		set ident counter
+	endelse
     setcall pointer move_to_n_pointer(strct,ident)
-    if proc=(ids_set)
-    #id
+	if proc=(ids_get)
+		return pointer#
+	elseif proc=(ids_set)
+	#id
         if counter=(max_structures)
             call error("too many objects")
         endif
-        sv iter
         sd newblock
         setcall newblock def_data()
-        set iter pointer
-        while iter!=strct
-        #can be in a free place
-            sub iter :
-            if iter#=0
-                set iter# newblock
-                sub iter strct
-                div iter :
-                return iter
-            endif
-        endwhile
+	#can be in a free place, but since log, that will overwrite previous ids, to keep them compressed, a solution can be two parse twice
+	#	sv iter
+	#	set iter pointer
+	#	while iter!=strct
+	#		sub iter :
+	#		if iter#=0
+	#			set iter# newblock
+	#			sub iter strct
+	#			div iter :
+	#			return iter
+	#		endif
+	#	endwhile
         set pointer# newblock
         #counter increment#
         #sd c; for counter verification inside
@@ -456,8 +458,6 @@ function struct_ids(sd proc,sd id)
     elseif proc=(ids_get_pointer)
         if ident>=counter;call error("Unexistent input id.");endif
         return pointer
-    elseif proc=(ids_get)
-        return pointer#
     else
     #if proc==(ids_free)
         call mem_free(pointer)
@@ -475,7 +475,9 @@ function struct_ids_actionpool(sd proc,sd id)
 endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
     sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
-    if proc=(ids_set)
+	if proc=(ids_get)
+		return pointer#
+	elseif proc=(ids_set)
         setcall pointer# def_data()
     elseif proc=(ids_get_pointer)
         #call to verify if the user input has a wrong id
@@ -483,8 +485,6 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
         if id>=c;call error("Unregistered input id.");endif
         #
         return pointer
-    elseif proc=(ids_get)
-        return pointer#
     else
     #if proc==(ids_free)
         call mem_free(pointer)
