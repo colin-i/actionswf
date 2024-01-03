@@ -1,3 +1,9 @@
+actionswf (1-67) bionic; urgency=medium
+
+  * unique preids for log and button alt code
+
+ -- bc <bc@bc-Type1ProductConfigId>  Wed, 03 Jan 2024 15:34:47 +0200
+
 actionswf (1-66) bionic; urgency=medium
 
   * alternative action
