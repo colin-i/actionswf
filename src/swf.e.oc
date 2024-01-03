@@ -866,10 +866,7 @@ functionX swf_sprite_done(sd spriteid)
 
     call swf_mem_add(mem,size)
 
-    call free_sprite_id(spriteid)
-
-	import "debug_spritedone" debug_spritedone
-	call debug_spritedone(spriteid,id)
+    call free_sprite_id(spriteid,id)
 
     return id
 endfunction

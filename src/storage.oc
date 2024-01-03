@@ -9,14 +9,6 @@ importx "memcpy" memcpy
 #this is throwless here
 import "struct_ids" struct_ids
 
-function free_sprite_id(sd id)
-    call struct_ids((ids_free),id)
-#these two are ok throwless
-    call struct_ids_action((ids_free),id)
-    call struct_ids_actionpool((ids_free),id)
-#
-endfunction
-
 #
 function identifiers()
     data id#1
@@ -92,6 +84,16 @@ import "word_arg_to_dword" word_arg_to_dword
 aftercallimport ebool
 
 
+
+function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for buttons
+    call struct_ids((ids_free),id)
+#these two are ok throwless
+	callg struct_ids_action((ids_free),id)
+	callg struct_ids_actionpool((ids_free),id)
+#
+	import "debug_spritedone" debug_spritedone
+	call debug_spritedone(id,finalId_or_containerId)
+endfunction
 
 import "error" error
 import "struct_ids_actionpool" struct_ids_actionpool

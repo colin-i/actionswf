@@ -45,34 +45,27 @@ endfunction
 
 #sprite
 
+import "action_sprite_base" action_sprite_base
+
 functionX action_sprite(sd sprite,ss actions)
 #sd sprite    sprite id
 #ss actions   same as action
-	call swf_actionblock((mem_exp_change),sprite)  #change also for alt_action to know current frame
-	sd alt_ac;set alt_ac alt_action(actions,sprite)
-	if alt_ac!=(NULL)
-		call debug_base(sprite)
-		call action_base(alt_ac)
-		if alt_ac!=actions
-			call file_get_content__resources_free()
-		end
-	end
-	call swf_actionblock((mem_exp_change_back))
+	call action_sprite_base(sprite,actions,(TRUE))
 endfunction
 functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
-	call swf_actionblock((mem_exp_change),sprite)
 	sd alt_ac;set alt_ac alt_action(buffer,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
+		call swf_actionblock((mem_exp_change),sprite)   #alt action is not using actionblock, is using swfblock
 		if buffer=alt_ac
 			call action_format(#buffer)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
 		end
+		call swf_actionblock((mem_exp_change_back))
 	end
-	call swf_actionblock((mem_exp_change_back))
 endfunction
