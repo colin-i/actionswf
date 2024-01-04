@@ -133,12 +133,12 @@ endfunction
 
 function file_write(sd file,sd buffer,sd size)
     if size=0
-        return (void)
+        ret
     endif
     sd len
     setcall len write(file,buffer,size)
     if len=size
-        return (void)
+        ret
     endif
     vstr er="File write error"
     call error(er)

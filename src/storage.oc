@@ -116,7 +116,7 @@ function swf_mem(sd proc,sd arg,sd len)
     if proc=(mem_exp_change_back)
         set id swf_frames_reg.main_id
         set call_struct c_main
-        return (void)
+        ret
     elseif proc=(mem_exp_init)
     #arg is file
     #len is filelength offset
@@ -141,7 +141,7 @@ function swf_mem(sd proc,sd arg,sd len)
         #
         set filelength_offset len
         #
-        return (void)
+        ret
     elseif proc=(mem_exp_free)
         if path_mem!=(NULL)
             #0
@@ -159,7 +159,7 @@ function swf_mem(sd proc,sd arg,sd len)
                 call file_close(#file_out)
             endif
         endif
-        return (void)
+        ret
     endelseif
     if path_mem=(NULL)
     #swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
@@ -239,7 +239,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         #
         setcall poolid actionpoolid()
         set poolid# id
-        return (void)
+        ret
     elseif proc=(mem_exp_change_back)
         set id id_back
         #
@@ -247,7 +247,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         setcall root_poolid actionpoolid_root()
         setcall poolid actionpoolid()
         set poolid# root_poolid#
-        return (void)
+        ret
     elseif proc=(mem_exp_init)
         set id arg
         set id_back id
@@ -255,7 +255,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         call struct_ids_actionpool((ids_set),id)
         sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
         sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
-        return (void)
+        ret
     endelseif
     sv p_block
     setcall p_block struct_ids_action((ids_get_pointer),id)

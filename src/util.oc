@@ -397,7 +397,7 @@ endfunction
 #structure ids
 
 function struct_ids(sd proc,sd id)
-    vdatax structures#max_structures
+    vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures
     vdata strct^structures
     data counter=0
     sv ac_ptr
@@ -416,7 +416,7 @@ function struct_ids(sd proc,sd id)
             setcall ac_ptr struct_ids_action((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
             setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
         endwhile
-        return (void)
+        ret
 	endelseif
 
     sd ident
@@ -458,10 +458,11 @@ function struct_ids(sd proc,sd id)
     elseif proc=(ids_get_pointer)
         if ident>=counter;call error("Unexistent input id.");endif
         return pointer
-    else
-    #if proc==(ids_free)
-        call mem_free(pointer)
-    endelse
+	endelseif
+	#else
+	#if proc==(ids_free)
+	call mem_free(pointer)
+	#endelse
 endfunction
 function struct_ids_action(sd proc,sd id)
     vdatax action_structures#max_structures

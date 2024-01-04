@@ -114,7 +114,7 @@ function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
         if y=0
             set matrix 0
             set p_size# 1
-            return (void)
+            ret
         endif
     endif
     sd NBits

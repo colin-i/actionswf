@@ -512,7 +512,7 @@ function action_code_continue()
             #
             call add_dummy_jump()
             call resolve_dummy_jump(off_to_jump)
-            return (void)
+            ret
         endif
         dec counter
     endwhile
@@ -773,22 +773,22 @@ function action_one_command(ss command)
     setcall compare strcmp("null",command)
     if compare=0
         call action_push((ap_Null),-1)
-        return (void)
+        ret
     endif
     setcall compare strcmp("undefined",command)
     if compare=0
         call action_push((ap_Undefined),-1)
-        return (void)
+        ret
     endif
     setcall compare strcmp("true",command)
     if compare=0
         call action_push((ap_Boolean),1,-1)
-        return (void)
+        ret
     endif
     setcall compare strcmp("false",command)
     if compare=0
         call action_push((ap_Boolean),0,-1)
-        return (void)
+        ret
     endif
     call action_get_one(command)
 endfunction

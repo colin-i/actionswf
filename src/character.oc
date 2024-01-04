@@ -153,7 +153,7 @@ function shape_records_add(sd p_dest_pos,sd p_args)
         call shape_records_bits(flags,5,p_dest_pos)
         if flags=0
         #EndShapeRecord
-            return (void)
+            ret
         endif
         #StateMoveTo
         call shape_records_add_moveto(p_dest_pos,flags,p_args)
@@ -176,14 +176,14 @@ function shape_records_add(sd p_dest_pos,sd p_args)
             setcall f_l_bits NumFill_NumLin(1,(FALSE))
             call shape_records_bits(1,f_l_bits,p_dest_pos)
         endif
-        return (void)
+        ret
     endif
     call shape_records_add_edge(p_dest_pos,p_args)
 endfunction
 function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
     and flags (StateMoveTo)
     if flags=0
-        return (void)
+        ret
     endif
     sd x
     setcall x args_advance(p_args)

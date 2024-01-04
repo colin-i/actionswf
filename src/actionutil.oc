@@ -145,7 +145,7 @@ function action_error()
     sd p_action_errors
     setcall p_action_errors action_debug((TRUE))
     if p_action_errors#=(FALSE)
-        return (void)
+        ret
     endif
 
     vstr ac#1
@@ -368,7 +368,7 @@ import "error" error
 import "forward_values_expand" forward_values_expand
 function action_member_write(ss member)
     const dup_member=256
-    char dup_data#dup_member
+    charx dup_data#dup_member
     vstr code^dup_data
     sd len
     setcall len strlen(member)

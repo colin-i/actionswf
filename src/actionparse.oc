@@ -770,7 +770,7 @@ endfunction
 function action_code_take(ss ac)
     sd b;setcall b numeric_code(ac)
     if b=(TRUE)
-        return (void)
+        ret
     endif
     ss test
     setcall test action_code_membersplit(ac)
@@ -1107,7 +1107,7 @@ function brace_blocks_remove_write_loopIfJumps_at_current_offset()
         if ifoffset=0
             #also remove the type of loop
             call brace_blocks_counter_dec()
-            return (void)
+            ret
         endif
         call write_forward_offset(ifoffset)
     endwhile
