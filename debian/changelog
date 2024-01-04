@@ -1,3 +1,9 @@
+actionswf (1-68) bionic; urgency=medium
+
+  * remove useless else
+
+ -- bc <bc@bc-Type1ProductConfigId>  Thu, 04 Jan 2024 14:14:42 +0200
+
 actionswf (1-67) bionic; urgency=medium
 
   * unique preids for log and button alt code
