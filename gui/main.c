@@ -3,7 +3,7 @@
 
 #include <gtk/gtk.h>
 #include <vte/vte.h>
-//sudo apt install libgtk-4-dev libvte-2.91-gtk4-dev  
+//sudo apt install libgtk-4-dev libvte-2.91-gtk4-dev
 //cc `pkg-config --cflags vte-2.91-gtk4 gtk4` main.c `pkg-config --libs vte-2.91-gtk4 gtk4`
 
 void q(gpointer terminal){
