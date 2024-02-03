@@ -636,6 +636,7 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 							if pwant_return#=(FALSE)   #can be in a ...=gotoAndStop+... attribution and add extra code there
 								#                      because ActionGotoFrame is not pushing a return value
 								call actionrecordheader(act,(WORD))
+								dec val      ##gotoAnd..(1) = GotoFrame 0
 								call swf_actionblock_add(#val,(WORD))
 								set pwant_return# (TRUE)   #no ActionPop required
 								#
