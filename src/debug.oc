@@ -248,16 +248,20 @@ function debug_phase_code_add(sd is_long,sd size)
 		end
 		ss m;set m debug_actions.mem
 		add m debug_actions.size
-		set debug_actions.size sz
 
 		set m# (Comma) #even if is only 1 action is lines,a1,a2...an
 
 		if is_long=(TRUE)
 			char b#1
 			char b2#1+1
-			call sprintf(#b,"%02X",size)
-			inc m;set m# b
+			call sprintf(#b,"%2X",size)
+			if b!=(Space)
+				inc m;set m# b
+			else
+				dec sz
+			end
 			inc m;set m# b2
 		end
+		set debug_actions.size sz
 	endif
 endfunction
