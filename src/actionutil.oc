@@ -301,7 +301,7 @@ endfunction
 function action_one(sd tag)
     call swf_actionblock_add(#tag,1)
       import "debug_phase_code_add" debug_phase_code_add
-      call debug_phase_code_add()
+      call debug_phase_code_add((FALSE))
 endfunction
 
 import "action_code_right_util" action_code_right_util

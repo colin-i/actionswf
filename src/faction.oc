@@ -64,6 +64,6 @@ function action_base(ss ac)
 		setcall p_values action__code_row(p_values)
 	endwhile
 
-    #free mem ok,another free can be at errors
+    #free mem ok,another free is at errors
     call action_debug_free()
 endfunction

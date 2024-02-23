@@ -38,7 +38,7 @@ endfunction
 function dword_to_word_arg(sd int,ss arg)
     set arg# int
     inc arg
-    div int 0x100
+    divu int 0x100
     set arg# int
 endfunction
 function word_arg_to_dword(ss arg)
@@ -331,10 +331,9 @@ endfunction
 #
 function memrealloc(sd mem,sd size)
 #unele fisiere pot da eroare de la realocare; fara functia asta aftercall poate fi degeaba
-    sd ptr;sd n=NULL
+    sd ptr
     setcall ptr realloc(mem,size)
-    sd comp;setcall comp memcmp(#ptr,#n,:)
-    if comp=0
+    if ptr=(NULL)
         call error("realloc failed")
     endif
     return ptr

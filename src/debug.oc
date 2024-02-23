@@ -35,8 +35,13 @@ function debug_end()
 	return #a
 endfunction
 function debug_actions()
-	datax a#1  #65535
-	return #a
+	#now is a string #datax a#1  #65535
+	value mem=NULL
+	#mem_struct_size said is 8 first 4 all_size, and after mem_struct__size_off is the size and for ,00(3 bytes here) there tag+len 1+2 same 3 bytes there
+	#but all_size is growing +0x1000 from that limit, and the error is catched there, valuex?
+	#there is a limit on actions and on constant pool, so don't worry here
+	datax size#1
+	datax all_size#1
 endfunction
 
 import "mem_free" mem_free
@@ -49,6 +54,7 @@ function debug_free()
 		value file=NULL
 		const p_debug_file^file
 		call f_close(#file)
+		call mem_free(#debug_actions.mem)
 	endif
 endfunction
 
@@ -92,13 +98,6 @@ function debug_phase_parse(ss pointer)
 		set target# (NULL)
 	endif
 endfunction
-function debug_phase_code_add()
-	sv of%p_offsets
-	if of#!=(NULL)
-		sd acts;setcall acts debug_actions()
-		inc acts#
-	endif
-endfunction
 
 function debug_action_phase()
 	sv of%p_offsets
@@ -111,7 +110,6 @@ import "row_termination" row_termination
 
 importx "strlen" strlen
 importx "sprintf" sprintf
-importx "fwrite" fwrite
 
 
 
@@ -119,13 +117,12 @@ aftercallimport ebool
 
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
-import "error" error
 import "alt_init" alt_init
 
 function debug_init(sd flags,sd path)
 	sv of%p_offsets
 	if flags!=(debug_none)
-		setcall of# memalloc(0)
+		setcall of# memalloc(1)  #0 on some systems can be NULL return
 
 		sd s;setcall s strlen(path)
 		sd a=5;add a s
@@ -133,11 +130,16 @@ function debug_init(sd flags,sd path)
 		call sprintf(b,"%s.log",path)
 		sv file%p_debug_file
 		setcall file# f_open_mem(b,"wb")
+
+		setcall debug_actions.mem memalloc(1)
+		#this is later #set debug_actions.size 0
+		set debug_actions.all_size 1
 	endif
 	call alt_init(flags,path,s) #is here because need to set a default value inside
 endfunction
 
 import "f_printf" f_printf
+import "f_write" f_write
 
 function debug_action_init(ss ac)
 	sv of%p_offsets
@@ -168,9 +170,8 @@ function debug_action_init(ss ac)
 		add row of#
 		sv end;setcall end debug_end()   #at third iteration
 		set end# row
-		#
-		sd acts;setcall acts debug_actions()
-		set acts# 0
+
+		set debug_actions.size 0
 	endif
 endfunction
 
@@ -191,12 +192,12 @@ function debug_phase_code(sd codepointer)
 			sub b a
 			div b :
 
-			#out rows,actions\n
-			sd acts;setcall acts debug_actions()
+			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
 			sv file%p_debug_file
-			char f={Percent,l,u,Comma,Percent,u,LineFeed,Nullchar}   #must escape \n or something
-			call f_printf((fprintf_min+2),file#,#f,b,acts#)
-			set acts# 0
+			call f_printf((fprintf_min+1),file#,"%lu",b)
+			call f_write(file#,debug_actions.mem,debug_actions.size)
+			call f_write(file#,"\n",1)
+			set debug_actions.size 0
 		endif
 	endif
 endfunction
@@ -220,10 +221,7 @@ function debug_show(sd id)
 end
 function debug_write(ss s,sd d)
 	sv file%p_debug_file
-	sd items;set items fwrite(s,d,1,file#) #...size,items...
-	if items!=1
-		call error("fwrite error")
-	end
+	call f_write(file#,s,d)
 end
 function debug_spritedone(sd p,sd i)
 	sv of%p_offsets
@@ -233,3 +231,33 @@ function debug_spritedone(sd p,sd i)
 		call debug_base_core(i)
 	end
 end
+
+function debug_phase_code_add(sd is_long,sd size)
+	sv of%p_offsets
+	if of#!=(NULL)
+		sd sz;set sz debug_actions.size
+		if is_long=(TRUE)
+			add sz 3
+		else
+			add sz 1
+		end
+		if sz>^debug_actions.all_size
+			set debug_actions.all_size sz
+			add debug_actions.all_size 0x1000
+			set debug_actions.mem memrealloc(debug_actions.mem,debug_actions.all_size)
+		end
+		ss m;set m debug_actions.mem
+		add m debug_actions.size
+		set debug_actions.size sz
+
+		set m# (Comma) #even if is only 1 action is lines,a1,a2...an
+
+		if is_long=(TRUE)
+			char b#1
+			char b2#1+1
+			call sprintf(#b,"%02X",size)
+			inc m;set m# b
+			inc m;set m# b2
+		end
+	endif
+endfunction

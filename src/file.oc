@@ -48,6 +48,7 @@ importx "free" free
 
 importx "fopen" fopen
 importx "fprintf" fprintf
+importx "fwrite" fwrite
 
 function f_printf_in(sd p,sd nr)
 	callex fprintf p nr ##callexret
@@ -160,4 +161,11 @@ function f_printf(sd nr,sd file,sd format) #...
 	if r=-1
 		call error("fprintf error")
 	endif
+endfunction
+
+function f_write(sd f,sd buf,sd sz)
+	sd r;set r fwrite(buf,sz,1,f)
+	if r!=1
+		call error("fwrite error")
+	end
 endfunction
