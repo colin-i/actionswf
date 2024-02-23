@@ -309,7 +309,7 @@ function actionrecordheader(sd tag,sd size)
     call dword_to_word_arg(size,#length)
     call swf_actionblock_add(#t,3)
 	import "debug_phase_code_add" debug_phase_code_add
-	call debug_phase_code_add((TRUE),size)
+	call debug_phase_code_add((TRUE),#length)
 endfunction
 function swf_actionrecordheader(sd tag,sd size)
     char t#1
