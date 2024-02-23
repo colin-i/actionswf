@@ -374,6 +374,11 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
     set allsize block#
     set sz_test size
     add sz_test newblock_size
+
+	if sz_test>^0x7fFFffFF
+		call error("size error") #easy to test, call multiple action(...)
+	end
+
     if sz_test>^allsize
     #was >= but when >?, here and in another 2 places
         divu sz_test (block_size)

@@ -37,7 +37,7 @@ endfunction
 function debug_actions()
 	#now is a string #datax a#1  #65535
 	value mem=NULL
-	#mem_struct_size said is 8 first 4 all_size, and after mem_struct__size_off is the size and for ,00(3 bytes here) there tag+len 1+2 same 3 bytes there
+	#mem_struct_size said is 8 first 4 all_size, and after mem_struct__size_off is the size and for ,ff(3 bytes here) there tag+len+u16len
 	#but all_size is growing +0x1000 from that limit, and the error is catched there, valuex?
 	#there is a limit on actions and on constant pool, so don't worry here
 	datax size#1
