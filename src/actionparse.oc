@@ -1055,8 +1055,8 @@ function write_forward_offset(sd offset)
         call error("offset>(signed word size) error")
     endif
     #
-    import "dword_to_word_arg" dword_to_word_arg
-    call dword_to_word_arg(size,mem)
+    import "stack_to_word_arg" stack_to_word_arg
+    call stack_to_word_arg(size,mem)
 endfunction
 #offset
 function brace_blocks_remove_write_offset()

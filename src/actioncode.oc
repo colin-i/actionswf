@@ -152,6 +152,8 @@ endfunction
 aftercallimport ebool
 
 import "debug_phase_code" debug_phase_code
+import "debug_definefunction" debug_definefunction
+import "debug_concludefunction" debug_concludefunction
 
 function action_code_values_init()
     import "memalloc" memalloc
@@ -804,7 +806,9 @@ function action_definefunction(sd codepointer)
         return codepointer
     endif
     add codepointer (DWORD)
-    setcall codepointer action_deffunction(codepointer)
+
+	sd debug_related#3  #for debug file offset and codeSize pointer and line offset, must be recursive too
+    setcall codepointer action_deffunction(codepointer,#debug_related)
 
 	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
@@ -827,11 +831,13 @@ function action_definefunction(sd codepointer)
     #close function marker for return and for..in case
     import "brace_blocks_counter_dec" brace_blocks_counter_dec
     call brace_blocks_counter_dec()
-    #
+	#for debug log codeSize
+	call debug_concludefunction(#debug_related)
+	#
     return codepointer
 endfunction
 #codepointer
-function action_deffunction(sv codepointer)
+function action_deffunction(sv codepointer,sv debug_related)
     ss fn_name
     set fn_name codepointer#
     add codepointer :  #to pass the pointer
@@ -867,9 +873,11 @@ function action_deffunction(sv codepointer)
         call swf_actionblock_add(args#,wr_size)
         add args :  #to pass the pointer
     endwhile
-    #
+	#get reg, not depending on brace blocks because } is closed in the loop there, for debug
+	call debug_definefunction(debug_related)
+	#
     data dummyoffset=0
-    call swf_actionblock_add(#dummyoffset,(WORD))
+    call swf_actionblock_add(#dummyoffset,(WORD))  #codeSize
     #
     return codepointer
 endfunction

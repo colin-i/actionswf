@@ -31,8 +31,8 @@ endfunction
 
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
-import "dword_to_word_arg" dword_to_word_arg
-import "word_arg_to_dword" word_arg_to_dword
+import "stack_to_word_arg" stack_to_word_arg
+import "word_arg_to_stack" word_arg_to_stack
 
 import "swf_mem" swf_mem
 
@@ -75,7 +75,7 @@ function actionpool_getvalue(ss value)
         sd mem
         sd count
         setcall mem block_get_mem(block)
-        setcall count word_arg_to_dword(mem)
+        setcall count word_arg_to_stack(mem)
         add mem (WORD)
         set nr count
         while count!=0
@@ -96,7 +96,7 @@ function actionpool_getvalue(ss value)
         setcall mem block_get_mem(block)
         set count nr
         inc count
-        call dword_to_word_arg(count,mem)
+        call stack_to_word_arg(count,mem)
     endelse
     inc newlen
     call swf_mem_add(value,newlen)

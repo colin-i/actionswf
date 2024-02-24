@@ -49,6 +49,7 @@ importx "free" free
 importx "fopen" fopen
 importx "fprintf" fprintf
 importx "fwrite" fwrite
+importx "ftell" ftell
 
 function f_printf_in(sd p,sd nr)
 	callex fprintf p nr ##callexret
@@ -168,4 +169,12 @@ function f_write(sd f,sd buf,sd sz)
 	if r!=1
 		call error("fwrite error")
 	end
+endfunction
+
+function f_tell(sd f)
+	sd r;set r ftell(f)
+	if r=-1
+		call error("ftell error")
+	end
+	return r
 endfunction

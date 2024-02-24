@@ -76,8 +76,8 @@ import "actionpoolid" actionpoolid;import "actionpoolid_root" actionpoolid_root
 import "actionpool_currentblock" actionpool_currentblock
 
 import "action_size" action_size
-import "dword_to_word_arg" dword_to_word_arg
-import "word_arg_to_dword" word_arg_to_dword
+import "stack_to_word_arg" stack_to_word_arg
+import "word_arg_to_stack" word_arg_to_stack
 
 
 
@@ -263,7 +263,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         call mem_block_add(p_block,arg,arg2)
     elseif proc=(mem_exp_part_done)
 		sd frames
-		setcall frames word_arg_to_dword(arg2)
+		setcall frames word_arg_to_stack(arg2)
 
 		sd block
 		set block p_block#
@@ -274,7 +274,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 				call debug_show(id) #id is 0/spriteid, this is good at debugger to keep the count of frames
 			end
 			inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
-			call dword_to_word_arg(frames,arg2)
+			call stack_to_word_arg(frames,arg2)
 
 			import "write_action" write_action
 			sd tagsz
@@ -288,10 +288,10 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			inc frames
-			call dword_to_word_arg(frames,arg2)
+			call stack_to_word_arg(frames,arg2)
 		elseif frames=0    #here is an ending from done with no size and no previous show
 			inc frames  ##a default frame, how was before at root, and at sprite is ok
-			call dword_to_word_arg(frames,arg2)
+			call stack_to_word_arg(frames,arg2)
 		endelseif
     else
     #if proc==(mem_exp_get_block)
@@ -306,7 +306,7 @@ function actionrecordheader(sd tag,sd size)
     char t#1
     char length#2
     set t tag
-    call dword_to_word_arg(size,#length)
+    call stack_to_word_arg(size,#length)
     call swf_actionblock_add(#t,3)
 	import "debug_phase_code_add" debug_phase_code_add
 	call debug_phase_code_add((TRUE),#length)
@@ -315,7 +315,7 @@ function swf_actionrecordheader(sd tag,sd size)
     char t#1
     char length#2
     set t tag
-    call dword_to_word_arg(size,#length)
+    call stack_to_word_arg(size,#length)
     call swf_mem_add(#t,3)
 endfunction
 

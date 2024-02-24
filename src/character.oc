@@ -3,7 +3,7 @@ Format ElfObj64
 include "../include/prog.h"
 
 import "identifiers_get" identifiers_get
-import "dword_to_word_arg" dword_to_word_arg
+import "stack_to_word_arg" stack_to_word_arg
 
 #value
 function args_advance(sv p_args)
@@ -422,8 +422,8 @@ function buttonrecord(sd writeflag,sd x,sd y,sd states,sd id,sd depth)
 
     if writeflag=1
         set bits states
-        call dword_to_word_arg(id,#CharacterID)
-        call dword_to_word_arg(depth,#PlaceDepth)
+        call stack_to_word_arg(id,#CharacterID)
+        call stack_to_word_arg(depth,#PlaceDepth)
         call swf_mem_add(#bits,size)
     endif
 

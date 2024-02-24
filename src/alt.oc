@@ -15,7 +15,7 @@ importx "rmdir" rmdir
 
 import "swf_frames_pointer" swf_frames_pointer
 import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
-import "word_arg_to_dword" word_arg_to_dword
+import "word_arg_to_stack" word_arg_to_stack
 import "mem_free" mem_free
 
 function alt_join(vstr concat_point)
@@ -70,7 +70,7 @@ function alt_action_base(sd orig_action,sd preid,sd has_frames)
 			else
 				set p swf_frames_pointer()
 			end
-			sd f;set f word_arg_to_dword(p)
+			sd f;set f word_arg_to_stack(p)
 			inc f  ##index 0 is frame 1 at ffdec
 			call sprintf(alt_join.concat_point,"%u_%u",preid,f)
 		else

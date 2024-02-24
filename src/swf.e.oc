@@ -17,13 +17,13 @@ import "printEr" printEr
 import "rect_prepare" rect_prepare
 import "button_mem" button_mem
 
-import "dword_to_word_arg" dword_to_word_arg
+import "stack_to_word_arg" stack_to_word_arg
 import "dword_swap" dword_swap
 import "args_advance" args_advance
 import "bits_packs" bits_packs
 import "NumFill_NumLin" NFill_NLin
 import "shapewithstyle_records" shapewithstyle_records
-import "word_arg_to_dword" word_arg_to_dword
+import "word_arg_to_stack" word_arg_to_stack
 import "file_get_content__resources_free" file_get_content__resources_free
 import "file_resources_set" file_resources_set
 import "file_resources_free" file_resources_free
@@ -198,7 +198,7 @@ functionX swf_font(ss fontname,sd font_flags)
 
     sd fontid
     setcall fontid identifiers_get()
-    call dword_to_word_arg(fontid,#id)
+    call stack_to_word_arg(fontid,#id)
 
     set Flags font_flags
 
@@ -371,10 +371,10 @@ functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv st
         char l_indent#2
         char l_leading#2
         set l_align layout_align
-        call dword_to_word_arg(layout_leftmargin,#l_leftmargin)
-        call dword_to_word_arg(layout_rightmargin,#l_rightmargin)
-        call dword_to_word_arg(layout_indent,#l_indent)
-        call dword_to_word_arg(layout_leading,#l_leading)
+        call stack_to_word_arg(layout_leftmargin,#l_leftmargin)
+        call stack_to_word_arg(layout_rightmargin,#l_rightmargin)
+        call stack_to_word_arg(layout_indent,#l_indent)
+        call stack_to_word_arg(layout_leading,#l_leading)
         call swf_mem_add(#l_align,layout_size)
     endif
     call swf_mem_add(variablename,vlen)
@@ -440,7 +440,7 @@ functionX swf_shape(sd width,sd height,sd args)
         else
         #if fillstyle==(repeating_bitmap_fill)
         #clipped bitmap fill,non-smoothed repeating bitmap or non-smoothed clipped bitmap
-            call dword_to_word_arg(fillarg,#data)
+            call stack_to_word_arg(fillarg,#data)
             sd fill_pointer^data
             add fill_pointer (WORD)
             #matrix,scaleX=20,scaleY=20,translateX=0,translateY=0
@@ -469,7 +469,7 @@ functionX swf_shape(sd width,sd height,sd args)
     if linewidth!=0
         set LineStyleCount 1
         mult linewidth 20
-        call dword_to_word_arg(linewidth,#line_points)
+        call stack_to_word_arg(linewidth,#line_points)
         setcall color dword_swap(linecolor)
         add linestyles_size (WORD+DWORD)
     endif
@@ -669,10 +669,10 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
         sd pointer
         set pointer cursor
         add pointer (BYTE)
-        setcall p_wh# word_arg_to_dword(pointer)
+        setcall p_wh# word_arg_to_stack(pointer)
         add pointer (WORD)
         add p_wh (DWORD)
-        setcall p_wh# word_arg_to_dword(pointer)
+        setcall p_wh# word_arg_to_stack(pointer)
     endif
     call swf_mem_add(cursor,image_size)
     call file_get_content__resources_free()
@@ -861,7 +861,7 @@ functionX swf_sprite_done(sd spriteid)
     call swf_tag_recordheader_entry((DefineSprite),size)
     sd id
     setcall id identifiers_get()
-    call dword_to_word_arg(id,mem)
+    call stack_to_word_arg(id,mem)
     #
 
     call swf_mem_add(mem,size)
@@ -938,9 +938,9 @@ functionX swf_exports_add(sd id,ss name)
     else
         sd mem
         setcall mem block_get_mem(block)
-        setcall counter word_arg_to_dword(mem)
+        setcall counter word_arg_to_stack(mem)
         inc counter
-        call dword_to_word_arg(counter,mem)
+        call stack_to_word_arg(counter,mem)
     endelse
     #
     call swf_mem_add(#id,(WORD))

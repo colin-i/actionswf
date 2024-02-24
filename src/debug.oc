@@ -106,10 +106,26 @@ function debug_action_phase()
 	endif
 endfunction
 
+importx "sprintf" sprintf
+importx "memcpy" memcpy
+
+function md_printf(sd c,sd format,sd val) #to not write null on unknown
+	char mem#5
+	sd n;set n sprintf(#mem,format,val)
+	call memcpy(c,#mem,n)
+	return n
+end
+
 import "row_termination" row_termination
+import "brace_blocks_get_memblock" brace_blocks_get_memblock
+import "block_get_size" block_get_size
+import "block_get_mem" block_get_mem
+import "word_arg_to_stack" word_arg_to_stack
 
 importx "strlen" strlen
-importx "sprintf" sprintf
+importx "fseek" fseek
+importx "fread" fread
+importx "fprintf" fprintf
 
 
 
@@ -129,7 +145,7 @@ function debug_init(sd flags,sd path)
 		sd b;setcall b memalloc(a)
 		call sprintf(b,"%s.log",path)
 		sv file%p_debug_file
-		setcall file# f_open_mem(b,"wb")
+		setcall file# f_open_mem(b,"w+b")  #+ is because at definefunction it is reading back for comma character
 
 		setcall debug_actions.mem memalloc(1)
 		#this is later #set debug_actions.size 0
@@ -140,6 +156,7 @@ endfunction
 
 import "f_printf" f_printf
 import "f_write" f_write
+import "f_tell" f_tell
 
 function debug_action_init(ss ac)
 	sv of%p_offsets
@@ -180,24 +197,26 @@ function debug_phase_code(sd codepointer)
 	if of#!=(NULL)
 		sv a;setcall a debug_mark_get()
 		if codepointer=a#   #can also be smaller
-			sv b;set b a
-			sv end;setcall end debug_end()
-			while codepointer=b#
-				call debug_mark_add()
-				setcall b debug_mark_get()
-				if b=end#
-					break
-				endif
-			endwhile
-			sub b a
-			div b :
+			if debug_actions.size!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions
+				sv b;set b a
+				sv end;setcall end debug_end()
+				while codepointer=b#
+					call debug_mark_add()
+					setcall b debug_mark_get()
+					if b=end#
+						break
+					endif
+				endwhile
+				sub b a
+				div b :
 
-			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
-			sv file%p_debug_file
-			call f_printf((fprintf_min+1),file#,"%lu",b)
-			call f_write(file#,debug_actions.mem,debug_actions.size)
-			call f_write(file#,"\n",1)
-			set debug_actions.size 0
+				#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
+				sv file%p_debug_file
+				call f_printf((fprintf_min+1),file#,"%lu",b)
+				call f_write(file#,debug_actions.mem,debug_actions.size)
+				call f_write(file#,"\n",1)
+				set debug_actions.size 0
+			end
 		endif
 	endif
 endfunction
@@ -257,12 +276,12 @@ function debug_phase_code_add(sd is_long,ss plength)
 			ss second=1
 			add second plength
 			if second#!=0
-				set here_sz sprintf(m,"%X",second#) #printf("%X",0xff) is FF only
+				set here_sz md_printf(m,"%X",second#) #printf("%X",0xff) is FF only
 				add m here_sz
 				sub here_sz 2
-				call sprintf(m,"%02X",plength#)
+				call md_printf(m,"%02X",plength#)
 			else
-				set here_sz sprintf(m,"%X",plength#)  #only 0 is also printed
+				set here_sz md_printf(m,"%X",plength#)  #only 0 is also printed
 				sub here_sz 2+2
 			end
 			add sz here_sz   ##is +0 or -1[+-1]  and for the else is -2 -3
@@ -270,3 +289,59 @@ function debug_phase_code_add(sd is_long,ss plength)
 		set debug_actions.size sz
 	endif
 endfunction
+
+function debug_definefunction(sv pointers)
+	sv of%p_offsets
+	if of#!=(NULL)
+		set pointers# f_tell(debug_free.file)
+		incst pointers
+
+		sd memblock;setcall memblock brace_blocks_get_memblock()
+		set pointers#d^ block_get_size(memblock)
+		incst pointers
+
+		sd offset
+		set offset debug_actions.size  ##same size as debug_actions.size
+		char dummy={0xff,0xff} #0,0 is not ok inside
+		call debug_phase_code_add((TRUE),#dummy)
+		#inc offset ##to skip Comma  #but at fseek is not needed because fread is already skipping that
+		set pointers#d^ offset
+	endif
+end
+function debug_concludefunction(sv pointers)
+	sv of%p_offsets
+	if of#!=(NULL)
+		sd prev_fileoffset;set prev_fileoffset pointers#
+		sd now;set now f_tell(debug_free.file)
+		incst pointers
+
+		sd block;setcall block brace_blocks_get_memblock()
+		sd blockmem;set blockmem block_get_mem(block)
+		add blockmem pointers#d^
+		sd size;set size word_arg_to_stack(blockmem)
+		incst pointers
+
+		sd offset;set offset pointers#d^
+
+		vstr format="%04X"
+		if prev_fileoffset!=now   ##often case where the function has multiple lines, now line is on the file and not in mem
+			call fseek(debug_free.file,prev_fileoffset,(SEEK_SET))
+			#now need to skip first number that is the number of rows, there is 100% a comma from here
+			while 0=0
+				char a#1
+				call fread(#a,1,1,debug_free.file)
+				if a=(Comma)
+					break
+				end
+			end
+			call fseek(debug_free.file,offset,(SEEK_CUR))
+			call fprintf(debug_free.file,format,size)    #overwrite the dummy write
+			call fseek(debug_free.file,0,(SEEK_END))
+		else #on mem
+			sd c;set c debug_actions.mem
+			inc offset ##to skip Comma
+			add c offset
+			call md_printf(c,format,size)
+		end
+	endif
+end
