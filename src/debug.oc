@@ -258,9 +258,8 @@ function debug_phase_code_add(sd is_long,ss plength)
 			add second plength
 			if second#!=0
 				set here_sz sprintf(m,"%X",second#) #printf("%X",0xff) is FF only
+				add m here_sz
 				sub here_sz 2
-
-				inc m
 				call sprintf(m,"%02X",plength#)
 			else
 				set here_sz sprintf(m,"%X",plength#)  #only 0 is also printed
