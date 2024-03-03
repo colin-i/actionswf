@@ -3,12 +3,19 @@ format elfobj64
 
 include "../include/prog.h"
 
+importx "sprintf" sprintf
+importx "memcpy" memcpy
+
 import "word_arg_to_stack" word_arg_to_stack
 
 #here iterates swf tags in the sprite, enters DoAction tags, first tag is the pool with the format from dtitles_frame, goes at last string, overwrites 0000 with the final id
 function dtitles_conclude(sd finalid,sd mem)
 	char bool#1
 	if bool=(TRUE)
+		#finalid is u16
+		char store#5
+		call sprintf(#store,"%04X",finalid)
+
 		add mem (WORD+WORD) #id field, frame count
 		while 0=0
 			sd RECORDHEADER
@@ -44,14 +51,7 @@ function dtitles_conclude(sd finalid,sd mem)
 					end
 					inc cursor
 				end
-				ss f=4
-				add f #finalid
-				while f!=#finalid
-					dec f
-					set cursor# f#
-					add cursor# (_0)
-					inc cursor
-				end
+				call memcpy(cursor,#store,4)
 			end
 			add mem length
 		end
@@ -66,8 +66,6 @@ function dtitles_init(sd flags)
 	end
 	set dtitles_conclude.bool (FALSE)
 end
-
-importx "sprintf" sprintf
 
 
 
