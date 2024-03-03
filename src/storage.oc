@@ -116,10 +116,16 @@ function swf_mem(sd proc,sd arg,sd len)
 	#data main_id#1 #was moved to a throwless location
     value call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
+    data id_stack#1
+
     if proc=(mem_exp_change_back)
         set id swf_frames_reg.main_id
         set call_struct c_main
         ret
+	elseif proc=(mem_exp_change_back_pool)
+		set id id_stack
+		set call_struct c_main
+		ret
     elseif proc=(mem_exp_init)
     #arg is file
     #len is filelength offset
@@ -174,10 +180,12 @@ function swf_mem(sd proc,sd arg,sd len)
         setcall p_block call_struct((ids_get_pointer),id)
         call mem_block_add(p_block,arg,len)
     elseif proc=(mem_exp_change)
-        if arg<0;set call_struct c_pool
-            xor arg (negative_means_action_sprite_pool)
-        else;set call_struct c_main;endelse
-        set id arg
+		set id arg
+		set call_struct c_main
+	elseif proc=(mem_exp_change_pool)  #this can be stackable, at debug titles, at normal usage is back at the main id
+		set id_stack id
+		set id arg
+		set call_struct c_pool
     else
     #if proc==(mem_exp_done)
         call swf_tag_end()
@@ -203,7 +211,6 @@ endfunction
 function swf_tag_end()
     call swf_tag_recordheader_entry((End),0)
 endfunction
-const recordheader_long_mark=0x3f
 function swf_tag_recordheader_entry(sd tag,sd size)
     if size<(recordheader_long_mark)
         sd tag_plus_size

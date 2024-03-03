@@ -35,8 +35,10 @@ const mem_exp_done=2
 const mem_exp_part_done=3
 const mem_exp_change=4
 const mem_exp_change_back=5
-const mem_exp_get_block=6
-const mem_exp_free=7
+const mem_exp_change_pool=6
+const mem_exp_change_back_pool=7
+const mem_exp_get_block=8
+const mem_exp_free=9
 
 const NBits_size=5
 
@@ -47,7 +49,7 @@ const ids_get_pointer=3
 const ids_all_free=4
 const ids_counter=5
 
-const negative_means_action_sprite_pool=0x80<<8<<8<<8
+#const negative_means_action_sprite_pool=0x80<<8<<8<<8
 const fd_error=-1
 const fd_none=fd_error
 const not_an_id=-1
@@ -114,3 +116,6 @@ const debug_titles=0x4
 
 const max_structures=999
 const ids_str_len=3 #"999"
+
+const recordheader_long_mark=0x3f
+const recordheader_upperbits=recordheader_long_mark+1

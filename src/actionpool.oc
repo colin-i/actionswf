@@ -52,11 +52,10 @@ end
 function actionpool_value_ex(ss value,sd force)
     sd poolid
     setcall poolid actionpoolid_get()
-    or poolid (negative_means_action_sprite_pool)
     sd nr
-    call swf_mem((mem_exp_change),poolid)
+    call swf_mem((mem_exp_change_pool),poolid)
     setcall nr actionpool_getvalue_ex(value,force)
-    call swf_mem((mem_exp_change_back))
+    call swf_mem((mem_exp_change_back_pool))
     return nr
 endfunction
 #pool id
@@ -77,7 +76,7 @@ function actionpool_getvalue_ex(ss value,sd force)
     sd newlen
     setcall newlen strlen(value)
     if size=0
-	#is first value, add the pools header and count=1
+	#is first value, add the pools header and count=1 , the pool mem is already selected when it comes from the second actionpool_getvalue at push
         sd onevalue=1
         call swf_mem_add(#onevalue,2)
         set nr 0
