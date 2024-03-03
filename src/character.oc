@@ -2,7 +2,6 @@ Format ElfObj64
 
 include "../include/prog.h"
 
-import "identifiers_get" identifiers_get
 import "stack_to_word_arg" stack_to_word_arg
 
 #value
@@ -357,6 +356,7 @@ endfunction
 
 #button
 
+import "identifiers_get" identifiers_get
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "swf_mem_add" swf_mem_add
 #id

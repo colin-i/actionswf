@@ -38,27 +38,37 @@ import "swf_mem" swf_mem
 
 
 
-
 aftercallimport ebool
-
-
 
 
 
 #pool id
 function actionpool_value(ss value)
+	sd id
+	set id actionpool_value_ex(value,(FALSE))
+	return id
+end
+#pool id
+function actionpool_value_ex(ss value,sd force)
     sd poolid
     setcall poolid actionpoolid_get()
     or poolid (negative_means_action_sprite_pool)
     sd nr
     call swf_mem((mem_exp_change),poolid)
-    setcall nr actionpool_getvalue(value)
+    setcall nr actionpool_getvalue_ex(value,force)
     call swf_mem((mem_exp_change_back))
     return nr
 endfunction
-import "swf_mem_add" swf_mem_add
 #pool id
 function actionpool_getvalue(ss value)
+	sd id
+	set id actionpool_getvalue_ex(value,(FALSE))
+	return id
+end
+import "swf_mem_add" swf_mem_add
+import "error" error
+#pool id
+function actionpool_getvalue_ex(ss value,sd force)
     sd block
     setcall block actionpool_currentblock()
     sd size
@@ -67,7 +77,7 @@ function actionpool_getvalue(ss value)
     sd newlen
     setcall newlen strlen(value)
     if size=0
-    #add the pools header and count=1, later add value for count=1
+	#is first value, add the pools header and count=1
         sd onevalue=1
         call swf_mem_add(#onevalue,2)
         set nr 0
@@ -76,8 +86,9 @@ function actionpool_getvalue(ss value)
         sd count
         setcall mem block_get_mem(block)
         setcall count word_arg_to_stack(mem)
-        add mem (WORD)
         set nr count
+	if force=(FALSE)
+		add mem (WORD)
         while count!=0
             sd len
             setcall len strlen(mem)
@@ -93,7 +104,11 @@ function actionpool_getvalue(ss value)
             add mem len
             dec count
         endwhile
-        setcall mem block_get_mem(block)
+		setcall mem block_get_mem(block)
+	end
+	if nr=(maxuint16)
+		call error("max uint16 at action pool") #Count  UI16  Number of constants to follow
+	end
         set count nr
         inc count
         call stack_to_word_arg(count,mem)

@@ -19,16 +19,6 @@ function identifiers_set(sd value)
     setcall id identifiers()
     set id# value
 endfunction
-#id
-function identifiers_get()
-    sd id
-    setcall id identifiers()
-    sd value
-    set value id#
-    inc id#
-    call identifiers_set(id#)
-    return value
-endfunction
 
 #p
 function exportsId()
@@ -84,6 +74,19 @@ import "word_arg_to_stack" word_arg_to_stack
 aftercallimport ebool
 
 
+
+import "dtitles_frame" dtitles_frame
+
+#id
+function identifiers_get()
+	sd id
+	setcall id identifiers()
+	if id#=(maxuint16) #from swf specitifactions, example, id field for a DefineSprite
+		call error("max uint16 at identifiers")
+	end
+	inc id#
+	return id#
+endfunction
 
 function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for buttons
     call struct_ids((ids_free),id)
@@ -226,6 +229,14 @@ function swf_tag(ss dest,sd tag,sd size)
     call swf_mem((mem_exp_add),dest,size)
 endfunction
 
+function swf_frames_inc(sd frames,sw pointer)
+	if frames=(maxuint16)  #example, frame count at DefineSprite
+		call error("max uint16 at frames")
+	end
+	inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
+	call stack_to_word_arg(frames,pointer)
+end
+
 #
 function swf_actionblock(sd proc,sd arg,sd arg2)
     data id#1
@@ -270,11 +281,14 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		sd size
 		setcall size block_get_size(block)
 		if size!=0  #here is an ending from show or done with size
-			if arg=(from_show) #example: too action() and one show here
+			if arg=(from_show) #example: two action() and one show here
 				call debug_show(id) #id is 0/spriteid, this is good at debugger to keep the count of frames
 			end
-			inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
-			call stack_to_word_arg(frames,arg2)
+
+			#more at dtitles
+			call dtitles_frame(frames)
+
+			call swf_frames_inc(frames,arg2)
 
 			import "write_action" write_action
 			sd tagsz
@@ -287,11 +301,9 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			call block_reset_size(block)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
-			inc frames
-			call stack_to_word_arg(frames,arg2)
+			call swf_frames_inc(frames,arg2)
 		elseif frames=0    #here is an ending from done with no size and no previous show
-			inc frames  ##a default frame, how was before at root, and at sprite is ok
-			call stack_to_word_arg(frames,arg2)
+			call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
 		endelseif
     else
     #if proc==(mem_exp_get_block)

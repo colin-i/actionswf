@@ -134,10 +134,11 @@ aftercallimport ebool
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
 import "alt_init" alt_init
+import "dtitles_init" dtitles_init
 
 function debug_init(sd flags,sd path)
 	sv of%p_offsets
-	if flags!=(debug_none)
+	if flags!=(debug_none)  #then at alt also log (used at debugger), same for titles
 		setcall of# memalloc(1)  #0 on some systems can be NULL return
 
 		sd s;setcall s strlen(path)
@@ -152,6 +153,7 @@ function debug_init(sd flags,sd path)
 		set debug_actions.all_size 1
 	endif
 	call alt_init(flags,path,s) #is here because need to set a default value inside
+	call dtitles_init(flags)    #same
 endfunction
 
 import "f_printf" f_printf
@@ -308,6 +310,7 @@ function debug_definefunction(sv pointers)
 		set pointers#d^ offset
 	endif
 end
+import "error" error
 function debug_concludefunction(sv pointers)
 	sv of%p_offsets
 	if of#!=(NULL)
@@ -326,12 +329,15 @@ function debug_concludefunction(sv pointers)
 		vstr format="%04X"
 		if prev_fileoffset!=now   ##often case where the function has multiple lines, now line is on the file and not in mem
 			call fseek(debug_free.file,prev_fileoffset,(SEEK_SET))
-			#now need to skip first number that is the number of rows, there is 100% a comma from here
+			#now need to skip first number that is the number of rows
 			while 0=0
 				char a#1
-				call fread(#a,1,1,debug_free.file)
-				if a=(Comma)
+				sd ret
+				set ret fread(#a,1,1,debug_free.file)
+				if a=(Comma)  #there is a comma from here
 					break
+				elseif ret!=1
+					call error("Who modified the debug file?") #but since files are not exclusives, need to also verify the return
 				end
 			end
 			call fseek(debug_free.file,offset,(SEEK_CUR))

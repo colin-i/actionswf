@@ -8,7 +8,6 @@ importx "strlen" strlen
 importx "memcmp" memcmp
 
 import "identifiers_set" identifiers_set
-import "identifiers_get" identifiers_get
 import "swf_frames_reg" swf_frames_reg
 import "swf_frames_pointer" swf_frames_pointer
 import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
@@ -34,7 +33,7 @@ import "block_get_mem" block_get_mem
 import "free_sprite_id" free_sprite_id
 import "block_reset_size" block_reset_size
 import "freereset" freereset   #..x with no args
-
+import "dtitles_conclude" dtitles_conclude
 
 
 
@@ -48,6 +47,7 @@ import "rect_add" rect_add
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "error" error
 import "swf_shape_simple" swf_shape_simple
+import "identifiers_get" identifiers_get
 
 import "swf_button_base" swf_button_base
 import "swf_text_initial_font_centered" swf_text_initial_font_centered
@@ -763,7 +763,7 @@ vdata hd_pack2%hd2
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
 
     #identifiers for swf
-    call identifiers_set(1);#font with id 0 isn't visible in the placements
+    call identifiers_set(0);#font with id 0 isn't visible in the placements
 
     call swf_mem_add(hd_pack,size)
     call rect_add(width,height)
@@ -847,6 +847,13 @@ functionX swf_sprite_done(sd spriteid)
 	call swf_actionblock((mem_exp_part_done),(from_done),p);#in case there are remaining actions
 
     call swf_actionblock((mem_exp_change_back))
+
+	sd id
+	setcall id identifiers_get()
+
+	#more at dtitles
+	call dtitles_conclude(id)
+
     import "swf_tag_end" swf_tag_end
     call swf_tag_end()
     call swf_mem((mem_exp_change_back))
@@ -859,8 +866,6 @@ functionX swf_sprite_done(sd spriteid)
     setcall size block_get_size(sprite)
     #
     call swf_tag_recordheader_entry((DefineSprite),size)
-    sd id
-    setcall id identifiers_get()
     call stack_to_word_arg(id,mem)
     #
 
