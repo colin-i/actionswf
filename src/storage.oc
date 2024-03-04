@@ -122,6 +122,11 @@ function swf_mem(sd proc,sd arg,sd len)
         set id swf_frames_reg.main_id
         set call_struct c_main
         ret
+	elseif proc=(mem_exp_change_pool)  #this can be stackable, at debug titles, at normal usage is back at the main id
+	#is after action_code_values_init
+		set id_stack id
+		set id arg
+		set call_struct c_pool
 	elseif proc=(mem_exp_change_back_pool)
 		set id id_stack
 		set call_struct c_main
@@ -182,10 +187,6 @@ function swf_mem(sd proc,sd arg,sd len)
     elseif proc=(mem_exp_change)
 		set id arg
 		set call_struct c_main
-	elseif proc=(mem_exp_change_pool)  #this can be stackable, at debug titles, at normal usage is back at the main id
-		set id_stack id
-		set id arg
-		set call_struct c_pool
     else
     #if proc==(mem_exp_done)
         call swf_tag_end()
