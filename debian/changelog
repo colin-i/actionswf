@@ -1,3 +1,9 @@
+actionswf (1-70) bionic; urgency=medium
+
+  * more debug data
+
+ -- bc <bc@bc-Type1ProductConfigId>  Sat, 09 Mar 2024 06:51:23 +0200
+
 actionswf (1-69) bionic; urgency=medium
 
   * gotoAnd..(1) = GotoFrame 0
