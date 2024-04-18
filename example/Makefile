@@ -23,7 +23,8 @@ else
 	libname=${linkname}.so
 	OFLAGS += underscore_pref 1
 	#ifeq (${conv_64},1)
-	OFLAGS += exit_end 1 include_sec 1
+	OFLAGS += include_sec 1
+	#exit_end 1 #same problem as ocompiler, even at qemu-amd64
 	#endif
 endif
 
@@ -61,7 +62,7 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		export LD_LIBRARY_PATH=../src; ./${name} 1; \
+		LD_LIBRARY_PATH=../src ${launcher} ./${name} 1; \
 	fi
 #\? is 0x3f, inside -0x30, 0 is 0x30, \; to 0xb
 

@@ -3,6 +3,7 @@ format elfobj64
 #a simple shape moving on the stage example
 
 importx "_sprintf" sprintf
+importx "_exit" exit
 
 einclude "../dev/import.h"
 
@@ -61,4 +62,5 @@ _movie._y=100;
 call swf_showframe()
 call swf_done()
 
-return 0
+call exit(0)
+#return 0
