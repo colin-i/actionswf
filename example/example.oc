@@ -14,7 +14,7 @@ const shape_lat=40
 
 ####################
 
-include "entry64.oc" "entry32.oc"
+include "entry_arg.oc" "entry.oc"
 
 call swf_new_ex("example.swf",(width),(height),0x001100,24,argv1#)
 

@@ -113,9 +113,12 @@ const debug_none=0
 #const debug_log=0x1
 const debug_alt=0x2
 const debug_titles=0x4
+const debug_x=0x8
 
 const max_structures=999
 const ids_str_len=3 #"999"
+
+const action_code_values_unit=DWORD
 
 const recordheader_long_mark=0x3f
 const recordheader_upperbits=recordheader_long_mark+1

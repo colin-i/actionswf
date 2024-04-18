@@ -732,7 +732,7 @@ functionX swf_done()
 endfunction
 
 functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
-	call swf_new_ex(path,width,height,backgroundcolor,fps,(debug_none))
+	callret swf_new_ex(path,width,height,backgroundcolor,fps,(debug_none))
 endfunction
 functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add_debug)
 #ss path             file out pathname

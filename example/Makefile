@@ -22,9 +22,9 @@ ifeq (${platform},win)
 else
 	libname=${linkname}.so
 	OFLAGS += underscore_pref 1
-	ifeq (${conv_64},1)
-		OFLAGS += exit_end 1 include_sec 1
-	endif
+	#ifeq (${conv_64},1)
+	OFLAGS += exit_end 1 include_sec 1
+	#endif
 endif
 
 all: build exe
@@ -48,7 +48,7 @@ link:
 		if [ "${conv_64}" = "1" ]; then \
 			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
 		else \
-			$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname}; \
+                  $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
@@ -57,15 +57,16 @@ link:
 			x86_64-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 		fi \
 	fi
-#$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:actionswf.so; \
+#same as src #$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname};
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
 		export LD_LIBRARY_PATH=../src; ./${name} 1; \
 	fi
+#\? is 0x3f, inside -0x30, 0 is 0x30, \; to 0xb
 
 %: %.oc
-	${OCOMP} $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS} ${OFLAGSEXTRA}
 
 clean:
 	-rm -f ${name}.oc.log

@@ -16,8 +16,8 @@ include "../include/prog.h"
 functionx freereset()
 #this is called by user only if want to abort after some calls
 #               and at some frees
-	import "debug_free" debug_free
-	call debug_free()
+	import "debug_data" debug_data
+	call debug_data()
 	import "alt_free" alt_free
 	call alt_free()
 	#free and set initial null/-1.....

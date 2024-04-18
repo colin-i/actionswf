@@ -159,7 +159,7 @@ function action_code_values_init()
     import "memalloc" memalloc
     sv m
     setcall m action_code_values_container()
-    setcall m# memalloc((totalvalues*DWORD))
+    setcall m# memalloc((totalvalues*action_code_values_unit))
 endfunction
 function action_code_set(sd value)
 	call action_code_set_ex(value,1)

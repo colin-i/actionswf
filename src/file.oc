@@ -44,17 +44,14 @@ function f_close(sv p_file)
 	set p_file# (NULL)
 endfunction
 
-importx "free" free
-
-importx "fopen" fopen
 importx "fprintf" fprintf
-importx "fwrite" fwrite
-importx "ftell" ftell
 
 function f_printf_in(sd p,sd nr)
 	callex fprintf p nr ##callexret
 end
 
+importx "fwrite" fwrite
+importx "ftell" ftell
 
 
 aftercallimport ebool
@@ -146,16 +143,6 @@ function file_write(sd file,sd buffer,sd size)
     call error(er)
 endfunction
 
-
-function f_open_mem(sd path,sd format)
-	sd f;setcall f fopen(path,format)
-	if f=(NULL)
-		call free(path)
-		call error("fopen error")
-	endif
-	call free(path)
-	return f
-endfunction
 
 function f_printf(sd nr,sd file,sd format) #...
 	sd r;set r f_printf_in(#file,nr)

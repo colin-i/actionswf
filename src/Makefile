@@ -83,7 +83,8 @@ ${libname}: ${name}
 	cp ${name} ${libname}
 
 else
-ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
+#same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} --exclude-libs ${exte}
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	cp ${name} ${libname}
