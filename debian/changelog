@@ -1,3 +1,9 @@
+actionswf (1-72) bionic; urgency=medium
+
+  * fix example at amd64
+
+ -- bc <bc@bc-desktop>  Fri, 19 Apr 2024 09:35:08 +0300
+
 actionswf (1-71) bionic; urgency=medium
 
   * fix without ret there
