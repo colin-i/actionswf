@@ -127,6 +127,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		set id_stack id
 		set id arg
 		set call_struct c_pool
+		ret
 	elseif proc=(mem_exp_change_back_pool)
 		set id id_stack
 		set call_struct c_main
