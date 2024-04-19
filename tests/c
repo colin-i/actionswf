@@ -1,0 +1,2 @@
+
+rm a.o && rm a.out && rm a.swf && rm a.swf.log && rm a.swf.x

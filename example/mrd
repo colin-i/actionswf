@@ -3,4 +3,5 @@ launcher="qq" LD_LIBRARY_PATH=/home/bc/before LD=/home/bc/before/x86_64-linux-gn
 
 ##!/bin/bash
 #LD_LIBRARY_PATH+=:/home/bc/before/lib
-#qemu-amd64 /home/bc/before/lib/ld-linux-x86-64.so.2 "$@"
+#LD_LIBRARY_PATH=${LD_LIBRARY_PATH} qemu-amd64 /home/bc/before/lib/ld-linux-x86-64.so.2 "$@"
+##here again in case is not global
