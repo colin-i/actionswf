@@ -23,8 +23,9 @@ ifeq (${platform},win)
 else
 	libname=${linkname}.so
 	OFLAGS += underscore_pref 1
-	#ifeq (${conv_64},1)
-	OFLAGS += include_sec 1
+	ifdef ldprefer
+		OFLAGS += include_sec 1
+	endif
 	#exit_end 1 #same problem as ocompiler, even at qemu-amd64
 	#endif
 endif
