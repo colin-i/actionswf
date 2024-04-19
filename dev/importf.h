@@ -1,6 +1,7 @@
 
 #there are some ..x with no args but anyway we are using otoc OR the c header file.
-#still, why importx? to respect the os calling convention and Xfile_import_extern from ocompiler-dev
+#still, why importx? for the os calling convention there is a lot of extern code from the call to the library
+#	 and Xfile_import_extern from ocompiler-dev
 
 #swf
 
