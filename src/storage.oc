@@ -282,15 +282,14 @@ function done_action(sd id,sd frames) #,sd finalid)
 			call block_reset_size(poolblock)
 			call block_reset_size(block)
 			return size
-		#else
-		#	call dtitles_frame_one(id,finalid)
-		#	setcall tagsz action_size(id)
-		#	add tagsz (WORD)
-		#	call swf_tag_recordheader_entry((DoInitAction),tagsz)
-		#	call swf_mem_add(#id.(WORD))
-		#	import write_action_one
-		#	call write_action_one(id)
 		#end
+		#call dtitles_frame_one(id,finalid)
+		#setcall tagsz action_size(id)
+		#add tagsz (WORD)
+		#call swf_tag_recordheader_entry((DoInitAction),tagsz)
+		#call swf_mem_add(#id.(WORD))
+		#import write_action_one
+		#call write_action_one(id)
 	end
 end
 #
