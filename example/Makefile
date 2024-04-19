@@ -49,6 +49,8 @@ link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
 			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
+		elif [ -z "${ldprefer}" ]; then \
+			$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname}; \
 		else \
                   $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
 		fi \
@@ -59,7 +61,7 @@ link:
 			x86_64-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 		fi \
 	fi
-#same as src #$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname};
+#launchpad amd64 is segmentation with ld instead of cc
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
@@ -82,9 +84,11 @@ clean:
 
 distclean: clean
 
-install: test
+install:
+	echo "No install"
 
-uninstall: test
+uninstall:
+	echo "No uninstall"
 
 test:
 	diff ${sfile} expected.swf
