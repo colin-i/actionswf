@@ -58,13 +58,13 @@ function action_base(ss ac)
 
 	call debug_action_phase()
 
-	import "debug_x" debug_x
-	call debug_x(p_values,nr#)
-
+	sv stored;set stored p_values
 	#                 code_values are not reallocated
 	while p_values#!=(math_end)
 		setcall p_values action__code_row(p_values)
 	endwhile
+	import "debug_x" debug_x
+	call debug_x(stored,nr#) #need to be after, to modify pointers inside
 
     #free mem ok,another free is at errors
     call action_debug_free()

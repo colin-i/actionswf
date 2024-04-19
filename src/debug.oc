@@ -164,8 +164,9 @@ function debug_init(sd flags,sd path)
 			call error(ferr)
 		end
 
-		and flags (debug_x)
-		if flags!=0
+		sd x=debug_x
+		and x flags
+		if x!=0
 			call sprintf(b,"%s.x",path)
 			set debug_data.x fopen(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
 			call free(b)

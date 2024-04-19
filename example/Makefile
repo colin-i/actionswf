@@ -13,6 +13,7 @@ conv_64=0
 endif
 
 name=example
+sfile=${name}.swf
 OFLAGS=conv_64 ${conv_64}
 linkname=actionswf
 linkfile=${linkname}.lib
@@ -62,9 +63,9 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		LD_LIBRARY_PATH=../src ${launcher} ./${name} 1; \
+		LD_LIBRARY_PATH=../src ${launcher} ./${name} =; \
 	fi
-#\? is 0x3f, inside -0x30, 0 is 0x30, \; to 0xb
+#\? is 0x3f, inside -0x30, 0 is 0x30, \; to 0xb, = is 0xd
 
 %: %.oc
 	${OCOMP} $< ${OFLAGS} ${OFLAGSEXTRA}
@@ -75,7 +76,9 @@ clean:
 	-rm -f ${name}
 	-rm -f ${name}.exe
 	-rm -f ${linkfile}
-	-rm -f ${name}.swf.log
+	-rm -f ${sfile}.log
+	-rm -f ${sfile}.x
+	-rm -f ${sfile}
 
 distclean: clean
 
@@ -84,7 +87,7 @@ install: test
 uninstall: test
 
 test:
-	echo "Nothing"
+	diff ${sfile} expected.swf
 
 .PHONY: all install clean distclean uninstall test
 

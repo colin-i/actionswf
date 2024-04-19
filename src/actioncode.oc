@@ -165,7 +165,7 @@ function action_code_set(sd value)
 	call action_code_set_ex(value,1)
 endfunction
 function action_code_set_pointer(sd value)
-	call action_code_set_ex(value,(:/DWORD))
+	call action_code_set_ex(value,(:/DWORD))  #pointers are referencing static ac, not reallocable actionpool
 endfunction
 function action_code_set_ex(sd value,sd size)
 	sd nr
