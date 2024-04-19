@@ -70,6 +70,7 @@ link:
 	else \
 		x86_64-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
+#on 64 is mingw-w64-x86-64-dev
 
 else
 OFLAGS += underscore_pref 1
