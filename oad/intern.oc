@@ -171,7 +171,7 @@ function loop(ss log,sd x,sd xx,sd logsize)
 				set log next
 				# empty: show/done
 				set p memnl(log,#next)
-				if log!=p ##show ui16
+				if log=p ##show ui16
 					call presprites_init(preid)
 				else #done
 				end
