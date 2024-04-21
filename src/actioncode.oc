@@ -147,7 +147,13 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 	return (NULL)
 endfunction
 
-
+function action_code_get_pointer(sv p_codepointer)
+	sv p;set p p_codepointer#
+	sd a;set a p#
+	set p# (not_no_pointer) #for debug_x if is the case
+	incst p_codepointer#  #to pass the pointer
+	return a
+end
 
 aftercallimport ebool
 
@@ -162,10 +168,10 @@ function action_code_values_init()
     setcall m# memalloc((totalvalues*action_code_values_unit))
 endfunction
 function action_code_set(sd value)
-	call action_code_set_ex(value,1)
+	callret action_code_set_ex(value,1)
 endfunction
 function action_code_set_pointer(sd value)
-	call action_code_set_ex(value,(:/DWORD))  #pointers are referencing static ac, not reallocable actionpool
+	callret action_code_set_ex(value,(:/DWORD))  #pointers are referencing static ac, not reallocable actionpool
 endfunction
 function action_code_set_ex(sd value,sd size)
 	sd nr
@@ -669,13 +675,11 @@ endfunction
 function action_code_new_or_call(sv codepointer)
     sd member
     set member codepointer#
-    #
     add codepointer :  #to pass the pointer
-    sd fname
-    set fname codepointer#
-    #
+	#
+	sd fname; set fname action_code_get_pointer(#codepointer)
+	#
     import "action_caller" action_caller
-    add codepointer :  #to pass the pointer
     setcall codepointer action_caller(fname,member,codepointer)
     return codepointer
 endfunction
