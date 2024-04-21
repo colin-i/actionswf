@@ -1,2 +1,22 @@
 
-rm a.o && rm a.out && rm a.swf && rm a.swf.log && rm a.swf.x
+if [ -z "${1}" ]; then
+	rm a.o && rm a.out && rm a.swf && rm a.swf.log && rm a.swf.x && \
+	if [ -e .expected/a.swf.txt ]; then rm .expected/a.swf.txt; fi && \
+	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
+elif [ ${1} = 0 ]; then
+	mv a.swf .expected/a.swf && \
+	mv a.swf.log .expected && \
+	base64 a.swf.x > .expected/a.swf.x.txt
+else
+	diff a.swf .expected/a.swf || {
+		base64 a.swf
+		base64 .expected/a.swf
+		exit 1
+	}
+	diff a.swf.log .expected/a.swf.log && \
+	base64 -d .expected/a.swf.x.txt > .expected/a.swf.x && diff a.swf.x .expected/a.swf.x || {
+		base64 a.swf.x
+		cat .expected/a.swf.x.txt
+		exit 1
+	}
+fi
