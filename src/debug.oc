@@ -376,6 +376,9 @@ function debug_concludefunction(sv pointers)
 end
 
 function x_init(sd flags,sd path)
+	if x_data.f!=(NULL)
+		call error("swf started, x not closed")
+	end
 	and flags (debug_x)
 	if flags=(debug_x)
 		sd s;setcall s strlen(path)
