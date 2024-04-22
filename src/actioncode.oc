@@ -843,8 +843,8 @@ endfunction
 #codepointer
 function action_deffunction(sv codepointer,sv debug_related)
     ss fn_name
-    set fn_name codepointer#
-    add codepointer :  #to pass the pointer
+	set fn_name action_code_get_pointer(#codepointer)
+
     sd fn_name_size
     setcall fn_name_size strlen(fn_name)
     inc fn_name_size

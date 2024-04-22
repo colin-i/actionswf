@@ -5,8 +5,6 @@ const TRUE=1
 const FALSE=0
 
 const NULL=0
-const no_pointer=NULL
-const not_no_pointer=~no_pointer
 
 #const MAX_PATH=260
 
@@ -75,6 +73,7 @@ const DefineFont2=48
 const ExportAssets=56
 
 include "action.h"
+const get_member=0
 
 const ButtonStateUp=1
 const ButtonStateOver=2*ButtonStateUp

@@ -1,4 +1,17 @@
 
+const no_pointer=0  #NULL
+const not_no_pointer=~no_pointer
+
+const function_action=0xf3033030
+const call_action_left=0xf1011010
+const math_end=0xffFFffFF
+
+const block_end=0xfbBBbbBB
+
+const args_end=0xfeEEeeEE
+
+
+
 const ActionEndFlag=0
 const ActionNextFrame=0x04
 const ActionPreviousFrame=0x05
@@ -63,9 +76,7 @@ const ActionDefineFunction=0x9B
 const ActionIf=0x9D
 #const ActionGotoFrame2=0x9F
 
-const call_action_left=0xf1011010
 const call_action_right=0xf2022020
-const function_action=0xf3033030
 const new_action=0xf4044040
 const square_bracket_start=0xf5055050
 const mixt_equal=0xf6066060
@@ -82,21 +93,13 @@ const ifElse_start=0xfe0EE0e0
 
 const brace_blocks_function=0x7fFFffFF
 
-const to_flags=24
-const consecutive_flag=0x80<<to_flags
-const else_flag=0x40<<to_flags
+const consecutive_flag=0x80<<24
+const else_flag=0x40<<24
 #const all_flags=consecutive_flag|else_flag
 const normal_marker=0x01010202
 const if_marker=0x03030404
 const while_marker=0x05050606
 const function_marker=0x07070808
 
-const block_end=0xfbBBbbBB
 const block_else_end=0xfcCCccCC
 const whileblock_end=0xfdDDddDD
-const args_end=0xfeEEeeEE
-const math_end=0xffFFffFF
-
-#
-
-const get_member=0
