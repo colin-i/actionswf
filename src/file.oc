@@ -53,10 +53,23 @@ end
 importx "fwrite" fwrite
 importx "ftell" ftell
 
+importx "fopen" fopen
+importx "free" free
 
 aftercallimport ebool
 
 import "error" error
+
+#file
+function f_open_mem(sd path,sd format)
+	sd f;setcall f fopen(path,format)
+	if f=(NULL)
+		call free(path)
+		call error("fopen error")
+	endif
+	call free(path)
+	return f
+endfunction
 
 #file
 function file_open(ss filepath,sd flags)

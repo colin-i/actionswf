@@ -18,8 +18,6 @@ functionx freereset()
 #               and at some frees
 	import "debug_data" debug_data
 	call debug_data()
-	import "alt_free" alt_free
-	call alt_free()
 	#free and set initial null/-1.....
 	import "swf_mem" swf_mem
 	call swf_mem((mem_exp_free))

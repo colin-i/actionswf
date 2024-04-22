@@ -55,16 +55,21 @@ function debug_data()
 		const p_debug_file^file
 		if file!=(NULL)
 			call f_close(#file)
-			value x=NULL
-			if x!=(NULL)
-				call f_close(#x)
-				if debug_actions.mem!=(NULL)
-					call mem_free(#debug_actions.mem)
-				end
+			if debug_actions.mem!=(NULL)
+				call mem_free(#debug_actions.mem)
 			end
 		end
 	endif
+	import "alt_free" alt_free
+	call alt_free()
+	call x_data()
 endfunction
+function x_data()
+	value f=NULL
+	if f!=(NULL)
+		call f_close(#f)
+	end
+end
 
 function debug_phase_init(ss pointer)
 	sv of%p_offsets
@@ -130,8 +135,6 @@ import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
 
-importx "fopen" fopen
-importx "free" free
 importx "strlen" strlen
 importx "fseek" fseek
 importx "fread" fread
@@ -144,47 +147,37 @@ aftercallimport ebool
 import "memalloc" memalloc
 import "alt_init" alt_init
 import "dtitles_init" dtitles_init
+import "f_open_mem" f_open_mem
 
 function debug_init(sd flags,sd path)
+	call log_init(flags,path)
+	call alt_init(flags,path)
+	call dtitles_init(flags)
+	call x_init(flags,path)
+endfunction
+
+function log_init(sd flags,sd path)
 	sv of%p_offsets
-	if flags!=(debug_none)  #then at alt also log (used at debugger), same for titles
+	if of#!=(NULL)
+		call error("swf started, log not closed")
+	end
+	and flags (debug_log)
+	if flags=(debug_log)
 		setcall of# memalloc(1)  #0 on some systems can be NULL return
 
 		sd s;setcall s strlen(path)
-		sd a=4+1   # .x is 2 plus 1
+		sd a=4+1
 		add a s
 		sd b;setcall b memalloc(a)
 		call sprintf(b,"%s.log",path)
-		vstr ferr="fopen error"
-
 		sv file%p_debug_file
-		setcall file# fopen(b,"w+b")  #+ is because at definefunction it is reading back for comma character
-		if file#=(NULL)
-			call free(b)
-			call error(ferr)
-		end
-
-		sd x=debug_x
-		and x flags
-		if x!=0
-			call sprintf(b,"%s.x",path)
-			set debug_data.x fopen(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-			call free(b)
-			if debug_data.x=(NULL)
-				call error(ferr)
-			end
-		else
-			call free(b)
-		end
+		setcall file# f_open_mem(b,"w+b")  #+ is because at definefunction it is reading back for comma character
 
 		setcall debug_actions.mem memalloc(1)
 		#this is later #set debug_actions.size 0
 		set debug_actions.all_size 1
-	endif
-
-	call alt_init(flags,path,s) #is here because need to set a default value inside
-	call dtitles_init(flags)    #same
-endfunction
+	end
+end
 
 import "f_printf" f_printf
 import "f_write" f_write
@@ -382,9 +375,21 @@ function debug_concludefunction(sv pointers)
 	endif
 end
 
+function x_init(sd flags,sd path)
+	and flags (debug_x)
+	if flags=(debug_x)
+		sd s;setcall s strlen(path)
+		sd a=2+1
+		add a s
+		sd b;setcall b memalloc(a)
+		call sprintf(b,"%s.x",path)
+
+		set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
+	end
+end
 function debug_x(sd mem,sd size)
-	if debug_data.x!=(NULL)
+	if x_data.f!=(NULL)
 		mult size (action_code_values_unit)
-		call f_write(debug_data.x,mem,size)
+		call f_write(x_data.f,mem,size)
 	end
 end

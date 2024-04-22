@@ -33,13 +33,20 @@ function alt_free()
 	end
 end
 
+importx "strlen" strlen
+
 aftercallimport ebool
 
 import "memalloc" memalloc
+import "error" error
 
-function alt_init(sd flags,sd path,sd size)
+function alt_init(sd flags,sd path)
+	if alt_join.folder!=(NULL)
+		call error("swf started, alt not closed")
+	end
 	and flags (debug_alt)
 	if flags=(debug_alt)
+		sd size;setcall size strlen(path)
 		sd r;set r strrchr(path,(Period))
 		if r!=(NULL)
 			sub r path
@@ -53,7 +60,6 @@ function alt_init(sd flags,sd path,sd size)
 		call alt_join(size)
 		ret
 	end
-	set alt_join.folder (NULL)
 end
 
 import "file_get_content" file_get_content
