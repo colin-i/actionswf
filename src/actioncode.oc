@@ -180,7 +180,7 @@ function action_code_set(sd value)
 	callret action_code_set_ex(value,1)
 endfunction
 function action_code_set_pointer(sd value)
-	callret action_code_set_ex(value,(:/DWORD))  #pointers are referencing static ac, not reallocable actionpool
+	callret action_code_set_ex(value,(:/DWORD))  #pointers are referencing static mem, not reallocable actionpool
 endfunction
 function action_code_set_ex(sd value,sd size)
 	sd nr
