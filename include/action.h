@@ -4,11 +4,17 @@ const not_no_pointer=~no_pointer
 
 const function_action=0xf3033030
 const call_action_left=0xf1011010
+const ActionDefineLocal=0x3C
 const math_end=0xffFFffFF
 
 const block_end=0xfbBBbbBB
 
 const args_end=0xfeEEeeEE
+
+#R structure
+    const ap_double=6
+    const ap_Integer=7
+const ActionGetVariable=0x1C
 
 
 
@@ -26,7 +32,6 @@ const ActionOr=0x11
 const ActionNot=0x12
 const ActionPop=0x17
 const ActionToInteger=0x18
-const ActionGetVariable=0x1C
 const ActionSetVariable=0x1D
 const ActionTrace=0x26
 const ActionRandomNumber=0x30
@@ -34,7 +39,6 @@ const ActionCharToAscii=0x32
 const ActionAsciiToChar=0x33
 const ActionDelete=0x3A
 const ActionDelete2=0x3B
-const ActionDefineLocal=0x3C
 const ActionCallFunction=0x3D
 const ActionReturn=0x3E
 const ActionModulo=0x3F
@@ -67,8 +71,6 @@ const ActionPush=0x96
     const ap_Undefined=3
     const ap_RegisterNumber=4
     const ap_Boolean=5
-    const ap_double=6
-    const ap_Integer=7
     const ap_Constant8=8
     const ap_Constant16=9
 const ActionJump=0x99
@@ -90,6 +92,8 @@ const for_three=0xfc0CC0c0
 const inter_for=0xfd0DD0d0
 #
 const ifElse_start=0xfe0EE0e0
+#
+const member_end=0xff0FF0f0
 
 const brace_blocks_function=0x7fFFffFF
 

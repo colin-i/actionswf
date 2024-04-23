@@ -12,7 +12,11 @@ call swf_new_ex("a.swf",0x80,0x80,0x001100,2,(debug_log|debug_x))
 call action("
 function a(b){
 }
-getVersion();
+this.this.getVersion();
+//this.this... as a whole
+
+//note that ap_Constant8/16,null,undefined,true/false is not a step here (pointers are here), also special is ap_RegisterNumber
+var b=1;var c=1.2;var d=b;
 ")
 
 call swf_done()

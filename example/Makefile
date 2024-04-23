@@ -57,7 +57,7 @@ link:
 		elif [ -z "${ldprefer}" ]; then \
 			$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname}; \
 		else \
-			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
+			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} ${L} -lc -L../src -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \

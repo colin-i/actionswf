@@ -304,8 +304,8 @@ function action_code_pack(sd codepointer)
         setcall codepointer action_member_loop(codepointer,:)   #to pass the pointer
     else
     #definelocal or setvariable or delete2
-        call action_push((ap_Constant8),codepointer#v^,-1)
-        add codepointer :  #to pass the pointer
+	sd name;set name action_code_get_pointer(#codepointer)
+	call action_push((ap_Constant8),name,-1)
     endelse
     if need_right=(TRUE)
         if codepointer#=(ActionIncrement)
@@ -764,19 +764,21 @@ function action_code_right_number(sd codepointer)
         setcall codepointer action_member_loop(codepointer,(get_member))
     else
         if attrib=(ActionGetVariable)
-            call action_one_command(codepointer#v^)
-            add codepointer (pointer_rest)
+		sd var;set var action_code_get_pointer(#codepointer)
+            call action_one_command(var)
         elseif attrib=(ap_double)
-            sd low;set low codepointer#;add codepointer (DWORD)
-            call action_push(attrib,low,codepointer#,-1)
+		sd low;set low codepointer#;add codepointer (DWORD)
+		call action_push(attrib,low,codepointer#,-1)
+		add codepointer (DWORD)
         elseif attrib=(ap_Integer)
-            call action_push(attrib,codepointer#,-1)
+		call action_push(attrib,codepointer#,-1)
+		add codepointer (DWORD)
         else
         #ap_Constant8
-            call action_push(attrib,codepointer#v^,-1)
-            add codepointer (pointer_rest)
+		call action_push(attrib,codepointer#v^,-1)
+		add codepointer (pointer_rest)
+		add codepointer (DWORD)
         endelse
-        add codepointer (DWORD)
     endelse
     return codepointer
 endfunction

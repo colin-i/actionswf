@@ -835,10 +835,11 @@ function action_code_member(ss ac)
             call action_code_set_pointer(ac)
         endif
         if pointer#=sqbrace_start
-            set pointer# 0
-            inc pointer
-            call action_code_set((square_bracket_start))
-            setcall pointer action_code_row_parse_tool(pointer,sqbrace_end)
+		set pointer# 0
+		inc pointer
+		call action_code_set_pointer((no_pointer)) #to compare square brackets on same field with pointers
+		call action_code_set((square_bracket_start))
+		setcall pointer action_code_row_parse_tool(pointer,sqbrace_end)
         endif
         if pointer#=dot
             set pointer# 0
@@ -847,6 +848,7 @@ function action_code_member(ss ac)
         set ac pointer
     endwhile
     call action_code_set_pointer((no_pointer))
+    call action_code_set((member_end)) #to compare square brackets on same field with pointers
 endfunction
 
 
@@ -1162,7 +1164,7 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     #function mark
     call action_code_set(type)
     set pointer# 0
-    #function name + member
+    #member.function_name
     if last_dot!=0
         set last_dot# 0
         inc last_dot

@@ -326,19 +326,25 @@ endfunction
 
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
-function action_member_loop(sd mathpointer,sd endoffset)
-    call action_get_one(mathpointer#v^)
+function action_member_loop(sv mathpointer,sd endoffset)
+    call action_get_one(mathpointer#)
     while 1=1
         add mathpointer :  #to pass the pointer
         #
-        while mathpointer#=(square_bracket_start)
-        #multi-dim arrays
+	while mathpointer#=(no_pointer)
+	#multi-dim arrays
+		add mathpointer :  #to pass the pointer
+		if mathpointer#d=(member_end)
+			sub mathpointer :  #to pass the pointer
+			break
+		end
+		#else is square_bracket_start , a complication to not recognize square brackets on pointers
             add mathpointer (DWORD)
             setcall mathpointer action_code_right_util(mathpointer)
             if endoffset=(get_member)
                 call action_one((ActionGetMember))
             else
-                if mathpointer#v^!=(no_pointer)
+                if mathpointer#!=(no_pointer)
                     call action_one((ActionGetMember))
                 else
                     add mathpointer :  #to pass the pointer
@@ -351,15 +357,16 @@ function action_member_loop(sd mathpointer,sd endoffset)
         add endtest endoffset
         #
         if endtest#=(no_pointer)
-            if endoffset!=(no_pointer)
+		if endoffset!=(no_pointer)
                 #push to set later
-                call action_push((ap_Constant8),mathpointer#v^,-1)
+                call action_push((ap_Constant8),mathpointer#,-1)
                 add mathpointer :  #to pass the pointer
-            endif
-            add mathpointer :  #to pass the pointer
-            return mathpointer
+		endif
+		add mathpointer :  #to pass the pointer
+		add mathpointer (DWORD)  # member_end
+		return mathpointer
         endif
-        call action_push((ap_Constant8),mathpointer#v^,-1)
+        call action_push((ap_Constant8),mathpointer#,-1)
         call action_one((ActionGetMember))
     endwhile
 endfunction
