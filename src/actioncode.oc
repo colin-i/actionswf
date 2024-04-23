@@ -301,7 +301,7 @@ function action_code_pack(sd codepointer)
     endelseif
     #
     if is_member=(TRUE)
-        setcall codepointer action_member_loop(codepointer,:)   #to pass the pointer
+        setcall codepointer action_member_loop(codepointer,(get_member_pointer))   #to pass the pointer
     else
     #definelocal or setvariable or delete2
 	sd name;set name action_code_get_pointer(#codepointer)
@@ -389,7 +389,7 @@ function action_code_write_conditions(sd codepointer)
             sd attr2;set attr2 codepointer#;add codepointer (DWORD)
             #
             if attr2=(ActionSetMember)
-                setcall codepointer action_member_loop(codepointer,:)  #to pass the pointer
+                setcall codepointer action_member_loop(codepointer,(get_member_pointer))  #to pass the pointer
             else
                 #var or set variable
                 call action_push((ap_Constant8),codepointer#v^,-1)

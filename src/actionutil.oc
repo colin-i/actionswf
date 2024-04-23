@@ -347,7 +347,7 @@ function action_member_loop(sv mathpointer,sd endoffset)
                 if mathpointer#!=(no_pointer)
                     call action_one((ActionGetMember))
                 else
-                    add mathpointer :  #to pass the pointer
+                    add mathpointer :+DWORD  #to pass the pointer # member_end
                     return mathpointer
                 endelse
             endelse
@@ -357,13 +357,12 @@ function action_member_loop(sv mathpointer,sd endoffset)
         add endtest endoffset
         #
         if endtest#=(no_pointer)
-		if endoffset!=(no_pointer)
+		if endoffset=(get_member_pointer)
                 #push to set later
                 call action_push((ap_Constant8),mathpointer#,-1)
-                add mathpointer :  #to pass the pointer
+                add mathpointer (get_member_pointer)  #to pass the pointer
 		endif
-		add mathpointer :  #to pass the pointer
-		add mathpointer (DWORD)  # member_end
+		add mathpointer :+DWORD  #to pass the pointer # member_end
 		return mathpointer
         endif
         call action_push((ap_Constant8),mathpointer#,-1)
