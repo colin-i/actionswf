@@ -2,10 +2,10 @@ TOPTARGETS := all install clean distclean uninstall test
 
 #ifndef test
 
-ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
-conv_64=0
-else
+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), i386)
 conv_64=1
+else
+conv_64=0
 endif
 
 SUBDIRS := src example

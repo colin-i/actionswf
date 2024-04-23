@@ -154,6 +154,15 @@ function action_code_get_pointer(sv p_codepointer)
 	incst p_codepointer#  #to pass the pointer
 	return a
 end
+function action_code_get_pointer_withtest(sv p_codepointer)
+	sv p;set p p_codepointer#
+	sd a;set a p#
+	if a!=(no_pointer)
+		set p# (not_no_pointer) #for debug_x if is the case
+	end
+	incst p_codepointer#  #to pass the pointer
+	return a
+end
 
 aftercallimport ebool
 
@@ -674,11 +683,8 @@ endfunction
 #codepointer
 function action_code_new_or_call(sv codepointer)
     sd member
-    set member codepointer#
-    add codepointer :  #to pass the pointer
-	#
+	set member action_code_get_pointer_withtest(#codepointer)
 	sd fname; set fname action_code_get_pointer(#codepointer)
-	#
     import "action_caller" action_caller
     setcall codepointer action_caller(fname,member,codepointer)
     return codepointer
@@ -874,9 +880,9 @@ function action_deffunction(sv codepointer,sv debug_related)
     while args#!=(no_pointer)
         setcall wr_size strlen(args#)
         inc wr_size
-        call swf_actionblock_add(args#,wr_size)
-        add args :  #to pass the pointer
-    endwhile
+	sd arg;set arg action_code_get_pointer(#args)
+        call swf_actionblock_add(arg,wr_size)
+     endwhile
 	#get reg, not depending on brace blocks because } is closed in the loop there, for debug
 	call debug_definefunction(debug_related)
 	#

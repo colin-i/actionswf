@@ -10,7 +10,7 @@ entryraw _start(sd *argc,sd *argv0,ss *argv1)
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,(debug_log|debug_x))
 
 call action("
-function a(){
+function a(b){
 }
 getVersion();
 ")

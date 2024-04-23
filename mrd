@@ -1,0 +1,2 @@
+
+LD_LIBRARY_PATH=/home/bc/before LD=/home/bc/before/x86_64-linux-gnu-ld.bfd make launcher="qq" OFLAGSEXTRA+=" inplace_reloc 0 function_name 1 nul_res_pref 1" ldprefer=1 linkerflags=
