@@ -15,7 +15,7 @@ debug_x
 */
 function a(b){
 }
-getVersion();
+this.this.getVersion();
 
 this.this.this=this;
 //this.this... as a whole
