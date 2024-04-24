@@ -3,7 +3,6 @@ Format ElfObj64
 include "../include/prog.h"
 
 #win32 with _
-importx "strlen" strlen
 importx "memcpy" memcpy
 importx "sprintf" sprintf
 
@@ -317,7 +316,9 @@ function action_caller(ss member,ss name,sd args_pointer)
     call action_push((ap_Integer),nrargs,-1)
     #
     if member!=0
-        call action_member_write(member)
+	#call action_member_write(member)
+	import "forward_values_expand" forward_values_expand
+	call forward_values_expand(action_member_write_tool,member)
     endif
     call action_push((ap_Constant8),name,-1)
     return args_pointer
@@ -372,21 +373,20 @@ function action_member_loop(sv mathpointer,sd endoffset)
     endwhile
 endfunction
 import "action_code_member" action_code_member
-import "error" error
-import "forward_values_expand" forward_values_expand
-function action_member_write(ss member)
-    const dup_member=256
-    charx dup_data#dup_member  #is dup, will escape, then parse on values append, then code
-    vstr code^dup_data
-    sd len
-    setcall len strlen(member)
-    inc len
-    if len>(dup_member)
-        call error("actionscript code limit exceeded")
-    endif
-    call memcpy(code,member,len)
-    call forward_values_expand(action_member_write_tool,code)
-endfunction
+#import "error" error
+#function action_member_write(ss member)
+#   const dup_member=256
+#    charx dup_data#dup_member  #was dup, escape, parse on values append, code. maybe the expression string to be passed as is, but is not necessary now
+#    vstr code^dup_data
+#    sd len
+#    setcall len strlen(member)
+#    inc len
+#    if len>(dup_member)
+#        call error("actionscript code limit exceeded")
+#    endif
+#    call memcpy(code,member,len)
+#    call forward_values_expand(action_member_write_tool,code)
+#endfunction
 function action_member_write_tool(sd values,ss names)
     call action_code_member(names)
     call action_member_loop(values,(get_member))
