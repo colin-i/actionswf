@@ -150,16 +150,16 @@ endfunction
 function action_code_get_pointer(sv p_codepointer)
 	sv p;set p p_codepointer#
 	sd a;set a p#
-	set p# (not_no_pointer) #for debug_x if is the case
-	incst p_codepointer#  #to pass the pointer
+	import "debug_x_pointer" debug_x_pointer
+	call debug_x_pointer(a,p)
+	incst p_codepointer#  #to pass the pointer   #get_member_pointer
 	return a
 end
 function action_code_get_pointer_withtest(sv p_codepointer)
 	sv p;set p p_codepointer#
 	sd a;set a p#
-	if a!=(no_pointer)
-		set p# (not_no_pointer) #for debug_x if is the case
-	end
+	import "debug_x_pointer_if" debug_x_pointer_if
+	call debug_x_pointer_if(a,p)
 	incst p_codepointer#  #to pass the pointer
 	return a
 end
@@ -213,6 +213,8 @@ function forward_values_expand(sv forward,sd data)
     setcall values action_code_get()
     #
     call forward(values,data)
+	import "debug_x_expand" debug_x_expand
+	call debug_x_expand(values)
     #
     set p_currentnr# currentnr
 endfunction
@@ -686,7 +688,7 @@ function action_code_new_or_call(sv codepointer)
 	set member action_code_get_pointer_withtest(#codepointer)
 	sd fname; set fname action_code_get_pointer(#codepointer)
     import "action_caller" action_caller
-    setcall codepointer action_caller(fname,member,codepointer)
+    setcall codepointer action_caller(member,fname,codepointer)
     return codepointer
 endfunction
 #codepointer

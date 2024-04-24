@@ -1,20 +1,25 @@
 
 const no_pointer=0  #NULL
-const not_no_pointer=~no_pointer
 
 const function_action=0xf3033030
 const call_action_left=0xf1011010
 const ActionDefineLocal=0x3C
+const ActionSetMember=0x4F
 const math_end=0xffFFffFF
 
 const block_end=0xfbBBbbBB
 
 const args_end=0xfeEEeeEE
 
-#R structure
+#M structure
+const square_bracket_start=0xf5055050
+const member_end=0xff0FF0f0
+
+#RG structure
     const ap_double=6
     const ap_Integer=7
 const ActionGetVariable=0x1C
+const ActionGetMember=0x4E
 
 
 
@@ -50,8 +55,6 @@ const ActionAdd2=0x47
 const ActionLess2=0x48
 const ActionEquals2=0x49
 const ActionPushDuplicate=0x4C
-const ActionGetMember=0x4E
-const ActionSetMember=0x4F
 const ActionIncrement=0x50
 const ActionDecrement=0x51
 const ActionCallMethod=0x52
@@ -80,7 +83,6 @@ const ActionIf=0x9D
 
 const call_action_right=0xf2022020
 const new_action=0xf4044040
-const square_bracket_start=0xf5055050
 const mixt_equal=0xf6066060
 const compare_action=0xf7077070
 const parenthesis_start=0xf8088080
@@ -92,8 +94,6 @@ const for_three=0xfc0CC0c0
 const inter_for=0xfd0DD0d0
 #
 const ifElse_start=0xfe0EE0e0
-#
-const member_end=0xff0FF0f0
 
 const brace_blocks_function=0x7fFFffFF
 

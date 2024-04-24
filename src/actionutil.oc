@@ -119,21 +119,21 @@ endfunction
 
 #debug
 
-function action_debug(sd is_on)
-    data action_errors=FALSE
-    vstr *#1
-    vstr m=NULL
-    if is_on=(FALSE)
-        #set there and here, here good at errors and comeback
-        set action_errors (FALSE)
-        import "mem_free" mem_free
-        if m!=(NULL);call mem_free(#m);endif
-    else
-        return #action_errors
-    endelse
+function action_debug(sd type)
+	vstr orig=NULL
+	vstr m=NULL
+	if type=(action_debug_get_mem)
+		return m
+	elseif type=(action_debug_get)
+		return #orig
+	end
+	# action_debug_free
+	set orig (NULL)
+	import "mem_free" mem_free
+	if m!=(NULL);call mem_free(#m);endif
 endfunction
 function action_debug_free()
-    call action_debug((FALSE))
+    call action_debug((action_debug_free))
 endfunction
 
 function debug_code()
@@ -142,15 +142,15 @@ function debug_code()
 endfunction
 
 function action_error()
-    sd p_action_errors
-    setcall p_action_errors action_debug((TRUE))
-    if p_action_errors#=(FALSE)
+    sv p_action_errors
+    setcall p_action_errors action_debug((action_debug_get))
+    if p_action_errors#=(NULL)
         ret
     endif
 
     vstr ac#1
     vstr mem#1
-    add p_action_errors (DWORD);call memcpy(#ac,p_action_errors,(2*:))
+    call memcpy(#ac,p_action_errors,(2*:))
 
     import "printEr" printEr
     call printEr("Row: ")
@@ -202,6 +202,7 @@ endfunction
 import "swf_actionblock" swf_actionblock
 import "file_get_content__resources_free" file_get_content__resources_free
 
+import "action_code_get_pointer" action_code_get_pointer
 
 
 aftercallimport ebool
@@ -306,7 +307,7 @@ endfunction
 
 import "action_code_right_util" action_code_right_util
 #codepointer
-function action_caller(ss name,ss member,sd args_pointer)
+function action_caller(ss member,ss name,sd args_pointer)
     sd nrargs=0
     while args_pointer#!=(args_end)
         setcall args_pointer action_code_right_util(args_pointer)
@@ -327,10 +328,10 @@ endfunction
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
 function action_member_loop(sv mathpointer,sd endoffset)
-    call action_get_one(mathpointer#)
+	sd name
+	set name action_code_get_pointer(#mathpointer)
+    call action_get_one(name)
     while 1=1
-        add mathpointer :  #to pass the pointer
-        #
 	while mathpointer#=(no_pointer)
 	#multi-dim arrays
 		add mathpointer :  #to pass the pointer
@@ -359,13 +360,14 @@ function action_member_loop(sv mathpointer,sd endoffset)
         if endtest#=(no_pointer)
 		if endoffset=(get_member_pointer)
                 #push to set later
-                call action_push((ap_Constant8),mathpointer#,-1)
-                add mathpointer (get_member_pointer)  #to pass the pointer
+			set name action_code_get_pointer(#mathpointer)
+                call action_push((ap_Constant8),name,-1)
 		endif
 		add mathpointer :+DWORD  #to pass the pointer # member_end
 		return mathpointer
         endif
-        call action_push((ap_Constant8),mathpointer#,-1)
+	set name action_code_get_pointer(#mathpointer)
+        call action_push((ap_Constant8),name,-1)
         call action_one((ActionGetMember))
     endwhile
 endfunction
@@ -374,7 +376,7 @@ import "error" error
 import "forward_values_expand" forward_values_expand
 function action_member_write(ss member)
     const dup_member=256
-    charx dup_data#dup_member
+    charx dup_data#dup_member  #is dup, will escape, then parse on values append, then code
     vstr code^dup_data
     sd len
     setcall len strlen(member)

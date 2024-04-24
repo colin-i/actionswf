@@ -43,16 +43,16 @@ function action_base(ss ac)
 	import "debug_action_phase" debug_action_phase
 	call debug_action_phase()
 
-	sd p_action_errors
-	setcall p_action_errors action_debug((TRUE))
-	set p_action_errors# (TRUE)  #this also requires debug_code to be set, and is set at first action_code_row_ex, that is from here without any aftercall
-	sv cursor;set cursor p_action_errors;add cursor (DWORD);set cursor# ac;add cursor :;set cursor# mem
+	sv p_action_errors
+	setcall p_action_errors action_debug((action_debug_get))
+	set p_action_errors# ac  ##this also requires debug_code to be set, and is set at first action_code_row_ex / at every row, that is from here without any aftercall
+	sv cursor;set cursor p_action_errors;incst cursor;set cursor# mem
     while mem#!=0
         setcall mem action_code_row(mem,(FALSE))
     endwhile
     call action_code_set((math_end))
-    #set false to stop adding row nr at errors
-    set p_action_errors# (FALSE)
+	#reset to stop adding row nr at errors
+	set p_action_errors# (NULL)
 
     call brace_blocks_end()
 

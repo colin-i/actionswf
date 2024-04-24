@@ -129,6 +129,24 @@ function md_printf(sd c,sd format,sd val) #to not write null on unknown
 	return n
 end
 
+function debug_x_pointer_base(sd value,sv pointer)
+	import "action_debug" action_debug
+	sub value action_debug((action_debug_get_mem))
+	set pointer# value
+end
+function debug_x_pointer(sd value,sv pointer)
+	if x_data.f!=(NULL)
+		call debug_x_pointer_base(value,pointer)
+	end
+end
+function debug_x_pointer_if(sd value,sv pointer)
+	if x_data.f!=(NULL)
+		if value!=(no_pointer)
+			call debug_x_pointer_base(value,pointer)
+		end
+	end
+end
+
 import "row_termination" row_termination
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
@@ -394,5 +412,13 @@ function debug_x(sd mem,sd size)
 	if x_data.f!=(NULL)
 		mult size (action_code_values_unit)
 		call f_write(x_data.f,mem,size)
+	end
+end
+
+function debug_x_expand(sd values)
+	if x_data.f!=(NULL)
+		sd size;set size action_code_get()
+		sub size values
+		call f_write(x_data.f,values,size)
 	end
 end

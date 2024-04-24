@@ -24,7 +24,8 @@ elif [ ${1} = 0 ]; then
 	mv a.swf.log .expected && \
 	base64 a.swf.x > .expected/a.swf.x.txt
 else
+	base64 -d .expected/a.swf.x.txt > .expected/a.swf.x && \
 	smart_diff .expected/a.swf a.swf && \
 	diff .expected/a.swf.log a.swf.log && \
-	base64 -d .expected/a.swf.x.txt > .expected/a.swf.x && smart_diff .expected/a.swf.x a.swf.x
+	smart_diff .expected/a.swf.x a.swf.x
 fi

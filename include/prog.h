@@ -118,3 +118,7 @@ const action_code_values_unit=DWORD
 
 const recordheader_long_mark=0x3f
 const recordheader_upperbits=recordheader_long_mark+1
+
+const action_debug_free=0
+const action_debug_get=1
+const action_debug_get_mem=2
