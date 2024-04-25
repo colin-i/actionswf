@@ -155,14 +155,6 @@ function action_code_get_pointer(sv p_codepointer)
 	incst p_codepointer#  #to pass the pointer   #get_member_pointer
 	return a
 end
-function action_code_get_pointer_withtest(sv p_codepointer)
-	sv p;set p p_codepointer#
-	sd a;set a p#
-	import "debug_x_pointer_if" debug_x_pointer_if
-	call debug_x_pointer_if(a,p)
-	incst p_codepointer#  #to pass the pointer
-	return a
-end
 
 aftercallimport ebool
 
@@ -685,7 +677,8 @@ endfunction
 #codepointer
 function action_code_new_or_call(sv codepointer)
     sd member
-	set member action_code_get_pointer_withtest(#codepointer)
+	import "debug_x_preexpand" debug_x_preexpand
+	set member debug_x_preexpand(#codepointer)
 	sd fname; set fname action_code_get_pointer(#codepointer)
     import "action_caller" action_caller
     setcall codepointer action_caller(member,fname,codepointer)

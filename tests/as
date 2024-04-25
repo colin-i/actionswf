@@ -1,0 +1,7 @@
+
+if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=../src; fi
+
+o a.oc logfile 0 && \
+cc a.o -L../src -lactionswf && \
+echo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out

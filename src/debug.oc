@@ -66,6 +66,7 @@ function debug_data()
 endfunction
 function x_data()
 	value f=NULL
+	datax size#1
 	if f!=(NULL)
 		call f_close(#f)
 	end
@@ -129,21 +130,12 @@ function md_printf(sd c,sd format,sd val) #to not write null on unknown
 	return n
 end
 
-function debug_x_pointer_base(sd value,sv pointer)
-	import "action_debug" action_debug
-	sub value action_debug((action_debug_get_mem))
-	set pointer# value
-end
 function debug_x_pointer(sd value,sv pointer)
 	if x_data.f!=(NULL)
-		call debug_x_pointer_base(value,pointer)
-	end
-end
-function debug_x_pointer_if(sd value,sv pointer)
-	if x_data.f!=(NULL)
-		if value!=(no_pointer)
-			call debug_x_pointer_base(value,pointer)
-		end
+		import "action_debug" action_debug
+		sub value action_debug((action_debug_get_mem))
+		inc value  ##only to not be comparable with (no_pointer)
+		set pointer# value
 	end
 end
 
@@ -152,6 +144,7 @@ import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
+import "action_code_values" action_code_values
 
 importx "strlen" strlen
 importx "fseek" fseek
@@ -406,15 +399,40 @@ function x_init(sd flags,sd path)
 		call sprintf(b,"%s.x",path)
 
 		set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-	end
-end
-function debug_x(sd mem,sd size)
-	if x_data.f!=(NULL)
-		mult size (action_code_values_unit)
-		call f_write(x_data.f,mem,size)
+
+		set x_data.size 0
 	end
 end
 
+function debug_x_base(sd mem,sd size)
+	#already wrote
+	sub size x_data.size
+	add mem x_data.size
+
+	call f_write(x_data.f,mem,size)
+	add x_data.size size
+end
+function debug_x(sd mem,sd nr)
+	if x_data.f!=(NULL)
+		mult nr (action_code_values_unit)
+		call debug_x_base(mem,nr)
+	end
+end
+
+function debug_x_preexpand(sv p_codepointer)
+	sv codepointer;set codepointer p_codepointer#
+	sd value;set value codepointer#
+	if x_data.f!=(NULL)
+		if value!=(no_pointer)
+			sd values;set values action_code_values()
+			sub codepointer values
+			call debug_x_base(values,codepointer)
+			incst x_data.size  ##the string will be expanded and written
+		end
+	end
+	incst p_codepointer#
+	return value
+end
 function debug_x_expand(sd values)
 	if x_data.f!=(NULL)
 		sd size;set size action_code_get()
