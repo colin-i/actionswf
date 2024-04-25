@@ -38,7 +38,9 @@ function action_base(ss ac)
 	import "debug_action_init" debug_action_init
 	call debug_action_init(ac)
 
-    call escape_action(ac,mem,0)
+	sd last;set last escape_action(ac,mem,0)
+	import "debug_x_pointers" debug_x_pointers
+	call debug_x_pointers(mem,last)
 
 	import "debug_action_phase" debug_action_phase
 	call debug_action_phase()

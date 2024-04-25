@@ -86,6 +86,9 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
             set loop1 0
         endif
     endwhile
+	if stop_pointer=(NULL)
+		return pointer
+	end
     return error_row
 endfunction
 #nr

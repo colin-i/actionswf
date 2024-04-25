@@ -150,6 +150,7 @@ importx "strlen" strlen
 importx "fseek" fseek
 importx "fread" fread
 importx "fprintf" fprintf
+importx "fwrite" fwrite
 
 
 
@@ -404,6 +405,17 @@ function x_init(sd flags,sd path)
 	end
 end
 
+function debug_x_pointers(valuex start,valuex size)
+	valuex mark#1
+	if x_data.f!=(NULL)
+		inc size  ##is on last \0
+		sub size start
+		call f_write(x_data.f,#size,:)
+		set mark f_tell(x_data.f)
+		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
+	end
+end
+
 function debug_x_base(sd mem,sd size)
 	#already wrote
 	sub size x_data.size
@@ -416,6 +428,10 @@ function debug_x(sd mem,sd nr)
 	if x_data.f!=(NULL)
 		mult nr (action_code_values_unit)
 		call debug_x_base(mem,nr)
+
+		call fseek(x_data.f,debug_x_pointers.mark,(SEEK_SET))
+		call fwrite(debug_x_pointers.start,debug_x_pointers.size,1,x_data.f)
+		call fseek(x_data.f,0,(SEEK_END))
 	end
 end
 
