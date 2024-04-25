@@ -26,7 +26,7 @@ endfunction
 #error_row
 function escape_action(ss ac,ss pointer,ss stop_pointer)
     sd row=1
-    sd loop1=1
+    #sd loop1=1
     sd error_row=0
     #
     sd comments=0
@@ -34,7 +34,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
     const line_comment=1
     const multiLine_comment=2
     #
-    while loop1=1
+    while 0=0
         sd loop2=1
         setcall ac spaces(ac)
         #
@@ -58,10 +58,12 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 		setcall loop2 row_termination(#ac,#row)
 		if loop2=1
 			if ac#=0
-				set loop2 0
-				set loop1 0
+				if stop_pointer!=(NULL)
+					return error_row
+				end
 				set pointer# 0
 				call debug_phase_init(pointer)
+				return pointer
 			else
 				if comments=0
 				    if pointer=stop_pointer
@@ -76,20 +78,16 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 				    endif
 				endelseif
 			endelse
-		else
+		elseif stop_pointer=(NULL)
 			call debug_phase_init(pointer)
-		endelse
+		endelseif
             inc ac
         endwhile
 	if error_row!=0
-            set pointer# 0
-            set loop1 0
-        endif
+		set pointer# 0
+		return error_row
+	endif
     endwhile
-	if stop_pointer=(NULL)
-		return pointer
-	end
-    return error_row
 endfunction
 #nr
 function escape_count(ss string,sd escape)

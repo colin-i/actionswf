@@ -400,14 +400,14 @@ function x_init(sd flags,sd path)
 		call sprintf(b,"%s.x",path)
 
 		set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-
-		set x_data.size 0
 	end
 end
 
 function debug_x_pointers(valuex start,valuex size)
 	valuex mark#1
 	if x_data.f!=(NULL)
+		set x_data.size 0
+
 		inc size  ##is on last \0
 		sub size start
 		call f_write(x_data.f,#size,:)
