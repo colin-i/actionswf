@@ -1,3 +1,9 @@
+actionswf (1-76) bionic; urgency=medium
+
+  * fix again i386 tests
+
+ -- bc <bc@bc-desktop>  Fri, 26 Apr 2024 08:18:24 +0300
+
 actionswf (1-75) bionic; urgency=medium
 
   * Makefile
