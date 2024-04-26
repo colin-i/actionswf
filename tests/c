@@ -22,10 +22,18 @@ if [ -z "${1}" ]; then
 elif [ ${1} = 0 ]; then
 	base64 a.swf > .expected/a.swf.txt && \
 	mv a.swf.log .expected && \
-	base64 a.swf.x > .expected/a.swf.x.txt
+	if [ "${conv_64}" = 1 ]; then
+		base64 a.swf.x > .expected/a.swf.x32.txt
+	else
+		base64 a.swf.x > .expected/a.swf.x.txt
+	fi
 else
 	base64 -d .expected/a.swf.txt > .expected/a.swf && \
-	base64 -d .expected/a.swf.x.txt > .expected/a.swf.x && \
+	if [ "${conv_64}" = 1 ]; then 
+		base64 -d .expected/a.swf.x32.txt > .expected/a.swf.x
+	else
+		base64 -d .expected/a.swf.x.txt > .expected/a.swf.x
+	fi && \
 	smart_diff .expected/a.swf a.swf && \
 	diff .expected/a.swf.log a.swf.log && \
 	smart_diff .expected/a.swf.x a.swf.x
