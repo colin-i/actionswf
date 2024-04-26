@@ -16,6 +16,6 @@ $(SUBDIRS):
 .PHONY: $(TOPTARGETS) $(SUBDIRS)
 
 test:
-	cd tests && /bin/bash ./as && /bin/bash ./c 1 && echo tests ok
+	cd tests && /bin/bash conv_64=${conv_64} ./as && /bin/bash ./c 1 && echo tests ok
 
 .NOTPARALLEL:
