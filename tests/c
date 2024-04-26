@@ -16,14 +16,15 @@ smart_diff () {
 	return 1
 }
 if [ -z "${1}" ]; then
-	rm -f a.o a.out a.swf a.swf.log a.swf.x libactionswf.so
-	if [ -e .expected/a.swf.txt ]; then rm .expected/a.swf.txt; fi
+	rm -f a.o a.out a.swf a.swf.log a.swf.x
+	if [ -e .expected/a.swf ]; then rm .expected/a.swf; fi
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
 elif [ ${1} = 0 ]; then
-	mv a.swf .expected/a.swf && \
+	base64 a.swf > .expected/a.swf.txt && \
 	mv a.swf.log .expected && \
 	base64 a.swf.x > .expected/a.swf.x.txt
 else
+	base64 -d .expected/a.swf.txt > .expected/a.swf && \
 	base64 -d .expected/a.swf.x.txt > .expected/a.swf.x && \
 	smart_diff .expected/a.swf a.swf && \
 	diff .expected/a.swf.log a.swf.log && \
