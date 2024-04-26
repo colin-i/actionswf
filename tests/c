@@ -29,7 +29,7 @@ elif [ ${1} = 0 ]; then
 	fi
 else
 	base64 -d .expected/a.swf.txt > .expected/a.swf && \
-	if [ "${conv_64}" = 1 ]; then 
+	if [ "${conv_64}" = 1 ]; then
 		base64 -d .expected/a.swf.x32.txt > .expected/a.swf.x
 	else
 		base64 -d .expected/a.swf.x.txt > .expected/a.swf.x
