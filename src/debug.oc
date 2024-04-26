@@ -387,12 +387,12 @@ function debug_concludefunction(sv pointers)
 	endif
 end
 
-function x_init(sd flags,sd path)
+function x_init(datax flag,sd path)
 	if x_data.f!=(NULL)
 		call error("swf started, x not closed")
 	end
-	and flags (debug_x)
-	if flags=(debug_x)
+	and flag (debug_xx)
+	if flag!=0
 		sd s;setcall s strlen(path)
 		sd a=2+1
 		add a s
@@ -400,6 +400,8 @@ function x_init(sd flags,sd path)
 		call sprintf(b,"%s.x",path)
 
 		set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
+
+		and flag (debug_x_pad)
 	end
 end
 
@@ -410,9 +412,26 @@ function debug_x_pointers(valuex start,valuex size)
 
 		inc size  ##is on last \0
 		sub size start
-		call f_write(x_data.f,#size,:)
+		if x_init.flag!=0
+			set mark f_tell(x_data.f) #long
+			add mark :
+			add mark size    ##overflow is same
+
+			sd pad=0xf
+			xor pad mark
+			inc pad
+			and pad 0xf
+			sd all;set all size; add all pad
+			call f_write(x_data.f,#all,:)
+		else
+			call f_write(x_data.f,#size,:)
+		end
 		set mark f_tell(x_data.f)
 		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
+		if x_init.flag!=0
+			char zero={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}
+			call f_write(x_data.f,#zero,pad)
+		end
 	end
 end
 

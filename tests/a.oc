@@ -7,13 +7,13 @@ einclude "../dev/import.h"
 
 entryraw main()
 
-call swf_new_ex("a.swf",0x80,0x80,0x001100,2,(debug_log|debug_x))
+call swf_new_ex("a.swf",0x80,0x80,0x001100,2,(debug_log|debug_x_pad))
 
 call action("
 /*
 debug_x
 */
-function a(b){
+function fn(b){
 }
 this.this.getVersion();
 
