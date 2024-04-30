@@ -42,7 +42,7 @@ endfunction
 
 #edittext
 
-const sim64pointerSize=pointer_rest
+const sim64pointerSize=:-DWORD
 #struct
 function edittext_struct()
     data fontid#1
