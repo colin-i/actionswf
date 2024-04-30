@@ -752,14 +752,14 @@ function action_code_right_number(sd codepointer)
         setcall codepointer action_code_write_function_call(codepointer,#want_return)
         return codepointer
     endif
-    sd attrib
+    sd attrib;sd var
     set attrib codepointer#
     add codepointer (DWORD)
     if attrib=(ActionGetMember)
         setcall codepointer action_member_loop(codepointer,(get_member))
     else
         if attrib=(ActionGetVariable)
-		sd var;set var action_code_get_pointer(#codepointer)
+		set var action_code_get_pointer(#codepointer)
             call action_one_command(var)
         elseif attrib=(ap_double)
 		sd low;set low codepointer#;add codepointer (DWORD)
@@ -770,9 +770,8 @@ function action_code_right_number(sd codepointer)
 		add codepointer (DWORD)
         else
         #ap_Constant8
-		call action_push(attrib,codepointer#v^,-1)
-		add codepointer (pointer_rest)
-		add codepointer (DWORD)
+		set var action_code_get_pointer(#codepointer)
+		call action_push(attrib,var,-1)
         endelse
     endelse
     return codepointer
