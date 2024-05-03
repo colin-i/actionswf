@@ -88,7 +88,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 		return error_row
 	endif
     endwhile
-endfunction  #if ret is here is dead
+endg
 #nr
 function escape_count(ss string,sd escape)
     sd nr=0
