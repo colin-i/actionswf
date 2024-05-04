@@ -34,7 +34,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
     const line_comment=1
     const multiLine_comment=2
     #
-    while 0=0
+    whiletrue
         sd loop2=1
         setcall ac spaces(ac)
         #
@@ -88,7 +88,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 		return error_row
 	endif
     endwhile
-endg
+end
 #nr
 function escape_count(ss string,sd escape)
     sd nr=0
