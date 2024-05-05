@@ -98,7 +98,7 @@ function file_seek(sd file,sd off,sd method)
 endfunction
 #offset
 function file__seek(sd file,sd method)
-	callret file_seek(file,0,method) #here return is what file_seek is returning
+	callg file_seek(file,0,method) #here return is what file_seek is returning
 endfunction
 #size
 function filesize(sd file)

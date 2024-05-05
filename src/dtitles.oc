@@ -17,7 +17,7 @@ function dtitles_conclude(sd finalid,sd mem)
 		call sprintf(#store,"%04X",finalid)
 
 		add mem (WORD+WORD) #id field, frame count
-		while 0=0
+		whiletrue
 			sd RECORDHEADER
 			set RECORDHEADER word_arg_to_stack(mem)
 			add mem (WORD)

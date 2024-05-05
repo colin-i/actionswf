@@ -54,11 +54,12 @@ function get_nr_of_forIn_statements()
     while counter>0
         dec counter
         sub block (DWORD)
-        if block#=(brace_blocks_function)
+	if block#=(brace_blocks_function)
             return nr
-        elseif block#=(for_marker)
+	endif
+	if block#=(for_marker)
             inc nr
-        endelseif
+	endif
     endwhile
     return nr
 endfunction
@@ -169,10 +170,10 @@ function action_code_values_init()
     setcall m# memalloc((totalvalues*action_code_values_unit))
 endfunction
 function action_code_set(sd value)
-	callret action_code_set_ex(value,1)
+	callg action_code_set_ex(value,1)
 endfunction
 function action_code_set_pointer(sd value)
-	callret action_code_set_ex(value,(:/DWORD))  #pointers are referencing static mem, not reallocable actionpool
+	callg action_code_set_ex(value,(:/DWORD))  #pointers are referencing static mem, not reallocable actionpool
 endfunction
 function action_code_set_ex(sd value,sd size)
 	sd nr
@@ -240,13 +241,14 @@ function action__code_row_ex(sd codepointer)
     endif
     sd attrib
     set attrib codepointer#
-    if attrib=(ActionReturn)
+	if attrib=(ActionReturn)
         add codepointer (DWORD)
         call close_scope_forIn_statements()
         setcall codepointer action_code_right_util(codepointer)
         call action_one((ActionReturn))
         return codepointer
-    elseif attrib=(block_end)
+	endif
+	if attrib=(block_end)
         add codepointer (DWORD)
         if codepointer#=(else_flag)
             call action_code_else_add()
@@ -255,21 +257,25 @@ function action__code_row_ex(sd codepointer)
             call brace_blocks_remove_write()
         endelse
         return codepointer
-    elseif attrib=(block_else_end)
+	endif
+	if attrib=(block_else_end)
         setcall codepointer action_code_conditions_end(codepointer)
         return codepointer
-    elseif attrib=(whileblock_end)
+	endif
+	if attrib=(whileblock_end)
         import "brace_blocks_remove_write_jump" brace_blocks_remove_write_jump
         call brace_blocks_remove_write_jump()
         add codepointer (DWORD)
         return codepointer
-    elseif attrib=(break_flag)
+	endif
+	if attrib=(break_flag)
         call action_code_break()
         add codepointer (DWORD);return codepointer
-    elseif attrib=(continue_flag)
+	endif
+	if attrib=(continue_flag)
         call action_code_continue()
         add codepointer (DWORD);return codepointer
-    endelseif
+	endif
     setcall codepointer action_code_pack(codepointer)
     return codepointer
 endfunction

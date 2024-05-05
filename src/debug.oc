@@ -365,13 +365,14 @@ function debug_concludefunction(sv pointers)
 		if prev_fileoffset!=now   ##often case where the function has multiple lines, now line is on the file and not in mem
 			call fseek(debug_data.file,prev_fileoffset,(SEEK_SET))
 			#now need to skip first number that is the number of rows
-			while 0=0
+			whiletrue
 				char a#1
 				sd ret
 				set ret fread(#a,1,1,debug_data.file)
 				if a=(Comma)  #there is a comma from here
 					break
-				elseif ret!=1
+				endif
+				if ret!=1
 					call error("Who modified the debug file?") #but since files are not exclusives, need to also verify the return
 				end
 			end

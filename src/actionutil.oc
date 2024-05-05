@@ -16,11 +16,12 @@ function row_termination(sv p_ac,sv p_row)
 	if ac#=(LineFeed)
 		inc p_row#
 		return 0
-	elseif ac#=(CarriageReturn)
+	endif
+	if ac#=(CarriageReturn)
 		inc ac;if ac#=0xa;set p_ac# ac;endif
 		inc p_row#
 		return 0
-	endelseif
+	endif
 	return 1
 endfunction
 #error_row
@@ -64,20 +65,19 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 				set pointer# 0
 				call debug_phase_init(pointer)
 				return pointer
-			else
-				if comments=0
-				    if pointer=stop_pointer
-				        set error_row row
-				    else
-				        set pointer# ac#
-				    endelse
-				    inc pointer
-				elseif comments=(multiLine_comment)
-				    if ac#=lines_com_c1
-				        set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
-				    endif
-				endelseif
-			endelse
+			endif
+			if comments=0
+			    if pointer=stop_pointer
+			        set error_row row
+			    else
+			        set pointer# ac#
+			    endelse
+			    inc pointer
+			elseif comments=(multiLine_comment)
+			    if ac#=lines_com_c1
+			        set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
+			    endif
+			endelseif
 		elseif stop_pointer=(NULL)
 			call debug_phase_init(pointer)
 		endelseif
@@ -124,7 +124,8 @@ function action_debug(sd type)
 	vstr m=NULL
 	if type=(action_debug_get_mem)
 		return m
-	elseif type=(action_debug_get)
+	endif
+	if type=(action_debug_get)
 		return #orig
 	end
 	# action_debug_free
@@ -333,7 +334,7 @@ function action_member_loop(sv mathpointer,sd endoffset)
 	sd name
 	set name action_code_get_pointer(#mathpointer)
     call action_get_one(name)
-    while 1=1
+    whiletrue
 	while mathpointer#=(no_pointer)
 	#multi-dim arrays
 		add mathpointer :  #to pass the pointer

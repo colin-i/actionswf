@@ -170,11 +170,11 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
     endif
     #while
     setcall pointer str_expression_at_start(ac,"while")
-    if pointer!=ac
+	if pointer!=ac
         call action_code_set((while_marker))
         set p_flags# (while_marker)
         return pointer
-    else
+	endif
     #for
         setcall pointer str_expression_at_start(ac,"for")
         if pointer=ac;return pointer;endif
@@ -254,24 +254,24 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         endelse
         inc cursor
         return cursor
-    endelse
 endfunction
 #pointer
 function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
-    if ac#=(Openingbrace)
+	if ac#=(Openingbrace)
         if a_block_detected=(FALSE)
             call brace_blocks_add_parse((normal_marker))
         endif
         inc ac
         return ac
-    elseif ac#=(Closingbrace)
+	endif
+	if ac#=(Closingbrace)
         if a_block_detected=(TRUE)
             call error("unexpected closing brace sign after code block opened")
         endif
         inc ac
         setcall ac else_verify(ac,else_index)
         return ac
-    endelseif
+	endif
     setcall ac action_code_row_parse_instrument(ac)
     if a_block_detected=(TRUE)
     #ex: if(a==b)x=3;
@@ -572,7 +572,7 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     #
     vstr op_set^oprs
     ss ops;setcall ops get_operations();call memcpy(op_set,ops,(operations_size))
-    while 1=1
+    whiletrue
         sd op
         sd was_parenthesis=0
         if ac#=(Openparenthesis)
@@ -603,15 +603,14 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
         if is_compare_ptr#=(TRUE)
             set is_compare_ptr# (FALSE)
         else
-            if op=0
+		if op=0
                 if p_op!=0
                     set p_op# op
                 endif
                 return ac
-            else
+		endif
                 setcall bool action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
                 if bool=(TRUE);return ac;endif
-            endelse
             sd x;setcall x action_parse_take_action(op,ac)
             call action_code_set(x)
         endelse
@@ -752,11 +751,10 @@ function action_code_str(ss ac)
     char stringdelim2="'"
     set delim stringdelim
     if ac#!=stringdelim
-        if ac#!=stringdelim2
+	if ac#!=stringdelim2
             return 0
-        else
+	endif
             set delim stringdelim2
-        endelse
     endif
     ss next
     ss dest
@@ -864,8 +862,8 @@ function action_compare(sd value,sd firstcompare)
     if compares#=value
         if firstcompare!=(NULL)
                                            #is shl
-            if firstcompare=(ActionLess2);return 2
-            else;call error("not expeting < here");endelse
+		if firstcompare=(ActionLess2);return 2;endif
+		call error("not expeting < here")
         endif
         return (ActionLess2)
     endif
@@ -874,8 +872,8 @@ function action_compare(sd value,sd firstcompare)
     if compares#=value
         if firstcompare!=(NULL)
                                              #is sar_shr
-            if firstcompare=(ActionGreater);return 2
-            else;call error("not expeting > here");endelse
+		if firstcompare=(ActionGreater);return 2;endif
+		call error("not expeting > here")
         endif
         return (ActionGreater)
     endif
@@ -886,23 +884,26 @@ function action_compare(sd value,sd firstcompare)
     #=
     inc compares
     if compares#=value
-        if firstcompare=(ActionLess2)
+	if firstcompare=(ActionLess2)
             call action_code_set((ActionGreater))
             call action_code_set((ActionNot))
             return 1
-        elseif firstcompare=(ActionGreater)
+	endif
+	if firstcompare=(ActionGreater)
             call action_code_set((ActionLess2))
             call action_code_set((ActionNot))
             return 1
-        elseif firstcompare=(ActionEquals2)
+	endif
+	if firstcompare=(ActionEquals2)
             call action_code_set((ActionEquals2))
             call action_code_set(0)
             return 1
-        elseif firstcompare=(ActionNot)
+	endif
+	if firstcompare=(ActionNot)
             call action_code_set((ActionEquals2))
             call action_code_set((ActionNot))
             return 1
-        endelseif
+	endif
         return (ActionEquals2)
     endif
     # !
@@ -914,14 +915,15 @@ function action_compare(sd value,sd firstcompare)
         return (ActionNot)
     endif
     #another char
-    if firstcompare=(NULL)
+	if firstcompare=(NULL)
         #call error("expecting a comparison")
         return (NULL)
-    elseif firstcompare=(ActionEquals2)
+	endif
+	if firstcompare=(ActionEquals2)
         call error("expecting a == comparison")
-    elseif firstcompare=(ActionNot)
+	elseif firstcompare=(ActionNot)
         call error("expecting a != comparison")
-    endelseif
+	endelseif
     if firstcompare=(ActionLess2)
         call action_code_set((ActionLess2))
         call action_code_set(0)
@@ -1103,7 +1105,7 @@ function resolve_dummy_jump(sd jumpoffset)
     inc mem;set mem# byte
 endfunction
 function brace_blocks_remove_write_loopIfJumps_at_current_offset()
-    while 1=1
+    whiletrue
         sd ifoffset
         setcall ifoffset brace_blocks_remove_write_offset()
         if ifoffset=0

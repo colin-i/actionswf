@@ -35,8 +35,8 @@ function NumFill_NumLin(sd set_get,sd fill,sd lin)
     if set_get=0
         set NFill_NLin lin;mult fill 0x10;or NFill_NLin fill
     else
-        if fill=(FALSE);set lin NFill_NLin;and lin 0x0F;return lin
-        else;set fill NFill_NLin;div fill 0x10;return fill;endelse
+	if fill=(FALSE);set lin NFill_NLin;and lin 0x0F;return lin;endif
+	set fill NFill_NLin;div fill 0x10;return fill
     endelse
 endfunction
 

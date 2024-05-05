@@ -150,11 +150,12 @@ endfunction
 function is_numeric(sd char)
     char min="0"
     char max="9"
-    if char<min
+	if char<min
         return (FALSE)
-    elseif char<=max
+	endif
+	if char<=max
         return (TRUE)
-    endelseif
+	endif
     return (FALSE)
 endfunction
 #bool
@@ -169,17 +170,21 @@ function part_of_variable(sd value)
 endfunction
 #bool
 function is_letter(sd value)
-    if value<(A)
+	if value<(A)
         return (FALSE)
-    elseif value<=(Z)
+	endif
+	if value<=(Z)
         return (TRUE)
-    elseif value=(_)
+	endif
+	if value=(_)
         return (TRUE)
-    elseif value<(a)
+	endif
+	if value<(a)
         return (FALSE)
-    elseif value<=(z)
+	endif
+	if value<=(z)
         return (TRUE)
-    endelseif
+	endif
     return (FALSE)
 endfunction
 
@@ -250,7 +255,7 @@ endfunction
 
 #str
 function spaces(ss str)
-    while 1=1
+    whiletrue
         if str#!=(Space)
             if str#!=(HorizontalTab)
                 return str
@@ -408,7 +413,8 @@ function struct_ids(sd proc,sd id)
     sv pointer
 	if proc=(ids_counter)
 		return counter
-	elseif proc=(ids_all_free)
+	endif
+	if proc=(ids_all_free)
         #starting with ids_all_free:
         #                #counter increment#, then null at ac,pools
         #   mem_free at struct_ids_action_expand
@@ -421,7 +427,7 @@ function struct_ids(sd proc,sd id)
             setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
         endwhile
         ret
-	endelseif
+	endif
 
     sd ident
 	if proc!=(ids_set)
@@ -432,7 +438,8 @@ function struct_ids(sd proc,sd id)
     setcall pointer move_to_n_pointer(strct,ident)
 	if proc=(ids_get)
 		return pointer#
-	elseif proc=(ids_set)
+	endif
+	if proc=(ids_set)
 	#id
         if counter=(max_structures)
             call error("too many objects")
@@ -459,10 +466,11 @@ function struct_ids(sd proc,sd id)
         setcall ac_ptr struct_ids_actionpool((ids_get_pointer),c);set ac_ptr# (NULL)
         #counter increment#
         return ident
-    elseif proc=(ids_get_pointer)
+	endif
+	if proc=(ids_get_pointer)
         if ident>=counter;call error("Unexistent input id.");endif
         return pointer
-	endelseif
+	endif
 	#else
 	#if proc==(ids_free)
 	call mem_free(pointer)
@@ -482,18 +490,19 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
     sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
 	if proc=(ids_get)
 		return pointer#
-	elseif proc=(ids_set)
+	endif
+	if proc=(ids_set)
         setcall pointer# def_data()
-    elseif proc=(ids_get_pointer)
+	elseif proc=(ids_get_pointer)
         #call to verify if the user input has a wrong id
         sd c;setcall c struct_ids((ids_counter))
         if id>=c;call error("Unregistered input id.");endif
         #
         return pointer
-    else
+	else
     #if proc==(ids_free)
         call mem_free(pointer)
-    endelse
+	endelse
 endfunction
 
 
