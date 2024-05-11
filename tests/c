@@ -1,9 +1,12 @@
+
+# 0 is diff and move, without ${1} is clean
+
 if [ -z "${1}" ]; then
 	rm -f a.o a.out a.swf a.swf.log a.swf.x
 	if [ -e .expected/a.swf ]; then rm .expected/a.swf; fi
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
+	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
 else
-ok=OK
 smart_diff () {
 	diff ${1} ${2}
 	if [ $? = 0 ]; then
@@ -24,43 +27,31 @@ smart_diff () {
 	fi
 	return 1
 }
-	base64 -d .expected/a.swf.txt > .expected/a.swf || exit 1
+	base64 -d .expected/a.swf.txt > .expected/a.swf || { echo not ok; exit 1; }
 	smart_diff .expected/a.swf a.swf
 	if [ $? != 0 ]; then
-		if [ ${1} != 0 ]; then exit 1; fi
+		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
 		echo y \?; read -n1 -t $((60*60*24)) ans
-		if [ "${ans}" != "y" ]; then exit 1; fi
+		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
 		base64 a.swf > .expected/a.swf.txt
-		cp a.swf .expected
-		smart_diff .expected/a.swf a.swf
 	fi
 
 	smart_diff .expected/a.swf.log a.swf.log x
 	if [ $? != 0 ]; then
-		if [ ${1} != 0 ]; then exit 1; fi
+		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
 		echo y \?; read -n1 -t $((60*60*24)) ans
-		if [ "${ans}" != "y" ]; then exit 1; fi
-		cp a.swf.log .expected
-		smart_diff .expected/a.swf.log a.swf.log x
+		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
 	fi
 
 	if [ "${conv_64}" = 1 ]; then
-		base64 -d .expected/a.swf.x32.txt > .expected/a.swf.x
-	else
-		base64 -d .expected/a.swf.x.txt > .expected/a.swf.x
-	fi || exit 1
-	smart_diff .expected/a.swf.x a.swf.x
-	if [ $? != 0 ]; then
-		if [ ${1} != 0 ]; then exit 1; fi
-		echo y \?; read -n1 -t $((60*60*24)) ans
-		if [ "${ans}" != "y" ]; then exit 1; fi
-		if [ "${conv_64}" = 1 ]; then
-			base64 a.swf.x > .expected/a.swf.x32.txt
-		else
-			base64 a.swf.x > .expected/a.swf.x.txt
-		fi
-		cp a.swf.x .expected
-		smart_diff .expected/a.swf.x a.swf.x
+		v=32
 	fi
-	echo ${ok}
+	base64 -d .expected/a.swf.x${v}.txt > .expected/a.swf.x${v} || { echo not ok; exit 1; }
+	smart_diff .expected/a.swf.x${v} a.swf.x
+	if [ $? != 0 ]; then
+		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
+		echo y \?; read -n1 -t $((60*60*24)) ans
+		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
+		base64 a.swf.x > .expected/a.swf.x${v}.txt
+	fi
 fi
