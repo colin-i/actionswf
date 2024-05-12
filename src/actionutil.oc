@@ -358,7 +358,7 @@ function action_member_loop(sv mathpointer,sd endoffset)
         endwhile
         sv endtest
         set endtest mathpointer
-        add endtest endoffset
+        add endtest endoffset         ##to pass the pointer #or is zero
         #
         if endtest#=(no_pointer)
 		if endoffset=(get_member_pointer)
