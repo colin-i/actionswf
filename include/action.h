@@ -1,7 +1,7 @@
 
-const no_pointer=0  #NULL
-
+const ActionReturn=0x3E            #1
 const ActionIf=0x9D                #1
+const while_marker=0x05050606      #1
 
 const ActionSetVariable=0x1D       #2
 const ActionDelete=0x3A            #2
@@ -12,34 +12,40 @@ const ActionSetMember=0x4F         #2
 
 const block_end=0xfbBBbbBB            #1 F
 const block_else_end=0xfcCCccCC       #1
+const whileblock_end=0xfdDDddDD       #1
 const args_end=0xfeEEeeEE             #C
-const math_end=0xffFFffFF             #0 RI RG
+const math_end=0xffFFffFF             #0 RG RT
 
 const call_action_left=0xf1011010     #1
-const call_action_right=0xf2022020    #RG
+const call_action_right=0xf2022020    #RT
 const function_action=0xf3033030      #1
-const new_action=0xf4044040           #RI
+const new_action=0xf4044040           #RG
 const square_bracket_start=0xf5055050 #M
+const mixt_equal=0xf6066060           #R
 const compare_action=0xf7077070       #OC
-const parenthesis_start=0xf8088080    #RG
-const ifElse_start=0xfe0EE0e0         #RI
+const parenthesis_start=0xf8088080    #RT
+const ifElse_start=0xfe0EE0e0         #RG
 const member_end=0xff0FF0f0           #M
 
 const else_flag=0x40<<24              #1
 
-const ap_double=6              #RG
-const ap_Integer=7             #RG
-const ap_Constant8=8           #RG
+const ap_double=6              #RT
+const ap_Integer=7             #RT
+const ap_Constant8=8           #RT
 const ActionSubtract=0x0B      #O
 const ActionMultiply=0x0C      #O
 const ActionDivide=0x0D        #O
+const ActionAnd=0x10           #O
+const ActionOr=0x11            #O
 const ActionNot=0x12           #OC
-const ActionGetVariable=0x1C   #RG
+const ActionGetVariable=0x1C   #RT
 const ActionModulo=0x3F        #O
 const ActionAdd2=0x47          #O
 const ActionLess2=0x48         #OC
 const ActionEquals2=0x49       #OC
-const ActionGetMember=0x4E     #RG
+const ActionGetMember=0x4E     #RT
+const ActionIncrement=0x50     #R
+const ActionDecrement=0x51     #R
 const ActionBitAnd=0x60        #O
 const ActionBitOr=0x61         #O
 const ActionBitXor=0x62        #O
@@ -53,6 +59,7 @@ const ActionNextFrame=0x04      #builtin
 const ActionPreviousFrame=0x05  #builtin
 const ActionPlay=0x06           #builtin
 const ActionStop=0x07           #builtin
+const ActionPop=0x17
 const ActionToInteger=0x18      #builtin
 const ActionTrace=0x26          #builtin
 const ActionRandomNumber=0x30   #builtin
@@ -77,17 +84,10 @@ const ActionDefineFunction=0x9B
 
 
 #const ActionAdd=0x0A
-const ActionAnd=0x10
-const ActionOr=0x11
-const ActionPop=0x17
-const ActionReturn=0x3E
 const ActionEnumerate=0x46
 const ActionPushDuplicate=0x4C
-const ActionIncrement=0x50
-const ActionDecrement=0x51
 #const ActionGotoFrame2=0x9F
 
-const mixt_equal=0xf6066060
 const break_flag=0xf9099090
 const continue_flag=0xfa0AA0a0
 #
@@ -95,13 +95,11 @@ const for_marker=0xfb0BB0b0
 const for_three=0xfc0CC0c0
 const inter_for=0xfd0DD0d0
 
-const brace_blocks_function=0x7fFFffFF
-
-const consecutive_flag=0x80<<24
-#const all_flags=consecutive_flag|else_flag
 const normal_marker=0x01010202
 const if_marker=0x03030404
-const while_marker=0x05050606
 const function_marker=0x07070808
 
-const whileblock_end=0xfdDDddDD
+const no_pointer=0  #NULL
+const consecutive_flag=0x80<<24
+#const all_flags=consecutive_flag|else_flag
+const brace_blocks_function=0x7fFFffFF
