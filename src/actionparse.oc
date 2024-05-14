@@ -243,8 +243,11 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         endif
         set cursor# 0
         #
-        #enum can take ActionEnumerate(x.x[z])
-        call action_code_set_pointer(marker)
+	#enum can take ActionEnumerate(x.x[z]), x.x ... is a pattern that ActionEnumerate will recognize, do not use action_code_take_pointer
+	#call action_code_set((for_in)) getvar/member is not overlapping for_three
+	#call action_code_set_pointer(marker)
+	#ActionEnumerate2 will use an object
+	call action_code_take_pointer(marker)
         #
         if pointer!=ac
             call action_code_set((ActionDefineLocal))
@@ -770,6 +773,9 @@ function action_code_take(ss ac)
     if b=(TRUE)
         ret
     endif
+	call action_code_take_pointer(ac)
+endfunction
+function action_code_take_pointer(sd ac)
     ss test
     setcall test action_code_membersplit(ac)
     if test=0

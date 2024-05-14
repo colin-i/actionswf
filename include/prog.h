@@ -71,8 +71,6 @@ const DefineFont2=48
 const ExportAssets=56
 
 include "action.h"
-const get_member=0
-const get_member_pointer=:
 
 const ButtonStateUp=1
 const ButtonStateOver=2*ButtonStateUp

@@ -330,50 +330,60 @@ endfunction
 
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
-function action_member_loop(sv mathpointer,sd endoffset)
+function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, let the string
 	sd name
 	set name action_code_get_pointer(#mathpointer)
-    call action_get_one(name)
-    whiletrue
-	while mathpointer#=(no_pointer)
-	#multi-dim arrays
-		add mathpointer :  #to pass the pointer
-		if mathpointer#d=(member_end)
-			sub mathpointer :  #to pass the pointer
-			break
-		end
-		#else is square_bracket_start , a complication to not recognize square brackets on pointers
-            add mathpointer (DWORD)
-            setcall mathpointer action_code_right_util(mathpointer)
-            if endoffset=(get_member)
-                call action_one((ActionGetMember))
-            else
-                if mathpointer#!=(no_pointer)
-                    call action_one((ActionGetMember))
-                else
-                    add mathpointer :+DWORD  #to pass the pointer # member_end
-                    return mathpointer
-                endelse
-            endelse
-        endwhile
-        sv endtest
-        set endtest mathpointer
-        add endtest endoffset         ##to pass the pointer #or is zero
-        #
-        if endtest#=(no_pointer)
-		if endoffset=(get_member_pointer)
-                #push to set later
+	call action_get_one(name)
+
+	#at first is something
+	if mathpointer#!=(no_pointer)
+		set name action_code_get_pointer(#mathpointer)
+		call action_push((ap_Constant8),name,-1)
+	else
+		add mathpointer :+DWORD  #to pass the pointer   + square_bracket_start
+		setcall mathpointer action_code_right_util(mathpointer)
+	end
+
+	whiletrue
+		if mathpointer#=(no_pointer)
+			add mathpointer :  #to pass the pointer
+			if mathpointer#d=(member_end)
+				add mathpointer (DWORD)
+				return mathpointer
+			end
+			#square_bracket_start
+			call action_one((ActionGetMember))
+			add mathpointer (DWORD)
+			setcall mathpointer action_code_right_util(mathpointer)
+		else
+			call action_one((ActionGetMember))
 			set name action_code_get_pointer(#mathpointer)
-                call action_push((ap_Constant8),name,-1)
-		endif
-		add mathpointer :+DWORD  #to pass the pointer # member_end
-		return mathpointer
-        endif
+			call action_push((ap_Constant8),name,-1)
+		end
+	end
+end
+function action_member_loop_right(sv mathpointer) #get, ex get_member, get the object
+	sd name
 	set name action_code_get_pointer(#mathpointer)
-        call action_push((ap_Constant8),name,-1)
-        call action_one((ActionGetMember))
-    endwhile
-endfunction
+	call action_get_one(name)
+	whiletrue
+		if mathpointer#!=(no_pointer)
+			set name action_code_get_pointer(#mathpointer)
+			call action_push((ap_Constant8),name,-1)
+		else
+			add mathpointer :  #to pass the pointer
+			if mathpointer#d=(square_bracket_start)
+				add mathpointer (DWORD)
+				setcall mathpointer action_code_right_util(mathpointer)
+			else #member_end
+				add mathpointer (DWORD)
+				return mathpointer
+			end
+		end
+		call action_one((ActionGetMember))
+	end
+end
+
 import "action_code_member" action_code_member
 #import "error" error
 #function action_member_write(ss member)
@@ -391,7 +401,7 @@ import "action_code_member" action_code_member
 #endfunction
 function action_member_write_tool(sd values,ss names)
     call action_code_member(names)
-    call action_member_loop(values,(get_member))
+    call action_member_loop_right(values)
 endfunction
 
 #action

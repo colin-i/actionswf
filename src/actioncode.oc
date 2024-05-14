@@ -153,7 +153,7 @@ function action_code_get_pointer(sv p_codepointer)
 	sd a;set a p#
 	import "debug_x_pointer" debug_x_pointer
 	call debug_x_pointer(a,p)
-	incst p_codepointer#  #to pass the pointer   #get_member_pointer
+	incst p_codepointer#  #to pass the pointer
 	return a
 end
 
@@ -218,7 +218,8 @@ endfunction
 
 import "action_push" action_push
 import "action_one" action_one
-import "action_member_loop" action_member_loop
+import "action_member_loop_left" action_member_loop_left
+import "action_member_loop_right" action_member_loop_right
 import "brace_blocks_add_write" brace_blocks_add_write
 import "brace_blocks_remove_write" brace_blocks_remove_write
 #position
@@ -302,7 +303,7 @@ function action_code_pack(sd codepointer)
 	#else is ActionDefineLocal/ActionSetVariable
     #
     if is_member=(TRUE)
-        setcall codepointer action_member_loop(codepointer,(get_member_pointer))
+        setcall codepointer action_member_loop_left(codepointer)
     else
     #definelocal or setvariable or delete2
 	sd name;set name action_code_get_pointer(#codepointer)
@@ -373,8 +374,15 @@ function action_code_write_conditions(sd codepointer)
     if cond=(for_marker)
         add codepointer (DWORD)
         if codepointer#!=(for_three)
-            call action_push((ap_Constant8),codepointer#v^,-1);add codepointer :   #to pass the pointer
-            call action_one((ActionEnumerate))
+			sd type;set type codepointer#
+			add codepointer (DWORD)
+			if type=(ActionGetVariable)
+				sd name;set name action_code_get_pointer(#codepointer)
+				call action_get_one(name)
+			else #ActionGetMember
+				set codepointer action_member_loop_right(codepointer)
+			end
+			call action_one((ActionEnumerate2))
             #
             call add_while_top_off((for_marker))
             #
@@ -390,11 +398,11 @@ function action_code_write_conditions(sd codepointer)
             sd attr2;set attr2 codepointer#;add codepointer (DWORD)
             #
             if attr2=(ActionSetMember)
-                setcall codepointer action_member_loop(codepointer,(get_member_pointer))
+                setcall codepointer action_member_loop_left(codepointer)
             else
                 #var or set variable
-                call action_push((ap_Constant8),codepointer#v^,-1)
-                add codepointer :   #to pass the pointer
+			sd newname;set newname action_code_get_pointer(#codepointer)
+			call action_push((ap_Constant8),newname,-1)
             endelse
             #
             call action_push((ap_RegisterNumber),first_reg,-1)
@@ -763,7 +771,7 @@ function action_code_right_number(sd codepointer)
     set attrib codepointer#
     add codepointer (DWORD)
     if attrib=(ActionGetMember)
-        setcall codepointer action_member_loop(codepointer,(get_member))
+        setcall codepointer action_member_loop_right(codepointer)
     else
         if attrib=(ActionGetVariable)
 		set var action_code_get_pointer(#codepointer)
