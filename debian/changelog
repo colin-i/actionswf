@@ -1,3 +1,9 @@
+actionswf (1-78) bionic; urgency=medium
+
+  * for-in x fix, member_loop crash, rest of x
+
+ -- bc <bc@bc-desktop>  Tue, 14 May 2024 14:30:32 +0300
+
 actionswf (1-77) bionic; urgency=medium
 
   * debug_x_pad fix
