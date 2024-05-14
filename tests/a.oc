@@ -29,6 +29,9 @@ h=function(){var a;}var i=h();
 if(2==2){var j;}else if(2==2){var k;}else{var l;}
 while(2==2){var m;}
 f++;f--;f+=2;
+for(var n=2;n<3;n++){break;}
+for(var o in a){continue;}
+for(a[0] in a[0]){}
 ")
 
 call swf_done()
