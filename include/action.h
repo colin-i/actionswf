@@ -12,11 +12,12 @@ const ActionSetVariable=0x1D       #L
 const ActionDefineLocal=0x3C       #L
 const ActionSetMember=0x4F         #L
 
-const block_end=0xfbBBbbBB            #F IF
-const block_else_end=0xfcCCccCC       #1
-const whileblock_end=0xfdDDddDD       #1 FR
-const args_end=0xfeEEeeEE             #C
 const math_end=0xffFFffFF             #0 RG RH
+const args_end=0xfeEEeeEE             #C
+const whileblock_end=0xfdDDddDD       #1 FR
+const block_else_end=0xfcCCccCC       #1
+const block_end=0xfbBBbbBB            #F IF
+const member_end=0xfaAAaaAA           #M
 
 const call_action_left=0xf1011010     #1
 const call_action_right=0xf2022020    #RH
@@ -28,22 +29,21 @@ const compare_action=0xf7077070       #OC
 const parenthesis_start=0xf8088080    #RH
 const break_flag=0xf9099090           #1
 const continue_flag=0xfa0AA0a0        #1
-const for_marker=0xfb0BB0b0           #1
-const for_three=0xfc0CC0c0            #FR
-const inter_for=0xfd0DD0d0            #FR
-const ifElse_start=0xfe0EE0e0         #RG
-const member_end=0xff0FF0f0           #M
-
-const normal_marker=0x01010202
-const if_marker=0x03030404
-const while_marker=0x05050606         #1
-const function_marker=0x07070808
+const for_three=0xfb0BB0b0            #FR
+const inter_for=0xfc0CC0c0            #FR
+const ifElse_start=0xfd0DD0d0         #RG
 #const for_in=
 
 const else_flag=0x40<<24                   #1
 const consecutive_flag=0x80<<24
 #const all_flags=consecutive_flag|else_flag
 const brace_blocks_function=0x7fFFffFF
+
+const normal_marker=0x01010202
+const if_marker=0x03030404
+const while_marker=0x05050606         #1
+const function_marker=0x07070808
+const for_marker=0x09090a0a           #1
 
 const ActionSubtract=0x0B      #OP
 const ActionMultiply=0x0C      #OP

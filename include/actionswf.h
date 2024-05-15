@@ -1,4 +1,6 @@
 
+#define flags_forin1 0x20
+
 #ifdef __cplusplus
 extern "C" {
 #endif

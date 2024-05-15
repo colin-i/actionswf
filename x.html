@@ -85,8 +85,9 @@
 
 <br>Table M: <!-- action_code_member<>action_member_loop -->
 <table id="selection_table">
-	<tr><td class="blue" rowspan=3>owner</td><td class="red" rowspan=3>{</td><td class="blue" colspan=3>member</td>                                                      <td class="red" rowspan=2>}</td></tr>
+	<tr><td class="blue" rowspan=4>owner</td><td class="red" rowspan=4>{</td><td class="blue" colspan=3>member</td>                                                      <td class="red" rowspan=2>}</td></tr>
 	<tr>                                                                     <td class="blue">no_pointer</td>      <td>square_bracket_start</td><td class="green">RG</td></tr>
+	<tr>                                                                     <td colspan=4><!-- end is not at first iteration --></td></tr>
 	<tr>                                                                     <td class="blue">no_pointer</td>      <td colspan=3>member_end</td></tr>
 </table>
 
@@ -136,9 +137,10 @@
 <br>Table RG: <!-- action_code_row_parse_tool<>action_code_right_util -->
 <table id="selection_table">
 	<tr><td>new_action</td><td class="green">C</td></tr>
-	<tr><td class="green" rowspan=3>RH</td><td class="red" rowspan=3>{</td><td rowspan=3>[math_end]</td><td class="green">O+RH</td><td class="red" rowspan=2>}</td></tr>
-	<tr>                                                                                                <td class="green">OC+RH</td></tr>
-	<tr>                                                                                                <td colspan=3>ifElse_start+<span class="green">RG</span>+<span class="green">RG</span></td></tr>
+	<tr><td class="green" rowspan=4>RH</td><td class="red" rowspan=4>{</td><td class="green">O+RH</td><td class="red" rowspan=2>}</td></tr>
+	<tr>                                                                   <td class="green">OC+RH</td></tr>
+	<tr>                                                                   <td colspan=2>ifElse_start+<span class="green">RG</span>+<span class="green">RG</span></td></tr>
+	<tr>                                                                   <td colspan=2>math_end</td></tr>
 </table>
 
 <br>Table RH: <!-- in action_code_take_main<>action_code_right_number -->
