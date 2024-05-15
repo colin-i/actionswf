@@ -304,7 +304,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			call dtitles_frame(frames)
 
 			#if arg=(from_show)
-				call swf_frames_inc(frames,arg2)
+			call swf_frames_inc(frames,arg2)
 			#end
 
 			import "write_action" write_action
@@ -321,7 +321,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			call swf_frames_inc(frames,arg2)
 		elseif frames=0    #here is an ending from done with no size and no previous show
 			#if id=0
-				call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
+			call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
 			#end
 		endelseif
     else
