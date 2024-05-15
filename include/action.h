@@ -12,9 +12,9 @@ const ActionSetVariable=0x1D       #L
 const ActionDefineLocal=0x3C       #L
 const ActionSetMember=0x4F         #L
 
-const block_end=0xfbBBbbBB            #1 F
+const block_end=0xfbBBbbBB            #F IF
 const block_else_end=0xfcCCccCC       #1
-const whileblock_end=0xfdDDddDD       #1
+const whileblock_end=0xfdDDddDD       #1 FR
 const args_end=0xfeEEeeEE             #C
 const math_end=0xffFFffFF             #0 RG RH
 

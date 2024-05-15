@@ -68,7 +68,7 @@
 
 <br>Table F: <!-- action_code_parse_deffunction<>action_definefunction -->
 <table id="selection_table">
-	<tr><td>function_action</td><td class="blue">name</td><td class="blue">{arguments}/null</td><td class="green">{1}</td><td>block_end</td></tr>
+	<tr><td>function_action</td><td class="blue">name</td><td class="blue">{arguments}</td><td class="blue">null</td><td class="green">{1}</td><td>block_end</td></tr>
 </table>
 
 <br>Table FR: <!--  action_parse_conditions<>action_code_write_conditions -->
@@ -82,11 +82,11 @@
 	<td>ActionIf</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>block_end</td>
 </table>
 
-<br>Table {M}: <!-- action_code_member<>action_member_loop -->
+<br>Table M: <!-- action_code_member<>action_member_loop -->
 <table id="selection_table">
-	<tr><td class="blue">owner</td><td class="blue">member</td></tr>
-	<tr>                           <td class="blue">no_pointer</td> <td>square_bracket_start</td><td class="green">RG</td></tr>
-	<tr>                           <td class="blue">no_pointer</td><td>member_end</td></tr>
+	<tr><td class="blue" rowspan=3>owner</td><td class="red" rowspan=3>{</td><td class="blue" colspan=3>member</td>                                                      <td class="red" rowspan=2>}</td></tr>
+	<tr>                                                                     <td class="blue">no_pointer</td>      <td>square_bracket_start</td><td class="green">RG</td></tr>
+	<tr>                                                                     <td class="blue">no_pointer</td>      <td colspan=3>member_end</td></tr>
 </table>
 
 <br>Table O: <!-- get_operations<>in RG loop -->
