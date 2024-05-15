@@ -376,13 +376,19 @@ function action_code_write_conditions(sd codepointer)
         if codepointer#!=(for_three)
 			sd type;set type codepointer#
 			add codepointer (DWORD)
+			sd name
 			if type=(ActionGetVariable)
-				sd name;set name action_code_get_pointer(#codepointer)
+				set name action_code_get_pointer(#codepointer)
 				call action_get_one(name)
-			else #ActionGetMember
+				call action_one((ActionEnumerate2))
+			elseif type=(ActionGetMember)
 				set codepointer action_member_loop_right(codepointer)
+				call action_one((ActionEnumerate2))
+			else #deprecated ActionEnumerate
+				set name action_code_get_pointer(#codepointer)
+				call action_push((ap_Constant8),name,-1)
+				call action_one((ActionEnumerate))
 			end
-			call action_one((ActionEnumerate2))
             #
             call add_while_top_off((for_marker))
             #

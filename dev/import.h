@@ -1,5 +1,5 @@
 
-include "../include/debug.h"
+include "../include/flags.h"
 
 #swf
 
