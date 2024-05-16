@@ -52,6 +52,10 @@ function swf_sprite_frames_pointer(sd spriteid)
 	return block
 end
 
+function frames_as_shows(datax flag)
+	and flag (flags_framesAsShows)
+end
+
 import "mem_free" mem_free
 import "action_code_values_free" action_code_values_free
 import "file_close" file_close
@@ -303,9 +307,11 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			#more at dtitles
 			call dtitles_frame(frames)
 
-			#if arg=(from_show)
-			call swf_frames_inc(frames,arg2)
-			#end
+			if frames_as_shows.flag=0
+				call swf_frames_inc(frames,arg2)
+			elseif arg=(from_show)
+				call swf_frames_inc(frames,arg2)
+			end
 
 			import "write_action" write_action
 			sd tagsz
@@ -320,9 +326,9 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)
 		elseif frames=0    #here is an ending from done with no size and no previous show
-			#if id=0
-			call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
-			#end
+			if frames_as_shows.flag=0
+				call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
+			end
 		endelseif
     else
     #if proc==(mem_exp_get_block)
