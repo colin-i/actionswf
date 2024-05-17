@@ -1,5 +1,6 @@
 
 #define flags_forin1 0x20
+#define flags_framesAsShows 0x40
 
 #ifdef __cplusplus
 extern "C" {
