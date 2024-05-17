@@ -1,4 +1,4 @@
 
 format elfobj64
 
-entry main()
+# if this project stays is more like a lib that is translating x to oadbg
