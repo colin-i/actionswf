@@ -1,3 +1,9 @@
+actionswf (1-79) bionic; urgency=medium
+
+  * flags for enumerate and FrameCount
+
+ -- bc <bc@bc-desktop>  Fri, 17 May 2024 09:33:35 +0300
+
 actionswf (1-78) bionic; urgency=medium
 
   * for-in x fix, member_loop crash, rest of x
