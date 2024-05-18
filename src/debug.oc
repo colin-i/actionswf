@@ -222,11 +222,11 @@ function debug_phase_code(sd codepointer)
 	sv of%p_offsets
 	if of#!=(NULL)
 		sv a;setcall a debug_mark_get()
-		if codepointer=a#   #can also be smaller
+		if codepointer>=^a#   #can also be smaller, or larger after } at function/condition blocks
 			if debug_actions.size!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions
 				sv b;set b a
 				sv end;setcall end debug_end()
-				while codepointer=b#
+				while codepointer>=^b#   # > ? same as above
 					call debug_mark_add()
 					setcall b debug_mark_get()
 					if b=end#

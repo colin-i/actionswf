@@ -43,6 +43,7 @@ function x_init(datax flag,sd path)
 	if x_data.f!=(NULL)
 		call error("swf started, x not closed")
 	end
+	#set flag flags
 	and flag (flags_x)
 	if flag!=0
 		sd s;setcall s strlen(path)
@@ -58,8 +59,11 @@ function x_init(datax flag,sd path)
 			and flag (debug_x_pad)
 		#else #restore
 			#set x_data.f f_open_mem(b,"rb")
+			#and log is on current x, here is another x, no log, no parse
+			#and flags (~debug_log)
 		#end
 	end
+	#return flags
 end
 
 function debug_x_pointers(valuex start,valuex size)
