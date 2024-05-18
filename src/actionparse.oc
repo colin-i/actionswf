@@ -92,6 +92,10 @@ function brace_blocks_get_memblock()
     return memblock
 endfunction
 
+function for_in(datax flag)
+	and flag (flag_forin1)
+end
+
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
 
@@ -158,6 +162,20 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
 	call debug_phase_parse(ac)
     return ac
 endfunction
+
+function forin(sd pointer)
+	#getvar/member/enumerate is not overlapping for_three
+	if for_in.flag!=(flag_forin1)
+		#ActionEnumerate2 will use an object
+		call action_code_take_pointer(pointer)
+	else
+		#enum can take ActionEnumerate(x.x[z]), x.x ... is a pattern that ActionEnumerate will recognize
+		call action_code_set((ActionEnumerate))
+		call action_code_set_pointer(pointer)
+	end
+end
+
+
 #pointer
 function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
     #if
@@ -243,7 +261,6 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         endif
         set cursor# 0
         #
-	import "forin" forin
 	call forin(marker)
         #
         if pointer!=ac

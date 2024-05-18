@@ -62,15 +62,9 @@ function debug_data()
 	endif
 	import "alt_free" alt_free
 	call alt_free()
+	import "x_data" x_data
 	call x_data()
 endfunction
-function x_data()
-	value f=NULL
-	datax size#1
-	if f!=(NULL)
-		call f_close(#f)
-	end
-end
 
 function debug_phase_init(ss pointer)
 	sv of%p_offsets
@@ -130,32 +124,18 @@ function md_printf(sd c,sd format,sd val) #to not write null on unknown
 	return n
 end
 
-function debug_x_pointer(sd value,sv pointer)
-	if x_data.f!=(NULL)
-		import "action_debug" action_debug
-		sub value action_debug((action_debug_get_mem))
-		inc value  ##only to not be comparable with (no_pointer)
-		set pointer# value
-	end
-end
-
-function for_in(datax flag)
-	and flag (flags_forin1)
-end
-
 import "row_termination" row_termination
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
-import "action_code_values" action_code_values
+import "for_in" for_in
 import "frames_as_shows" frames_as_shows
 
 importx "strlen" strlen
 importx "fseek" fseek
 importx "fread" fread
 importx "fprintf" fprintf
-importx "fwrite" fwrite
 
 
 
@@ -164,9 +144,10 @@ aftercallimport ebool
 import "memalloc" memalloc
 import "alt_init" alt_init
 import "dtitles_init" dtitles_init
+import "x_init" x_init
 import "f_open_mem" f_open_mem
 
-function debug_init(sd flags,sd path)
+function flags_init(sd flags,sd path)
 	call log_init(flags,path)
 	call alt_init(flags,path)
 	call dtitles_init(flags)
@@ -394,110 +375,4 @@ function debug_concludefunction(sv pointers)
 			call md_printf(c,format,size)
 		end
 	endif
-end
-
-function x_init(datax flag,sd path)
-	if x_data.f!=(NULL)
-		call error("swf started, x not closed")
-	end
-	and flag (debug_xx)
-	if flag!=0
-		sd s;setcall s strlen(path)
-		sd a=2+1
-		add a s
-		sd b;setcall b memalloc(a)
-		call sprintf(b,"%s.x",path)
-
-		set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-
-		and flag (debug_x_pad)
-	end
-end
-
-function debug_x_pointers(valuex start,valuex size)
-	valuex mark#1
-	if x_data.f!=(NULL)
-		set x_data.size 0
-
-		inc size  ##is on last \0
-		sub size start
-		if x_init.flag=(debug_x_pad)
-			set mark f_tell(x_data.f) #long
-			add mark :
-			add mark size    ##overflow is same
-
-			sd pad=0xf
-			xor pad mark
-			inc pad
-			and pad 0xf
-			sd all;set all size; add all pad
-			call f_write(x_data.f,#all,:)
-		else
-			call f_write(x_data.f,#size,:)
-		end
-		set mark f_tell(x_data.f)
-		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
-		if x_init.flag=(debug_x_pad)
-			if pad!=0
-				char zero={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}
-				call f_write(x_data.f,#zero,pad)
-			end
-		end
-	end
-end
-
-function debug_x_base(sd mem,sd size)
-	#already wrote
-	sub size x_data.size
-	add mem x_data.size
-
-	call f_write(x_data.f,mem,size)
-	add x_data.size size
-end
-function debug_x(sd mem,sd nr)
-	if x_data.f!=(NULL)
-		mult nr (action_code_values_unit)
-		call debug_x_base(mem,nr)
-
-		call fseek(x_data.f,debug_x_pointers.mark,(SEEK_SET))
-		call fwrite(debug_x_pointers.start,debug_x_pointers.size,1,x_data.f)
-		call fseek(x_data.f,0,(SEEK_END))
-	end
-end
-
-function debug_x_preexpand(sv p_codepointer)
-	sv codepointer;set codepointer p_codepointer#
-	sd value;set value codepointer#
-	if x_data.f!=(NULL)
-		if value!=(no_pointer)
-			sd values;set values action_code_values()
-			sub codepointer values
-			call debug_x_base(values,codepointer)
-			incst x_data.size  ##the string will be expanded and written
-		end
-	end
-	incst p_codepointer#
-	return value
-end
-function debug_x_expand(sd values)
-	if x_data.f!=(NULL)
-		sd size;set size action_code_get()
-		sub size values
-		call f_write(x_data.f,values,size)
-	end
-end
-
-import "action_code_set" action_code_set
-import "action_code_take_pointer" action_code_take_pointer
-import "action_code_set_pointer" action_code_set_pointer
-function forin(sd pointer)
-	#getvar/member/enumerate is not overlapping for_three
-	if for_in.flag!=(flags_forin1)
-		#ActionEnumerate2 will use an object
-		call action_code_take_pointer(pointer)
-	else
-		#enum can take ActionEnumerate(x.x[z]), x.x ... is a pattern that ActionEnumerate will recognize
-		call action_code_set((ActionEnumerate))
-		call action_code_set_pointer(pointer)
-	end
 end

@@ -53,7 +53,7 @@ function swf_sprite_frames_pointer(sd spriteid)
 end
 
 function frames_as_shows(datax flag)
-	and flag (flags_framesAsShows)
+	and flag (flag_framesAsShows)
 end
 
 import "mem_free" mem_free

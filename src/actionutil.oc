@@ -208,8 +208,6 @@ import "action_code_get_pointer" action_code_get_pointer
 
 aftercallimport ebool
 
-import "action_base" action_base
-
 import "swf_actionblock_add" swf_actionblock_add
 import "actionrecordheader" actionrecordheader
 import "actionpool_value" actionpool_value
@@ -435,7 +433,9 @@ function pool_wr(sd id)
     call swf_mem_add(poolmem,poolsize)
 endfunction
 
-#format
+#format and alt
+
+import "action_base" action_base
 
 function action_format(sv args)
     sd args_nr=2
