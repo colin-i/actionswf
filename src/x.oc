@@ -4,12 +4,16 @@ format elfobj64
 include "../include/prog.h"
 
 import "f_close" f_close
+import "mem_free" mem_free
 
 function x_data()
 	value f=NULL
 	datax size#1
+	value mem=NULL
 	if f!=(NULL)
 		call f_close(#f)
+	elseif mem!=(NULL)
+		call mem_free(#mem)
 	end
 end
 
@@ -29,21 +33,48 @@ importx "fwrite" fwrite
 importx "strlen" strlen
 importx "sprintf" sprintf
 importx "fseek" fseek
+importx "fread" fread
+importx "fclose" fclose
 
 
 aftercallimport ebool
+
+
+import "action__code_row" action__code_row
+
+#is not x or x?
+function actionx()
+	vdatax pointer#1
+	vstrx base#1
+	if x_data.mem!=(NULL)
+		set base pointer#v  ;#size of escaped block that was at parse + pad if debug_x_pad flag
+		incst pointer       ##here at parse was the escaped mem
+		add pointer base    ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		incst base
+		while pointer#!=(math_end)
+			set pointer action__code_row(pointer)
+		endwhile
+		add pointer (DWORD)
+		return (TRUE)
+	end
+	return (FALSE)
+end
+
 
 import "error" error
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
 import "f_tell" f_tell
 import "f_write" f_write
+import "f_tell_errors" f_tell_errors
+import "memalloc_errors" memalloc_errors
 
-function x_init(datax flag,sd path)
+function x_init(sd flags,sd path)
 	if x_data.f!=(NULL)
 		call error("swf started, x not closed")
 	end
-	#set flag flags
+	datax flag#1
+	set flag flags  ##log is on current x, here is another x, no parse, no log
 	and flag (flags_x)
 	if flag!=0
 		sd s;setcall s strlen(path)
@@ -52,18 +83,24 @@ function x_init(datax flag,sd path)
 		sd b;setcall b memalloc(a)
 		call sprintf(b,"%s.x",path)
 
-		#sd x=flag_x
-		#and x flag
-		#if x=0 #save
+		sd x=flag_x
+		and x flag
+		if x=0 #save
 			set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
 			and flag (debug_x_pad)
-		#else #restore
-			#set x_data.f f_open_mem(b,"rb")
-			#and log is on current x, here is another x, no log, no parse
-			#and flags (~debug_log)
-		#end
+		else #restore
+			sd file;set file f_open_mem(b,"rb")
+			call fseek(file,0,(SEEK_END))
+			set x_data.size f_tell_errors(file)
+			call fseek(file,0,(SEEK_SET))
+			set x_data.mem memalloc_errors(x_data.size,file)
+			call fread(x_data.mem,x_data.size,1,file)
+			call fclose(file)
+			set actionx.pointer x_data.mem
+			and flags (~debug_log)
+		end
 	end
-	#return flags
+	return flags
 end
 
 function debug_x_pointers(valuex start,valuex size)

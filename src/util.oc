@@ -297,17 +297,13 @@ function freelater()
     call file_resources_free()
 endfunction
 
+importx "malloc" malloc
+importx "fclose" fclose
+
 import "action_error" action_error
-
 import "freereset" freereset   #..x with no args
-
 import "action_debug_free" action_debug_free
 import "file_get_content__resources_free" file_get_content__resources_free
-
-
-
-
-
 
 
 
@@ -315,11 +311,6 @@ function erbool()
     aftercall ebool
     return #ebool
 endfunction
-
-
-
-
-
 
 
 
@@ -335,7 +326,6 @@ endfunction
 
 #
 function memrealloc(sd mem,sd size)
-#unele fisiere pot da eroare de la realocare; fara functia asta aftercall poate fi degeaba
     sd ptr
     setcall ptr realloc(mem,size)
     if ptr=(NULL)
@@ -347,6 +337,15 @@ function memalloc(sd size)
     sd mem
     setcall mem memrealloc(0,size)
     return mem
+endfunction
+function memalloc_errors(sd size,sd file)
+	sd mem
+	set mem malloc(size)
+	if mem!=(NULL)
+		return mem
+	end
+	call fclose(file)
+	return (NULL)
 endfunction
 
 #inits

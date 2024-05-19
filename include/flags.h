@@ -8,6 +8,6 @@ const debug_x_pad=0x10
 
 const flag_forin1=0x20
 const flag_framesAsShows=0x40
-#const flag_x=0x80
+const flag_x=0x80
 
-const flags_x=debug_x|debug_x_pad ;#|flag_x
+const flags_x=debug_x|debug_x_pad|flag_x

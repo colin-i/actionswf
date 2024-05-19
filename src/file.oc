@@ -174,7 +174,16 @@ endfunction
 function f_tell(sd f)
 	sd r;set r ftell(f)
 	if r=-1
-		call error("ftell error")
+		vstr er="ftell error"
+		call error(er)
 	end
 	return r
+endfunction
+function f_tell_errors(sd f)
+	sd r;set r ftell(f)
+	if r!=-1
+		return r
+	end
+	call fclose(f)
+	call error(f_tell.er)
 endfunction
