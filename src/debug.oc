@@ -212,6 +212,7 @@ function debug_action_init(ss ac)
 
 		add row of#
 		sv end;setcall end debug_end()   #at third iteration
+		decst row   ##must be last entry not after
 		set end# row
 
 		set debug_actions.size 0
