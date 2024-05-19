@@ -48,6 +48,8 @@ import "mem_free" mem_free
 import "f_close" f_close
 
 function debug_data()
+	import "x_data" x_data
+	call x_data()
 	sv of%p_offsets
 	if of#!=(NULL)
 		call mem_free(of)
@@ -62,8 +64,6 @@ function debug_data()
 	endif
 	import "alt_free" alt_free
 	call alt_free()
-	import "x_data" x_data
-	call x_data()
 endfunction
 
 function debug_phase_init(ss pointer)
