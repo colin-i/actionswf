@@ -60,7 +60,11 @@ import "action__code_row" action__code_row
 #is not x or x?
 function actionx()
 	vdatax pointer#1
+	valuex end#1
 	if x_data.mem!=(NULL)
+		if end<=^pointer
+			call error("error at x") #log, oaalternative, alt|debug_x, flag_x . and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
+		end
 		sd size
 		set size pointer#v         ;#size of escaped block that was at parse + pad if debug_x_pad flag
 		incst pointer              ##here at parse was the escaped mem
@@ -106,12 +110,13 @@ function x_init(sd flags,sd path)
 		else #restore
 			sd file;set file f_open_mem(b,"rb")
 			call fseek(file,0,(SEEK_END))
-			set x_data.size f_tell_errors(file)
+			set actionx.end f_tell_errors(file)
 			call fseek(file,0,(SEEK_SET))
-			set x_data.mem memalloc_errors(x_data.size,file)
-			call fread(x_data.mem,x_data.size,1,file)
+			set x_data.mem memalloc_errors(actionx.end,file)
+			call fread(x_data.mem,actionx.end,1,file)
 			call fclose(file)
 			set actionx.pointer x_data.mem
+			add actionx.end actionx.pointer
 			and flags (~debug_log)
 		end
 	end
