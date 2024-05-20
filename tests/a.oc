@@ -5,9 +5,13 @@ importx "_exit" exit
 
 einclude "../dev/import.h"
 
-entryraw main()
+entryraw main(sd argc)
 
-call swf_new_ex("a.swf",0x80,0x80,0x001100,2,(debug_log|debug_x_pad))
+sd f=debug_log|debug_x_pad
+if argc=2
+	or f (flag_x)
+end
+call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 
 call action("
 /*
