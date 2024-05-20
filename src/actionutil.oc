@@ -204,6 +204,8 @@ import "swf_actionblock" swf_actionblock
 import "file_get_content__resources_free" file_get_content__resources_free
 
 import "action_code_get_pointer" action_code_get_pointer
+import "action_code_values_index" action_code_values_index
+import "action_code_get" action_code_get
 
 
 aftercallimport ebool
@@ -306,23 +308,43 @@ endfunction
 
 import "action_code_right_util" action_code_right_util
 #codepointer
-function action_caller(ss member,ss name,sd args_pointer)
-    sd nrargs=0
-    while args_pointer#!=(args_end)
-        setcall args_pointer action_code_right_util(args_pointer)
-        inc nrargs
-    endwhile
-    add args_pointer (DWORD)
-    call action_push((ap_Integer),nrargs,-1)
-    #
-    if member!=0
-	#call action_member_write(member)
-	import "forward_values_expand" forward_values_expand
-	call forward_values_expand(action_member_write_tool,member)
-    endif
-    call action_push((ap_Constant8),name,-1)
-    return args_pointer
+function action_caller(ss member,sv pfname,sd codepointer)
+	set codepointer action_caller_right(pfname,codepointer)
+
+	import "debug_x_preexpand_inter" debug_x_preexpand_inter
+	call debug_x_preexpand_inter(codepointer)
+	if member!=0
+		sd currentnr
+		sd p_currentnr
+		setcall p_currentnr action_code_values_index()
+		set currentnr p_currentnr#
+		sv values
+		setcall values action_code_get()
+
+		call action_code_member(member)
+		call action_member_loop_right(values)
+
+		import "debug_x_expand" debug_x_expand
+		call debug_x_expand(values)
+
+		set p_currentnr# currentnr
+	else
+		call debug_x_expand((NULL))
+	end
+	return codepointer
 endfunction
+#codepointer
+function action_caller_right(sv pfname,sd codepointer)
+	set pfname# action_code_get_pointer(#codepointer)
+	sd nrargs=0
+	while codepointer#!=(args_end)
+		setcall codepointer action_code_right_util(codepointer)
+		inc nrargs
+	endwhile
+	add codepointer (DWORD)
+	call action_push((ap_Integer),nrargs,-1)
+	return codepointer
+end
 
 #member
 
@@ -397,10 +419,6 @@ import "action_code_member" action_code_member
 #    call memcpy(code,member,len)
 #    call forward_values_expand(action_member_write_tool,code)
 #endfunction
-function action_member_write_tool(sd values,ss names)
-    call action_code_member(names)
-    call action_member_loop_right(values)
-endfunction
 
 #action
 

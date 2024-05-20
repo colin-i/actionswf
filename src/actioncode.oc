@@ -149,10 +149,8 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 endfunction
 
 function action_code_get_pointer(sv p_codepointer)
-	sv p;set p p_codepointer#
-	sd a;set a p#
-	import "debug_x_pointer" debug_x_pointer
-	call debug_x_pointer(a,p)
+	import "x_pointer" x_pointer
+	sd a;set a x_pointer(p_codepointer#)
 	incst p_codepointer#  #to pass the pointer
 	return a
 end
@@ -196,20 +194,6 @@ function action_code_set_ex(sd value,sd size)
 		set pointer#v^ value
 	endelse
 	set nr# x
-endfunction
-function forward_values_expand(sv forward,sd data)
-    sd currentnr
-    sd p_currentnr
-    setcall p_currentnr action_code_values_index()
-    set currentnr p_currentnr#
-    sv values
-    setcall values action_code_get()
-    #
-    call forward(values,data)
-	import "debug_x_expand" debug_x_expand
-	call debug_x_expand(values)
-    #
-    set p_currentnr# currentnr
 endfunction
 
 
@@ -600,9 +584,8 @@ function action_code_write_function_call(sv codepointer,sd pwant_return)
         return pointer
     endif
     sd member
-    set member codepointer#
-    setcall codepointer action_code_new_or_call(codepointer)
-    if member=0
+    setcall codepointer action_code_new_or_call(codepointer,#member)
+    if member=(no_pointer)
         call action_one((ActionCallFunction))
     else
         call action_one((ActionCallMethod))
@@ -696,14 +679,19 @@ function action_code_write_builtin_set(sd codepointer,sd pwant_return)
 	return codepointer
 endfunction
 #codepointer
-function action_code_new_or_call(sv codepointer)
-    sd member
-	import "debug_x_preexpand" debug_x_preexpand
-	set member debug_x_preexpand(#codepointer)
-	sd fname; set fname action_code_get_pointer(#codepointer)
-    import "action_caller" action_caller
-    setcall codepointer action_caller(member,fname,codepointer)
-    return codepointer
+function action_code_new_or_call(sv codepointer,sv pmember)
+	sd fname
+	sd mathpointer;set mathpointer codepointer
+	import "x_call" x_call
+	set codepointer x_call(pmember,#fname,codepointer)
+	if codepointer=mathpointer
+		import "debug_x_preexpand" debug_x_preexpand
+		set pmember# debug_x_preexpand(#codepointer)
+		import "action_caller" action_caller
+		setcall codepointer action_caller(pmember#,#fname,codepointer)
+	end
+	call action_push((ap_Constant8),fname,-1)
+	return codepointer
 endfunction
 #codepointer
 function action_code_right(sd codepointer)
@@ -720,9 +708,8 @@ function action_code_right_util(sd codepointer)
     if codepointer#=(new_action)
         add codepointer (DWORD)
         sd member
-        set member codepointer#v^
-        setcall codepointer action_code_new_or_call(codepointer)
-        if member=0
+        setcall codepointer action_code_new_or_call(codepointer,#member)
+        if member=(no_pointer)
             call action_one((ActionNewObject))
         else
             call action_one((ActionNewMethod))

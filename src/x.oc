@@ -17,13 +17,19 @@ function x_data()
 	end
 end
 
-function debug_x_pointer(sd value,sv pointer)
+function x_pointer(sv pointer)
+	sd value
+	set value pointer#
 	if x_data.f!=(NULL)
 		import "action_debug" action_debug
-		sub value action_debug((action_debug_get_mem))
-		inc value  ##only to not be comparable with (no_pointer)
-		set pointer# value
+		sub pointer# action_debug((action_debug_get_mem))
+		inc pointer#  ##only to not be comparable with (no_pointer)
+	elseif x_data.mem!=(NULL) #flag_x
+		vstrx base#1
+		add value base ##reverse
+		dec value      ##same
 	end
+	return value
 end
 
 import "action_code_values" action_code_values
@@ -45,12 +51,12 @@ import "action__code_row" action__code_row
 #is not x or x?
 function actionx()
 	vdatax pointer#1
-	vstrx base#1
 	if x_data.mem!=(NULL)
-		set base pointer#v  ;#size of escaped block that was at parse + pad if debug_x_pad flag
-		incst pointer       ##here at parse was the escaped mem
-		add pointer base    ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
-		incst base
+		sd size
+		set size pointer#v         ;#size of escaped block that was at parse + pad if debug_x_pad flag
+		incst pointer              ##here at parse was the escaped mem
+		set x_pointer.base pointer ##for x_pointer function
+		add pointer size           ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
 		while pointer#!=(math_end)
 			set pointer action__code_row(pointer)
 		endwhile
@@ -158,20 +164,46 @@ function debug_x_preexpand(sv p_codepointer)
 	sv codepointer;set codepointer p_codepointer#
 	sd value;set value codepointer#
 	if x_data.f!=(NULL)
-		if value!=(no_pointer)
-			sd values;set values action_code_values()
-			sub codepointer values
-			call debug_x_base(values,codepointer)
-			incst x_data.size  ##the string will be expanded and written
-		end
+		sd values;set values action_code_values()
+		sub codepointer values
+		call debug_x_base(values,codepointer)
+		incst x_data.size  ##will skip unexpanded member string at next write
 	end
 	incst p_codepointer#
 	return value
 end
+function debug_x_preexpand_inter(sd codepointer)
+	if x_data.f!=(NULL)
+		sd values;set values action_code_values()
+		sub codepointer values
+		call debug_x_base(values,codepointer)
+	end
+end
 function debug_x_expand(sd values)
 	if x_data.f!=(NULL)
-		sd size;set size action_code_get()
-		sub size values
-		call f_write(x_data.f,values,size)
+		if values!=(NULL)
+			sd size;set size action_code_get()
+			sub size values
+			call f_write(x_data.f,values,size)
+		else
+			value n=NULL
+			call f_write(x_data.f,#n,:)
+		end
 	end
+end
+
+#codepointer
+function x_call(sv pmember,sv pfname,sv codepointer)
+	if x_data.mem!=(NULL)
+		import "action_caller_right" action_caller_right
+		import "action_member_loop_right" action_member_loop_right
+		set codepointer action_caller_right(pfname,codepointer)
+		set pmember# codepointer#
+		if pmember#=(no_pointer)
+			incst codepointer ##to pass the pointer
+		else
+			set codepointer action_member_loop_right(codepointer)
+		end
+	end
+	return codepointer
 end
