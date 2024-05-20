@@ -154,6 +154,13 @@ function action_code_get_pointer(sv p_codepointer)
 	incst p_codepointer#  #to pass the pointer
 	return a
 end
+function action_code_get_pointer_touchless(sv p_codepointer)
+	import "x_pointer_touchless" x_pointer_touchless
+	sd a;set a x_pointer_touchless(p_codepointer#)
+	incst p_codepointer#  #to pass the pointer
+	return a
+end
+
 
 aftercallimport ebool
 
@@ -868,12 +875,13 @@ function action_deffunction(sv codepointer,sv debug_related)
     sd NumParams=0
     sv args
     set args codepointer
-    while codepointer#!=(no_pointer)
-        addcall fn_size strlen(codepointer#)
-        inc fn_size
-        inc NumParams
-        add codepointer :  #to pass the pointer
-    endwhile
+	sd arg
+	while codepointer#!=(no_pointer)  #first time get for ACTIONRECORDHEADER.Length and NumParams
+		set arg action_code_get_pointer_touchless(#codepointer)
+		addcall fn_size strlen(arg)
+		inc fn_size
+		inc NumParams
+	endwhile
     add codepointer :  #to pass the pointer
     #
     call actionrecordheader((ActionDefineFunction),fn_size)
@@ -881,12 +889,12 @@ function action_deffunction(sv codepointer,sv debug_related)
     call swf_actionblock_add(#NumParams,(NumParams_size))
     #
     sd wr_size
-    while args#!=(no_pointer)
-        setcall wr_size strlen(args#)
-        inc wr_size
-	sd arg;set arg action_code_get_pointer(#args)
-        call swf_actionblock_add(arg,wr_size)
-     endwhile
+	while args#!=(no_pointer)  #second time write to swf
+		set arg action_code_get_pointer(#args)
+		setcall wr_size strlen(arg)
+		inc wr_size
+		call swf_actionblock_add(arg,wr_size)
+	endwhile
 	#get reg, not depending on brace blocks because } is closed in the loop there, for debug
 	call debug_definefunction(debug_related)
 	#

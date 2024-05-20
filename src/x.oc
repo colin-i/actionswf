@@ -31,6 +31,15 @@ function x_pointer(sv pointer)
 	end
 	return value
 end
+function x_pointer_touchless(sv pointer)
+	sd value
+	set value pointer#
+	if x_data.mem!=(NULL)
+		add value x_pointer.base
+		dec value
+	end
+	return value
+end
 
 import "action_code_values" action_code_values
 import "action_code_get" action_code_get
