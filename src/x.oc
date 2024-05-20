@@ -89,8 +89,11 @@ import "f_tell_errors" f_tell_errors
 import "memalloc_errors" memalloc_errors
 
 function x_init(sd flags,sd path)
+	vstr err="swf started, x not closed"
 	if x_data.f!=(NULL)
-		call error("swf started, x not closed")
+		call error(err)
+	elseif x_data.mem!=(NULL)
+		call error(err)
 	end
 	datax flag#1
 	set flag flags  ##log is on current x, here is another x, no parse, no log
