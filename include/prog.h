@@ -120,4 +120,8 @@ const action_debug_get=1
 const action_debug_get_mem=2
 
 const actionjump_contentsize=2
-const smallbackjump=-2
+const smallbackjump=-actionjump_contentsize
+
+const actionrecordheader_tag_size=1
+const actionrecordheader_length_size=2
+const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size

@@ -491,7 +491,7 @@ function action_code_break()
     setcall memblock brace_blocks_get_memblock()
     setcall c_block# block_get_size(memblock);sub c_block# (WORD)
 	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
-	if p_type#=(for_marker);call write_jump((-2-3-forIn_ifBreak_size));endif
+	if p_type#=(for_marker);call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size));endif
 	#
     call brace_blocks_counter_inc()
 endfunction
@@ -522,7 +522,7 @@ function prepare_space_for_break()
     sd copy_cursor;set copy_cursor c_blocks
     while counter>0
         sub c_blocks (DWORD)
-        if c_blocks#=0
+        if c_blocks#=(top_flag)
             add c_blocks (DWORD)
             sd cursor;set cursor copy_cursor;sub cursor (DWORD)
             while copy_cursor!=c_blocks
@@ -551,7 +551,7 @@ function action_code_continue()
     sd c;setcall c brace_blocks_counter();sd counter;set counter c#
     while counter>0
         sub c_blocks (DWORD)
-        if c_blocks#=0
+        if c_blocks#=(top_flag)
             #the loop type and to the offset to jump from here
             sub c_blocks (2*DWORD)
             sd off_to_jump;set off_to_jump c_blocks#

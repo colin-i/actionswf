@@ -35,7 +35,7 @@ const ifElse_start=0xfd0DD0d0         #RG
 #const for_in=
 
 const no_flag=0
-const top_flag=0
+const top_flag=0x10<<24
 const skip_flag=0x20<<24
 const else_flag=0x40<<24               #1
 const consecutive_flag=0x80<<24

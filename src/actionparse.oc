@@ -1151,7 +1151,7 @@ function brace_blocks_remove_write_loopIfJumps_at_current_offset()
         sd ifoffset
         setcall ifoffset brace_blocks_remove_write_offset()
         if ifoffset=(top_flag)
-            #also remove the type of loop
+            #also remove the type of while loop
             call brace_blocks_counter_dec()
             ret
         endif
