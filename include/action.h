@@ -34,9 +34,11 @@ const inter_for=0xfc0CC0c0            #FR
 const ifElse_start=0xfd0DD0d0         #RG
 #const for_in=
 
-const else_flag=0x40<<24                   #1
+const no_flag=0
+const top_flag=0
+const skip_flag=0x20<<24
+const else_flag=0x40<<24               #1
 const consecutive_flag=0x80<<24
-#const all_flags=consecutive_flag|else_flag
 const brace_blocks_function=0x7fFFffFF
 
 const normal_marker=0x01010202

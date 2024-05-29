@@ -118,3 +118,6 @@ const recordheader_upperbits=recordheader_long_mark+1
 const action_debug_free=0
 const action_debug_get=1
 const action_debug_get_mem=2
+
+const actionjump_contentsize=2
+const smallbackjump=-2

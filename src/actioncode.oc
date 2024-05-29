@@ -214,7 +214,9 @@ import "action_one" action_one
 import "action_member_loop_left" action_member_loop_left
 import "action_member_loop_right" action_member_loop_right
 import "brace_blocks_add_write" brace_blocks_add_write
+import "brace_blocks_add_write_offset" brace_blocks_add_write_offset
 import "brace_blocks_remove_write" brace_blocks_remove_write
+import "brace_blocks_remove_write_ex" brace_blocks_remove_write_ex
 #position
 function action__code_row(sd codepointer)
 	charx rcb#1;set rcb (FALSE)   #at definefunction is another collision with this but is not a problem now
@@ -252,7 +254,12 @@ function action__code_row_ex(sd codepointer)
 	if attrib=(block_end)
         add codepointer (DWORD)
         if codepointer#=(else_flag)
-            call action_code_else_add()
+			ss p;set p ret_cont_break()
+			if p#=(FALSE)
+				call action_code_else_add()
+			else #dead jump after return/continue/break
+				call action_code_else_resolve((skip_flag)) #and add the condition because there is number_of_unclosed after block_else_end
+			end
             add codepointer (DWORD)
         else
             call brace_blocks_remove_write()
@@ -465,7 +472,7 @@ function add_while_top_off(sd typeOfLoop)
     setcall block cond_blocks()
     set block# typeOfLoop
     call brace_blocks_counter_inc();add block (DWORD)
-    set block# 0
+    set block# (top_flag)
     call brace_blocks_counter_inc()
 endfunction
 const forIn_ifBreak_size=3+1+1+3+2
@@ -483,9 +490,9 @@ function action_code_break()
     sd memblock
     setcall memblock brace_blocks_get_memblock()
     setcall c_block# block_get_size(memblock);sub c_block# (WORD)
-    #
-    if p_type#=(for_marker);call write_jump((-2-3-forIn_ifBreak_size));endif
-    #
+	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
+	if p_type#=(for_marker);call write_jump((-2-3-forIn_ifBreak_size));endif
+	#
     call brace_blocks_counter_inc()
 endfunction
 function remove_forIn_stack()
@@ -505,8 +512,8 @@ function close_scope_forIn_statements()
     endwhile
 endfunction
 function write_jump(sd size)
-    call actionrecordheader((ActionJump),2)
-    call swf_actionblock_add(#size,2)
+    call actionrecordheader((ActionJump),(actionjump_contentsize))
+    call swf_actionblock_add(#size,(actionjump_contentsize))
 endfunction
 #cond_blocks top pointer
 function prepare_space_for_break()
@@ -560,23 +567,26 @@ endfunction
 
 function action_code_else_add()
     #write dummy jump
-    call actionrecordheader((ActionJump),2)
+    call actionrecordheader((ActionJump),(actionjump_contentsize))
     sd dummyjump
-    call swf_actionblock_add(#dummyjump,2)
+    call swf_actionblock_add(#dummyjump,(actionjump_contentsize))
+	call action_code_else_resolve((no_flag))
+end
+function action_code_else_resolve(sd flag)
     #end previous if
     call brace_blocks_remove_write()
     #add current offset
-    call brace_blocks_add_write()
+    call brace_blocks_add_write_offset((smallbackjump),flag)
 endfunction
 function action_code_conditions_end(sd codepointer)
     add codepointer (DWORD)
     sd number_of_unclosed
     set number_of_unclosed codepointer#
     add codepointer (DWORD)
-    while number_of_unclosed>0
-        call brace_blocks_remove_write()
-        dec number_of_unclosed
-    endwhile
+	while number_of_unclosed>^0
+		call brace_blocks_remove_write_ex()
+		dec number_of_unclosed
+	endwhile
     return codepointer
 endfunction
 

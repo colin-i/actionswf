@@ -1052,25 +1052,35 @@ endfunction
 #
 import "block_get_size" block_get_size
 function brace_blocks_add_write()
-    call brace_blocks_add_write_offset(-2)
+    call brace_blocks_add_write_offset((smallbackjump),(no_flag))
 endfunction
 function brace_blocks_add_write_current()
-    call brace_blocks_add_write_offset(0)
+    call brace_blocks_add_write_offset(0,(no_flag))
 endfunction
-function brace_blocks_add_write_offset(sd offset)
+function brace_blocks_add_write_offset(sd offset,sd flag)
     sd block
     setcall block cond_blocks()
     sd memblock
     setcall memblock brace_blocks_get_memblock()
     setcall block# block_get_size(memblock)
     add block# offset
+	or block# flag
     call brace_blocks_counter_inc()
 endfunction
-    #
+#
 function brace_blocks_remove_write()
     sd offset
     setcall offset brace_blocks_remove_write_offset()
     call write_forward_offset(offset)
+endfunction
+function brace_blocks_remove_write_ex()
+	sd offset
+	setcall offset brace_blocks_remove_write_offset()
+	sd test=skip_flag
+	and test offset
+	if test=0
+		call write_forward_offset(offset)
+	end
 endfunction
 function write_forward_offset(sd offset)
     sd mem
@@ -1083,7 +1093,7 @@ function write_forward_offset(sd offset)
     add offset (WORD)
     sub size offset
     #
-    if size>0x7fFF
+    if size>^0x7fFF
         call error("offset>(signed word size) error")
     endif
     #
@@ -1102,16 +1112,15 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		call add_dummy_jump()
 	end
 	#
-	call brace_blocks_remove_write_loopIfJumps_at_current_offset()
+	call brace_blocks_remove_write_loopIfJumps_at_current_offset() #this will close breaks
 	#
 	sd jumpoffset
-	setcall jumpoffset brace_blocks_remove_write_offset()
+	setcall jumpoffset brace_blocks_remove_write_offset()  #and the top while,fors
 	if ret_cont_break.bool=(FALSE)  #skip dead code
-		call resolve_dummy_jump(jumpoffset)
+		call resolve_dummy_jump(jumpoffset)  #jump back
 	end
 endfunction
 function add_dummy_jump()
-const actionjump_contentsize=2
     import "actionrecordheader" actionrecordheader
     call actionrecordheader((ActionJump),(actionjump_contentsize))
     import "swf_actionblock_add" swf_actionblock_add
@@ -1141,7 +1150,7 @@ function brace_blocks_remove_write_loopIfJumps_at_current_offset()
     whiletrue
         sd ifoffset
         setcall ifoffset brace_blocks_remove_write_offset()
-        if ifoffset=0
+        if ifoffset=(top_flag)
             #also remove the type of loop
             call brace_blocks_counter_dec()
             ret
