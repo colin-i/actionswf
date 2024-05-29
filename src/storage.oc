@@ -344,7 +344,7 @@ function actionrecordheader(sd tag,sd size)
     char length#2
     set t tag
     call stack_to_word_arg(size,#length)
-    call swf_actionblock_add(#t,3)
+	call swf_actionblock_add(#t,1+2)
 	import "debug_phase_code_add" debug_phase_code_add
 	call debug_phase_code_add((TRUE),#length)
 endfunction

@@ -96,10 +96,19 @@ function for_in(datax flag)
 	and flag (flag_forin1)
 end
 
+function ret_cont_break()
+	charx bool#1
+	return #bool
+end
+
+function action_data()
+	call brace_blocks_counter_init()
+	set ret_cont_break.bool (FALSE)
+end
+
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
-
-
+import "block_get_mem_size" block_get_mem_size
 
 
 
@@ -1058,7 +1067,6 @@ function brace_blocks_add_write_offset(sd offset)
     call brace_blocks_counter_inc()
 endfunction
     #
-import "block_get_mem_size" block_get_mem_size
 function brace_blocks_remove_write()
     sd offset
     setcall offset brace_blocks_remove_write_offset()
@@ -1089,24 +1097,28 @@ function brace_blocks_remove_write_offset()
     setcall block cond_blocks()
     return block#
 endfunction
-
-function brace_blocks_remove_write_jump()
-    call add_dummy_jump()
-    #
-    call brace_blocks_remove_write_loopIfJumps_at_current_offset()
-    #
-    sd jumpoffset
-    setcall jumpoffset brace_blocks_remove_write_offset()
-    call resolve_dummy_jump(jumpoffset)
+function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
+	if ret_cont_break.bool=(FALSE)  #skip dead code
+		call add_dummy_jump()
+	end
+	#
+	call brace_blocks_remove_write_loopIfJumps_at_current_offset()
+	#
+	sd jumpoffset
+	setcall jumpoffset brace_blocks_remove_write_offset()
+	if ret_cont_break.bool=(FALSE)  #skip dead code
+		call resolve_dummy_jump(jumpoffset)
+	end
 endfunction
 function add_dummy_jump()
+const actionjump_contentsize=2
     import "actionrecordheader" actionrecordheader
-    call actionrecordheader((ActionJump),2)
+    call actionrecordheader((ActionJump),(actionjump_contentsize))
     import "swf_actionblock_add" swf_actionblock_add
     sd dummy_size=0
-    call swf_actionblock_add(#dummy_size,2)
+    call swf_actionblock_add(#dummy_size,(actionjump_contentsize))
 endfunction
-function resolve_dummy_jump(sd jumpoffset)
+function resolve_dummy_jump(sd jumpoffset)  #also at continue
     sd memblock
     ss mem
     sd size
@@ -1115,10 +1127,11 @@ function resolve_dummy_jump(sd jumpoffset)
     add mem size;sub mem (WORD)
     #
     sub size jumpoffset
-    mult size -1
-    if size<0xFFff8000
-        call error("offset>(signed word size) error (at jump back)")
-    endif
+	if size>=^0x8000
+		call error("offset>(signed word size) error (at jump back)")
+	end
+	mult size -1
+	#if size<=0xFFff8000   # 0x8000 or minus 1
     #
     set mem# size
     sd byte=0x0000ff00;and byte size;div byte 0x100

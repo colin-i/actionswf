@@ -3,7 +3,7 @@ Format ElfObj64
 include "../include/prog.h"
 
 import "action_debug" action_debug
-import "brace_blocks_counter_init" brace_blocks_counter_init
+import "action_data" action_data
 import "action_code_values" action_code_values
 import "action_code_values_index" action_code_values_index
 import "escape_action" escape_action
@@ -30,7 +30,7 @@ function action_base(ss ac)
 	sd nr
 	setcall nr action_code_values_index()
 	set nr# 0
-	call brace_blocks_counter_init()
+	call action_data()
 
 	import "actionx" actionx
 	sd x;set x actionx()

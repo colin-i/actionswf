@@ -161,6 +161,8 @@ function action_code_get_pointer_touchless(sv p_codepointer)
 	return a
 end
 
+import "ret_cont_break" ret_cont_break
+
 
 aftercallimport ebool
 
@@ -215,8 +217,14 @@ import "brace_blocks_add_write" brace_blocks_add_write
 import "brace_blocks_remove_write" brace_blocks_remove_write
 #position
 function action__code_row(sd codepointer)
+	charx rcb#1;set rcb (FALSE)   #at definefunction is another collision with this but is not a problem now
+
 	setcall codepointer action__code_row_ex(codepointer)
 	call debug_phase_code(codepointer)
+
+	ss p;set p ret_cont_break()
+	set p# rcb
+
 	return codepointer
 endfunction
 #position
@@ -238,6 +246,7 @@ function action__code_row_ex(sd codepointer)
         call close_scope_forIn_statements()
         setcall codepointer action_code_right_util(codepointer)
         call action_one((ActionReturn))
+		set action__code_row.rcb (TRUE)
         return codepointer
 	endif
 	if attrib=(block_end)
@@ -262,11 +271,15 @@ function action__code_row_ex(sd codepointer)
 	endif
 	if attrib=(break_flag)
         call action_code_break()
-        add codepointer (DWORD);return codepointer
+		add codepointer (DWORD)
+		set action__code_row.rcb (TRUE)
+		return codepointer
 	endif
 	if attrib=(continue_flag)
         call action_code_continue()
-        add codepointer (DWORD);return codepointer
+		add codepointer (DWORD)
+		set action__code_row.rcb (TRUE)
+		return codepointer
 	endif
 	if attrib=(else_flag)
 		call error("ELSE is not linked at this point")
