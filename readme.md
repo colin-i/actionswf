@@ -23,7 +23,7 @@ Compile with [O Compiler](https://github.com/colin-i/o)
 
 ## Info
 A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
-Games by this program at *https://www.kongregate.com/accounts/bitplayer/favorites?sort=gameplays*
+Games by this program at *https://www.kongregate.com/accounts/bitplayer/games?filter=favorites&sort=gameplays*
 
 [//]: # (https://www.kongregate.com/games/bitplayer)
 <!--- but with no sort --->
