@@ -112,7 +112,7 @@ import "block_get_psize" block_get_psize
 
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "action_code_set" action_code_set
 import "action_code_set_pointer" action_code_set_pointer

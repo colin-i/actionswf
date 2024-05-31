@@ -139,7 +139,7 @@ importx "fprintf" fprintf
 
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "memalloc" memalloc
 import "alt_init" alt_init

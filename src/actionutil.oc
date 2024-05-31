@@ -208,7 +208,7 @@ import "action_code_values_index" action_code_values_index
 import "action_code_get" action_code_get
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "swf_actionblock_add" swf_actionblock_add
 import "actionrecordheader" actionrecordheader

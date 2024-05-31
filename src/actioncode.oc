@@ -165,7 +165,7 @@ import "cond_blocks_at_index" cond_blocks_at_index
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "cond_blocks" cond_blocks
 import "debug_phase_code" debug_phase_code

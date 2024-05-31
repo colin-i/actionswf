@@ -310,23 +310,26 @@ import "freereset" freereset   #..x with no args
 import "action_debug_free" action_debug_free
 import "file_get_content__resources_free" file_get_content__resources_free
 
-
+function ebase(valuex bp)
+end
 
 function erbool()
-    aftercall ebool
-    return #ebool
+	#aftercall ebool #still needed at flashalizer at aftecall_get and _reset
+	char ebool=0
+	return #ebool
 endfunction
 
 
 
 function error(ss msg)
-    call string_nl_print(msg)
-    call action_error()
+	call string_nl_print(msg)
+	call action_error()
 
 	call freereset()
 	call freelater()
 
-    ss p;setcall p erbool();set p# 1
+	ss p;setcall p erbool();set p# 1
+	leave ebase.bp
 endfunction
 
 #

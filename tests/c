@@ -34,7 +34,14 @@ smart_diff () {
 	smart_diff .expected/a.swf a.swf
 	if [ $? != 0 ]; then
 		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
-		echo y \?; read -n1 -t $((60*60*24)) ans
+		echo y \? m \?; read -n1 -t $((60*60*24)) ans
+		if [ "${ans}" = "m" ]; then
+			swfdump -D .expected/a.swf > 1
+			swfdump -D a.swf > 2
+			diff 1 2
+			rm 1 2
+			echo y \?; read -n1 -t $((60*60*24)) ans
+		fi
 		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
 		base64 a.swf > .expected/a.swf.txt
 	fi

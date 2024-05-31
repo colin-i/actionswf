@@ -135,11 +135,7 @@ endfunction
 
 
 
-
-
-aftercallimport ebool
-
-
+#aftercallimport ebool
 
 #
 import "swf_mem_add" swf_mem_add

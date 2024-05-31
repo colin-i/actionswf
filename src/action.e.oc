@@ -8,7 +8,8 @@ import "swf_actionblock" swf_actionblock
 import "alt_action" alt_action
 import "file_get_content__resources_free" file_get_content__resources_free
 
-aftercallimport ebool
+import "ebase" ebase
+#aftercallimport ebool
 
 #this/an action
 
@@ -17,6 +18,7 @@ import "action_format" action_format
 import "debug_base" debug_base
 
 functionX action(ss ac)
+valuex bp#1;base bp;call ebase(bp)
 #ss ac       actionscript string to be parsed
 	sd alt_ac;set alt_ac alt_action(ac,0)
 	if alt_ac!=(NULL)  #can be two action() same DoAction
@@ -28,6 +30,7 @@ functionX action(ss ac)
 	end
 endfunction
 functionXx actionf(ss buffer,ss *format)
+base action.bp;call ebase(action.bp)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
@@ -48,11 +51,13 @@ endfunction
 import "action_sprite_base" action_sprite_base
 
 functionX action_sprite(sd sprite,ss actions)
+base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss actions   same as action
 	call action_sprite_base(sprite,actions,(TRUE))
 endfunction
 functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
+base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf

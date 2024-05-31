@@ -35,7 +35,7 @@ end
 
 importx "strlen" strlen
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "memalloc" memalloc
 import "error" error

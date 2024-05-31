@@ -112,11 +112,10 @@ import "action_size" action_size
 
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
-importx "swf_text" swf_text
-importx "swf_shape" swf_shape
-
+import "swf_shape_local" swf_shape_local
+import "swf_text_local" swf_text_local
 import "action_sprite_base" action_sprite_base
 
 
@@ -336,7 +335,7 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
         data *=0
     data *=-1
     sd id
-    setcall id swf_shape(width,height,struct)
+    setcall id swf_shape_local(width,height,struct)
     return id
 endfunction
 
@@ -350,7 +349,7 @@ function swf_text_initial_font_centered(sd width,sd height,ss text,sd font_id,sd
     sd e_struct
     setcall e_struct edittext_struct()
     sd text_id
-    setcall text_id swf_text(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),e_struct)
+    setcall text_id swf_text_local(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),e_struct)
     return text_id
 endfunction
 

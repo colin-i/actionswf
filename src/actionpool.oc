@@ -38,7 +38,7 @@ import "swf_mem" swf_mem
 
 
 
-aftercallimport ebool
+#aftercallimport ebool
 
 
 

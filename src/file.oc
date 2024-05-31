@@ -56,7 +56,7 @@ importx "ftell" ftell
 importx "fopen" fopen
 importx "free" free
 
-aftercallimport ebool
+#aftercallimport ebool
 
 import "error" error
 
