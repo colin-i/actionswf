@@ -68,14 +68,12 @@ function brace_blocks_counter_init()
     setcall c brace_blocks_counter()
     set c# 0
 endfunction
-
-function cond_blocks()
-    sd p_i
-    setcall p_i brace_blocks_counter()
-    sd blocks
-    setcall blocks cond_blocks_at_index(p_i#)
-    return blocks
+function brace_blocks_counter_inc()
+    sd c
+    setcall c brace_blocks_counter()
+    inc c#
 endfunction
+
 function cond_blocks_at_index(sd i)
     datax blocks_mem#brace_blocks_max
     sd blocks^blocks_mem
@@ -968,19 +966,20 @@ endfunction
 
 #{} blocks
 
-function brace_blocks_counter_inc()
+function cond_blocks()
     sd c
     setcall c brace_blocks_counter()
     if c#=(brace_blocks_max)
-    #was >=
         call error("too many blocks: {}")
     endif
-    inc c#
+    sd blocks
+    setcall blocks cond_blocks_at_index(c#)
+    return blocks
 endfunction
 function brace_blocks_counter_dec()
     sd c
     setcall c brace_blocks_counter()
-    if c#<=0
+    if c#=0
         call error("unexpected end block: }")
     endif
     dec c#
@@ -1027,7 +1026,7 @@ function brace_blocks_remove_parse()
     while consecutive=(consecutive_flag)
         call brace_blocks_counter_dec()
         #
-        setcall p_type cond_blocks()
+        setg p_type cond_blocks()
         setcall type type_consecutive(p_type#,#consecutive)
         if type!=(normal_marker)
             if type=(while_marker)
@@ -1105,30 +1104,62 @@ endfunction
 function brace_blocks_remove_write_offset()
     call brace_blocks_counter_dec()
     sd block
-    setcall block cond_blocks()
+    setg block cond_blocks()
     return block#
 endfunction
 function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
+	sd skip_jump=0
 	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
 		call add_dummy_jump()
-	end
-	#
-	call brace_blocks_remove_write_loopIfJumps_at_current_offset() #this will close breaks
-	#
-	sd type;set type brace_blocks_remove_write_offset()
-	sd jumpoffset
-	setcall jumpoffset brace_blocks_remove_write_offset()  #and the top while,fors
-	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
-		call resolve_dummy_jump(jumpoffset)  #jump back
-	elseif ret_cont_break.type=(ret_cont_break_break)
-		if type!=(forin_marker) #at forin the break jump is one asm above at that construction and is fast that
-		#while and for_three
-			sd memblock
-			set memblock brace_blocks_get_memblock()
-			set memblock block_get_psize(memblock)
-			sub memblock# (actionrecordheader_size+actionjump_contentsize) #this is a zero jump
+	elseif ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
+	#look to see if last jump is zero and if is not forin, that has a different break than for3/while
+		sd start;set start cond_blocks_at_index(0)
+		sd blocks;setg blocks cond_blocks()
+		while start!=blocks
+			sub blocks (DWORD)
+			if blocks#=(top_flag) #healty while/for
+				sub blocks (DWORD)
+				if blocks#!=(forin_marker)
+					set skip_jump (actionrecordheader_size+actionjump_contentsize)
+					sd memblock
+					set memblock brace_blocks_get_memblock()
+					set memblock block_get_psize(memblock)
+					sub memblock# skip_jump
+					break
+				end
+			end
 		end
 	end
+
+	setg blocks cond_blocks()
+	call brace_blocks_counter_dec() #with errors check
+	sub blocks (DWORD)
+	sd offset;set offset blocks#
+	whiletrue
+		call brace_blocks_counter_dec() #with errors check
+		sub blocks (DWORD)
+		if blocks#=(top_flag)
+			#here is last jump (loopjump or a moved break)
+			break
+		end
+		call write_forward_offset(offset)
+		set offset blocks#
+	end
+	#here the while was ok, last jump isn't set
+	#remove type,top offset
+	sd c
+	set c brace_blocks_counter()
+	sub blocks (2*DWORD)
+	sub c# 2
+
+	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
+		call resolve_dummy_jump(blocks#)  #jump back
+	elseif skip_jump!=0
+		ret
+	end
+
+	#resolve the skipped offset
+	call write_forward_offset(offset)
 endfunction
 function add_dummy_jump()
     import "actionrecordheader" actionrecordheader
@@ -1155,17 +1186,6 @@ function resolve_dummy_jump(sd jumpoffset)  #also at continue
     set mem# size
     sd byte=0x0000ff00;and byte size;div byte 0x100
     inc mem;set mem# byte
-endfunction
-function brace_blocks_remove_write_loopIfJumps_at_current_offset()
-    whiletrue
-        sd ifoffset
-        setcall ifoffset brace_blocks_remove_write_offset()
-        if ifoffset=(top_flag)
-            #call brace_blocks_counter_dec() #also remove the type of while loop? no, it is required outside
-            ret
-        endif
-        call write_forward_offset(ifoffset)
-    endwhile
 endfunction
 
 #function

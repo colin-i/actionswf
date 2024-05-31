@@ -44,24 +44,22 @@ endfunction
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
 
-import "cond_blocks" cond_blocks
 import "brace_blocks_counter" brace_blocks_counter
 
 function get_nr_of_forIn_statements()
-    sd block;setcall block cond_blocks()
-    sd counter;sd c;setcall c brace_blocks_counter();set counter c#
-    sd nr=0
-    while counter>0
-        dec counter
-        sub block (DWORD)
-	if block#=(brace_blocks_function)
-            return nr
-	endif
-	if block#=(forin_marker)
-            inc nr
-	endif
-    endwhile
-    return nr
+	sd start;set start cond_blocks_at_index(0)
+	sd block;setcall block cond_blocks()
+	sd nr=0
+	while start!=block
+		sub block (DWORD)
+		if block#=(brace_blocks_function)
+			return nr
+		endif
+		if block#=(forin_marker)
+			inc nr
+		endif
+	endwhile
+	return nr
 endfunction
 
 #name/null
@@ -162,10 +160,14 @@ function action_code_get_pointer_touchless(sv p_codepointer)
 end
 
 import "ret_cont_break" ret_cont_break
+import "brace_blocks_counter_inc" brace_blocks_counter_inc
+import "cond_blocks_at_index" cond_blocks_at_index
+import "brace_blocks_counter_dec" brace_blocks_counter_dec
 
 
 aftercallimport ebool
 
+import "cond_blocks" cond_blocks
 import "debug_phase_code" debug_phase_code
 import "debug_definefunction" debug_definefunction
 import "debug_concludefunction" debug_concludefunction
@@ -465,13 +467,13 @@ function write_ifjump_withNot()
     #write the jump offset
     call write_ifjump_addTo_braceBlocks()
 endfunction
-import "brace_blocks_counter_inc" brace_blocks_counter_inc
 function add_while_top_off(sd typeOfLoop)
     call brace_blocks_add_write_current()
     sd block
     setcall block cond_blocks()
     set block# typeOfLoop
-    call brace_blocks_counter_inc();add block (DWORD)
+    call brace_blocks_counter_inc()
+	set block cond_blocks() #also for the error check was: add block (DWORD)
     set block# (top_flag)
     call brace_blocks_counter_inc()
 endfunction
@@ -481,7 +483,7 @@ function action_code_break()
     sd p_type;set p_type c_block;sub p_type (2*DWORD)
     if p_type#=(while_marker)
         call write_jump(0)
-    else
+    else  #forin_marker
         call action_push((ap_Null),-1)
         call action_one((ActionEquals2))
         call write_ifjump()
@@ -517,10 +519,10 @@ function write_jump(sd size)
 endfunction
 #cond_blocks top pointer
 function prepare_space_for_break()  #here is moving if-elses and at breaks/loopoffset is not comparing but moving them bulk
-    sd c_blocks;setcall c_blocks cond_blocks()
-    sd c;setcall c brace_blocks_counter();sd counter;set counter c#
-    sd copy_cursor;set copy_cursor c_blocks
-    while counter>0
+	sd start;set start cond_blocks_at_index(0)
+	sd c_blocks;setcall c_blocks cond_blocks()
+	sd copy_cursor;set copy_cursor c_blocks
+	while start!=c_blocks
         sub c_blocks (DWORD)
         if c_blocks#=(top_flag)
             add c_blocks (DWORD)
@@ -532,8 +534,7 @@ function prepare_space_for_break()  #here is moving if-elses and at breaks/loopo
             endwhile
             return c_blocks
         endif
-        dec counter
-    endwhile
+	endwhile
     call error("it is not the right place for Break")
 endfunction
 function write_ifjump_addTo_braceBlocks()
@@ -547,9 +548,9 @@ function write_ifjump()
 endfunction
 
 function action_code_continue()
-    sd c_blocks;setcall c_blocks cond_blocks()
-    sd c;setcall c brace_blocks_counter();sd counter;set counter c#
-    while counter>0
+	sd start;set start cond_blocks_at_index(0)
+	sd c_blocks;setg c_blocks cond_blocks()
+	while start!=c_blocks
         sub c_blocks (DWORD)
         if c_blocks#=(top_flag)
             #the loop type and to the offset to jump from here
@@ -560,8 +561,7 @@ function action_code_continue()
             call resolve_dummy_jump(off_to_jump)
             ret
         endif
-        dec counter
-    endwhile
+	endwhile
     call error("Continue without a loop error")
 endfunction
 
@@ -876,7 +876,6 @@ function action_definefunction(sd codepointer)
         set index_current index_current#
     endwhile
     #close function marker for return and for..in case
-    import "brace_blocks_counter_dec" brace_blocks_counter_dec
     call brace_blocks_counter_dec()
 	#for debug log codeSize
 	call debug_concludefunction(#debug_related)
