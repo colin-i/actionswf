@@ -97,18 +97,20 @@ function for_in(datax flag)
 end
 
 function ret_cont_break()
-	charx bool#1
-	return #bool
+	charx type#1
+	return #type
 end
 
 function action_data()
 	call brace_blocks_counter_init()
-	set ret_cont_break.bool (FALSE)
+	set ret_cont_break.type (ret_cont_break_nothing)
 end
 
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
 import "block_get_mem_size" block_get_mem_size
+import "block_get_size" block_get_size
+import "block_get_psize" block_get_psize
 
 
 
@@ -206,7 +208,7 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         setcall pointer str_expression_at_start(ac,"for")
         if pointer=ac;return pointer;endif
         #
-        call action_code_set((for_marker))
+        call action_code_set((for))
         set p_flags# (while_marker)
         set p_for_detected# 1
         #
@@ -1050,7 +1052,6 @@ function brace_blocks_end()
     endif
 endfunction
 #
-import "block_get_size" block_get_size
 function brace_blocks_add_write()
     call brace_blocks_add_write_offset((smallbackjump),(no_flag))
 endfunction
@@ -1108,16 +1109,25 @@ function brace_blocks_remove_write_offset()
     return block#
 endfunction
 function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
-	if ret_cont_break.bool=(FALSE)  #skip dead code
+	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
 		call add_dummy_jump()
 	end
 	#
 	call brace_blocks_remove_write_loopIfJumps_at_current_offset() #this will close breaks
 	#
+	sd type;set type brace_blocks_remove_write_offset()
 	sd jumpoffset
 	setcall jumpoffset brace_blocks_remove_write_offset()  #and the top while,fors
-	if ret_cont_break.bool=(FALSE)  #skip dead code
+	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
 		call resolve_dummy_jump(jumpoffset)  #jump back
+	elseif ret_cont_break.type=(ret_cont_break_break)
+		if type!=(forin_marker) #at forin the break jump is one asm above at that construction and is fast that
+		#while and for_three
+			sd memblock
+			set memblock brace_blocks_get_memblock()
+			set memblock block_get_psize(memblock)
+			sub memblock# (actionrecordheader_size+actionjump_contentsize) #this is a zero jump
+		end
 	end
 endfunction
 function add_dummy_jump()
@@ -1151,8 +1161,7 @@ function brace_blocks_remove_write_loopIfJumps_at_current_offset()
         sd ifoffset
         setcall ifoffset brace_blocks_remove_write_offset()
         if ifoffset=(top_flag)
-            #also remove the type of while loop
-            call brace_blocks_counter_dec()
+            #call brace_blocks_counter_dec() #also remove the type of while loop? no, it is required outside
             ret
         endif
         call write_forward_offset(ifoffset)

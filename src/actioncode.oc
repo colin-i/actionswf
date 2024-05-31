@@ -57,7 +57,7 @@ function get_nr_of_forIn_statements()
 	if block#=(brace_blocks_function)
             return nr
 	endif
-	if block#=(for_marker)
+	if block#=(forin_marker)
             inc nr
 	endif
     endwhile
@@ -248,14 +248,14 @@ function action__code_row_ex(sd codepointer)
         call close_scope_forIn_statements()
         setcall codepointer action_code_right_util(codepointer)
         call action_one((ActionReturn))
-		set action__code_row.rcb (TRUE)
+		set action__code_row.rcb (ret_cont_break_something)
         return codepointer
 	endif
 	if attrib=(block_end)
         add codepointer (DWORD)
         if codepointer#=(else_flag)
 			ss p;set p ret_cont_break()
-			if p#=(FALSE)
+			if p#=(ret_cont_break_nothing)
 				call action_code_else_add()
 			else #dead jump after return/continue/break
 				call action_code_else_resolve((skip_flag)) #and add the condition because there is number_of_unclosed after block_else_end
@@ -279,13 +279,13 @@ function action__code_row_ex(sd codepointer)
 	if attrib=(break_flag)
         call action_code_break()
 		add codepointer (DWORD)
-		set action__code_row.rcb (TRUE)
+		set action__code_row.rcb (ret_cont_break_break)
 		return codepointer
 	endif
 	if attrib=(continue_flag)
         call action_code_continue()
 		add codepointer (DWORD)
-		set action__code_row.rcb (TRUE)
+		set action__code_row.rcb (ret_cont_break_something)
 		return codepointer
 	endif
 	if attrib=(else_flag)
@@ -385,7 +385,7 @@ import "resolve_dummy_jump" resolve_dummy_jump
 function action_code_write_conditions(sd codepointer)
     #verify for condition tag
     sd cond;set cond codepointer#
-    if cond=(for_marker)
+    if cond=(for)
         add codepointer (DWORD)
         if codepointer#!=(for_three)
 			sd type;set type codepointer#
@@ -404,7 +404,7 @@ function action_code_write_conditions(sd codepointer)
 				call action_one((ActionEnumerate))
 			end
             #
-            call add_while_top_off((for_marker))
+            call add_while_top_off((forin_marker))
             #
             sd first_reg=0
             call actionrecordheader((ActionStoreRegister),1)
@@ -491,7 +491,7 @@ function action_code_break()
     setcall memblock brace_blocks_get_memblock()
     setcall c_block# block_get_size(memblock);sub c_block# (WORD)
 	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
-	if p_type#=(for_marker);call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size));endif
+	if p_type#=(forin_marker);call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size));endif
 	#
     call brace_blocks_counter_inc()
 endfunction
@@ -516,7 +516,7 @@ function write_jump(sd size)
     call swf_actionblock_add(#size,(actionjump_contentsize))
 endfunction
 #cond_blocks top pointer
-function prepare_space_for_break()
+function prepare_space_for_break()  #here is moving if-elses and at breaks/loopoffset is not comparing but moving them bulk
     sd c_blocks;setcall c_blocks cond_blocks()
     sd c;setcall c brace_blocks_counter();sd counter;set counter c#
     sd copy_cursor;set copy_cursor c_blocks

@@ -32,20 +32,20 @@ const continue_flag=0xfa0AA0a0        #1
 const for_three=0xfb0BB0b0            #FR
 const inter_for=0xfc0CC0c0            #FR
 const ifElse_start=0xfd0DD0d0         #RG
-#const for_in=
+const for=0xfe0EE0e0                  #1
 
-const no_flag=0
-const top_flag=0x10<<24
-const skip_flag=0x20<<24
+const no_flag=0                        #code only
+const top_flag=0x10<<24                #code only
+const skip_flag=0x20<<24               #code only
 const else_flag=0x40<<24               #1
-const consecutive_flag=0x80<<24
-const brace_blocks_function=0x7fFFffFF
+const consecutive_flag=0x80<<24        #parse only
+const brace_blocks_function=0x7fFFffFF #code only
 
-const normal_marker=0x01010202
-const if_marker=0x03030404
+const normal_marker=0x01010202        #parse only
+const if_marker=0x03030404            #parse only
 const while_marker=0x05050606         #1
-const function_marker=0x07070808
-const for_marker=0x09090a0a           #1
+const function_marker=0x07070808      #parse only
+const forin_marker=0x09090a0a         #code only
 
 const ActionSubtract=0x0B      #OP
 const ActionMultiply=0x0C      #OP

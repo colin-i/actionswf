@@ -125,3 +125,7 @@ const smallbackjump=-actionjump_contentsize
 const actionrecordheader_tag_size=1
 const actionrecordheader_length_size=2
 const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size
+
+const ret_cont_break_nothing=0
+const ret_cont_break_something=1
+const ret_cont_break_break=2

@@ -111,6 +111,11 @@ function block_get_size(sd block)
     sub size (mem_struct_size)
     return size
 endfunction
+#psize
+function block_get_psize(sd block)
+	add block (mem_struct__size_off)
+	return block
+endfunction
 #size
 function block_get_fullsize(sd block)
     sd size

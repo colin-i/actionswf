@@ -38,7 +38,7 @@
 	<tr><td class="green">F</td></tr>
 	<tr><td>call_action_left</td><td class="green">C</td></tr>
 	<tr><td class="green" rowspan=2>I</td><td class="red" rowspan=2>{</td><td rowspan=2>else_flag</td><td class="green">I</td>  <td class="red">}</td></tr>
-	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_jumps_to_close</td></tr>
+	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_elses</td></tr>
 	<tr><td>while_marker</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>whileblock_end</td></tr>
 	<tr><td class="green">FR</td></tr>
 	<tr><td>break_flag</td></tr>
@@ -73,9 +73,9 @@
 
 <br>Table FR: <!--  action_parse_conditions<>action_code_write_conditions -->
 <table id="selection_table">
-	<tr><td rowspan=3>for_marker</td><td>for_three</td>                 <td class="green">[2]</td>   <td>inter_for</td><td class="green">[2]</td><td>inter_for</td><td class="green">RG<sup-r>c</sup-r></td><td class="green" rowspan=3>{1}</td><td rowspan=3>whileblock_end</td></tr>
-	<tr>                             <td class="green" colspan=2>RT</td>                             <td class="green" colspan=4 rowspan=2>L</td></tr>
-	<tr>                             <td>ActionEnumerate</td>           <td class="blue">pattern</td></tr>
+	<tr><td rowspan=3>for</td><td>for_three</td>                 <td class="green">[2]</td>   <td>inter_for</td><td class="green">[2]</td><td>inter_for</td><td class="green">RG<sup-r>c</sup-r></td><td class="green" rowspan=3>{1}</td><td rowspan=3>whileblock_end</td></tr>
+	<tr>                      <td class="green" colspan=2>RT</td>                             <td class="green" colspan=4 rowspan=2>L</td></tr>
+	<tr>                      <td>ActionEnumerate</td>           <td class="blue">pattern</td></tr>
 </table>
 
 <br>Table If: <!-- at action_parse_conditions<>at action_code_write_conditions -->
