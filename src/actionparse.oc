@@ -73,6 +73,13 @@ function brace_blocks_counter_inc()
     setcall c brace_blocks_counter()
     inc c#
 endfunction
+function cond_blocks_noerror()
+    sd c
+    setcall c brace_blocks_counter()
+    sd blocks
+    setcall blocks cond_blocks_at_index(c#)
+    return blocks
+endfunction
 
 function cond_blocks_at_index(sd i)
     datax blocks_mem#brace_blocks_max
@@ -1026,7 +1033,7 @@ function brace_blocks_remove_parse()
     while consecutive=(consecutive_flag)
         call brace_blocks_counter_dec()
         #
-        setg p_type cond_blocks()
+        set p_type cond_blocks_noerror()
         setcall type type_consecutive(p_type#,#consecutive)
         if type!=(normal_marker)
             if type=(while_marker)
@@ -1104,7 +1111,7 @@ endfunction
 function brace_blocks_remove_write_offset()
     call brace_blocks_counter_dec()
     sd block
-    setg block cond_blocks()
+    set block cond_blocks_noerror()
     return block#
 endfunction
 function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
@@ -1114,7 +1121,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	elseif ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
 	#look to see if last jump is zero and if is not forin, that has a different break than for3/while
 		sd start;set start cond_blocks_at_index(0)
-		sd blocks;setg blocks cond_blocks()
+		sd blocks;set blocks cond_blocks_noerror()
 		while start!=blocks
 			sub blocks (DWORD)
 			if blocks#=(top_flag) #healty while/for
@@ -1131,22 +1138,24 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		end
 	end
 
-	setg blocks cond_blocks()
+	set blocks cond_blocks_noerror()
 	call brace_blocks_counter_dec() #with errors check
 	sub blocks (DWORD)
 	sd offset;set offset blocks#
-	whiletrue
-		call brace_blocks_counter_dec() #with errors check
-		sub blocks (DWORD)
-		if blocks#=(top_flag)
-			#here is last jump (loopjump or a moved break)
-			break
+	if offset!=(top_flag) #can be whiletrue with no breaks even if that is not making any sense
+		whiletrue
+			call brace_blocks_counter_dec() #with errors check
+			sub blocks (DWORD)
+			if blocks#=(top_flag)
+				#here is last jump (loopjump or a moved break)
+				break
+			end
+			call write_forward_offset(offset)
+			set offset blocks#
 		end
-		call write_forward_offset(offset)
-		set offset blocks#
+		#here the while was ok, last jump isn't set
+		#remove type,top offset
 	end
-	#here the while was ok, last jump isn't set
-	#remove type,top offset
 	sd c
 	set c brace_blocks_counter()
 	sub blocks (2*DWORD)
@@ -1158,8 +1167,10 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		ret
 	end
 
-	#resolve the skipped offset
-	call write_forward_offset(offset)
+	if offset!=(top_flag) #can be whiletrue with no breaks even if that is not making any sense
+		#resolve the skipped offset
+		call write_forward_offset(offset)
+	end
 endfunction
 function add_dummy_jump()
     import "actionrecordheader" actionrecordheader
