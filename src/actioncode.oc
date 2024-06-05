@@ -459,18 +459,22 @@ function action_code_write_conditions(sd codepointer)
 		if codepointer#!=(inter_for);setcall codepointer action_code_pack(codepointer);endif
 		add codepointer (DWORD)
 		#
-		call add_dummy_jump()
-		sd memblock;setcall memblock brace_blocks_get_memblock()
-		sd sizeOff;setcall sizeOff block_get_size(memblock)
+		if codepointer#!=(inter_for) #else is JUMP 0
+			call add_dummy_jump()
+			sd memblock;setcall memblock brace_blocks_get_memblock()
+			sd sizeOff;setcall sizeOff block_get_size(memblock)
+		end
 		#
 		call add_while_top_off((while_marker))
 		#
-		if codepointer#!=(inter_for);setcall codepointer action_code_pack(codepointer);endif
+		if codepointer#!=(inter_for)
+			setcall codepointer action_code_pack(codepointer)
+			import "write_forward_offset" write_forward_offset
+			sub sizeOff (WORD)
+			call write_forward_offset(sizeOff)
+		endif
 		add codepointer (DWORD)
 		#
-		import "write_forward_offset" write_forward_offset
-		sub sizeOff (WORD)
-		call write_forward_offset(sizeOff)
 		set infinite_guard codepointer
 		set codepointer infinite_loop_check(codepointer)
 	elseif cond=(while_marker)
