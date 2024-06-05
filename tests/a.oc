@@ -39,6 +39,7 @@ for(var n=2;n<3;n++){break;}
 for(var o in a){continue;}
 for(a[0] in a[0]){}
 while(true){break;continue;var p;}
+for(;;){}
 ")
 
 call swf_done()
