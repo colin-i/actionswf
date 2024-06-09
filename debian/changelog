@@ -1,3 +1,9 @@
+actionswf (1-82) bionic; urgency=medium
+
+  * optimizations at for, while and else
+
+ -- bc <bc@bc-desktop>  Sun, 09 Jun 2024 11:51:35 +0300
+
 actionswf (1-81) bionic; urgency=medium
 
   * x save and restore
