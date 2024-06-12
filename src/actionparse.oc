@@ -1366,26 +1366,36 @@ function action_code_parse_deffunction(ss ac)
 endfunction
 #pointer
 function action_code_parse_function_defarguments(ss ac)
-    vstr argsdelims=",)"
-    char close=")"
-    inc ac
-    if ac#=close
-        inc ac
-        return ac
-    endif
-    sd op=0
-    while op!=close
-        sd pos
-        setcall pos strcspn(ac,argsdelims)
-        call action_code_set_pointer(ac)
-        add ac pos
-        if ac#=0
-            call error("close the function arguments sign expected: )")
-        endif
-        set op ac#
-        set ac# 0
-        inc ac
-    endwhile
-    return ac
+	vstr argsdelims=",)"
+	inc ac
+	if ac#=(Closeparenthesis)
+		inc ac
+		return ac
+	endif
+	whiletrue
+		ss end
+		setcall end strpbrk(ac,argsdelims)
+		if end!=(NULL)
+			while ac!=end
+				if ac#!=(Space)
+					call action_code_set_pointer(ac)
+					set ac end
+					if end#=(Closeparenthesis)
+						set end# (Nullchar)
+						inc ac
+						return ac
+					end
+					set end# (Nullchar)
+					break
+				end
+				inc ac
+			end
+			if end#=(Nullchar)
+				inc ac
+				continue
+			end
+			call error("argument missing")
+		end
+		call error("close the function arguments sign expected: )")
+	endwhile
 endfunction
-
