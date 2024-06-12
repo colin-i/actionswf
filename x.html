@@ -21,11 +21,21 @@
 		font-size: small;
 		color:green;
 	}
+	#ffdec_yes td {
+		border: 1px solid #0088FF;
+	}
+	.ffdec_yes_partial {
+		border: 1px solid #0088FF !important;
+	}
+	/*#ffdec_no td {
+		border: 1px solid #FF8800;
+	}*/
 </style>
 
 <h3>X Syntax</h3>
 
 <p>Black = 4 bytes. <span class="blue">Pointer = 4/8 bytes.</span> <span class="green">Green = replacement.</span> <span class="red">Red.</span></p>
+<p><span style="color:#0088FF">Border = ffdec check.</span><!-- <span style="color:#FF8800">Border = no ffdec.</span>--></p>
 
 <table id="selection_table">
 	<tr><td class="green">1</td></tr>
@@ -43,15 +53,15 @@
 	<tr><td class="green">FR</td></tr>
 	<tr><td>break_flag</td></tr>
 	<tr><td>continue_flag</td></tr>
-	<tr><td>ActionReturn</td><td class="green">RG</td></tr>
+	<tr id="ffdec_yes"><td>ActionReturn</td><td class="green">RG</td></tr>
 </table>
 
 <br>Table 2: <!-- action_parse_pack<>action_code_pack -->
 <table id="selection_table">
 	<tr><td class="green">L</td><td class="green">R</td></tr>
-	<tr><td>ActionDefineLocal2</td><td class="blue">name</td></tr>
-	<tr><td>ActionDelete</td><td class="green">M</td></tr>
-	<tr><td>ActionDelete2</td><td class="blue">name</td></tr>
+	<tr id="ffdec_yes"><td>ActionDefineLocal2</td><td class="blue">name</td></tr>
+	<tr id="ffdec_yes"><td>ActionDelete</td><td class="green">M</td></tr>
+	<tr id="ffdec_yes"><td>ActionDelete2</td><td class="blue">name</td></tr>
 </table>
 
 <br>Table L: <!-- in packs, at for-in -->
@@ -68,7 +78,7 @@
 
 <br>Table F: <!-- action_code_parse_deffunction<>action_definefunction -->
 <table id="selection_table">
-	<tr><td>function_action</td><td class="blue">name</td><td class="blue">{arguments}</td><td class="blue">null</td><td class="green">{1}</td><td>block_end</td></tr>
+	<tr><td class="ffdec_yes_partial">function_action</td><td class="blue ffdec_yes_partial">name</td><td class="blue">{arguments}</td><td class="blue">null</td><td class="green">{1}</td><td>block_end</td></tr>
 </table>
 
 <br>Table FR: <!--  action_parse_conditions<>action_code_write_conditions -->
@@ -154,7 +164,7 @@
 <br>Table RH: <!-- in action_code_take_main<>action_code_right_number -->
 <table id="selection_table">
 	<tr><td class="green" colspan=2>RT</td></tr>
-	<tr><td>ap_Integer</td><td>number</td></tr>
+	<tr id="ffdec_yes"><td>ap_Integer</td><td>number</td></tr>
 	<tr><td>ap_double</td><td>scanf1</td><td>scanf2</td></tr>
 	<tr><td>ap_Constant8</td><td class="blue">string</td></tr>
 	<tr><td>call_action_right</td><td class="green">C</td></tr>
