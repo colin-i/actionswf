@@ -19,6 +19,10 @@ call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 call action("
 function c(){
 }
+function cc(a){
+}
+function ccc(a,b){
+}
 var a;
 delete a;
 delete a.b;
