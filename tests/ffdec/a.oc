@@ -28,6 +28,7 @@ function ccc(a,b){
 var a;
 delete a;
 delete a.b;
+a=2;
 return 1;
 ")
 
