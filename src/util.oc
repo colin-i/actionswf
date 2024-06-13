@@ -5,7 +5,6 @@ importx "fwrite" fwrite
 importx "realloc" realloc
 importx "memcpy" memcpy
 importx "free" free
-importx "strcspn" strcspn
 importx "strlen" strlen
 importx "memcmp" memcmp
 
@@ -195,31 +194,17 @@ endfunction
 
 #strings
 
-#str
-function strNext_trailPrev(ss s,ss delims,ss p_op) # this function is good also when no delims , and must trail pointer for ffdec
-	ss p
-	set p strcspn(s,delims)
-
-	add p s
-	set p_op# p#
-	ss remember;set remember p
-
-	while s!=p
-		dec p
-		if p#!=(Space)
-			inc p
-			set p# (Nullchar)
-			break
+function memtrail(ss end)
+	whiletrue
+		dec end
+		if end#!=(Space)
+			inc end
+			set end# (Nullchar)
+			ret
 		end
 	end
+end
 
-	if p_op#=0
-		return remember
-	end
-	set remember# (Nullchar)
-	inc remember
-	return remember
-endfunction
 #bool
 function str_at_str_start(ss s1,ss s2)
     sd l1

@@ -9,7 +9,6 @@ importx "memcpy" memcpy
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
 
-import "strNext_trailPrev" strNext_trailPrev
 import "str_expression_at_start" str_expression_at_start
 
 import "debug_code" debug_code
@@ -116,6 +115,7 @@ import "action_code_values_index" action_code_values_index
 import "block_get_mem_size" block_get_mem_size
 import "block_get_size" block_get_size
 import "block_get_psize" block_get_psize
+import "memtrail" memtrail
 
 
 
@@ -346,7 +346,7 @@ function else_verify(ss ac,sd else_index)
         #c_ind is lower
         while ind!=c_ind
 			ss the_new_pointer;set the_new_pointer pointer
-            setcall the_new_pointer action_code_row_ex(pointer,(FALSE),ind)
+			setcall the_new_pointer action_code_row_ex(pointer,(FALSE),ind)
 			if the_new_pointer=pointer;call error("Else not closed");endif
 			set pointer the_new_pointer
             #
@@ -415,11 +415,13 @@ function action_parse_pack(ss ac,sd endChar)
     if pointer!=ac
         set isnewvar (TRUE)
     else
-        set isdelete (FALSE)
-        setcall pointer str_expression_at_start(ac,"delete")
-        if pointer!=ac
-            set isdelete (TRUE)
-        endif
+		set isdelete (FALSE)
+		setcall pointer str_expression_at_start(ac,"delete")
+		if pointer!=ac
+			set isdelete (TRUE)
+		else
+			set pointer spaces(pointer)
+		endelse
     endelse
 	charx op#1
     char set={Equals}
@@ -428,10 +430,18 @@ function action_parse_pack(ss ac,sd endChar)
     set secondChar endChar
     ss delims^set
 
-	set ac strNext_trailPrev(pointer,delims,#op)
+	set ac strcspn(pointer,delims)
+	add ac pointer
+	set op ac#
+	ss marker;set marker ac
+	if ac#!=(Nullchar)
+		set ac# (Nullchar)
+		inc ac
+	end
 
     if isnewvar=(TRUE)
         if op=set
+		call memtrail(marker)
             call action_code_set((ActionDefineLocal))
             call action_code_set_pointer(pointer)
         else
@@ -477,9 +487,13 @@ function action_parse_pack(ss ac,sd endChar)
                     return ac
                 endif
             else
-                #test for += .. |= ..
-                sd mixt_action;setcall mixt_action action_parse_test_mixt_equal(pointer,ac)
+			#test for += .. |= ..
+			sd mixt_action;setcall mixt_action action_parse_test_mixt_equal(pointer,#marker)
             endelse
+
+		#trail pointer at marker
+		call memtrail(marker)
+
             call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
             if op=set
             #mixt or not mixt
@@ -497,6 +511,7 @@ function action_parse_pack(ss ac,sd endChar)
             return ac
         endelse
     endelse
+	set ac spaces(ac)
     setcall ac action_parse_right(ac,endChar)
     return ac
 endfunction
@@ -512,43 +527,47 @@ function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
     endelse
 endfunction
 #0/action
-function action_parse_test_mixt_equal(ss start,ss ac)
-    dec ac
-    ss pointer;set pointer ac
-    dec ac
-    ss dif;set dif ac;sub dif start
-    if dif<=0
-        return 0
-    endif
-    if ac#=0
-        #0 can be set(qw['z']=x will be 00x) and at strchr will not be NULL
-        return 0
-    endif
-    ss operations;setcall operations get_operations()
-    ss p_op;setcall p_op strchr(operations,ac#)
-    if p_op=(NULL);return 0;endif;sd op;set op p_op#
-    if op=(shl);ss missing_shl="expecting value and <<"
-        dec ac
-        if ac=start
-            call error(missing_shl)
-        elseif ac#!=(shl)
-            call error(missing_shl)
-        endelseif
-    elseif op=(sar_shr);ss missing_sar_shr="expecting value and >>"
-        dec ac
-        if ac=start
-            call error(missing_sar_shr)
-        elseif ac#!=(sar_shr)
-            call error(missing_sar_shr)
-        endelseif
-        dec ac
-        if ac#!=(sar_shr)
-            inc ac
-        endif
-    endelseif
-    set ac# 0
-    sd action;setcall action action_parse_take_action(op,pointer)
-    return action
+function action_parse_test_mixt_equal(ss start,sv p_ac)
+	ss ac;set ac p_ac#
+	dec ac
+	ss dif;set dif ac;sub dif start
+	if dif<=0
+		return 0
+	endif
+#	#is this was true? a['b']=c;for(d['e']=f;a==b;j['k']=l){}  is where action_parse_pack is and there ] is not 0, left_holder is later parsed
+#	if ac#=0
+#		#0 can be set(qw['z']=x will be 00x) and at strchr will not be NULL
+#		return 0
+#	endif
+	ss operations;setcall operations get_operations()
+	sd op;set op ac#
+	ss p_op;setcall p_op strchr(operations,op)
+	if p_op=(NULL);return 0;endif
+
+	ss pointer;set pointer ac
+	if op=(shl);vstr missing_shl="expecting value and <<"
+		dec ac
+		if ac=start
+			call error(missing_shl)
+		elseif ac#!=(shl)
+			call error(missing_shl)
+		endelseif
+	elseif op=(sar_shr);vstr missing_sar_shr="expecting value and >>"
+		dec ac
+		if ac=start
+			call error(missing_sar_shr)
+		elseif ac#!=(sar_shr)
+			call error(missing_sar_shr)
+		endelseif
+		dec ac
+		if ac#!=(sar_shr)
+			inc ac
+		endif
+	endelseif
+	set p_ac# ac
+	#this was for strings but now is memtrail()	set ac# 0
+	sd action;setcall action action_parse_take_action(op,pointer)
+	return action
 endfunction
 #pointer
 function action_parse_right(ss ac,sd endChar)
@@ -613,7 +632,7 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
             call action_code_set((parenthesis_start))
             inc ac
             setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
-            #0 is the marker after op set; used at strings; and logicalAnd logicalOr shr and sar are not needing 0 but it's faster for strings, and are comparing with !=sign(0 is used); used at action_parse_take_action
+			#0 is the marker after op set; used at strings; and logicalAnd logicalOr shr and sar are not needing 0 but it's faster for strings
             set op ac#;set ac# 0
             set was_parenthesis 1
         endif
@@ -652,31 +671,29 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 endfunction
 #action
 function action_parse_take_action(sd op,ss ac)
-    sd x
-    ss test
-    if op=(add);set x (ActionAdd2)
-    elseif op=(sub);set x (ActionSubtract)
-    elseif op=(mlt);set x (ActionMultiply)
-    elseif op=(div);set x (ActionDivide)
-    elseif op=(modulo);set x (ActionModulo)
-    elseif op=(and)
-        set test ac;dec test
-        if test#=(and);set x (ActionAnd);else;set x (ActionBitAnd);endelse
-    elseif op=(or)
-        set test ac;dec test
-        if test#=(or);set x (ActionOr);else;set x (ActionBitOr);endelse
-    elseif op=(xor);set x (ActionBitXor)
-    elseif op=(shl);set x (ActionBitLShift)
-    elseif op=(sar_shr)
-        set test ac
-        sub test 2
-        if test#=0;set x (ActionBitRShift)
-        else;set x (ActionBitURShift);endelse
-    else
-        #at "qwer"x can be x
-        call error("unrecognized actionscript operation")
-    endelse
-    return x
+	sd x
+	if op=(add);set x (ActionAdd2)
+	elseif op=(sub);set x (ActionSubtract)
+	elseif op=(mlt);set x (ActionMultiply)
+	elseif op=(div);set x (ActionDivide)
+	elseif op=(modulo);set x (ActionModulo)
+	elseif op=(and)
+		dec ac
+		if ac#=(and);set x (ActionAnd);else;set x (ActionBitAnd);endelse
+	elseif op=(or)
+		dec ac
+		if ac#=(or);set x (ActionOr);else;set x (ActionBitOr);endelse
+	elseif op=(xor);set x (ActionBitXor)
+	elseif op=(shl);set x (ActionBitLShift)
+	elseif op=(sar_shr)
+		sub ac 2  #here there is already >> test
+		if ac#!=(sar_shr);set x (ActionBitRShift)
+		else;set x (ActionBitURShift);endelse
+	else
+		#at "qwer"x can be x
+		call error("unrecognized actionscript operation")
+	endelse
+	return x
 endfunction
 #pointer
 function action_code_extended_operations(ss pointer,sd op)

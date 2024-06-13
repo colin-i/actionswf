@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <style>
-	#selection_table td {
+	#selection_table td { /* for class is: table.selection_table td */
 		border: 1px solid black;
 	}
 	.blue
@@ -26,10 +26,10 @@
 	}
 	/*.ffdec_yes_partial {
 		border: 1px solid #0088FF !important;
-	}
+	}*/
 	#ffdec_no td {
 		border: 1px solid #FF8800;
-	}*/
+	}
 </style>
 
 <h3>X Syntax</h3>
@@ -46,7 +46,7 @@
 <table id="selection_table">
 	<tr><td class="green">2</td></tr>
 	<tr><td class="green">F</td></tr>
-	<tr><td>call_action_left</td><td class="green">C</td></tr>
+	<tr id="ffdec_yes"><td>call_action_left</td><td class="green">C</td></tr>
 	<tr><td class="green" rowspan=2>I</td><td class="red" rowspan=2>{</td><td rowspan=2>else_flag</td><td class="green">I</td>  <td class="red">}</td></tr>
 	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_elses</td></tr>
 	<tr><td>while_marker</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>whileblock_end</td></tr>
@@ -57,22 +57,22 @@
 </table>
 
 <br>Table 2: <!-- action_parse_pack<>action_code_pack -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="green">L</td><td class="green">R</td></tr>
-	<tr id="ffdec_yes"><td>ActionDefineLocal2</td><td class="blue">name</td></tr>
-	<tr id="ffdec_yes"><td>ActionDelete</td><td class="green">M</td></tr>
-	<tr id="ffdec_yes"><td>ActionDelete2</td><td class="blue">name</td></tr>
+	<tr><td>ActionDefineLocal2</td><td class="blue">name</td></tr>
+	<tr><td>ActionDelete</td><td class="green">M</td></tr>
+	<tr><td>ActionDelete2</td><td class="blue">name</td></tr>
 </table>
 
 <br>Table L: <!-- in packs, at for-in -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td>ActionDefineLocal</td><td class="blue">name</td></tr>
 	<tr><td>ActionSetVariable</td><td class="blue">name</td></tr>
 	<tr><td>ActionSetMember</td><td class="green">M</td></tr>
 </table>
 
 <br>Table C: <!-- action_code_parse_new_or_call<>action_code_new_or_call -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="blue">function</td><td class="green">{RG}</td><td>args_end</td><td><span class="blue">null</span>/<span class="green">MC</span></td></tr>
 </table>
 
@@ -111,13 +111,6 @@
 
 <br>Table O: <!-- get_operations<>in RG loop -->
 <table id="selection_table">
-	<tr><td class="green">OP</td></tr>
-	<tr><td>ActionAnd</td></tr>
-	<tr><td>ActionOr</td></tr>
-</table>
-
-<br>Table OP: <!-- get_operations<>in RG loop/in ...pack -->
-<table id="selection_table">
 	<tr><td>ActionSubtract</td></tr>
 	<tr><td>ActionMultiply</td></tr>
 	<tr><td>ActionDivide</td></tr>
@@ -129,6 +122,8 @@
 	<tr><td>ActionBitLShift</td></tr>
 	<tr><td>ActionBitRShift</td></tr>
 	<tr><td>ActionBitURShift</td></tr>
+	<tr><td>ActionAnd</td></tr>
+	<tr><td>ActionOr</td></tr>
 </table>
 
 <br>Table OC: <!-- get_operations<>in RG loop -->
@@ -143,7 +138,7 @@
 	<tr><td class="green">RI</td></tr>
 	<tr><td>ActionIncrement</td></tr>
 	<tr><td>ActionDecrement</td></tr>
-	<tr><td>mixt_equal</td><td class="green">OP</td><td class="green">RI</td></tr>
+	<tr id="ffdec_no"><td>mixt_equal</td><td class="green">O</td><td class="green">RI</td></tr>
 </table>
 
 <br>Table RI: <!-- action_parse_right<>action_code_right -->
@@ -154,7 +149,7 @@
 
 <br>Table RG: <!-- action_code_row_parse_tool<>action_code_right_util -->
 <table id="selection_table">
-	<tr><td>new_action</td><td class="green">C</td></tr>
+	<tr id="ffdec_yes"><td>new_action</td><td class="green">C</td></tr>
 	<tr><td class="green" rowspan=4>RH</td><td class="red" rowspan=4>{</td><td class="green">O+RH</td><td class="red" rowspan=2>}</td></tr>
 	<tr>                                                                   <td class="green">OC+RH</td></tr>
 	<tr>                                                                   <td colspan=2>ifElse_start+<span class="green">RG</span>+<span class="green">RG</span></td></tr>
@@ -167,7 +162,7 @@
 	<tr id="ffdec_yes"><td>ap_Integer</td><td>number</td></tr>
 	<tr><td>ap_double</td><td>scanf1</td><td>scanf2</td></tr>
 	<tr><td>ap_Constant8</td><td class="blue">string</td></tr>
-	<tr><td>call_action_right</td><td class="green">C</td></tr>
+	<tr id="ffdec_yes"><td>call_action_right</td><td class="green">C</td></tr>
 	<tr><td>parenthesis_start</td><td class="green">RG</td><td>math_end</td></tr>
 </table>
 
@@ -177,4 +172,4 @@
 	<tr><td>ActionGetMember</td><td class="green">M</td></tr>
 </table>
 
-<br><div class="green">1 2 Call <sup-r>c</sup-r> Function If Left Members MemberS MembersCall Operation OPeration OperationCompare Right RIght RiGht RigHt RighT</div>
+<br><div class="green">1 2 Call <sup-r>c</sup-r> Function If Left Members MemberS MembersCall Operation OperationCompare Right RIght RiGht RigHt RighT</div>
