@@ -9,7 +9,7 @@ importx "memcpy" memcpy
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
 
-import "str_next" str_next
+import "strNext_trailPrev" strNext_trailPrev
 import "str_expression_at_start" str_expression_at_start
 
 import "debug_code" debug_code
@@ -421,14 +421,15 @@ function action_parse_pack(ss ac,sd endChar)
             set isdelete (TRUE)
         endif
     endelse
-    sd op
+	charx op#1
     char set={Equals}
     char secondChar#1
     char *term=0
     set secondChar endChar
     ss delims^set
 
-    setcall ac str_next(pointer,delims,#op)
+	set ac strNext_trailPrev(pointer,delims,#op)
+
     if isnewvar=(TRUE)
         if op=set
             call action_code_set((ActionDefineLocal))

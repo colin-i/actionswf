@@ -196,19 +196,29 @@ endfunction
 #strings
 
 #str
-function str_next(ss s,ss delims,sv p_op)  #p_op is pointing at a stack variable
-    sd pos
-    setcall pos strcspn(s,delims)
-    ss x
-    set x s
-    add x pos
-    set p_op# x#
-    if x#=0
-        return x
-    endif
-    set x# 0
-    inc x
-    return x
+function strNext_trailPrev(ss s,ss delims,ss p_op) # this function is good also when no delims , and must trail pointer for ffdec
+	ss p
+	set p strcspn(s,delims)
+
+	add p s
+	set p_op# p#
+	ss remember;set remember p
+
+	while s!=p
+		dec p
+		if p#!=(Space)
+			inc p
+			set p# (Nullchar)
+			break
+		end
+	end
+
+	if p_op#=0
+		return remember
+	end
+	set remember# (Nullchar)
+	inc remember
+	return remember
 endfunction
 #bool
 function str_at_str_start(ss s1,ss s2)
