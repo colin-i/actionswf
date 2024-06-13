@@ -24,18 +24,18 @@
 	#ffdec_yes td {
 		border: 1px solid #0088FF;
 	}
+	#ffdec_diff td {
+		border: 1px solid #FF8800;
+	}
 	/*.ffdec_yes_partial {
 		border: 1px solid #0088FF !important;
 	}*/
-	#ffdec_no td {
-		border: 1px solid #FF8800;
-	}
 </style>
 
 <h3>X Syntax</h3>
 
 <p>Black = 4 bytes. <span class="blue">Pointer = 4/8 bytes.</span> <span class="green">Green = replacement.</span> <span class="red">Red.</span></p>
-<p><span style="color:#0088FF">Border = ffdec check.</span><!-- <span style="color:#FF8800">Border = no ffdec.</span>--></p>
+<p><span style="color:#0088FF">Border = ffdec ok.</span> <span style="color:#FF8800">Border = ffdec ok, but with differences.</span></p>
 
 <table id="selection_table">
 	<tr><td class="green">1</td></tr>
@@ -138,7 +138,7 @@
 	<tr><td class="green">RI</td></tr>
 	<tr><td>ActionIncrement</td></tr>
 	<tr><td>ActionDecrement</td></tr>
-	<tr id="ffdec_no"><td>mixt_equal</td><td class="green">O</td><td class="green">RI</td></tr>
+	<tr id="ffdec_diff"><td>mixt_equal</td><td class="green">O</td><td class="green">RI</td></tr>
 </table>
 
 <br>Table RI: <!-- action_parse_right<>action_code_right -->
