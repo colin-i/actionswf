@@ -36,9 +36,9 @@ b.ccc(1,2);
 
 a=new c();
 
-//a+=2;
-//a=a+2;
-a=2+a;
+//a+=2; will go to eval
+//a=a+2; will go to PushDuplicate that will go to eval
+a=eval('a')+2;
 
 return 1;
 ")
