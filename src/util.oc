@@ -278,6 +278,32 @@ function spaces(ss str)
     endwhile
 endfunction
 
+#newpos
+function compat(ss pointer,sd max,ss against,sd rep)
+	sd s;set s strlen(against)
+	sd return;set return max
+	add max pointer
+	sd start;set start pointer
+	sub max s
+	while pointer<^max  ## = ? will not be logical to end like "abc and"
+		sd c;set c memcmp(pointer,against,s)
+		if c=0
+			inc pointer
+
+			call memcpy(pointer,rep,2)
+			if s=5
+				ss and;set and pointer
+				add and 2
+				set and# (Space)
+			end
+
+			sub pointer start
+			return pointer
+		end
+		inc pointer
+	end
+	return return
+end
 
 #closings
 
