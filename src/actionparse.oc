@@ -116,6 +116,7 @@ import "block_get_mem_size" block_get_mem_size
 import "block_get_size" block_get_size
 import "block_get_psize" block_get_psize
 import "memtrail" memtrail
+import "memtrailstrict" memtrailstrict
 
 
 
@@ -420,7 +421,7 @@ function action_parse_pack(ss ac,sd endChar)
 		if pointer!=ac
 			set isdelete (TRUE)
 		else
-			set pointer spaces(pointer)
+			set pointer spaces(pointer) #ffdec
 		endelse
     endelse
 	charx op#1
@@ -511,7 +512,7 @@ function action_parse_pack(ss ac,sd endChar)
             return ac
         endelse
     endelse
-	set ac spaces(ac)
+	set ac spaces(ac) #ffdec
     setcall ac action_parse_right(ac,endChar)
     return ac
 endfunction
@@ -626,15 +627,17 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     vstr op_set^oprs
     ss ops;setcall ops get_operations();call memcpy(op_set,ops,(operations_size))
     whiletrue
-        sd op
+		set ac spaces(ac) #ffdec
+		charx op#1
         sd was_parenthesis=0
         if ac#=(Openparenthesis)
-            call action_code_set((parenthesis_start))
-            inc ac
-            setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
+			call action_code_set((parenthesis_start))
+			inc ac
+			setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
 			#0 is the marker after op set; used at strings; and logicalAnd logicalOr shr and sar are not needing 0 but it's faster for strings
-            set op ac#;set ac# 0
-            set was_parenthesis 1
+			set ac spaces(ac) #ffdec
+			set op ac#;set ac# 0
+			set was_parenthesis 1
         endif
         #set end: is static variable and can be mod again inside previous function
         set end endtype1
@@ -656,16 +659,16 @@ function action_parse_loop(ss ac,sv p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
         if is_compare_ptr#=(TRUE)
             set is_compare_ptr# (FALSE)
         else
-		if op=0
-                if p_op!=0
-                    set p_op# op
-                endif
-                return ac
-		endif
-                setcall bool action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
-                if bool=(TRUE);return ac;endif
-            sd x;setcall x action_parse_take_action(op,ac)
-            call action_code_set(x)
+			if op=0
+				if p_op!=0
+					set p_op# op
+				endif
+				return ac
+			endif
+			setcall bool action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
+			if bool=(TRUE);return ac;endif
+			sd x;setcall x action_parse_take_action(op,ac)
+			call action_code_set(x)
         endelse
     endwhile
 endfunction
@@ -737,17 +740,19 @@ function action_code_extended_operations(ss pointer,sd op)
     return pointer
 endfunction
 #pointer
-function action_code_take_main(ss ac,sv p_op,ss delims) #p_op is pointing at a stack variable
+function action_code_take_main(ss ac,ss p_op,ss delims)
     #a string
     ss pointer
     setcall pointer action_code_str(ac)
     if pointer!=0
+		#set pointer spaces(pointer) ffdec
         set p_op# pointer#;set pointer# 0
         return pointer
     endif
     #a function
     setcall pointer action_code_parse_new_or_call(ac,(call_action_right))
     if pointer!=ac
+		set pointer spaces(pointer) #ffdec
         set p_op# pointer#;set pointer# 0
         return pointer
     endif
@@ -766,6 +771,7 @@ function action_code_take_main(ss ac,sv p_op,ss delims) #p_op is pointing at a s
         add pointer pos
     endwhile
     sd op
+	call memtrailstrict(pointer)
     set op pointer#
     set p_op# op;set pointer# 0
     call action_code_take(ac)

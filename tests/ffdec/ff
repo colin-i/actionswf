@@ -12,5 +12,6 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH} qq ./a.out && {
 		swfdump -D${1} a.swf > 2
 		diff 1 2 --color
 		rm 1 2
+		exit 1
 	}
 }

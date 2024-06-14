@@ -204,6 +204,19 @@ function memtrail(ss end)
 		end
 	end
 end
+function memtrailstrict(ss end)
+	dec end;if end#!=(Space)
+		ret
+	end
+	whiletrue
+		dec end
+		if end#!=(Space)
+			inc end
+			set end# (Nullchar)
+			ret
+		end
+	end
+end
 
 #bool
 function str_at_str_start(ss s1,ss s2)
