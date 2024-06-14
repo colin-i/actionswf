@@ -40,7 +40,7 @@ a=new c();
 //a=a+2; will go to PushDuplicate that will go to eval
 a=eval('a')+2;
 
-a=1+(1+1)+a+a.b;
+a=1+(1+1)+a+a.b-1*1/1%1&1|1^1<<1>>1>>>1&&1||1;
 
 return 1;
 ")
