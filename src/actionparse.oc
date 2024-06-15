@@ -415,7 +415,7 @@ function action_parse_pack(ss ac,sd endChar)
 	sd isdelete
 	setcall pointer str_expression_at_start(ac,"var")
 	if pointer!=ac
-        set isnewvar (TRUE)
+		set isnewvar (TRUE)
 	else
 		set isdelete (FALSE)
 		setcall pointer str_expression_at_start(ac,"delete")
@@ -437,81 +437,74 @@ function action_parse_pack(ss ac,sd endChar)
 	set op ac#
 	ss marker;set marker ac
 	if ac#!=(Nullchar)
-		set ac# (Nullchar)
+	#	set ac# (Nullchar) let this at memtrail or at test for inc_dec
 		inc ac
 	end
 
 	if isnewvar=(TRUE)
-        if op=set
 		call memtrail(marker)
-            call action_code_set((ActionDefineLocal))
-            call action_code_set_pointer(pointer)
-        else
-            call action_code_set((ActionDefineLocal2))
-            call action_code_set_pointer(pointer)
-            return ac
-        endelse
-	else
-        if isdelete=(FALSE)
-            sd inc_dec
-            if op!=set
-                set inc_dec 0
-                ss test
-                set test ac
-                if op!=0
-                    sub test 3
-                else
-                    sub test 2
-                endelse
-                sd another_test
-                set another_test test
-                sub another_test pointer
-                #test for some size for ++ or --
-                if another_test>0
-                    if test#=(Plus)
-                        inc test
-                        if test#=(Plus)
-                            set inc_dec (ActionIncrement)
-                            dec test
-                            set test# 0
-                        endif
-                    elseif test#=(Hyphen)
-                        inc test
-                        if test#=(Hyphen)
-                            set inc_dec (ActionDecrement)
-                            dec test
-                            set test# 0
-                        endif
-                    endelseif
-                endif
-                #if not ++ or -- return the current location (x;heatMaker;)
-                if inc_dec=0
-                    return ac
-                endif
-            else
+		if op=set
+			call action_code_set((ActionDefineLocal))
+			call action_code_set_pointer(pointer)
+		else
+			call action_code_set((ActionDefineLocal2))
+			call action_code_set_pointer(pointer)
+			return ac
+		endelse
+	elseif isdelete=(FALSE)
+		sd inc_dec
+		if op!=set
+			set inc_dec 0
+			ss test
+			set test marker
+			sub test 2
+			sd another_test
+			set another_test test
+			sub another_test pointer
+			#test for some size for ++ or --
+			if another_test>0
+				if test#=(Plus)
+					inc test
+					if test#=(Plus)
+						set inc_dec (ActionIncrement)
+						dec test
+						set test# 0
+					endif
+				elseif test#=(Hyphen)
+					inc test
+					if test#=(Hyphen)
+						set inc_dec (ActionDecrement)
+						dec test
+						set test# 0
+					endif
+				endelseif
+			endif
+			#if not ++ or -- return the current location (x;heatMaker;)
+			if inc_dec=0
+				return ac  ##here nothing for X. is ignoring
+			endif
+		else
 			#test for += .. |= ..
 			sd mixt_action;setcall mixt_action action_parse_test_mixt_equal(pointer,#marker)
-            endelse
-
-		#trail pointer at marker
+			#trail pointer at marker, after mixt shift
+			call memtrail(marker)
+		endelse
+		call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
+		if op=set
+			#mixt or not mixt
+			if mixt_action!=0
+				call action_code_set((mixt_equal))
+				call action_code_set(mixt_action)
+			endif
+		else
+			#is inc dec case
+			call action_code_set(inc_dec)
+			return ac
+		endelse
+	else
 		call memtrail(marker)
-
-            call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
-            if op=set
-            #mixt or not mixt
-                if mixt_action!=0
-                    call action_code_set((mixt_equal))
-                    call action_code_set(mixt_action)
-                endif
-            else
-                #is inc dec case
-                call action_code_set(inc_dec)
-                return ac
-            endelse
-        else
-            call action_parse_left_holder(pointer,(ActionDelete2),(ActionDelete))
-            return ac
-        endelse
+		call action_parse_left_holder(pointer,(ActionDelete2),(ActionDelete))
+		return ac
 	endelse
 	set ac spaces(ac) #ffdec
 	setcall ac action_parse_right(ac,endChar)
