@@ -410,13 +410,13 @@ function action_code_row_parse_instrument(ss ac)
 endfunction
 #pointer
 function action_parse_pack(ss ac,sd endChar)
-    ss pointer
-    sd isnewvar=FALSE
-    sd isdelete
-    setcall pointer str_expression_at_start(ac,"var")
-    if pointer!=ac
+	ss pointer
+	sd isnewvar=FALSE
+	sd isdelete
+	setcall pointer str_expression_at_start(ac,"var")
+	if pointer!=ac
         set isnewvar (TRUE)
-    else
+	else
 		set isdelete (FALSE)
 		setcall pointer str_expression_at_start(ac,"delete")
 		if pointer!=ac
@@ -424,13 +424,13 @@ function action_parse_pack(ss ac,sd endChar)
 		else
 			set pointer spaces(pointer) #ffdec
 		endelse
-    endelse
-	charx op#1   ;#this is ok charx , is recursive when is at right at =function(){...} but here is viewed only at left
-    char set={Equals}
-    char secondChar#1
-    char *term=0
-    set secondChar endChar
-    ss delims^set
+	endelse
+	sd op   ;#this is recursive stack
+	char set={Equals}
+	char secondChar#1
+	char *term=0
+	set secondChar endChar
+	ss delims^set
 
 	set ac strcspn(pointer,delims)
 	add ac pointer
@@ -441,7 +441,7 @@ function action_parse_pack(ss ac,sd endChar)
 		inc ac
 	end
 
-    if isnewvar=(TRUE)
+	if isnewvar=(TRUE)
         if op=set
 		call memtrail(marker)
             call action_code_set((ActionDefineLocal))
@@ -451,7 +451,7 @@ function action_parse_pack(ss ac,sd endChar)
             call action_code_set_pointer(pointer)
             return ac
         endelse
-    else
+	else
         if isdelete=(FALSE)
             sd inc_dec
             if op!=set
@@ -512,10 +512,10 @@ function action_parse_pack(ss ac,sd endChar)
             call action_parse_left_holder(pointer,(ActionDelete2),(ActionDelete))
             return ac
         endelse
-    endelse
+	endelse
 	set ac spaces(ac) #ffdec
-    setcall ac action_parse_right(ac,endChar)
-    return ac
+	setcall ac action_parse_right(ac,endChar)
+	return ac
 endfunction
 function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
     ss test
