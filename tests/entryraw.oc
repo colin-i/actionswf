@@ -1,1 +1,1 @@
-entryraw main(sd argc)
+entryraw main(sd argc,sd *,ss a1)

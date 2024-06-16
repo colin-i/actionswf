@@ -99,6 +99,9 @@ endfunction
 function for_in(datax flag)
 	and flag (flag_forin1)
 end
+function for_in_ptr()
+	return #for_in.flag
+end
 
 function ret_cont_break()
 	charx type#1

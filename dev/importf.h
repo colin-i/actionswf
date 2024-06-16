@@ -61,6 +61,7 @@ importX "swf_exports_done" swf_exports_done
 
 importX "action" action
 importX "actionf" actionf
+importX "actiond" actiond
 importX "action_sprite" action_sprite
 importX "actionf_sprite" actionf_sprite
 

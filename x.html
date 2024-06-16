@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
 <style>
-	#selection_table td { /* for class is: table.selection_table td */
+	/* #selection_table td {
 		border: 1px solid black;
-	}
+	} for class is: table.selection_table td */
 	.blue
 	{
 		color:blue;
@@ -37,23 +37,23 @@
 <p>Black = 4 bytes. <span class="blue">Pointer = 4/8 bytes.</span> <span class="green">Green = replacement.</span> <span class="red">Red.</span></p>
 <p><span style="color:#0088FF">Border = ffdec ok.</span> <span style="color:#FF8800">Border = ffdec ok, but with differences.</span></p>
 
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="green">1</td></tr>
 	<tr><td>math_end</td></tr>
 </table>
 
 <br>Table 1: <!-- action_code_row<>action__code_row -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="green">2</td></tr>
 	<tr><td class="green">F</td></tr>
-	<tr id="ffdec_yes"><td>call_action_left</td><td class="green">C</td></tr>
+	<tr><td>call_action_left</td><td class="green">C</td></tr>
 	<tr><td class="green" rowspan=2>I</td><td class="red" rowspan=2>{</td><td rowspan=2>else_flag</td><td class="green">I</td>  <td class="red">}</td></tr>
 	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_elses</td></tr>
 	<tr><td>while_marker</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>whileblock_end</td></tr>
 	<tr><td class="green">FR</td></tr>
 	<tr><td>break_flag</td></tr>
 	<tr><td>continue_flag</td></tr>
-	<tr id="ffdec_yes"><td>ActionReturn</td><td class="green">RG</td></tr>
+	<tr><td>ActionReturn</td><td class="green">RG</td></tr>
 </table>
 
 <br>Table 2: <!-- action_parse_pack<>action_code_pack -->
@@ -77,34 +77,34 @@
 </table>
 
 <br>Table F: <!-- action_code_parse_deffunction<>action_definefunction -->
-<table id="selection_table">
-	<tr id="ffdec_yes"><td>function_action</td><td class="blue">name</td><td class="blue">{arguments}</td><td class="blue">null</td><td class="green">{1}</td><td>block_end</td></tr>
+<table id="ffdec_yes">
+	<tr><td>function_action</td><td class="blue">name</td><td class="blue">{arguments}</td><td class="blue">null</td><td class="green">{1}</td><td>block_end</td></tr>
 </table>
 
 <br>Table FR: <!--  action_parse_conditions<>action_code_write_conditions -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td rowspan=3>for</td><td>for_three</td>                 <td class="green">[2]</td>   <td>inter_for</td><td class="green">[2]</td><td>inter_for</td><td class="green">RG<sup-r>c</sup-r></td><td class="green" rowspan=3>{1}</td><td rowspan=3>whileblock_end</td></tr>
 	<tr>                      <td class="green" colspan=2>RT</td>                             <td class="green" colspan=4 rowspan=2>L</td></tr>
-	<tr>                      <td>ActionEnumerate</td>           <td class="blue">pattern</td></tr>
+	<tr id="ffdec_diff">      <td>ActionEnumerate</td>           <td class="blue">pattern</td></tr>
 </table>
 
 <br>Table If: <!-- at action_parse_conditions<>at action_code_write_conditions -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<td>ActionIf</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>block_end</td>
 </table>
 
 <br>Table M: <!-- action_code_member<>action_member_loop -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="blue" rowspan=2>owner</td><td class="green" rowspan=2>MS</td><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
 	<tr>                                                                                                        <td class="blue">no_pointer</td><td>member_end</td></tr>
 </table>
 <br>Table MS: <!-- same -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="blue" colspan=3>member</td></td></tr>
 	<tr><td class="blue">no_pointer</td><td>square_bracket_start</td><td class="green">RG</td></tr>
 </table>
 <br>Table MC: <!-- same -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="blue" rowspan=2>owner</td><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
 	<tr>                                                                     <td class="blue">no_pointer</td><td>member_end</td></tr>
 </table>
@@ -127,29 +127,29 @@
 </table>
 
 <br>Table OC: <!-- get_operations<>in RG loop -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td rowspan=3>compare_action</td><td>ActionLess2</td><td>0/ActionNot</td></tr>
 	<tr>                                 <td>ActionGreater</td><td>0/ActionNot</td></tr>
 	<tr>                                 <td>ActionEquals2</td><td>0/ActionNot</td></tr>
 </table>
 
 <br>Table R: <!-- in ...pack<>in ...pack -->
-<table id="selection_table">
-	<tr><td class="green">RI</td></tr>
-	<tr><td>ActionIncrement</td></tr>
-	<tr><td>ActionDecrement</td></tr>
+<table>
+	<tr id="ffdec_yes"><td class="green">RI</td></tr>
+	<tr id="ffdec_diff"><td>ActionIncrement</td></tr>
+	<tr id="ffdec_diff"><td>ActionDecrement</td></tr>
 	<tr id="ffdec_diff"><td>mixt_equal</td><td class="green">O</td><td class="green">RI</td></tr>
 </table>
 
 <br>Table RI: <!-- action_parse_right<>action_code_right -->
-<table id="selection_table">
+<table id="ffdec_yes">
 	<tr><td class="green">F</td></tr>
 	<tr><td class="green">RG</td></tr>
 </table>
 
 <br>Table RG: <!-- action_code_row_parse_tool<>action_code_right_util -->
-<table id="selection_table">
-	<tr id="ffdec_yes"><td>new_action</td><td class="green">C</td></tr>
+<table id="ffdec_yes">
+	<tr><td>new_action</td><td class="green">C</td></tr>
 	<tr><td class="green" rowspan=4>RH</td><td class="red" rowspan=4>{</td><td class="green">O+RH</td><td class="red" rowspan=2>}</td></tr>
 	<tr>                                                                   <td class="green">OC+RH</td></tr>
 	<tr>                                                                   <td colspan=2>ifElse_start+<span class="green">RG</span>+<span class="green">RG</span></td></tr>

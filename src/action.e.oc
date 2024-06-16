@@ -7,6 +7,7 @@ import "swf_actionblock" swf_actionblock
 
 import "alt_action" alt_action
 import "file_get_content__resources_free" file_get_content__resources_free
+import "for_in_ptr" for_in_ptr
 
 import "ebase" ebase
 #aftercallimport ebool
@@ -45,6 +46,13 @@ base action.bp;call ebase(action.bp)
 		end
 	end
 endfunction
+functionX actiond(ss ac) #deprecated
+	sd ptr;set ptr for_in_ptr()
+	sd was;set was ptr#
+	set ptr# (flag_forin1)
+	call action(ac)
+	set ptr# was
+end
 
 #sprite
 

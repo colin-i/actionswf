@@ -1,1 +1,4 @@
-entry main(sd argc)
+entry main(sd argc,sv argv)
+incst argv
+ss a1
+set a1 argv#
