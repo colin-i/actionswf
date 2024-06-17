@@ -199,15 +199,6 @@ function pool_size(sd id)
     return poolsize
 endfunction
 
-import "brace_blocks_get_memblock" brace_blocks_get_memblock
-function remember_reg_for_storeGet(sv rememberer) #is recursive stack for future expands, now is simple
-	if rememberer!=(NULL) #don't needed at forin
-		sd memblock
-		set memblock brace_blocks_get_memblock()
-		set rememberer# block_get_size(memblock)
-	end
-end
-
 #this has throws but for mem_exp_change and back are not required
 import "swf_actionblock" swf_actionblock
 import "file_get_content__resources_free" file_get_content__resources_free
@@ -310,9 +301,9 @@ function action_push(sd factors)
 endfunction
 
 function action_one(sd tag)
-    call swf_actionblock_add(#tag,1)
-      import "debug_phase_code_add" debug_phase_code_add
-      call debug_phase_code_add((FALSE))
+	call swf_actionblock_add(#tag,1)
+	import "debug_phase_code_add" debug_phase_code_add
+	call debug_phase_code_add((FALSE))
 endfunction
 
 import "action_code_right_util" action_code_right_util
@@ -359,11 +350,10 @@ end
 
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
-function action_member_loop_left(sv mathpointer,sd rememberer)  #set, ex get_member_pointer, let the string
+function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, let the string
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
-	call remember_reg_for_storeGet(rememberer)
 
 	#at first is something
 	if mathpointer#!=(no_pointer)
@@ -382,14 +372,12 @@ function action_member_loop_left(sv mathpointer,sd rememberer)  #set, ex get_mem
 				return mathpointer
 			end
 			call action_one((ActionGetMember))
-			call remember_reg_for_storeGet(rememberer)
 
 			#square_bracket_start
 			add mathpointer (DWORD)
 			setcall mathpointer action_code_right_util(mathpointer)
 		else
 			call action_one((ActionGetMember))
-			call remember_reg_for_storeGet(rememberer)
 
 			set name action_code_get_pointer(#mathpointer)
 			call action_push((ap_Constant8),name,-1)

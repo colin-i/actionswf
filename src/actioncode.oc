@@ -5,7 +5,6 @@ include "../include/prog.h"
 #win32 with _
 importx "strcmp" strcmp
 importx "strlen" strlen
-importx "memcpy" memcpy
 
 const totalvalues=0xffFF
 function action_code_values_container()
@@ -186,35 +185,6 @@ function action_true_compare(ss command)
 	return compare
 end
 
-const ActionStoreRegister_length=1
-const ActionStoreRegister_size=actionrecordheader_size+ActionStoreRegister_length
-import "block_get_mem_size" block_get_mem_size
-function swapmem(ss from)
-	sd memblock
-	set memblock brace_blocks_get_memblock()
-	ss mem;sd size
-	call block_get_mem_size(memblock,#mem,#size)
-	add from mem
-	add mem size
-	ss pointer;set pointer mem
-	sub mem (ActionStoreRegister_size)
-
-	charx aux#ActionStoreRegister_size
-	call memcpy(#aux,mem,(ActionStoreRegister_size))
-
-	while from!=mem
-		dec pointer
-		dec mem
-		set pointer# mem#
-	end
-	set mem #aux
-	while from!=pointer
-		set from# mem#
-		inc from
-		inc mem
-	end
-end
-
 import "ret_cont_break" ret_cont_break
 import "brace_blocks_counter_inc" brace_blocks_counter_inc
 import "cond_blocks_at_index" cond_blocks_at_index
@@ -353,87 +323,86 @@ function action__code_row_ex(sd codepointer)
     return codepointer
 endfunction
 function action_code_pack(sd codepointer)
-    sd attrib
-    set attrib codepointer#
-    add codepointer (DWORD)
-    #
-    sd is_member=FALSE
-    sd need_right=TRUE
-    sd need_pop=FALSE
-    if attrib=(ActionSetMember)
-        set is_member (TRUE)
-    elseif attrib=(ActionDelete)
-        set is_member (TRUE)
-        set need_right (FALSE)
-        set need_pop (TRUE)
-    elseif attrib=(ActionDefineLocal2)
-        set need_right (FALSE)
-    elseif attrib=(ActionDelete2)
-        set need_right (FALSE)
-        set need_pop (TRUE)
-    endelseif
+	sd attrib
+	set attrib codepointer#
+	add codepointer (DWORD)
+	#
+	sd is_member=FALSE
+	sd need_right=TRUE
+	sd need_pop=FALSE
+	if attrib=(ActionSetMember)
+		set is_member (TRUE)
+	elseif attrib=(ActionDelete)
+		set is_member (TRUE)
+		set need_right (FALSE)
+		set need_pop (TRUE)
+	elseif attrib=(ActionDefineLocal2)
+		set need_right (FALSE)
+	elseif attrib=(ActionDelete2)
+		set need_right (FALSE)
+		set need_pop (TRUE)
+	endelseif
 	#else is ActionDefineLocal/ActionSetVariable
-    sd rememberer
-    if is_member=(TRUE)
-        setcall codepointer action_member_loop_left(codepointer,#rememberer)
-    else
-    #definelocal or setvariable or delete2
-	sd name;set name action_code_get_pointer(#codepointer)
-	call action_push((ap_Constant8),name,-1)
-    endelse
-    if need_right=(TRUE)
-        if codepointer#=(ActionIncrement)
-            add codepointer (DWORD)
-            call action_code_inc_dec((ActionIncrement),attrib,rememberer)
-        elseif codepointer#=(ActionDecrement)
-            add codepointer (DWORD)
-            call action_code_inc_dec((ActionDecrement),attrib,rememberer)
-        elseif codepointer#=(mixt_equal)
-            #+= .. ^= ..
-            add codepointer (DWORD)
-            sd mixt_op;set mixt_op codepointer#;add codepointer (DWORD)
-            if attrib=(ActionSetVariable);call action_code_dupGet_var()
-            else;call action_code_dupGet_member(rememberer);endelse
-            setcall codepointer action_code_right(codepointer)
-            call action_one(mixt_op)
-        else
-            setcall codepointer action_code_right(codepointer)
-        endelse
-    endif
-    call action_one(attrib)
-    if need_pop=(TRUE)
-        call action_one((ActionPop))
-    endif
-    return codepointer
+	if is_member=(TRUE)
+		setcall codepointer action_member_loop_left(codepointer)
+	else
+		#definelocal or setvariable or delete2
+		sd name;set name action_code_get_pointer(#codepointer)
+		call action_push((ap_Constant8),name,-1)
+	endelse
+	if need_right=(TRUE)
+		if codepointer#=(ActionIncrement)
+			add codepointer (DWORD)
+			call action_code_inc_dec((ActionIncrement),attrib)
+		elseif codepointer#=(ActionDecrement)
+			add codepointer (DWORD)
+			call action_code_inc_dec((ActionDecrement),attrib)
+		elseif codepointer#=(mixt_equal)
+			#+= .. ^= ..
+			add codepointer (DWORD)
+			sd mixt_op;set mixt_op codepointer#;add codepointer (DWORD)
+			if attrib=(ActionSetVariable);call action_code_dupGet_var()
+			else;call action_code_dupGet_member();endelse
+			setcall codepointer action_code_right(codepointer)
+			call action_one(mixt_op)
+		else
+			setcall codepointer action_code_right(codepointer)
+		endelse
+	endif
+	call action_one(attrib)
+	if need_pop=(TRUE)
+		call action_one((ActionPop))
+	endif
+	return codepointer
 endfunction
 import "actionrecordheader" actionrecordheader
 import "swf_actionblock_add" swf_actionblock_add
-function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember,sd rememberer)
-    if setvar_or_setmember=(ActionSetVariable)
-        call action_code_dupGet_var()
-        call action_one(inc_dec)
-    else
-        call action_code_dupGet_member(rememberer)
-        call action_one(inc_dec)
-    endelse
+function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember)
+	if setvar_or_setmember=(ActionSetVariable)
+		call action_code_dupGet_var()
+		call action_one(inc_dec)
+	else
+		call action_code_dupGet_member()
+		call action_one(inc_dec)
+	endelse
 endfunction
 function action_code_dupGet_var()
     call action_one((ActionPushDuplicate))
     call action_one((ActionGetVariable))
 endfunction
-function action_code_dupGet_member(sd rememberer)
-	#increase and possibly alloc new mem, yes is lazy, can mem_increase instead of mem_block_add
-	sd first_reg=0
+const first_storereg=0
+const ActionStoreRegister_length=1
+function action_code_dupGet_member()
+	#maybe can remember and pushdup/store at M before last but there is extra code, and also watch the debugged file writes then, and store only at non squarebracket, can be inner calls there
+	#here with not Pop and two regs? will write more code by our side
+	call action_one((ActionStackSwap))
+	sd reg=first_storereg
 	call actionrecordheader((ActionStoreRegister),(ActionStoreRegister_length))
-	call swf_actionblock_add(#first_reg,(ActionStoreRegister_length))
-	call swapmem(rememberer)
-
-	sd second_reg=1
-	call actionrecordheader((ActionStoreRegister),(ActionStoreRegister_length))
-	call swf_actionblock_add(#second_reg,(ActionStoreRegister_length))
-
-	call action_push((ap_RegisterNumber),first_reg,-1)
-	call action_push((ap_RegisterNumber),second_reg,-1)
+	call swf_actionblock_add(#reg,(ActionStoreRegister_length))
+	call action_one((ActionStackSwap))
+	call action_one((ActionPushDuplicate))
+	call action_push((ap_RegisterNumber),reg,-1)
+	call action_one((ActionStackSwap))
 	call action_one((ActionGetMember))
 endfunction
 import "brace_blocks_add_write_current" brace_blocks_add_write_current
@@ -466,8 +435,8 @@ function action_code_write_conditions(sd codepointer)
 			end
 			call add_while_top_off((forin_marker))
 			#
-			sd first_reg=0
-			call actionrecordheader((ActionStoreRegister),1)
+			sd first_reg=first_storereg
+			call actionrecordheader((ActionStoreRegister),(ActionStoreRegister_length))
 			call swf_actionblock_add(#first_reg,(ActionStoreRegister_length))
 			#
 			call action_push((ap_Null),-1)

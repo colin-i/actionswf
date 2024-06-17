@@ -95,6 +95,7 @@ const ActionNewObject=0x40
 const ActionTypeOf=0x44         #builtin
 const ActionEnumerate=0x46
 const ActionPushDuplicate=0x4C
+const ActionStackSwap=0x4D
 const ActionCallMethod=0x52
 const ActionNewMethod=0x53
 const ActionEnumerate2=0x55
