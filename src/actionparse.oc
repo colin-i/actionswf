@@ -428,7 +428,7 @@ function action_parse_pack(ss ac,sd endChar)
 			set pointer spaces(pointer) #ffdec
 		endelse
 	endelse
-	sd op   ;#this is recursive stack
+	sd op   ;#this is recursive stack for future expands, now is simple
 	char set={Equals}
 	char secondChar#1
 	char *term=0

@@ -167,9 +167,9 @@ function action_error()
     call string_nl_print(p_c#)
 endfunction
 
+import "block_get_size" block_get_size
 #size
 function action_size(sd id)
-    import "block_get_size" block_get_size
     sd block
     setcall block struct_ids_action((ids_get),id)
     sd size
@@ -198,6 +198,15 @@ function pool_size(sd id)
     add poolsize (1+2)
     return poolsize
 endfunction
+
+import "brace_blocks_get_memblock" brace_blocks_get_memblock
+function remember_reg_for_storeGet(sv rememberer) #is recursive stack for future expands, now is simple
+	if rememberer!=(NULL) #don't needed at forin
+		sd memblock
+		set memblock brace_blocks_get_memblock()
+		set rememberer# block_get_size(memblock)
+	end
+end
 
 #this has throws but for mem_exp_change and back are not required
 import "swf_actionblock" swf_actionblock
@@ -350,10 +359,11 @@ end
 
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
-function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, let the string
+function action_member_loop_left(sv mathpointer,sd rememberer)  #set, ex get_member_pointer, let the string
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
+	call remember_reg_for_storeGet(rememberer)
 
 	#at first is something
 	if mathpointer#!=(no_pointer)
@@ -371,12 +381,16 @@ function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, l
 				add mathpointer (DWORD)
 				return mathpointer
 			end
-			#square_bracket_start
 			call action_one((ActionGetMember))
+			call remember_reg_for_storeGet(rememberer)
+
+			#square_bracket_start
 			add mathpointer (DWORD)
 			setcall mathpointer action_code_right_util(mathpointer)
 		else
 			call action_one((ActionGetMember))
+			call remember_reg_for_storeGet(rememberer)
+
 			set name action_code_get_pointer(#mathpointer)
 			call action_push((ap_Constant8),name,-1)
 		end
@@ -386,7 +400,7 @@ function action_member_loop_right(sv mathpointer) #get, ex get_member, get the o
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
-	whiletrue
+	whiletrue # member_end can be right from the start at CallMethod
 		if mathpointer#!=(no_pointer)
 			set name action_code_get_pointer(#mathpointer)
 			call action_push((ap_Constant8),name,-1)
