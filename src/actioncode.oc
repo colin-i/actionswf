@@ -44,6 +44,7 @@ endfunction
 
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
+import "block_get_psize" block_get_psize
 
 import "brace_blocks_counter" brace_blocks_counter
 
@@ -522,17 +523,24 @@ function action_code_write_conditions(sd codepointer)
 	endelse
 	if infinite_guard=codepointer
 		#using the operations function
-		setcall codepointer action_code_right_util(codepointer)
-		call write_ifjump_withNot()
+		sd c2=0
+		setcall codepointer action_code_right_util_ex(codepointer,#c2)
+		call write_ifjump_withNot(c2)
 	end
 	#return the current pointer
 	return codepointer
 endfunction
-function write_ifjump_withNot()
-    #set to be not for entering the block
-    call action_one((ActionNot))
-    #write the jump offset
-    call write_ifjump_addTo_braceBlocks()
+function write_ifjump_withNot(sd c2)
+	#set to be not for entering the block
+	if c2!=(ActionNot) #was already not
+		call action_one((ActionNot))
+	else # was not is not, remove was not
+		sd memblock;set memblock brace_blocks_get_memblock()
+		sd p;set p block_get_psize(memblock)
+		dec p#
+	end
+	#write the jump offset
+	call write_ifjump_addTo_braceBlocks()
 endfunction
 function add_while_top_off(sd typeOfLoop)
     call brace_blocks_add_write_current()
@@ -805,47 +813,66 @@ function action_code_right(sd codepointer)
 endfunction
 #codepointer
 function action_code_right_util(sd codepointer)
-    if codepointer#=(new_action)
-        add codepointer (DWORD)
-        sd member
-        setcall codepointer action_code_new_or_call(codepointer,#member)
-        if member=(no_pointer)
-            call action_one((ActionNewObject))
-        else
-            call action_one((ActionNewMethod))
-        endelse
-        return codepointer
-    endif
-    sd compare_op_1
-    sd compare_op_2
-    setcall codepointer action_code_right_number(codepointer)
-    while codepointer#!=(math_end)
-        sd operation
-        set operation codepointer#
-        add codepointer (DWORD)
-        if operation=(compare_action)
-            set compare_op_1 codepointer#
-            add codepointer (DWORD)
-            set compare_op_2 codepointer#
-            add codepointer (DWORD)
-        elseif operation=(ifElse_start)
-            call write_ifjump_withNot()
-            setcall codepointer action_code_right_util(codepointer)
-            call action_code_else_add()
-            setcall codepointer action_code_right_util(codepointer)
-            call brace_blocks_remove_write()
-            return codepointer
-        endelseif
-        setcall codepointer action_code_right_number(codepointer)
-        if operation!=(compare_action)
-            call action_one(operation)
-        else
-            call action_one(compare_op_1)
-            if compare_op_2!=0;call action_one(compare_op_2);endif
-        endelse
-    endwhile
-    add codepointer (DWORD)
-    return codepointer
+	set codepointer action_code_right_util_ex(codepointer,(NULL))
+	return codepointer
+end
+function action_code_right_util_ex(sd codepointer,sd outside_compare2)
+	if codepointer#=(new_action)
+		add codepointer (DWORD)
+		sd member
+		setcall codepointer action_code_new_or_call(codepointer,#member)
+		if member=(no_pointer)
+			call action_one((ActionNewObject))
+		else
+			call action_one((ActionNewMethod))
+		endelse
+		return codepointer
+	endif
+	sd compare_op_1
+	sd compare_op_2
+	setcall codepointer action_code_right_number(codepointer)
+	sd was_operation=0
+	while codepointer#!=(math_end)
+		sd operation
+		set operation codepointer#
+		add codepointer (DWORD)
+		if operation=(compare_action)
+			set compare_op_1 codepointer#
+			add codepointer (DWORD)
+			set compare_op_2 codepointer#
+			add codepointer (DWORD)
+		elseif operation=(ifElse_start)
+			if was_operation=0
+				call error("inline ifelse doesn't know what to ask")  #needed to optimize ActionNot
+			elseif was_operation=(compare_action)
+				call write_ifjump_withNot(compare_op_2)
+			else
+				call write_ifjump_withNot(0)
+			end
+			setcall codepointer action_code_right_util(codepointer)
+			call action_code_else_add()
+			setcall codepointer action_code_right_util(codepointer)
+			call brace_blocks_remove_write()
+			return codepointer
+		endelseif
+		setcall codepointer action_code_right_number(codepointer)
+		if operation!=(compare_action)
+			call action_one(operation)
+		else
+			call action_one(compare_op_1)
+			if compare_op_2!=0;call action_one(compare_op_2);endif
+		endelse
+		set was_operation operation
+	endwhile
+	if outside_compare2!=(NULL)
+		if was_operation!=0
+			if was_operation=(compare_action)
+				set outside_compare2# compare_op_2
+			end
+		end
+	end
+	add codepointer (DWORD)
+	return codepointer
 endfunction
 
 #codepointer
