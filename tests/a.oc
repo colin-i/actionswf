@@ -49,6 +49,8 @@ a.d.e=2;
 a.b++;
 a.c[0]--;
 a.d.e+=2;
+
+a=b!=1?q:w;
 ")
 
 call swf_done()
