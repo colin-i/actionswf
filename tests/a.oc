@@ -40,6 +40,15 @@ for(var o in a){continue;}
 for(a[0] in a[0]){}
 while(true){break;continue;var p;}
 for(;;){}
+
+a=new Object();
+a.b=3;
+a.c=new Array(1);a.c[0]=5;
+a.d=new Object();
+a.d.e=2;
+a.b++;
+a.c[0]--;
+a.d.e+=2;
 ")
 
 call swf_done()
