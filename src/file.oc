@@ -157,7 +157,7 @@ function file_write(sd file,sd buffer,sd size)
 endfunction
 
 
-function f_printf(sd nr,sd file,sd format) #...
+function f_printf(sd nr,sd file) #,sd *format,sd a1...,sd aN
 	sd r;set r f_printf_in(#file,nr)
 	if r=-1
 		call error("fprintf error")

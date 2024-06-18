@@ -62,8 +62,9 @@ function actionx()
 	vdatax pointer#1
 	valuex end#1
 	if x_data.mem!=(NULL)
+	#flag_x | log, alt, debug_x
 		if end<=^pointer
-			call error("error at x") #log, oaalternative, alt|debug_x, flag_x . and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
+			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
 		sd size
 		set size pointer#v         ;#size of escaped block that was at parse + pad if debug_x_pad flag
@@ -73,7 +74,7 @@ function actionx()
 		while pointer#!=(math_end)
 			set pointer action__code_row(pointer)
 		endwhile
-		add pointer (DWORD)
+		add pointer (DWORD) #this will continue at next actionx
 		return (TRUE)
 	end
 	return (FALSE)

@@ -225,28 +225,35 @@ function debug_phase_code(sd codepointer)
 		sv a;setcall a debug_mark_get()
 		if codepointer>=^a#   #can also be smaller, or larger tested at function/condition blocks
 			if debug_actions.size!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions
-				sv b;set b a
+				value rows=0;set rows a
 				sv end;setcall end debug_end()
-				while codepointer>=^b#   # > ? same as above
+				while codepointer>=^rows#   # > ? same as above
 					call debug_mark_add()
-					setcall b debug_mark_get()
-					if b=end#
+					setcall rows debug_mark_get()
+					if rows=end#
 						break
 					endif
 				endwhile
-				sub b a
-				div b :
-
-				#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
-				sv file%p_debug_file
-				call f_printf((fprintf_min+1),file#,"%lu",b)
-				call f_write(file#,debug_actions.mem,debug_actions.size)
-				call f_write(file#,"\n",1)
+				sub rows a
+				div rows :
+				#do not write now, can be break;} or Not Not If  and need to truncate that
+				datax size#1;set size debug_actions.size
 				set debug_actions.size 0
 			end
 		endif
 	endif
 endfunction
+function debug_phase_code_flush()
+	if debug_actions.size=0
+		if debug_phase_code.rows!=0
+			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
+			sv file%p_debug_file
+			call f_printf((fprintf_min+1),file#,"%lu",debug_phase_code.rows)
+			call f_write(file#,debug_actions.mem,debug_phase_code.size)
+			call f_write(file#,"\n",1)
+		end
+	end
+end
 
 function debug_base_core(sd id)
 	sv file%p_debug_file
@@ -281,6 +288,7 @@ end
 function debug_phase_code_add(sd is_long,ss plength)
 	sv of%p_offsets
 	if of#!=(NULL)
+		call debug_phase_code_flush()
 		sd sz;set sz debug_actions.size
 		if is_long=(TRUE)
 			add sz (1+2+2)
@@ -316,6 +324,14 @@ function debug_phase_code_add(sd is_long,ss plength)
 		set debug_actions.size sz
 	endif
 endfunction
+function debug_phase_code_remove(sd length)
+	if debug_actions.size=0 #was last command on previous row
+		sub debug_phase_code.size length
+		#and let the empty row if is the case, then still can break there
+		ret
+	end
+	sub debug_actions.size length
+end
 
 function debug_definefunction(sv pointers)
 	sv of%p_offsets

@@ -121,7 +121,7 @@ import "block_get_psize" block_get_psize
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
-
+import "debug_phase_code_remove" debug_phase_code_remove
 
 
 #aftercallimport ebool
@@ -1159,6 +1159,8 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 					set memblock brace_blocks_get_memblock()
 					set memblock block_get_psize(memblock)
 					sub memblock# skip_jump
+					#also need to remove from debug
+					call debug_phase_code_remove((actionjump_contentsize_debug))
 					break
 				end
 			end

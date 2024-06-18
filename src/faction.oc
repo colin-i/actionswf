@@ -65,6 +65,8 @@ function action_base(ss ac)
 		while p_values#!=(math_end)
 			setcall p_values action__code_row(p_values)  #also at actionx
 		endwhile
+		import "debug_phase_code_flush" debug_phase_code_flush
+		call debug_phase_code_flush()
 		import "debug_x" debug_x
 		call debug_x(stored,nr#) #need to be after, to modify pointers inside
 
