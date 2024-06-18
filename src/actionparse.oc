@@ -117,7 +117,6 @@ import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
 import "block_get_mem_size" block_get_mem_size
 import "block_get_size" block_get_size
-import "block_get_psize" block_get_psize
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
@@ -1155,12 +1154,8 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 				sub blocks (DWORD)
 				if blocks#!=(forin_marker)
 					set skip_jump (actionrecordheader_size+actionjump_contentsize)
-					sd memblock
-					set memblock brace_blocks_get_memblock()
-					set memblock block_get_psize(memblock)
-					sub memblock# skip_jump
 					#also need to remove from debug
-					call debug_phase_code_remove((actionjump_contentsize_debug))
+					call debug_phase_code_remove(skip_jump,(action_debug_recordlength))
 					break
 				end
 			end

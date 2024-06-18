@@ -66,7 +66,7 @@ a=function(){return 2;}
 
 while(a<9){if(a==1){a=2;}else if(a==2){continue;}else if(a==4){break;}else{a=6;}}
 
-for(i=0;i<2;i=1+1){
+for(i=0;i<2;i=1+i){
 	if(a==1){a=2;}else if(a==2){continue;}
 }
 

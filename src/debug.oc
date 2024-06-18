@@ -127,6 +127,7 @@ end
 import "row_termination" row_termination
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
+import "block_get_psize" block_get_psize
 import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
 import "for_in" for_in
@@ -290,9 +291,9 @@ function debug_phase_code_add(sd is_long,ss plength)
 		call debug_phase_code_flush()
 		sd sz;set sz debug_actions.size
 		if is_long=(TRUE)
-			add sz (1+2+2)
+			add sz (action_debug_comma+2+2)
 		else
-			add sz 1
+			add sz (action_debug_comma)
 		end
 		if sz>^debug_actions.all_size
 			set debug_actions.all_size sz
@@ -323,7 +324,11 @@ function debug_phase_code_add(sd is_long,ss plength)
 		set debug_actions.size sz
 	endif
 endfunction
-function debug_phase_code_remove(sd length)
+function debug_phase_code_remove(sd swflength,sd length)
+	sd memblock;set memblock brace_blocks_get_memblock()
+	sd p;set p block_get_psize(memblock)
+	sub p# swflength
+
 	if debug_actions.size=0 #was last command on previous row
 		sub debug_phase_code.size length
 		#and let the empty row if is the case, then still can break there

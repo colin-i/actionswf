@@ -43,7 +43,6 @@ endfunction
 
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
-import "block_get_psize" block_get_psize
 
 import "brace_blocks_counter" brace_blocks_counter
 
@@ -190,6 +189,7 @@ import "brace_blocks_counter_inc" brace_blocks_counter_inc
 import "cond_blocks_at_index" cond_blocks_at_index
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
 import "cond_blocks_noerror" cond_blocks_noerror
+import "debug_phase_code_remove" debug_phase_code_remove
 
 #aftercallimport ebool
 
@@ -501,12 +501,10 @@ function action_code_write_conditions(sd codepointer)
 endfunction
 function write_ifjump_withNot(sd c2)
 	#set to be not for entering the block
-	if c2!=(ActionNot) #was already not
+	if c2!=(ActionNot)
 		call action_one((ActionNot))
 	else # was not is not, remove was not
-		sd memblock;set memblock brace_blocks_get_memblock()
-		sd p;set p block_get_psize(memblock)
-		dec p#
+		call debug_phase_code_remove(1,(action_debug_comma))
 	end
 	#write the jump offset
 	call write_ifjump_addTo_braceBlocks()

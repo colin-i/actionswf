@@ -301,7 +301,7 @@ function action_push(sd factors)
 endfunction
 
 function action_one(sd tag)
-	call swf_actionblock_add(#tag,1)
+	call swf_actionblock_add(#tag,(actionrecordheader_tag_size))
 	import "debug_phase_code_add" debug_phase_code_add
 	call debug_phase_code_add((FALSE))
 endfunction
