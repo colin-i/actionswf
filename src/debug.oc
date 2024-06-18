@@ -244,14 +244,13 @@ function debug_phase_code(sd codepointer)
 	endif
 endfunction
 function debug_phase_code_flush()
-	if debug_actions.size=0
-		if debug_phase_code.rows!=0
-			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
-			sv file%p_debug_file
-			call f_printf((fprintf_min+1),file#,"%lu",debug_phase_code.rows)
-			call f_write(file#,debug_actions.mem,debug_phase_code.size)
-			call f_write(file#,"\n",1)
-		end
+	if debug_phase_code.rows!=0
+		#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
+		sv file%p_debug_file
+		call f_printf((fprintf_min+1),file#,"%lu",debug_phase_code.rows)
+		call f_write(file#,debug_actions.mem,debug_phase_code.size)
+		call f_write(file#,"\n",1)
+		set debug_phase_code.rows 0
 	end
 end
 
@@ -344,7 +343,7 @@ function debug_definefunction(sv pointers)
 		incst pointers
 
 		sd offset
-		set offset debug_actions.size  ##same size as debug_actions.size
+		set offset debug_actions.size
 		char dummy={0xff,0xff} #0,0 is not ok inside
 		call debug_phase_code_add((TRUE),#dummy)
 		#inc offset ##to skip Comma  #but at fseek is not needed because fread is already skipping that
