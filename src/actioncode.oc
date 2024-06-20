@@ -798,7 +798,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 	sd compare_op_1
 	sd compare_op_2
 	setcall codepointer action_code_right_number(codepointer)
-	sd was_operation=0
+	sd was_operation=no_action
 	while codepointer#!=(math_end)
 		sd operation
 		set operation codepointer#
@@ -809,9 +809,8 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			set compare_op_2 codepointer#
 			add codepointer (DWORD)
 		elseif operation=(ifElse_start)
-			if was_operation=0
-				call error("inline ifelse doesn't know what to ask")  #needed to optimize ActionNot
-			elseif was_operation=(compare_action)
+			#can be a simple get for a bool and still working here. if was_operation=(no_action);call error("inline ifelse doesn't know what to ask")
+			if was_operation=(compare_action)   #needed to optimize ActionNot
 				call write_ifjump_withNot(compare_op_2)
 			else
 				call write_ifjump_withNot(0)
@@ -832,10 +831,8 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 		set was_operation operation
 	endwhile
 	if outside_compare2!=(NULL)
-		if was_operation!=0
-			if was_operation=(compare_action)
-				set outside_compare2# compare_op_2
-			end
+		if was_operation=(compare_action)
+			set outside_compare2# compare_op_2
 		end
 	end
 	add codepointer (DWORD)

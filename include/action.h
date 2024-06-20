@@ -19,6 +19,7 @@ const block_else_end=0xfcCCccCC       #1
 const block_end=0xfbBBbbBB            #F IF
 const member_end=0xfaAAaaAA           #M
 
+const no_action=0
 const call_action_left=0xf1011010     #1
 const call_action_right=0xf2022020    #RH
 const function_action=0xf3033030      #1
