@@ -1,3 +1,9 @@
+actionswf (1-83) bionic; urgency=medium
+
+  * notnot and += optimizations
+
+ -- bc <bc@bc-desktop>  Fri, 21 Jun 2024 14:57:18 +0300
+
 actionswf (1-82) bionic; urgency=medium
 
   * optimizations at for, while and else
