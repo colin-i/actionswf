@@ -1,3 +1,9 @@
+actionswf (1-85) bionic; urgency=medium
+
+  * fix tests
+
+ -- bc <bc@bc-desktop>  Sat, 22 Jun 2024 07:36:20 +0300
+
 actionswf (1-84) bionic; urgency=medium
 
   * example fix
