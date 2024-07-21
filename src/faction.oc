@@ -8,7 +8,7 @@ import "action_code_values" action_code_values
 import "action_code_values_index" action_code_values_index
 import "escape_action" escape_action
 import "action_debug_free" action_debug_free
-
+import "debug_phase_parse_end" debug_phase_parse_end
 
 
 #aftercallimport ebool
@@ -53,6 +53,7 @@ function action_base(ss ac)
 		while mem#!=0
 			setcall mem action_code_row(mem,(FALSE))
 		endwhile
+		call debug_phase_parse_end() #can't be after math_end the case when last rows are blank
 		call action_code_set((math_end))
 		#reset to stop adding row nr at errors
 		set p_action_errors# (NULL)

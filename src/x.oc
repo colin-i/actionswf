@@ -31,6 +31,12 @@ function x_pointer(sv pointer)
 	end
 	return value
 end
+function x_pointer_x(sv pointer) #same as x_pointer
+	if x_data.f!=(NULL)
+		sub pointer# action_debug((action_debug_get_mem))
+		inc pointer#
+	end
+end
 function x_pointer_touchless(sv pointer)
 	sd value
 	set value pointer#

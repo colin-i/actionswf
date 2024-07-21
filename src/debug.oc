@@ -106,6 +106,17 @@ function debug_phase_parse(ss pointer)
 		set target# (NULL)
 	endif
 endfunction
+function debug_phase_parse_end() #for the case when last rows are blank
+	sd x;setcall x action_code_get()
+	sv start
+	set start debug_mark_get()
+	sv end;setcall end debug_end()
+	while start<^end#
+		set start# x
+		call debug_mark_add()
+		setcall start debug_mark_get()
+	endwhile
+end
 
 function debug_action_phase()
 	sv of%p_offsets

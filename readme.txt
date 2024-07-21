@@ -27,6 +27,6 @@ Where:
 SpriteId or 0 for root.
 TextLinesNumber is the number of lines that TextLines has.
 TextLines is the text like in action[_sprite] call.
-NumberA lines, then NumberA1+...+NumberAN<=TextLinesNumber, less only when last line(s) is/are blank(s).
+NumberA lines, then NumberA1+...+NumberAN=TextLinesNumber
 NumberB1...NumberBN: example 1F,,0F -> 3 actions, first is an action with ACTIONRECORDHEADER of 0x1F Length, second has ActionCode < 0x80, third has Length 0xF
 FinalSpriteId is the if from the swf

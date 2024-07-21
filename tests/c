@@ -1,5 +1,5 @@
 
-# 0 is diff and move, without ${1} is clean
+# 0 is diff and move else is diff or exit, without ${1} is clean
 
 if [ -z "${1}" ]; then
 	rm -f a.o a.out a.swf a.swf.x a.swf.log
@@ -34,6 +34,8 @@ smart_diff () {
 	smart_diff .expected/a.swf a.swf
 	if [ $? != 0 ]; then
 		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
+		stat --printf="\n%s\n" .expected/a.swf
+		stat --printf="%s\n" a.swf
 		echo y \? m \?; read -n1 -t $((60*60*24)) ans
 		if [ "${ans}" = "m" ]; then
 			swfdump -D .expected/a.swf > 1
@@ -53,6 +55,8 @@ smart_diff () {
 	smart_diff .expected/a.swf.x${v} a.swf.x
 	if [ $? != 0 ]; then
 		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
+		stat --printf="\n%s\n" .expected/a.swf.x${v}
+		stat --printf="%s\n" a.swf.x
 		echo y \?; read -n1 -t $((60*60*24)) ans
 		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
 		base64 a.swf.x > .expected/a.swf.x${v}.txt

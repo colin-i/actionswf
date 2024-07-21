@@ -64,65 +64,66 @@ endfunction
 
 #name/null
 function action_code_write_builtin_names(sv codepointer,sv p_action) #action is value only because is working with stack
-	set codepointer codepointer#
+	sd name
+	set name x_pointer_touchless(codepointer)
 	sd compare
 	vstr int="int"
-	setcall compare strcmp(codepointer,int)
+	setcall compare strcmp(name,int)
 	if compare=0
 		set p_action# (ActionToInteger)
 		return int
 	endif
 	vstr rnd="random"
-	setcall compare strcmp(codepointer,rnd)
+	setcall compare strcmp(name,rnd)
 	if compare=0
 	#0�(maximum-1)
 		set p_action# (ActionRandomNumber)
 		return rnd
 	endif
 	vstr ascii="ord"
-	setcall compare strcmp(codepointer,ascii)
+	setcall compare strcmp(name,ascii)
 	if compare=0
 		set p_action# (ActionCharToAscii)
 		return ascii
 	endif
 	vstr chr="chr"
-	setcall compare strcmp(codepointer,chr)
+	setcall compare strcmp(name,chr)
 	if compare=0
 		set p_action# (ActionAsciiToChar)
 		return chr
 	endif
 	vstr typeOf="typeof"
-	setcall compare strcmp(codepointer,typeOf)
+	setcall compare strcmp(name,typeOf)
 	if compare=0
 		set p_action# (ActionTypeOf)
 		return typeOf
 	endif
 	vstr stop="stop"
-	setcall compare strcmp(codepointer,stop)
+	setcall compare strcmp(name,stop)
 	if compare=0
 		set p_action# (ActionStop)
 		return stop
 	endif
 	vstr play="play"
-	setcall compare strcmp(codepointer,play)
+	setcall compare strcmp(name,play)
 	if compare=0
 		set p_action# (ActionPlay)
 		return play
 	endif
 	vstr nframe="nextFrame"
-	setcall compare strcmp(codepointer,nframe)
+	setcall compare strcmp(name,nframe)
 	if compare=0
 		set p_action# (ActionNextFrame)
 		return nframe
 	endif
 	vstr pframe="prevFrame"
-	setcall compare strcmp(codepointer,pframe)
+	setcall compare strcmp(name,pframe)
 	if compare=0
 		set p_action# (ActionPreviousFrame)
 		return pframe
 	endif
 	vstr goto="gotoAndStop"
-	setcall compare strcmp(codepointer,goto)
+	setcall compare strcmp(name,goto)
 	if compare=0
 		set p_action# (ActionGotoFrame)
 		incst p_action
@@ -130,7 +131,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 		return goto
 	endif
 	vstr gotop="gotoAndPlay"
-	setcall compare strcmp(codepointer,gotop)
+	setcall compare strcmp(name,gotop)
 	if compare=0
 		set p_action# (ActionGotoFrame)
 		incst p_action
@@ -138,7 +139,7 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 		return gotop
 	endif
 	vstr trace="trace"
-	setcall compare strcmp(codepointer,trace)
+	setcall compare strcmp(name,trace)
 	if compare=0
 		set p_action# (ActionTrace)
 		return trace
@@ -146,14 +147,15 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 	return (NULL)
 endfunction
 
+import "x_pointer" x_pointer
+import "x_pointer_touchless" x_pointer_touchless
+import "x_pointer_x" x_pointer_x
 function action_code_get_pointer(sv p_codepointer)
-	import "x_pointer" x_pointer
 	sd a;set a x_pointer(p_codepointer#)
 	incst p_codepointer#  #to pass the pointer
 	return a
 end
 function action_code_get_pointer_touchless(sv p_codepointer)
-	import "x_pointer_touchless" x_pointer_touchless
 	sd a;set a x_pointer_touchless(p_codepointer#)
 	incst p_codepointer#  #to pass the pointer
 	return a
@@ -220,7 +222,7 @@ function action_code_set_ex(sd value,sd size)
 	add x size
 	if x>=(totalvalues)
 		import "error" error
-		call error("size error")
+		call error("size error at values")
 	endif
 	sd pointer
 	setcall pointer action_code_values()
@@ -669,28 +671,29 @@ function action_code_write_function_call(sv codepointer,sd pwant_return)
 endfunction
 #codepointer
 function action_code_write_builtin_function(sv codepointer,sd pwant_return)
-    sv pointer
-    set pointer codepointer
-    if pointer#!=(no_pointer)
-        #no builtin at members
-        return codepointer
-    endif
-    add pointer :  #to pass the pointer
-    #
-    sd cursor
-    setcall cursor action_code_write_builtin_set(pointer,pwant_return)
-    if cursor=pointer
-        return codepointer
-    endif
-    return cursor
+	sv pointer
+	set pointer codepointer
+	if pointer#!=(no_pointer)
+		#no builtin at members
+		return codepointer
+	endif
+	add pointer :  #to pass the pointer
+	#
+	sd cursor
+	setcall cursor action_code_write_builtin_set(pointer,pwant_return)
+	if cursor=pointer
+		return codepointer
+	endif
+	call x_pointer_x(pointer) #in case is to .x, must trim pointer
+	return cursor
 endfunction
 #codepointer
-function action_code_write_builtin_set(sd codepointer,sd pwant_return)
+function action_code_write_builtin_set(sv codepointer,sd pwant_return)
 	ss name
 	#these acts must stay on stack, can be builtin inside builtin
 	sd act
 	sd act2
-	setcall name action_code_write_builtin_names(codepointer,#act)
+	set name action_code_write_builtin_names(codepointer,#act)
 	if name!=(NULL)
 		sd test;set test codepointer
 		add test :   #to pass the pointer
