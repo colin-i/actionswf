@@ -51,6 +51,25 @@ a.c[0]--;
 a.d.e+=2;
 
 a=b!=1?q:w;
+
+//manual class extends
+var class1=function(){
+	trace('class1');
+}
+class1.prototype.func1=function(){
+	trace('func1');
+}
+var class2=function(){
+	this.constructor();
+	this.func1();
+}
+class2.prototype=class1.prototype;
+var o2=new class2();
+
+//from asm point of view, all can be done regarding interface statement:
+//ActionImplementsOp is 'for use by ActionCastOp' or 'Additionally, with SWF 7 or later, ActionInstanceOf also supports with interfaces'
+//at ffdec: function a(){} class b implements a{} var c=new b(); trace(c instanceof a)
+//	and for cast: Push 'a' GetVariable Push 'c' GetVariable CastOp
 ")
 
 call swf_done()
