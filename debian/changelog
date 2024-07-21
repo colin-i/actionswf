@@ -1,3 +1,9 @@
+actionswf (1-87) bionic; urgency=medium
+
+  * fix builtin at x. fix last row blanks at log
+
+ -- bc <bc@bc-desktop>  Sun, 21 Jul 2024 15:37:58 +0300
+
 actionswf (1-86) bionic; urgency=medium
 
   * fix i386 test
