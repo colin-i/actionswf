@@ -211,98 +211,13 @@ import "action_code_get" action_code_get
 #aftercallimport ebool
 
 import "swf_actionblock_add" swf_actionblock_add
-import "actionrecordheader" actionrecordheader
-import "actionpool_value" actionpool_value
+import "action_push" action_push
 
 #tags
 
-function action_push(sd factors)
-	sd iter^factors
-	sd size=0
-	while iter#!=-1
-		inc size
-		if iter#=(ap_Integer)
-			add size (DWORD)
-			incst iter
-		elseif iter#=(ap_double)
-			add size (QWORD)
-			add iter (2*:)
-		elseif iter#=(ap_Null)
-		#skip
-		elseif iter#=(ap_Undefined)
-		#skip
-		else
-		#if iter#==(ap_RegisterNumber)
-		#if iter#==(ap_Boolean)
-		#if iter#==(ap_Constant8)
-			add size (BYTE)
-			sd value
-			set value iter#
-			incst iter
-			if value=(ap_Constant8)
-			#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
-				sd translated_id
-				setcall translated_id actionpool_value(iter#v^)
-				if translated_id>0xff
-					inc size
-				endif
-			endif
-		endelse
-		incst iter
-	endwhile
-
-	call actionrecordheader((ActionPush),size)
-
-	sd cursor^factors
-	while cursor#!=-1
-		#test here Constant8 to Constant16
-		if cursor#=(ap_Constant8)
-			sv pointer
-			set pointer cursor
-			incst pointer
-			#call actionpool_getvalue, the pool already exists(actionpool_value if not)
-			import "actionpool_getvalue" actionpool_getvalue
-			setcall translated_id actionpool_getvalue(pointer#)
-			sd const_sz=BYTE
-			if translated_id>0xff
-				inc const_sz
-				set cursor# (ap_Constant16)
-			endif
-		endif
-
-		call swf_actionblock_add(cursor,1)
-
-		if cursor#=(ap_Integer)
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#=(ap_double)
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-			incst cursor
-			call swf_actionblock_add(cursor,(DWORD))
-		elseif cursor#=(ap_RegisterNumber)
-			incst cursor
-			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#=(ap_Boolean)
-			incst cursor
-			call swf_actionblock_add(cursor,(BYTE))
-		elseif cursor#=(ap_Null)
-		#skip
-		elseif cursor#=(ap_Undefined)
-		#skip
-		else
-		#if cursor#==(ap_Constant8)
-		#or was modified to (ap_Constant16)
-			call swf_actionblock_add(#translated_id,const_sz)
-			incst cursor
-		endelse
-		incst cursor
-	endwhile
-endfunction
-
 function action_one(sd tag)
-	#import "actionpush" actionpush
-	#call actionpush()
+	import "actionpush" actionpush
+	call actionpush()
 	call swf_actionblock_add(#tag,(actionrecordheader_tag_size))
 	import "debug_phase_code_add" debug_phase_code_add
 	call debug_phase_code_add((FALSE))
@@ -344,7 +259,7 @@ function action_caller_right(sv pfname,sd codepointer)
 		inc nrargs
 	endwhile
 	add codepointer (DWORD)
-	call action_push((ap_Integer),nrargs,-1)
+	call action_push((ap_Integer),nrargs)
 	return codepointer
 end
 
@@ -360,7 +275,7 @@ function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, l
 	#at first is something
 	if mathpointer#!=(no_pointer)
 		set name action_code_get_pointer(#mathpointer)
-		call action_push((ap_Constant8),name,-1)
+		call action_push((ap_Constant8),name)
 	else
 		add mathpointer :+DWORD  #to pass the pointer   + square_bracket_start
 		setcall mathpointer action_code_right_util(mathpointer)
@@ -382,7 +297,7 @@ function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, l
 			call action_one((ActionGetMember))
 
 			set name action_code_get_pointer(#mathpointer)
-			call action_push((ap_Constant8),name,-1)
+			call action_push((ap_Constant8),name)
 		end
 	end
 end
@@ -393,7 +308,7 @@ function action_member_loop_right(sv mathpointer) #get, ex get_member, get the o
 	whiletrue # member_end can be right from the start at CallMethod
 		if mathpointer#!=(no_pointer)
 			set name action_code_get_pointer(#mathpointer)
-			call action_push((ap_Constant8),name,-1)
+			call action_push((ap_Constant8),name)
 		else
 			add mathpointer :  #to pass the pointer
 			if mathpointer#d=(square_bracket_start)

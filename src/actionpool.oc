@@ -59,11 +59,7 @@ function actionpool_value_ex(ss value,sd force)
     return nr
 endfunction
 #pool id
-function actionpool_getvalue(ss value)
-	sd id
-	set id actionpool_getvalue_ex(value,(FALSE))
-	return id
-end
+#function actionpool_getvalue(ss value);	sd id;	set id actionpool_getvalue_ex(value,(FALSE));	return id;end
 import "swf_mem_add" swf_mem_add
 import "error" error
 #pool id

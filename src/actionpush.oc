@@ -1,4 +1,6 @@
 
+format elfobj64
+
 #ActionPush added to a query, and released at the action for them
 
 include "../include/prog.h"
@@ -18,13 +20,13 @@ importx "memcpy" memcpy
 
 #aftercalli
 
-import "actionrecordheader" actionrecordheader
+import "actionrecordheader_core" actionrecordheader_core
 import "swf_actionblock_add" swf_actionblock_add
 
 function actionpush()
-#allmost all before action_one, but also before actionrecordheader( two examples: DefineFunction(not ;function (){};) and a=1?2:3 )
+#allmost all before action_one, but also before actionrecordheader( two examples: a=function (){} and a=1?2:3 )
 	if push.size!=0
-		call actionrecordheader((ActionPush),push.size)
+		call actionrecordheader_core((ActionPush),push.size)
 		call swf_actionblock_add(push.mem,push.size)
 		import "debug_phase_code_add" debug_phase_code_add
 		call debug_phase_code_add((TRUE),#push.size)

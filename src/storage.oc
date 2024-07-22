@@ -65,7 +65,7 @@ import "bits_packs" bits_packs
 import "word_swap_arg" word_swap_arg
 import "block_get_size" block_get_size
 import "block_reset_size" block_reset_size
-#import "push" push
+import "push" push
 
 import "actionpoolid" actionpoolid;import "actionpoolid_root" actionpoolid_root
 import "actionpool_currentblock" actionpool_currentblock
@@ -141,53 +141,53 @@ function swf_mem(sd proc,sd arg,sd len)
 		ret
 	endif
 	if proc=(mem_exp_init)
-    #arg is file
-    #len is filelength offset
-        if path_mem!=(NULL)
-            call error("The previous swf was not ended.")
-        endif
-        #0
-        import "memalloc" memalloc
-        setcall path_size strlen(arg);inc path_size
-        setcall path_mem memalloc(path_size)
-        call memcpy(path_mem,arg,path_size)
-        #1
-        setcall swf_frames_reg.main_id def_mem()
-        set id swf_frames_reg.main_id
-        call swf_actionblock((mem_exp_init),swf_frames_reg.main_id)
-        set call_struct c_main
-        #2
-        call exports_init()
-        #3
-        import "action_code_values_init" action_code_values_init
-        call action_code_values_init()
+		#arg is file
+		#len is filelength offset
+		if path_mem!=(NULL)
+			call error("The previous swf was not ended.")
+		endif
+		#0
+		import "memalloc" memalloc
+		setcall path_size strlen(arg);inc path_size
+		setcall path_mem memalloc(path_size)
+		call memcpy(path_mem,arg,path_size)
+		#1
+		setcall swf_frames_reg.main_id def_mem()
+		set id swf_frames_reg.main_id
+		call swf_actionblock((mem_exp_init),swf_frames_reg.main_id)
+		set call_struct c_main
+		#2
+		call exports_init()
+		#3
+		import "action_code_values_init" action_code_values_init
+		call action_code_values_init()
 		#4
-		#import "push_init" push_init
-		#call push_init()
-        set filelength_offset len
-        #
-        ret
+		import "push_init" push_init
+		call push_init()
+		set filelength_offset len
+		#
+		ret
 	endif
 	if proc=(mem_exp_free)
-        if path_mem!=(NULL)
-            #0
-            call mem_free(#path_mem)
-            #1 freeing all ids(main(exports,root+sprites),acs,pools)
-            call struct_ids((ids_all_free))
-            #2 exports
-            sd exports
-            setcall exports exportsId()
-            set exports# (not_an_id)
-            #3 set of values
-            call action_code_values_free()
+		if path_mem!=(NULL)
+			#0
+			call mem_free(#path_mem)
+			#1 freeing all ids(main(exports,root+sprites),acs,pools)
+			call struct_ids((ids_all_free))
+			#2 exports
+			sd exports
+			setcall exports exportsId()
+			set exports# (not_an_id)
+			#3 set of values
+			call action_code_values_free()
 			#$
-			#call push()
-            #file
-            if file_out!=(fd_error)
-                call file_close(#file_out)
-            endif
-        endif
-        ret
+			call push()
+			#file
+			if file_out!=(fd_error)
+				call file_close(#file_out)
+			endif
+		endif
+		ret
 	endif
     if path_mem=(NULL)
     #swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
@@ -344,11 +344,7 @@ endfunction
 function swf_actionblock_add(sd value,sd size)
     call swf_actionblock((mem_exp_add),value,size)
 endfunction
-function actionrecordheader(sd tag,sd size)
-#push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
-	#import "actionpush" actionpush
-	#call actionpush()
-
+function actionrecordheader_core(sd tag,sd size)
 	char t#actionrecordheader_tag_size
 	char length#actionrecordheader_length_size
 	set t tag
@@ -356,6 +352,12 @@ function actionrecordheader(sd tag,sd size)
 	call swf_actionblock_add(#t,(actionrecordheader_size))
 	import "debug_phase_code_add" debug_phase_code_add
 	call debug_phase_code_add((TRUE),#length)
+end
+function actionrecordheader(sd tag,sd size)
+#push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
+	import "actionpush" actionpush
+	call actionpush()
+	call actionrecordheader_core(tag,size)
 endfunction
 function swf_actionrecordheader(sd tag,sd size)
     char t#1

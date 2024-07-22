@@ -13,7 +13,7 @@ const NULL=0
 const BYTE=1
 const WORD=2
 const DWORD=4
-const QWORD=8
+#const QWORD=8
 
 const SEEK_SET=0
 const SEEK_CUR=1
