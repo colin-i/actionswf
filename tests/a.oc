@@ -59,15 +59,26 @@ var class1=function(){
 class1.prototype.func1=function(){
 	trace('func1');
 }
-for(q in class1.prototype)trace(q);
 ASSetPropFlags(class1.prototype,null,1);
-for(q in class1.prototype)trace(q);
 var class2=function(){
-	this.constructor();
+	trace('class2');
+	this.__proto__.constructor();
 	this.func1();
 }
-class2.prototype=class1.prototype;
-var o2=new class2();
+class2.prototype.__proto__=class1.prototype;
+class2.prototype.constructor=class1;
+class2.prototype.func2=function(){
+	trace('func2');
+}
+ASSetPropFlags(class2.prototype,null,1);
+var class3=function(){
+	trace('class3');
+	this.__proto__.constructor();
+	this.func2();
+}
+class3.prototype.__proto__=class2.prototype;
+class3.prototype.constructor=class2;
+var o3=new class3();
 
 //from asm point of view, all can be done regarding interface statement:
 //ActionImplementsOp is 'for use by ActionCastOp' or 'Additionally, with SWF 7 or later, ActionInstanceOf also supports with interfaces'
