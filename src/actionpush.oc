@@ -1,0 +1,90 @@
+
+#ActionPush added to a query, and released at the action for them
+
+include "../include/prog.h"
+
+import "mem_free" mem_free
+
+function push()
+	value mem=NULL
+	datax size#1    #same as debug_data, and here is from x values
+	datax allsize#1
+	if mem!=(NULL)
+		call mem_free(#mem)
+	end
+end
+
+importx "memcpy" memcpy
+
+#aftercalli
+
+import "actionrecordheader" actionrecordheader
+import "swf_actionblock_add" swf_actionblock_add
+
+function actionpush()
+#allmost all before action_one, but also before actionrecordheader( two examples: DefineFunction(not ;function (){};) and a=1?2:3 )
+	if push.size!=0
+		call actionrecordheader((ActionPush),push.size)
+		call swf_actionblock_add(push.mem,push.size)
+		import "debug_phase_code_add" debug_phase_code_add
+		call debug_phase_code_add((TRUE),#push.size)
+		set push.size 0
+	end
+end
+
+import "actionpool_value" actionpool_value
+
+import "memalloc" memalloc
+import "memrealloc" memrealloc
+
+function push_init()
+	set push.allsize 1
+	set push.mem memalloc(1) #same
+	set push.size 0
+end
+function push_add(sd size,sd value)
+	sd newsize
+	set newsize push.size
+	add newsize size
+	if newsize>^push.allsize
+		set push.allsize newsize
+		add push.allsize 0x100
+		set push.mem memrealloc(push.mem,push.allsize)
+	end
+	sd mem;set mem push.mem
+	add mem push.size
+	call memcpy(mem,#value,size)
+	set push.size newsize
+end
+
+function action_push(sd type,sd valuel,sd valueh)
+	if type=(ap_Constant8)
+		#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
+		sd translated_id
+		setcall translated_id actionpool_value(valuel)
+		if translated_id<=0xff
+			call push_add((BYTE),(ap_Constant8))
+			call push_add((BYTE),translated_id)
+		else
+			call push_add((BYTE),(ap_Constant16))
+			call push_add((WORD),translated_id)
+		end
+	elseif type=(ap_Integer)
+		call push_add((BYTE),(ap_Integer))
+		call push_add((DWORD),valuel)
+	elseif type=(ap_Boolean)
+		call push_add((BYTE),(ap_Boolean))
+		call push_add((BYTE),valuel)
+	elseif type=(ap_Null)
+		call push_add((BYTE),(ap_Null))
+	elseif type=(ap_Undefined)
+		call push_add((BYTE),(ap_Undefined))
+	elseif type=(ap_RegisterNumber)
+		call push_add((BYTE),(ap_RegisterNumber))
+		call push_add((BYTE),valuel)
+	else #if type=(ap_double)
+		call push_add((BYTE),(ap_double))
+		call push_add((DWORD),valuel)
+		call push_add((DWORD),valueh)
+	end # string literal, float
+endfunction
