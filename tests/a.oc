@@ -59,6 +59,9 @@ var class1=function(){
 class1.prototype.func1=function(){
 	trace('func1');
 }
+for(q in class1.prototype)trace(q);
+ASSetPropFlags(class1.prototype,null,1);
+for(q in class1.prototype)trace(q);
 var class2=function(){
 	this.constructor();
 	this.func1();
