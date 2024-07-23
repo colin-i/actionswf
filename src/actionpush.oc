@@ -90,3 +90,68 @@ function action_push(sd type,sd valuel,sd valueh)
 		call push_add((DWORD),valueh)
 	end # string literal, float
 endfunction
+
+#! plan for float
+function float(sd h,sd l)
+const sign   =0x80000000
+	sd sign=sign
+	and sign h
+	and h  ~sign
+const max_exp=0x7fF00000
+	sd exp =max_exp
+	and exp h
+	and h  ~max_exp
+	if exp=0
+		if h=0
+			if l=0
+				+-0
+				return (TRUE)
+			end
+		end
+		#subnormal always dif, at 32 [1/2^149,1/2^126), at 64 [1/2^1074,1/2^1022)
+		return (FALSE)
+	end
+	if exp=(max_exp)
+		if h=0
+			if l=0
+				+-inf
+				return (TRUE)
+			end
+		end
+		(s/q/alt/+)Nan
+		return (FALSE)
+	end
+#at 32 -126 to 127, at 64 -1022 to 1023
+#                  12345678
+const to_max_exp=0x  100000
+const e64=1023
+const e32=127
+const minexp=e64-e32-1 # 897
+const maxexp=e64+e32   # 1150
+const minexp_opt=minexp*to_max_exp
+const maxexp_opt=maxexp*to_max_exp
+	if exp<(minexp_opt)
+		return (FALSE)
+	end
+	if exp>(maxexp_opt)
+		return (FALSE)
+	end
+const f2    =0xE0000000
+const f2to32=0x20000000
+	sd f2=~f2
+	and f2 l
+	if f2!=0
+		return (FALSE)
+	end
+	divu l (f2to32)
+
+const e64to32=(minexp-1)*to_max_exp
+	sub exp (e64to32)
+	mult exp 8   #to 32 exp bits
+	mult h 8     #same
+
+	or h exp
+	or h sign
+	or h l
+	return (TRUE)
+end
