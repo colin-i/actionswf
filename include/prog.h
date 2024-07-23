@@ -132,3 +132,6 @@ const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_len
 const ret_cont_break_nothing=0
 const ret_cont_break_something=1
 const ret_cont_break_break=2
+
+const lastword=0xffFF
+const totalvalues=lastword

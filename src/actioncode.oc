@@ -6,7 +6,6 @@ include "../include/prog.h"
 importx "strcmp" strcmp
 importx "strlen" strlen
 
-const totalvalues=0xffFF
 function action_code_values_container()
     value setofvalues=NULL
     return #setofvalues

@@ -38,6 +38,7 @@ import "actionpool_value" actionpool_value
 
 import "memalloc" memalloc
 import "memrealloc" memrealloc
+import "error" error
 
 function push_init()
 	set push.allsize 1
@@ -48,6 +49,9 @@ function push_add(sd size,sd value)
 	sd newsize
 	set newsize push.size
 	add newsize size
+	if newsize>^(lastword)
+		call error("actionrecordheader too big")
+	end
 	if newsize>^push.allsize
 		set push.allsize newsize
 		add push.allsize 0x100
