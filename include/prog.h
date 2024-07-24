@@ -135,3 +135,6 @@ const ret_cont_break_break=2
 
 const lastword=0xffFF
 const totalvalues=lastword
+
+const doubleH_exp=0x7fF00000
+const doubleH_sign=0x80000000

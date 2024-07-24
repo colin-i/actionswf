@@ -336,6 +336,19 @@ function freelater()
     call file_resources_free()
 endfunction
 
+#bool
+function mem_cmp_bool(ss a,ss b,sd n)
+	add n a
+	while a<^n
+		if a#!=b#
+			return (FALSE)
+		end
+		inc a
+		inc b
+	end
+	return (TRUE)
+end
+
 importx "malloc" malloc
 importx "fclose" fclose
 

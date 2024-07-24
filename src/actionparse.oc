@@ -121,7 +121,7 @@ import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
 import "debug_phase_code_remove" debug_phase_code_remove
-
+import "mem_cmp_bool" mem_cmp_bool
 
 #aftercallimport ebool
 
@@ -825,10 +825,10 @@ function action_code_str(ss ac)
     return next
 endfunction
 function action_code_take(ss ac)
-    sd b;setcall b numeric_code(ac)
-    if b=(TRUE)
-        ret
-    endif
+	sd b;setcall b numeric_code(ac)
+	if b=(TRUE)
+		ret
+	endif
 	call action_code_take_pointer(ac)
 endfunction
 function action_code_take_pointer(sd ac)
@@ -844,41 +844,64 @@ function action_code_take_pointer(sd ac)
 endfunction
 #bool
 function numeric_code(ss ac)
-    ss pointer;set pointer ac
-    char neg="-"
-    if pointer#=neg
-        inc pointer
-    endif
-    sd bool
-    setcall bool is_numeric(pointer#)
-    if bool!=(TRUE);return (FALSE);endif
-    #
-    data value_low#1;data value_high#1
-    #
-    ss decimal_symbol_test
-    char dot="."
-    setcall decimal_symbol_test strchr(pointer,dot)
-    if decimal_symbol_test!=(NULL)
-        call action_code_set((ap_Double))
-        call sscanf(ac,"%lf",#value_low)  # e is nice but need to write to not be subtract there (ex: ...e-38), then will be "g" here
-        call action_code_set(value_high)
-        call action_code_set(value_low)
-        return (TRUE)
-    endif
-    #
-    call action_code_set((ap_Integer))
-    #
-    ss hextest
-    set hextest pointer
-    inc hextest
-    char hex="x"
-    if hextest#=hex
-        call sscanf(ac,"%x",#value_low)
-    else
-        call sscanf(ac,"%u",#value_low)
-    endelse
-    call action_code_set(value_low)
-    return (TRUE)
+	ss pointer;set pointer ac
+	char neg="-"
+	if pointer#=neg
+		inc pointer
+	endif
+	sd bool
+	setcall bool is_numeric(pointer#)
+	if bool!=(TRUE)
+		char i="Infinity"
+		sd c;set c mem_cmp_bool(pointer,#i,\.i) #versus a string
+		if c=(FALSE)
+			char n="NaN"
+			set c mem_cmp_bool(pointer,#n,\.n)
+			if c=(FALSE)
+				return (FALSE)
+			end
+			sd b=-1^doubleH_sign
+			if ac!=pointer ##swfdump is seeing -nan , nan
+				or b (doubleH_sign)
+			end
+			call action_code_set((ap_Double))
+			call action_code_set(b)
+			call action_code_set(-1)
+			return (TRUE)
+		end
+		sd a=doubleH_exp
+		if ac!=pointer ##negative
+			or a (doubleH_sign)
+		end
+		call action_code_set((ap_Double))
+		call action_code_set(a)
+		call action_code_set(0)
+		return (TRUE)
+	endif
+	data value_low#1;data value_high#1
+	ss decimal_symbol_test
+	char dot="."
+	setcall decimal_symbol_test strchr(pointer,dot)
+	if decimal_symbol_test!=(NULL)
+		call action_code_set((ap_Double))
+		call sscanf(ac,"%lf",#value_low)  # e is nice but need to write to not be subtract there (ex: ...e-38), then will be "g" here
+		call action_code_set(value_high)
+		call action_code_set(value_low)
+		return (TRUE)
+	endif
+	call action_code_set((ap_Integer))
+	#
+	ss hextest
+	set hextest pointer
+	inc hextest
+	char hex="x"
+	if hextest#=hex
+		call sscanf(ac,"%x",#value_low)
+	else
+		call sscanf(ac,"%u",#value_low)
+	endelse
+	call action_code_set(value_low)
+	return (TRUE)
 endfunction
 function action_code_member(ss ac)
     vstr delims=".["

@@ -89,9 +89,12 @@ function action_push(sd type,sd valuehigh,sd valuelow)
 		call push_add((BYTE),(ap_RegisterNumber))
 		call push_add((BYTE),valuehigh)
 	else #if type=(ap_Double)
+		#sd f;set f float(valuehigh,valuelow)
+		#if f=(float_double)
 		call push_add((BYTE),(ap_Double))
 		call push_add((DWORD),valuehigh)
 		call push_add((DWORD),valuelow)
+		#end
 	end # string literal, float
 endfunction
 
@@ -106,11 +109,11 @@ function float(sd h,sd l)
 	return f
 end
 function floatconv(sd h,sd l)
-const sign   =0x80000000
+const sign   =doubleH_sign
 	sd sign=sign
 	and sign h
 	and h  ~sign
-const max_exp=0x7fF00000
+const max_exp=doubleH_exp
 	sd exp =max_exp
 	and exp h
 	and h  ~max_exp
