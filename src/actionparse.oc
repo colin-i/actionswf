@@ -859,8 +859,8 @@ function numeric_code(ss ac)
     char dot="."
     setcall decimal_symbol_test strchr(pointer,dot)
     if decimal_symbol_test!=(NULL)
-        call action_code_set((ap_double))
-        call sscanf(ac,"%lf",#value_low)
+        call action_code_set((ap_Double))
+        call sscanf(ac,"%lf",#value_low)  # e is nice but need to write to not be subtract there (ex: ...e-38), then will be "g" here
         call action_code_set(value_high)
         call action_code_set(value_low)
         return (TRUE)

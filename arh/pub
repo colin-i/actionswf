@@ -18,8 +18,7 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ~/test/lp x && \
 ~/test/arh2 ${last} 1
 
-#while(true)  ;true; at for
-#break jump at break;endwhile
+#trace(1,2) is error
 
 #is
 #"a=1; //dsfdsffsd

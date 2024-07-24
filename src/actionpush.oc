@@ -63,11 +63,11 @@ function push_add(sd size,sd value)
 	set push.size newsize
 end
 
-function action_push(sd type,sd valuel,sd valueh)
+function action_push(sd type,sd valuehigh,sd valuelow)
 	if type=(ap_Constant8)
 		#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
 		sd translated_id
-		setcall translated_id actionpool_value(valuel)
+		setcall translated_id actionpool_value(valuehigh)
 		if translated_id<=0xff
 			call push_add((BYTE),(ap_Constant8))
 			call push_add((BYTE),translated_id)
@@ -77,26 +77,35 @@ function action_push(sd type,sd valuel,sd valueh)
 		end
 	elseif type=(ap_Integer)
 		call push_add((BYTE),(ap_Integer))
-		call push_add((DWORD),valuel)
+		call push_add((DWORD),valuehigh)
 	elseif type=(ap_Boolean)
 		call push_add((BYTE),(ap_Boolean))
-		call push_add((BYTE),valuel)
+		call push_add((BYTE),valuehigh)
 	elseif type=(ap_Null)
 		call push_add((BYTE),(ap_Null))
 	elseif type=(ap_Undefined)
 		call push_add((BYTE),(ap_Undefined))
 	elseif type=(ap_RegisterNumber)
 		call push_add((BYTE),(ap_RegisterNumber))
-		call push_add((BYTE),valuel)
-	else #if type=(ap_double)
-		call push_add((BYTE),(ap_double))
-		call push_add((DWORD),valuel)
-		call push_add((DWORD),valueh)
+		call push_add((BYTE),valuehigh)
+	else #if type=(ap_Double)
+		call push_add((BYTE),(ap_Double))
+		call push_add((DWORD),valuehigh)
+		call push_add((DWORD),valuelow)
 	end # string literal, float
 endfunction
 
 #! plan for float
+const float_double=-1
 function float(sd h,sd l)
+	sd f;set f floatconv(h,l)
+	if f!=(float_double)
+		call push_add((BYTE),(ap_Float))
+		call push_add((DWORD),f)
+	end
+	return f
+end
+function floatconv(sd h,sd l)
 const sign   =0x80000000
 	sd sign=sign
 	and sign h
@@ -108,22 +117,23 @@ const max_exp=0x7fF00000
 	if exp=0
 		if h=0
 			if l=0
-				+-0
-				return (TRUE)
+				#+-0
+				return sign
 			end
 		end
 		#subnormal always dif, at 32 [1/2^149,1/2^126), at 64 [1/2^1074,1/2^1022)
-		return (FALSE)
+		return (float_double)
 	end
 	if exp=(max_exp)
 		if h=0
 			if l=0
-				+-inf
-				return (TRUE)
+				#+- infinity
+				or sign (0x7f800000)
+				return sign
 			end
 		end
-		(s/q/alt/+)Nan
-		return (FALSE)
+		#(s/q/alt/+)Nan
+		return (float_double)
 	end
 #at 32 -126 to 127, at 64 -1022 to 1023
 #                  12345678
@@ -135,17 +145,17 @@ const maxexp=e64+e32   # 1150
 const minexp_opt=minexp*to_max_exp
 const maxexp_opt=maxexp*to_max_exp
 	if exp<(minexp_opt)
-		return (FALSE)
+		return (float_double)
 	end
 	if exp>(maxexp_opt)
-		return (FALSE)
+		return (float_double)
 	end
 const f2    =0xE0000000
 const f2to32=0x20000000
 	sd f2=~f2
 	and f2 l
 	if f2!=0
-		return (FALSE)
+		return (float_double)
 	end
 	divu l (f2to32)
 
@@ -157,5 +167,5 @@ const e64to32=(minexp-1)*to_max_exp
 	or h exp
 	or h sign
 	or h l
-	return (TRUE)
+	return h
 end
