@@ -89,16 +89,15 @@ function action_push(sd type,sd valuehigh,sd valuelow)
 		call push_add((BYTE),(ap_RegisterNumber))
 		call push_add((BYTE),valuehigh)
 	else #if type=(ap_Double)
-		#sd f;set f float(valuehigh,valuelow)
-		#if f=(float_double)
-		call push_add((BYTE),(ap_Double))
-		call push_add((DWORD),valuehigh)
-		call push_add((DWORD),valuelow)
-		#end
+		sd f;set f float(valuehigh,valuelow)
+		if f=(float_double)
+			call push_add((BYTE),(ap_Double))
+			call push_add((DWORD),valuehigh)
+			callg push_add((DWORD),valuelow)
+		end
 	end # string literal, float
 endfunction
 
-#! plan for float
 const float_double=-1
 function float(sd h,sd l)
 	sd f;set f floatconv(h,l)
@@ -109,7 +108,7 @@ function float(sd h,sd l)
 	return f
 end
 function floatconv(sd h,sd l)
-const sign   =doubleH_sign
+const    sign=doubleH_sign
 	sd sign=sign
 	and sign h
 	and h  ~sign
@@ -139,21 +138,21 @@ const max_exp=doubleH_exp
 		return (float_double)
 	end
 #at 32 -126 to 127, at 64 -1022 to 1023
-#                  12345678
-const to_max_exp=0x  100000
+#                12345678
+const to_max_exp64=0x100000
 const e64=1023
 const e32=127
-const minexp=e64-e32-1 # 897
+const minexp=e64-e32+1 # 897
 const maxexp=e64+e32   # 1150
-const minexp_opt=minexp*to_max_exp
-const maxexp_opt=maxexp*to_max_exp
+const minexp_opt=minexp*to_max_exp64
+const maxexp_opt=maxexp*to_max_exp64
 	if exp<(minexp_opt)
 		return (float_double)
 	end
 	if exp>(maxexp_opt)
 		return (float_double)
 	end
-const f2    =0xE0000000
+const     f2=0xE0000000
 const f2to32=0x20000000
 	sd f2=~f2
 	and f2 l
@@ -161,8 +160,7 @@ const f2to32=0x20000000
 		return (float_double)
 	end
 	divu l (f2to32)
-
-const e64to32=(minexp-1)*to_max_exp
+const e64to32=(minexp-1)*to_max_exp64
 	sub exp (e64to32)
 	mult exp 8   #to 32 exp bits
 	mult h 8     #same
