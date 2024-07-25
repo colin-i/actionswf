@@ -42,7 +42,7 @@ import "swf_mem" swf_mem
 
 
 
-#pool id
+#pool id (U16)
 function actionpool_value(ss value)
 	sd id
 	set id actionpool_value_ex(value,(FALSE))
@@ -64,51 +64,71 @@ import "swf_mem_add" swf_mem_add
 import "error" error
 #pool id
 function actionpool_getvalue_ex(ss value,sd force)
-    sd block
-    setcall block actionpool_currentblock()
-    sd size
-    setcall size block_get_size(block)
-    sd nr
-    sd newlen
-    setcall newlen strlen(value)
-    if size=0
-	#is first value, add the pools header and count=1 , the pool mem is already selected when it comes from the second actionpool_getvalue at push
-        sd onevalue=1
-        call swf_mem_add(#onevalue,2)
-        set nr 0
-    else
-        sd mem
-        sd count
-        setcall mem block_get_mem(block)
-        setcall count word_arg_to_stack(mem)
-        set nr count
-	if force=(FALSE)
-		add mem (WORD)
-        while count!=0
-            sd len
-            setcall len strlen(mem)
-            if len=newlen
-                sd comp
-                setcall comp memcmp(mem,value,len)
-                if comp=0
-                    sub nr count
-                    return nr
-                endif
-            endif
-            inc len
-            add mem len
-            dec count
-        endwhile
+	sd block
+	setcall block actionpool_currentblock()
+	sd size
+	setcall size block_get_size(block)
+	sd nr
+	sd newlen
+	setcall newlen strlen(value)
+	if size=0
+	#is first value, add the pools header and count=1 , # before: actionpool_getvalue(the pool mem is already selected when it comes from the second  at push)
+		#if force=(FALSE)
+		#const constpool_unique=0x00
+		#const  constpool_multi=0xff
+		#	if flag_pool
+		#		if write
+		#			add (constpool_unique)
+		#		else
+		#			read
+		#			if (constpool_unique)
+		#				return (not_an_id)
+		#			end
+		#		end
+		#	end
+		#end
+		sd onevalue=1
+		call swf_mem_add(#onevalue,2)
+		set nr 0
+	else
+		sd mem
+		sd count
 		setcall mem block_get_mem(block)
-	end
-	if nr=(maxuint16)
-		call error("max uint16 at action pool") #Count  UI16  Number of constants to follow
-	end
-        set count nr
-        inc count
-        call stack_to_word_arg(count,mem)
-    endelse
-    inc newlen
-    call swf_mem_add(value,newlen)
-    return nr
+		setcall count word_arg_to_stack(mem)
+		set nr count
+		if force=(FALSE)
+			add mem (WORD)
+			while count!=0
+				sd len
+				setcall len strlen(mem)
+				if len=newlen
+					sd comp
+					setcall comp memcmp(mem,value,len)
+					if comp=0
+						#if flag_pool
+						#	if write
+						#		write (constpool_multi)
+						#	end
+						#end
+						sub nr count
+						return nr
+					endif
+				endif
+				inc len
+				add mem len
+				dec count
+			endwhile
+			# same as previous for flag_pool
+			setcall mem block_get_mem(block)
+		end
+		if nr=(maxuint16)
+			call error("max uint16 at action pool") #Count  UI16  Number of constants to follow
+		end
+		set count nr
+		inc count
+		call stack_to_word_arg(count,mem)
+	endelse
+	inc newlen
+	call swf_mem_add(value,newlen)
+	return nr
 endfunction
