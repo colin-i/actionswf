@@ -1,8 +1,6 @@
 
 format elfobj64
 
-const R_OK=4
-
 include "../include/prog.h"
 
 importx "strrchr" strrchr

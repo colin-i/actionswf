@@ -37,18 +37,18 @@ endfunction
 #function pool()
 #	value path=NULL
 #	value file=NULL
-#	charx write#1
+#	valuex mem=NULL
 #	data del=flag_pool_del
 #	if path!=(NULL)
 #		if file!=(NULL)
 #			call f_close(#file)
-#			if write=(FALSE)
-#				if del!=0
-#					call unlink(path)
-#				else
-#					set del (flag_pool_del) #reset? if will be another swf
-#				end
+#		elseif mem!=(NULL)
+#			if del!=0
+#				call unlink(path)
+#			else
+#				set del (flag_pool_del) #reset? if will be another swf
 #			end
+#			call mem_free(#mem)
 #		end
 #		call mem_free(#path)
 #	end
@@ -56,6 +56,9 @@ endfunction
 
 #importx "sprintf" sprintf
 #importx "access" access
+#importx "fseek" fseek
+#importx "fread" fread
+#importx "fclose" fclose
 
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
@@ -67,6 +70,8 @@ import "swf_mem" swf_mem
 
 #import "f_open_mem" f_open_mem
 #import "memalloc" memalloc
+#import "f_tell_errors" f_tell_errors
+#import "memalloc_errors" memalloc_errors
 
 #function pool_init(sd flags,sd path)
 #	sd f_pool=flag_pool
@@ -82,8 +87,13 @@ import "swf_mem" swf_mem
 #			set pool.file f_open_mem(pool.path,"wb")
 #			set pool.write (TRUE)
 #		else
-#			set pool.file f_open_mem(pool.path,"rb")
-#			set pool.write (FALSE)
+#			sd file;set file f_open_mem(pool.path,"rb")
+#			call fseek(file,0,(SEEK_END)
+#			sd sz;set sz f_tell_errors(file)
+#			call fseek(file,0,(SEEK_SET))
+#			set pool.mem memalloc_errors(sz,file)
+#			call fread(pool.mem,sz,1,file)
+#			call fclose(file)
 #			and pool.del flags
 #		end
 #	end

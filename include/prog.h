@@ -138,3 +138,6 @@ const totalvalues=lastword
 
 const doubleH_exp=0x7fF00000
 const doubleH_sign=0x80000000
+
+#const F_OK=0  # 0 2 4 6 are same as windows
+const R_OK=4
