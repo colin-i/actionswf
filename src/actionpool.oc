@@ -29,28 +29,16 @@ function actionpool_currentblock()
     return block
 endfunction
 
-#importx "unlink" unlink
 #import "f_close" f_close
 #import "mem_free" mem_free
 
-#why don't use ..(datax flags,.. instead of data del? still is set that useless at read phase it that way
 #function pool()
-#	value path=NULL
 #	value file=NULL
 #	valuex mem=NULL
-#	data del=flag_pool_del
-#	if path!=(NULL)
-#		if file!=(NULL)
-#			call f_close(#file)
-#		elseif mem!=(NULL)
-#			if del!=0
-#				call unlink(path)
-#			else
-#				set del (flag_pool_del) #reset? if will be another swf
-#			end
-#			call mem_free(#mem)
-#		end
-#		call mem_free(#path)
+#	if file!=(NULL)
+#		call f_close(#file)
+#	elseif mem!=(NULL)
+#		call mem_free(#mem)
 #	end
 #end
 
@@ -59,6 +47,7 @@ endfunction
 #importx "fseek" fseek
 #importx "fread" fread
 #importx "fclose" fclose
+#importx "unlink" unlink
 
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
@@ -80,21 +69,23 @@ import "swf_mem" swf_mem
 #		sd s;setcall s strlen(path)
 #		sd a=1+4+1
 #		add a s
-#		set pool.path memalloc(a)
-#		call sprintf(pool.path,"%s.pool",path)
-#		set a access(pool.path,(F_OK))
+#		set path memalloc(a)
+#		call sprintf(path,"%s.pool",path)
+#		set a access(path,(F_OK))
 #		if a=-1
-#			set pool.file f_open_mem(pool.path,"wb")
-#			set pool.write (TRUE)
+#			set pool.file f_open_mem(path,"wb")
 #		else
-#			sd file;set file f_open_mem(pool.path,"rb")
+#			sd file;set file f_open_mem(path,"rb")
 #			call fseek(file,0,(SEEK_END)
 #			sd sz;set sz f_tell_errors(file)
 #			call fseek(file,0,(SEEK_SET))
 #			set pool.mem memalloc_errors(sz,file)
 #			call fread(pool.mem,sz,1,file)
 #			call fclose(file)
-#			and pool.del flags
+#			and flags (flag_pool_del)
+#			if flags!=0
+#				call unlink(path) #can also go on success (extra code there), but here is optimization rerun, normally no errors
+#			end
 #		end
 #	end
 #end
