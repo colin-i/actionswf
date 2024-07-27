@@ -40,7 +40,15 @@ import "swf_mem" swf_mem
 
 #aftercallimport ebool
 
-
+#function pool_init(sd flags)
+#	and flags (flags_pool)
+#	if flags!=0
+#		sd f_pool=flag_pool
+#		and f_pool flags
+#		if f_pool!=0
+#		end
+#	end
+#end
 
 #pool id (U16)
 function actionpool_value(ss value)
