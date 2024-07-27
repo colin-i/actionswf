@@ -29,23 +29,62 @@ function actionpool_currentblock()
     return block
 endfunction
 
+#importx "unlink" unlink
+#import "f_close" f_close
+#import "mem_free" mem_free
+
+#why don't use ..(datax flags,.. instead of data del? still is set that useless at read phase it that way
+#function pool()
+#	value path=NULL
+#	value file=NULL
+#	charx write#1
+#	data del=flag_pool_del
+#	if path!=(NULL)
+#		if file!=(NULL)
+#			call f_close(#file)
+#			if write=(FALSE)
+#				if del!=0
+#					call unlink(path)
+#				else
+#					set del (flag_pool_del) #reset? if will be another swf
+#				end
+#			end
+#		end
+#		call mem_free(#path)
+#	end
+#end
+
+#importx "sprintf" sprintf
+#importx "access" access
+
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
-
 import "swf_mem" swf_mem
-
-
 
 #aftercallimport ebool
 
-#function pool_init(sd flags)
-#	and flags (flags_pool)
-#	if flags!=0
-#		sd f_pool=flag_pool
-#		and f_pool flags
-#		if f_pool!=0
+#import "f_open_mem" f_open_mem
+#import "memalloc" memalloc
+
+#function pool_init(sd flags,sd path)
+#	sd f_pool=flag_pool
+#	and f_pool flags
+#	if f_pool!=0
+#		sd s;setcall s strlen(path)
+#		sd a=1+4+1
+#		add a s
+#		set pool.path memalloc(a)
+#		call sprintf(pool.path,"%s.pool",path)
+#		set a access(pool.path,(F_OK))
+#		if a=-1
+#			set pool.file f_open_mem(pool.path,"wb")
+#			set pool.write (TRUE)
+#		else
+#			set pool.file f_open_mem(pool.path,"rb")
+#			set pool.write (FALSE)
+#			and pool.del flags
 #		end
 #	end
 #end
