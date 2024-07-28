@@ -12,6 +12,5 @@ const flag_x=0x80
 
 const flags_x=debug_x|debug_x_pad|flag_x
 
-#const flag_pool=0x100     # ! .pool file? write : read
-#const flag_pool_del=0x200 #            if write then unlink .pool file
-#const flags_pool=flag_pool|flag_pool_del
+const flag_pool=0x100     # write if not .pool file else read
+const flag_pool_del=0x200 # if write then unlink .pool file

@@ -17,6 +17,7 @@ function push()
 end
 
 importx "memcpy" memcpy
+importx "strlen" strlen
 
 #aftercalli
 
@@ -75,7 +76,7 @@ function action_push(sd type,sd valuehigh,sd valuelow)
 		#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
 		sd translated_id
 		setcall translated_id actionpool_value(valuehigh)
-		#if translated_id!=(not_an_id)
+		if translated_id!=(not_an_id)
 			if translated_id<=0xff
 				call push_add((BYTE),(ap_Constant8))
 				call push_add((BYTE),translated_id)
@@ -83,11 +84,11 @@ function action_push(sd type,sd valuehigh,sd valuelow)
 				call push_add((BYTE),(ap_Constant16))
 				call push_add((WORD),translated_id)
 			end
-		#else
-		#	call push_add((BYTE),(ap_String))
-		#	sd sz=1;add sz strlen(valuehigh)
-		#	call push_add_ex(size,value,1)
-		#end
+		else
+			call push_add((BYTE),(ap_String))
+			sd size=1;add size strlen(valuehigh)
+			call push_add_ex(size,valuehigh,1)
+		end
 	elseif type=(ap_Integer)
 		call push_add((BYTE),(ap_Integer))
 		call push_add((DWORD),valuehigh)

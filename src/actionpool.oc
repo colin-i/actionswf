@@ -29,46 +29,50 @@ function actionpool_currentblock()
     return block
 endfunction
 
-#import "f_close" f_close
-#import "mem_free" mem_free
+import "f_close" f_close
+import "mem_free" mem_free
 
-#function pool()
-#	value file=NULL
-#	valuex mem=NULL
-#	charx constants#maxuint16
-#	vstrx cursor#1
-#	if file!=(NULL)
-#		call f_close(#file)
-#	elseif mem!=(NULL)
-#		call mem_free(#mem)
-#	end
-#end
-#const constpool_unique=0x00
-#const  constpool_multi=0xff
-#function pool_entry()
-#	set pool.cursor# (constpool_unique)
-#	inc pool.cursor
-#end
-#function pool_realentry(sd pos)
-#	ss p^pool.constants
-#	add p pos
-#	set p# (constpool_multi)
-#end
-#function pool_reentry()
-#	sd type;set type pool.cursor#
-#	if type=(constpool_unique)
-#		return (not_an_id)
-#	end
-#	inc pool.cursor
-#	return (any_id)
-#end
+function pool()
+	value file=NULL
+	value mem=NULL
+	charx constants#maxuint16
+	vstrx cursor#1
+	valuex end#1
+	if file!=(NULL)
+		call f_close(#file)
+	elseif mem!=(NULL)
+		call mem_free(#mem)
+	end
+end
+const constpool_unique=0x00
+const  constpool_multi=0xff
+function pool_entry()
+	set pool.cursor# (constpool_unique)
+	inc pool.cursor
+end
+function pool_realentry(sd pos)
+	ss p;set p #pool.constants
+	add p pos
+	set p# (constpool_multi)
+end
+function pool_reentry()
+	if pool.cursor<^pool.end
+		sd type;set type pool.cursor#
+		inc pool.cursor
+		if type=(constpool_unique)
+			return (not_an_id)
+		end
+		return (any_id)
+	end
+	call error("error at pool read")
+end
 
-#importx "sprintf" sprintf
-#importx "access" access
-#importx "fseek" fseek
-#importx "fread" fread
-#importx "fclose" fclose
-#importx "unlink" unlink
+importx "sprintf" sprintf
+importx "access" access
+importx "fseek" fseek
+importx "fread" fread
+importx "fclose" fclose
+importx "unlink" unlink
 
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
@@ -78,48 +82,54 @@ import "swf_mem" swf_mem
 
 #aftercallimport ebool
 
-#import "f_open_mem" f_open_mem
-#import "memalloc" memalloc
-#import "f_tell_errors" f_tell_errors
-#import "memalloc_errors" memalloc_errors
+import "f_open_mem" f_open_mem
+import "f_open" f_open
+import "memalloc" memalloc
+import "f_tell_errors" f_tell_errors
+import "memalloc_errors" memalloc_errors
 
-#function pool_init(sd flags,sd path)
-#	sd f_pool=flag_pool
-#	and f_pool flags
-#	if f_pool!=0
-#		sd s;setcall s strlen(path)
-#		sd a=1+4+1
-#		add a s
-#		set path memalloc(a)
-#		call sprintf(path,"%s.pool",path)
-#		set a access(path,(F_OK))
-#		if a=-1
-#			set pool.file f_open_mem(path,"wb")
-#			set pool.cursor #pool.constants
-#		else
-#			sd file;set file f_open_mem(path,"rb")
-#			call fseek(file,0,(SEEK_END)
-#			sd sz;set sz f_tell_errors(file)
-#			call fseek(file,0,(SEEK_SET))
-#			set pool.mem memalloc_errors(sz,file)
-#			call fread(pool.mem,sz,1,file)
-#			call fclose(file)
-#			and flags (flag_pool_del)
-#			if flags!=0
-#				call unlink(path) #can also go on success (extra code there), but here is optimization rerun, normally no errors
-#			end
-#			set pool.cursor pool.mem
-#		end
-#	end
-#end
-#function pool_done()
-#	if pool.cursor!=#pool.constants
-#		import "f_write" f_write
-#		sub pool.cursor #pool.constants
-#		call f_write(pool.constants,pool.cursor,1,pool.file)
-#		set pool.cursor #pool.constants
-#	end
-#end
+function pool_init(sd flags,sd path)
+	sd f_pool=flag_pool
+	and f_pool flags
+	if f_pool!=0
+		sd s;setcall s strlen(path)
+		sd a=1+4+1
+		add a s
+		sd p;set p memalloc(a)
+		call sprintf(p,"%s.pool",path)
+		datax int#1
+		set int access(p,(F_OK))
+		if int=-1
+			set pool.file f_open_mem(p,"wb")
+			set pool.cursor #pool.constants
+		else
+			sd file;set file f_open(p,"rb")
+			call fseek(file,0,(SEEK_END))
+			set pool.end f_tell_errors(file)
+			call fseek(file,0,(SEEK_SET))
+			set pool.mem memalloc_errors(pool.end,file)
+			call fread(pool.mem,pool.end,1,file)
+			call fclose(file)
+			and flags (flag_pool_del)
+			if flags!=0
+				call unlink(p) #can also go on success (extra code there), but here is optimization rerun, normally no errors
+			end
+			set pool.cursor pool.mem
+			#end for error checks?
+			add pool.end pool.cursor
+		end
+	end
+end
+function pool_done()
+	if pool.file!=(NULL)
+		if pool.cursor!=#pool.constants
+			import "f_write" f_write
+			sub pool.cursor #pool.constants
+			call f_write(pool.file,#pool.constants,pool.cursor)
+			set pool.cursor #pool.constants
+		end
+	end
+end
 
 #pool id (U16)
 function actionpool_value(ss value)
@@ -152,16 +162,16 @@ function actionpool_getvalue_ex(ss value,sd force)
 	setcall newlen strlen(value)
 	if size=0
 	#is first value, add the pools header and count=1 , # before: actionpool_getvalue(the pool mem is already selected when it comes from the second  at push)
-		#if force=(FALSE)
-		#	if pool.file!=(NULL)
-		#		call pool_entry()
-		#	elseif pool.mem!=(NULL)
-		#		set nr pool_reentry()
-		#		if nr=(not_an_id)
-		#			return (not_an_id)
-		#		end
-		#	end
-		#end
+		if force=(FALSE)
+			if pool.file!=(NULL)
+				call pool_entry()
+			elseif pool.mem!=(NULL)
+				set nr pool_reentry()
+				if nr=(not_an_id)
+					return (not_an_id)
+				end
+			end
+		end
 		sd onevalue=1
 		call swf_mem_add(#onevalue,2)
 		set nr 0
@@ -181,9 +191,9 @@ function actionpool_getvalue_ex(ss value,sd force)
 					setcall comp memcmp(mem,value,len)
 					if comp=0
 						sub nr count
-						#if pool.file!=(NULL)
-						#	call pool_realentry(nr)
-						#end
+						if pool.file!=(NULL)
+							call pool_realentry(nr)
+						end
 						return nr
 					endif
 				endif
@@ -191,15 +201,15 @@ function actionpool_getvalue_ex(ss value,sd force)
 				add mem len
 				dec count
 			endwhile
-			#if pool.file!=(NULL)
-			#	call pool_entry()
-			#elseif pool.mem!=(NULL)
-			#	sd testid
-			#	set testid pool_reentry()
-			#	if testid=(not_an_id)
-			#		return (not_an_id)
-			#	end
-			#end
+			if pool.file!=(NULL)
+				call pool_entry()
+			elseif pool.mem!=(NULL)
+				sd testid
+				set testid pool_reentry()
+				if testid=(not_an_id)
+					return (not_an_id)
+				end
+			end
 			setcall mem block_get_mem(block)
 		end
 		if nr=(maxuint16)

@@ -64,8 +64,8 @@ function debug_data()
 	endif
 	import "alt_free" alt_free
 	call alt_free()
-	#import "pool" pool
-	#call pool()
+	import "pool" pool
+	call pool()
 endfunction
 
 function debug_phase_init(ss pointer)
@@ -160,7 +160,7 @@ import "alt_init" alt_init
 import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem" f_open_mem
-#import "pool_init" pool_init
+import "pool_init" pool_init
 
 function flags_init(sd flags,sd path)
 	set flags x_init(flags,path)
@@ -170,7 +170,7 @@ function flags_init(sd flags,sd path)
 
 	call frames_as_shows(flags)
 	call for_in(flags)
-	#call pool_init(flags,path)
+	call pool_init(flags,path)
 endfunction
 
 function log_init(sd flags,sd path)
