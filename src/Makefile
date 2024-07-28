@@ -104,7 +104,6 @@ endif
 
 ${name}: ${obs} ${eobs}
 	${OLINK} ${logs}
-	@echo
 	$(AR) cr ${exte} ${obs}
 	${ATLDCOM}
 endif
@@ -116,7 +115,6 @@ endif
 
 ounused:
 	${OLINK} ${logs}
-	@echo
 
 compile: ${obs} ${eobs}
 

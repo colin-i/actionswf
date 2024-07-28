@@ -7,7 +7,7 @@ einclude "../dev/import.h"
 
 include "entryraw.oc" "entry.oc"
 
-sd f=debug_log|debug_x_pad|flag_pool|flag_pool_del
+sd f=debug_log|debug_x_pad|flag_pool_del
 if argc=2
 	importx "puts" puts
 	call puts("flag_x")
