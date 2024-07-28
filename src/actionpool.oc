@@ -35,11 +35,32 @@ endfunction
 #function pool()
 #	value file=NULL
 #	valuex mem=NULL
+#	charx constants#maxuint16
+#	vstrx cursor#1
 #	if file!=(NULL)
 #		call f_close(#file)
 #	elseif mem!=(NULL)
 #		call mem_free(#mem)
 #	end
+#end
+#const constpool_unique=0x00
+#const  constpool_multi=0xff
+#function pool_entry()
+#	set pool.cursor# (constpool_unique)
+#	inc pool.cursor
+#end
+#function pool_realentry(sd pos)
+#	ss p^pool.constants
+#	add p pos
+#	set p# (constpool_multi)
+#end
+#function pool_reentry()
+#	sd type;set type pool.cursor#
+#	if type=(constpool_unique)
+#		return (not_an_id)
+#	end
+#	inc pool.cursor
+#	return (any_id)
 #end
 
 #importx "sprintf" sprintf
@@ -74,6 +95,7 @@ import "swf_mem" swf_mem
 #		set a access(path,(F_OK))
 #		if a=-1
 #			set pool.file f_open_mem(path,"wb")
+#			set pool.cursor #pool.constants
 #		else
 #			sd file;set file f_open_mem(path,"rb")
 #			call fseek(file,0,(SEEK_END)
@@ -86,7 +108,16 @@ import "swf_mem" swf_mem
 #			if flags!=0
 #				call unlink(path) #can also go on success (extra code there), but here is optimization rerun, normally no errors
 #			end
+#			set pool.cursor pool.mem
 #		end
+#	end
+#end
+#function pool_done()
+#	if pool.cursor!=#pool.constants
+#		import "f_write" f_write
+#		sub pool.cursor #pool.constants
+#		call f_write(pool.constants,pool.cursor,1,pool.file)
+#		set pool.cursor #pool.constants
 #	end
 #end
 
@@ -122,16 +153,12 @@ function actionpool_getvalue_ex(ss value,sd force)
 	if size=0
 	#is first value, add the pools header and count=1 , # before: actionpool_getvalue(the pool mem is already selected when it comes from the second  at push)
 		#if force=(FALSE)
-		#const constpool_unique=0x00
-		#const  constpool_multi=0xff
-		#	if flag_pool
-		#		if write
-		#			add (constpool_unique)
-		#		else
-		#			read
-		#			if (constpool_unique)
-		#				return (not_an_id)
-		#			end
+		#	if pool.file!=(NULL)
+		#		call pool_entry()
+		#	elseif pool.mem!=(NULL)
+		#		set nr pool_reentry()
+		#		if nr=(not_an_id)
+		#			return (not_an_id)
 		#		end
 		#	end
 		#end
@@ -153,12 +180,10 @@ function actionpool_getvalue_ex(ss value,sd force)
 					sd comp
 					setcall comp memcmp(mem,value,len)
 					if comp=0
-						#if flag_pool
-						#	if write
-						#		write (constpool_multi)
-						#	end
-						#end
 						sub nr count
+						#if pool.file!=(NULL)
+						#	call pool_realentry(nr)
+						#end
 						return nr
 					endif
 				endif
@@ -166,7 +191,15 @@ function actionpool_getvalue_ex(ss value,sd force)
 				add mem len
 				dec count
 			endwhile
-			# same as previous for flag_pool
+			#if pool.file!=(NULL)
+			#	call pool_entry()
+			#elseif pool.mem!=(NULL)
+			#	sd testid
+			#	set testid pool_reentry()
+			#	if testid=(not_an_id)
+			#		return (not_an_id)
+			#	end
+			#end
 			setcall mem block_get_mem(block)
 		end
 		if nr=(maxuint16)

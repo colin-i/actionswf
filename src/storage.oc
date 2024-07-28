@@ -327,6 +327,8 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			setcall poolblock actionpool_currentblock()
 			call block_reset_size(poolblock)
 			call block_reset_size(block)
+			#import "pool_done" pool_done
+			#call pool_done()
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)

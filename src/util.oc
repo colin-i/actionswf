@@ -460,7 +460,7 @@ endfunction
 #structure ids
 
 function struct_ids(sd proc,sd id)
-    vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures
+    vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
     vdata strct^structures
     data counter=0
     sv ac_ptr

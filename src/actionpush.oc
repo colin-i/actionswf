@@ -45,11 +45,11 @@ function push_init()
 	set push.mem memalloc(1) #same
 	set push.size 0
 end
-function push_add(sd size,sd value)
+function push_add_ex(sd size,sd value,sd type)
 	sd newsize
 	set newsize push.size
 	add newsize size
-	if newsize>^(lastword)
+	if newsize>^(maxuint16)
 		call error("actionrecordheader too big")
 	end
 	if newsize>^push.allsize
@@ -59,8 +59,15 @@ function push_add(sd size,sd value)
 	end
 	sd mem;set mem push.mem
 	add mem push.size
-	call memcpy(mem,#value,size)
+	if type=0
+		call memcpy(mem,#value,size)
+	else
+		call memcpy(mem,value,size)
+	end
 	set push.size newsize
+end
+function push_add(sd size,sd value)
+	call push_add_ex(size,value,0)
 end
 
 function action_push(sd type,sd valuehigh,sd valuelow)
@@ -68,13 +75,19 @@ function action_push(sd type,sd valuehigh,sd valuelow)
 		#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
 		sd translated_id
 		setcall translated_id actionpool_value(valuehigh)
-		if translated_id<=0xff
-			call push_add((BYTE),(ap_Constant8))
-			call push_add((BYTE),translated_id)
-		else
-			call push_add((BYTE),(ap_Constant16))
-			call push_add((WORD),translated_id)
-		end
+		#if translated_id!=(not_an_id)
+			if translated_id<=0xff
+				call push_add((BYTE),(ap_Constant8))
+				call push_add((BYTE),translated_id)
+			else
+				call push_add((BYTE),(ap_Constant16))
+				call push_add((WORD),translated_id)
+			end
+		#else
+		#	call push_add((BYTE),(ap_String))
+		#	sd sz=1;add sz strlen(valuehigh)
+		#	call push_add_ex(size,value,1)
+		#end
 	elseif type=(ap_Integer)
 		call push_add((BYTE),(ap_Integer))
 		call push_add((DWORD),valuehigh)

@@ -133,11 +133,11 @@ const ret_cont_break_nothing=0
 const ret_cont_break_something=1
 const ret_cont_break_break=2
 
-const lastword=0xffFF
-const totalvalues=lastword
+const totalvalues=maxuint16
 
 const doubleH_exp=0x7fF00000
 const doubleH_sign=0x80000000
 
 #const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
+#const any_id=~not_an_id
