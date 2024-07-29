@@ -460,70 +460,77 @@ endfunction
 #structure ids
 
 function struct_ids(sd proc,sd id)
-    vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
-    vdata strct^structures
-    data counter=0
-    sv ac_ptr
-    sv pointer
+	vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
+	vdata strct^structures
+	data counter=0
+	sv ac_ptr
+	sv pointer
 	if proc=(ids_counter)
 		return counter
 	endif
 	if proc=(ids_all_free)
-        #starting with ids_all_free:
-        #                #counter increment#, then null at ac,pools
-        #   mem_free at struct_ids_action_expand
-        #   can have errors at any point and here all are verified
-        set pointer :;mult pointer counter;add pointer strct
-        while strct!=pointer
-            sub pointer :;if pointer#!=(NULL);call free(pointer#);endif
-            dec counter
-            setcall ac_ptr struct_ids_action((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
-            setcall ac_ptr struct_ids_actionpool((ids_get),counter);if ac_ptr!=(NULL);call free(ac_ptr);endif
-        endwhile
-        ret
+		#starting with ids_all_free:
+		#                #counter increment#, then null at ac,pools
+		#   mem_free at struct_ids_action_expand
+		#   can have errors at any point and here all are verified
+		set pointer :;mult pointer counter;add pointer strct
+		while strct!=pointer
+			dec counter
+			sub pointer :
+			if pointer#!=(NULL)
+				call free(pointer#)
+				setcall ac_ptr struct_ids_action((ids_get),counter)
+				if ac_ptr!=(NULL)
+					call free(ac_ptr)
+					setcall ac_ptr struct_ids_actionpool((ids_get),counter)
+					if ac_ptr!=(NULL)
+						call free(ac_ptr)
+					endif
+				endif
+			endif
+		endwhile
+		ret
 	endif
 
-    sd ident
+	sd ident
 	if proc!=(ids_set)
 		set ident id
 	else
 		set ident counter
 	endelse
-    setcall pointer move_to_n_pointer(strct,ident)
+	setcall pointer move_to_n_pointer(strct,ident)
 	if proc=(ids_get)
 		return pointer#
 	endif
 	if proc=(ids_set)
 	#id
-        if counter=(max_structures)
-            call error("too many objects")
-        endif
-        sd newblock
-        setcall newblock def_data()
-	#can be in a free place, but since log, that will overwrite previous ids, to keep them compressed, a solution can be two parse twice
-	#	sv iter
-	#	set iter pointer
-	#	while iter!=strct
-	#		sub iter :
-	#		if iter#=0
-	#			set iter# newblock
-	#			sub iter strct
-	#			div iter :
-	#			return iter
-	#		endif
-	#	endwhile
-        set pointer# newblock
-        #counter increment#
-        #sd c; for counter verification inside
-        sd c;set c counter;inc counter
-        setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)
-        setcall ac_ptr struct_ids_actionpool((ids_get_pointer),c);set ac_ptr# (NULL)
-        #counter increment#
-        return ident
+		if counter=(max_structures)
+			call error("too many objects")
+		endif
+		sd newblock
+		setcall newblock def_data()
+		#can be in a free place, but since log, that will overwrite previous ids, to keep them compressed, a solution can be to parse twice
+		#	sv iter
+		#	set iter pointer
+		#	while iter!=strct
+		#		sub iter :
+		#		if iter#=0
+		#			set iter# newblock
+		#			sub iter strct
+		#			div iter :
+		#			return iter
+		#		endif
+		#	endwhile
+		set pointer# newblock
+		#counter increment#
+		sd c;set c counter;inc counter
+		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)
+		#counter increment#
+		return ident
 	endif
 	if proc=(ids_get_pointer)
-        if ident>=counter;call error("Unexistent input id.");endif
-        return pointer
+		if ident>=counter;call error("Unexistent input id.");endif
+		return pointer
 	endif
 	#else
 	#if proc==(ids_free)
@@ -558,7 +565,10 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
         call mem_free(pointer)
 	endelse
 endfunction
-
+function struct_ids_action_set(sd id)
+	call struct_ids_action((ids_set),id)
+	sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
+end
 
 #strings
 

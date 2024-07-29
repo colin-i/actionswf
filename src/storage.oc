@@ -106,6 +106,7 @@ endfunction
 import "error" error
 import "struct_ids_actionpool" struct_ids_actionpool
 import "struct_ids_action" struct_ids_action
+import "struct_ids_action_set" struct_ids_action_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 import "debug_show" debug_show
@@ -164,6 +165,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		#4
 		import "push_init" push_init
 		call push_init()
+		#
 		set filelength_offset len
 		#
 		ret
@@ -286,7 +288,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 	if proc=(mem_exp_init)
         set id arg
         set id_back id
-        call struct_ids_action((ids_set),id)
+        call struct_ids_action_set(id)
         call struct_ids_actionpool((ids_set),id)
         sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
         sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
@@ -373,7 +375,7 @@ endfunction
 function new_sprite_id()
     sd id
     setcall id def_mem()
-    call struct_ids_action((ids_set),id)
+    call struct_ids_action_set(id)
     call struct_ids_actionpool((ids_set),id)
     return id
 endfunction

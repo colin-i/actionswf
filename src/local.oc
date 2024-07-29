@@ -36,13 +36,13 @@ import "error" error
 import "file_get_content" file_get_content
 import "exportsId_get" exportsId_get
 
-function swf_new_ex_local(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add_debug)
+function swf_new_ex_local(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd flags)
 #ss path             file out pathname
 #sd width
 #sd height
 #sd backgroundcolor  0xRRGGBB  value
 #sd fps              swf frames per second
-
+#sd flags            see flags.h
     #F=uncompressed, C=ZLib
 const hd_start=\
     char *=F
@@ -61,7 +61,7 @@ data size2=\-hd2
 vdata hd_pack2%hd2
 
 	import "flags_init" flags_init
-	call flags_init(add_debug,path)
+	call flags_init(flags,path)
     call swf_mem((mem_exp_init),path,(file_sz_off-hd_start))
 
     #identifiers for swf
