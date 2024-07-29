@@ -44,6 +44,15 @@ function pool()
 		call mem_free(#mem)
 	end
 end
+#function pool(sd id)
+#	charx write#1
+#	charx read#1
+#	get pblock
+#	if !=(NULL)
+#		call mem_free(pblock)
+#	end
+#end
+
 const constpool_unique=0x00
 const  constpool_multi=0xff
 function pool_entry()
@@ -66,21 +75,30 @@ function pool_reentry()
 	end
 	call error("error at pool read")
 end
-
 #if pool.write!=(FALSE)
 #function pool_entry()
 #	sd id;set id actionpoolid()
-#	sd pb;set pb struct_ids_actionpool_write((ids_get_pointer),id)
+#	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
+#	char a=constpool_unique
+#	call mem_block_add(pb,#a,1)
 #end
 #elseif pool.read!=(FALSE)
 #function pool_reentry()
 #	sd id;set id actionpoolid()
-#	sd pb;set pb struct_ids_actionpool_read((ids_get_pointer),id)
-#	sd mem;sd size block_get_mem_size
-#	sd cursor is first dword
+#	sd b;set b struct_ids_actionpool_filter((ids_get),id)
+#	ss mem;sd size;call block_get_mem_size(b,#mem,#size)
+#	sd cursor;set cursor mem#
 #	if cursor<^size
 #	end
 #	call error("error at pool read")
+#end
+#if pool.write!=(FALSE)
+#function pool_realentry(sd pos)
+#	sd id;set id actionpoolid()
+#	sd b;set b struct_ids_actionpool_filter((ids_get),id)
+#	ss mem;call block_get_mem(b,#mem)
+#	add mem pos
+#	set mem# (constpool_multi)
 #end
 
 importx "sprintf" sprintf
@@ -135,6 +153,21 @@ function pool_init(sd flags,sd path)
 		end
 	end
 end
+#function pool_init(sd flags)
+#remember swf_mem.path_mem for pools at every frame
+#when entering a frame must know what is. a frame with no savings at read will set cursor to be 0 and later in that frame a pool request will error
+#	sd test=flag_pool
+#	and test flags
+#	if test!=0
+#		and flags (flag_pool_type)
+#		if flags=0
+#			set pool.write (TRUE)
+#		else
+#			set pool.write (FALSE) #based on current ifs for this charx
+#			set pool.read (TRUE)   #based on current ifs for this charx
+#		end
+#	end
+#end
 function pool_done()
 	if pool.file!=(NULL)
 		if pool.cursor!=#pool.constants
