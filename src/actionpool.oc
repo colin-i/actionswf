@@ -67,6 +67,22 @@ function pool_reentry()
 	call error("error at pool read")
 end
 
+#if pool.write!=(FALSE)
+#function pool_entry()
+#	sd id;set id actionpoolid()
+#	sd pb;set pb struct_ids_actionpool_write((ids_get_pointer),id)
+#end
+#elseif pool.read!=(FALSE)
+#function pool_reentry()
+#	sd id;set id actionpoolid()
+#	sd pb;set pb struct_ids_actionpool_read((ids_get_pointer),id)
+#	sd mem;sd size block_get_mem_size
+#	sd cursor is first dword
+#	if cursor<^size
+#	end
+#	call error("error at pool read")
+#end
+
 importx "sprintf" sprintf
 importx "access" access
 importx "fseek" fseek
