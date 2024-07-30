@@ -126,7 +126,6 @@ function pool_init(sd flags,sd path)
 	end
 end
 #function pool_init(sd flags)
-#remember swf_mem.path_mem for pools at every frame
 #when entering a frame must know what is. a frame with no savings at read will have cursor at start and later in that frame if is a pool request then will error
 #	sd test=flag_pool
 #	and test flags
@@ -164,16 +163,14 @@ end
 #elseif pool.read!=(FALSE)
 #function pool_reentry()
 #	sd id;set id actionpoolid()
-#	sd b;set b struct_ids_actionpool_filter((ids_get),id)
-#	sd mem
-#	set mem block_get_psize(b)
-#	sd cursor=mem_struct__size_size
-#	add cursor mem
-#	if cursor#<^mem#  ##size relative to where malloc started
-#		add mem cursor#
-#		inc cursor#
-#		sd type;set type cursor#
-#		if type=(constpool_unique)
+#	ss b;set b struct_ids_actionpool_filter((ids_get),id)
+#	sd mem;sd size
+#	set mem block_get_mem_size(b,#size)
+#	sd cursor;set cursor mem#
+#	if cursor<^size
+#		inc mem#
+#		add b cursor
+#		if b#s=(constpool_unique)
 #			return (not_an_id)
 #		end
 #		return (any_id)
@@ -190,6 +187,56 @@ function pool_done()
 		end
 	end
 end
+#function pool_done(sd frame_nr)
+#	if pool.write!=(FALSE)
+#		sd id;set id actionpoolid()
+#		sd b;set b struct_ids_actionpool_filter((ids_get),id)
+#		sd sz;set sz block_get_realsize(b)
+#		if sz!=0
+#			sd mem;set mem block_get_mem(b)
+#			sd name;set name pool_savepath(id,frame_nr)
+#			sd f;set f f_open_mem(name,"wb")
+#			call f_write(f,mem,sz)
+#			call fclose(f)
+#		end
+#		ret
+#	end
+#	callg pool_read(frame_nr)
+#end
+#function pool_read(sd frame_nr)
+#	if pool.read!=(FALSE)
+#		inc frame_nr
+#		sd id;set id actionpoolid()
+
+#		sv pb;set pb struct_ids_actionpool_filter((ids_get),id)
+#		call block_reset_size(pb#)  #if is after a read is ok, else is useless
+#		data cursor=mem_struct_size+pool_cursor_size
+#		call mem_block_add(pb,#cursor,(pool_cursor_size))  #if is first and after a read is ok, else is useless
+
+#		sd name;set name pool_savepath(id,frame_nr)
+#		sd a;set a access(name,(R_OK))
+#		if a=0
+#			sd f;set f f_open_mem(name,"rb")
+#			call fseek(f,0,(SEEK_END))
+#			sd sz;set sz f_tell_errors(f)
+#			call fseek(f,0,(SEEK_SET))
+
+#			call mem_block_add(pb,(NULL),sz)
+#			sd mem;set mem block_get_mem(pb#)
+#			add mem (pool_cursor_size)
+#			call fread(mem,sz,1,f)
+
+#			call fclose(f)
+#		else
+#			call free(name)
+#		end
+#	end
+#end
+#function pool_savepath_init(sd a)
+#	valuex p#1;set p a
+#	valuex s#1;set s strlen_of(p,(ext_str_len)) #size_t is long
+#function pool_savepath(sd id,sd fr)
+#end
 
 #pool id (U16)
 function actionpool_value(ss value)

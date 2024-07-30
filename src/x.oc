@@ -51,7 +51,6 @@ import "action_code_values" action_code_values
 import "action_code_get" action_code_get
 
 importx "fwrite" fwrite
-importx "strlen" strlen
 importx "sprintf" sprintf
 importx "fseek" fseek
 importx "fread" fread
@@ -62,6 +61,7 @@ importx "fclose" fclose
 
 
 import "action__code_row" action__code_row
+import "strlen_of" strlen_of
 
 #is not x or x?
 function actionx()
@@ -106,10 +106,8 @@ function x_init(sd flags,sd path)
 	set flag flags  ##log is on current x, here is another x, no parse, no log
 	and flag (flags_x)
 	if flag!=0
-		sd s;setcall s strlen(path)
-		sd a=2+1
-		add a s
-		sd b;setcall b memalloc(a)
+		sd size;setcall size strlen_of(path,2+1)
+		sd b;setcall b memalloc(size)
 		call sprintf(b,"%s.x",path)
 
 		sd x=flag_x

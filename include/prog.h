@@ -20,6 +20,7 @@ const SEEK_CUR=1
 const SEEK_END=2
 
 const maxuint16=0xffFF
+const uint16_str_len=5
 
 const block_size=0x1000
 
@@ -111,6 +112,7 @@ const from_done=1
 
 const max_structures=999
 const ids_str_len=3 #"999"
+const ext_str_len=1+ids_str_len+1+uint16_str_len+1 # separator ids separator word_str_len null
 
 const action_code_values_unit=DWORD
 

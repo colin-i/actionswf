@@ -3,7 +3,6 @@ Format ElfObj64
 include "../include/prog.h"
 
 #win32 with _
-importx "strlen" strlen
 importx "memcpy" memcpy
 
 #this is throwless here
@@ -75,12 +74,11 @@ import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
 
 
-
 #aftercallimport ebool
 
 
-
 import "dtitles_frame" dtitles_frame
+import "strlen_of" strlen_of
 
 #id
 function identifiers_get()
@@ -152,7 +150,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		endif
 		#0
 		import "memalloc" memalloc
-		setcall path_size strlen(arg);inc path_size
+		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
 		call memcpy(path_mem,arg,path_size)
 		#1
@@ -289,13 +287,13 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         ret
 	endif
 	if proc=(mem_exp_init)
-        set id arg
-        set id_back id
-        call struct_ids_action_set(id)
-        call struct_ids_actionpool_set(id)
-        sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
-        sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
-        ret
+		set id arg
+		set id_back id
+		sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
+		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
+		call struct_ids_action_set(id)
+		call struct_ids_actionpool_set(id)
+		ret
 	endif
     sv p_block
     setcall p_block struct_ids_action((ids_get_pointer),id)
@@ -334,9 +332,11 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			call block_reset_size(block)
 			import "pool_done" pool_done
 			call pool_done()
+			#call pool_done(frames)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)
+			#call pool_read(frames)
 		elseif frames=0    #here is an ending from done with no size and no previous show
 			if frames_as_shows.flag=0
 				call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok

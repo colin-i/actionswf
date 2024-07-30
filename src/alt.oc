@@ -37,6 +37,7 @@ importx "strlen" strlen
 
 import "memalloc" memalloc
 import "error" error
+import "len_of" len_of
 
 function alt_init(sd flags,sd path)
 	if alt_join.folder!=(NULL)
@@ -50,8 +51,7 @@ function alt_init(sd flags,sd path)
 			sub r path
 			set size r
 		end
-		sd finalsize=4+1+ids_str_len+1+5+1  #ext separator ids _ word_str_len ... null
-		add finalsize size
+		sd finalsize;set finalsize len_of(size,4+ext_str_len) #ext+...
 
 		setcall alt_join.folder memalloc(finalsize)
 		call memcpy(alt_join.folder,path,size)

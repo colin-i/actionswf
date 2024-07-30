@@ -130,6 +130,11 @@ function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack varia
     setcall p_mem# block_get_mem(block)
     setcall p_size# block_get_size(block)
 endfunction
+#function block_get_realsize(sd block)
+#	sd size;set size block_get_size(block)
+#	sub size (mem_struct_size)
+#	return size
+#end
 
 #mem procedures
 
@@ -423,38 +428,40 @@ endfunction
 #mem procedures
 
 function mem_block_add(sv p_block,ss newblock,sd newblock_size)
-    sd block
-    sd allsize
-    sd size
+	sd block
+	sd allsize
+	sd size
 
-    set block p_block#
-    sd sz_test
-    setcall size block_get_fullsize(block)
-    set allsize block#
-    set sz_test size
-    add sz_test newblock_size
+	set block p_block#
+	sd sz_test
+	setcall size block_get_fullsize(block)
+	set allsize block#
+	set sz_test size
+	add sz_test newblock_size
 
 	if sz_test>^0x7fFFffFF
 		call error("size error") #easy to test, call multiple action(...)
 	end
 
-    if sz_test>^allsize
-    #was >= but when >?, here and in another 2 places
-        divu sz_test (block_size)
-        mult sz_test (block_size)
-        add sz_test (block_size)
-    #    set allsize sz_test
-        setcall block memrealloc(block,sz_test)  #allsize
-        set p_block# block
-        set block# sz_test  ##allsize
-    endif
-    sd pointer
-    set pointer block
-    add pointer size
-    call memcpy(pointer,newblock,newblock_size)
-    add size newblock_size
-    add block (mem_struct__size_off)
-    set block# size
+	if sz_test>^allsize
+		#was >= but when >?, here and in another 2 places
+		divu sz_test (block_size)
+		mult sz_test (block_size)
+		add sz_test (block_size)
+		#set allsize sz_test
+		setcall block memrealloc(block,sz_test)  #allsize
+		set p_block# block
+		set block# sz_test  ##allsize
+	endif
+	if newblock!=(NULL)
+		sd pointer
+		set pointer block
+		add pointer size
+		call memcpy(pointer,newblock,newblock_size)
+	end
+	add size newblock_size
+	add block (mem_struct__size_off)
+	set block# size
 endfunction
 
 #structure ids
@@ -571,15 +578,30 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 	endelse
 endfunction
 function struct_ids_action_set(sd id)
-	call struct_ids_action((ids_set),id)
+	callg struct_ids_action((ids_set),id)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
 end
 function struct_ids_actionpool_set(sd id)
-	call struct_ids_actionpool((ids_set),id)
+	callg struct_ids_actionpool((ids_set),id)
 	#call struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
+	#callg pool_read(-1) #not 0? cheap fast way, most of them have action and will also increment there
 end
 
 #strings
+
+function len_of(sd s,sd add)
+	sd s2;set s2 s
+	add s add
+	if s<^s2
+		call error("gigantic path error")
+	end
+	return s
+end
+function strlen_of(sd p,sd add) #of from overflow
+	sd s;set s strlen(p)
+	set s len_of(s,add)
+	return s
+end
 
 #alloc
 function dupreserve_string(ss str)

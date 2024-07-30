@@ -146,7 +146,6 @@ import "word_arg_to_stack" word_arg_to_stack
 import "for_in" for_in
 import "frames_as_shows" frames_as_shows
 
-importx "strlen" strlen
 importx "fseek" fseek
 importx "fread" fread
 importx "fprintf" fprintf
@@ -161,6 +160,7 @@ import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem" f_open_mem
 import "pool_init" pool_init
+import "strlen_of" strlen_of
 
 function flags_init(sd flags,sd path)
 	set flags x_init(flags,path)
@@ -183,10 +183,8 @@ function log_init(sd flags,sd path)
 	if flags=(debug_log)
 		setcall of# memalloc(1)  #0 on some systems can be NULL return
 
-		sd s;setcall s strlen(path)
-		sd a=4+1
-		add a s
-		sd b;setcall b memalloc(a)
+		sd size;setcall size strlen_of(path,4+1)
+		sd b;setcall b memalloc(size)
 		call sprintf(b,"%s.log",path)
 		sv file%p_debug_file
 		setcall file# f_open_mem(b,"w+b")  #+ is because at definefunction it is reading back for comma character
