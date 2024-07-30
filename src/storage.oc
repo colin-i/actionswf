@@ -98,6 +98,8 @@ function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for button
 #these two are ok throwless
 	callg struct_ids_action((ids_free),id)
 	callg struct_ids_actionpool((ids_free),id)
+	#import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
+	#call struct_ids_actionpool_filter((ids_free),id)
 #
 	import "debug_spritedone" debug_spritedone
 	call debug_spritedone(id,finalId_or_containerId)
@@ -107,6 +109,7 @@ import "error" error
 import "struct_ids_actionpool" struct_ids_actionpool
 import "struct_ids_action" struct_ids_action
 import "struct_ids_action_set" struct_ids_action_set
+import "struct_ids_actionpool_set" struct_ids_actionpool_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 import "debug_show" debug_show
@@ -289,7 +292,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
         set id arg
         set id_back id
         call struct_ids_action_set(id)
-        call struct_ids_actionpool((ids_set),id)
+        call struct_ids_actionpool_set(id)
         sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
         sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
         ret
@@ -376,7 +379,7 @@ function new_sprite_id()
     sd id
     setcall id def_mem()
     call struct_ids_action_set(id)
-    call struct_ids_actionpool((ids_set),id)
+    call struct_ids_actionpool_set(id)
     return id
 endfunction
 

@@ -485,6 +485,10 @@ function struct_ids(sd proc,sd id)
 					setcall ac_ptr struct_ids_actionpool((ids_get),counter)
 					if ac_ptr!=(NULL)
 						call free(ac_ptr)
+						#setcall ac_ptr struct_ids_actionpool_filter((ids_get),counter)
+						#if ac_ptr!=(NULL)
+						#	call free(ac_ptr)
+						#endif
 					endif
 				endif
 			endif
@@ -524,7 +528,7 @@ function struct_ids(sd proc,sd id)
 		set pointer# newblock
 		#counter increment#
 		sd c;set c counter;inc counter
-		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)
+		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)  #required for example at exports and free all
 		#counter increment#
 		return ident
 	endif
@@ -548,26 +552,31 @@ function struct_ids_actionpool(sd proc,sd id)
     return v
 endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
-    sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
+	sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
 	if proc=(ids_get)
 		return pointer#
 	endif
 	if proc=(ids_set)
-        setcall pointer# def_data()
+		set pointer# (NULL)  #this is extra at action but a lot of get_pointer set (NULL) are removed on the same way
+		setcall pointer# def_data()
 	elseif proc=(ids_get_pointer)
-        #call to verify if the user input has a wrong id
-        sd c;setcall c struct_ids((ids_counter))
-        if id>=c;call error("Unregistered input id.");endif
-        #
-        return pointer
+		#call to verify if the user input has a wrong id
+		sd c;setcall c struct_ids((ids_counter))
+		if id>=c;call error("Unregistered input id.");endif
+		#
+		return pointer
 	else
-    #if proc==(ids_free)
-        call mem_free(pointer)
+	#if proc==(ids_free)
+	call mem_free(pointer)
 	endelse
 endfunction
 function struct_ids_action_set(sd id)
 	call struct_ids_action((ids_set),id)
-	sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
+	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
+end
+function struct_ids_actionpool_set(sd id)
+	call struct_ids_actionpool((ids_set),id)
+	#call struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
 end
 
 #strings

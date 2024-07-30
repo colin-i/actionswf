@@ -170,8 +170,8 @@ function flags_init(sd flags,sd path)
 
 	call frames_as_shows(flags)
 	call for_in(flags)
-	call pool_init(flags,path)
-	#call pool_init(flags)
+	callg pool_init(flags,path)
+	#callg pool_init(flags)
 endfunction
 
 function log_init(sd flags,sd path)

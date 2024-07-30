@@ -47,8 +47,8 @@ end
 #function pool(sd id)
 #	charx write#1
 #	charx read#1
-#	get pblock
-#	if !=(NULL)
+#	sv pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
+#	if pblock#!=(NULL)
 #		call mem_free(pblock)
 #	end
 #end
@@ -64,34 +64,6 @@ function pool_realentry(sd pos)
 	add p pos
 	set p# (constpool_multi)
 end
-function pool_reentry()
-	if pool.cursor<^pool.end
-		sd type;set type pool.cursor#
-		inc pool.cursor
-		if type=(constpool_unique)
-			return (not_an_id)
-		end
-		return (any_id)
-	end
-	call error("error at pool read")
-end
-#if pool.write!=(FALSE)
-#function pool_entry()
-#	sd id;set id actionpoolid()
-#	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
-#	char a=constpool_unique
-#	call mem_block_add(pb,#a,1)
-#end
-#elseif pool.read!=(FALSE)
-#function pool_reentry()
-#	sd id;set id actionpoolid()
-#	sd b;set b struct_ids_actionpool_filter((ids_get),id)
-#	ss mem;sd size;call block_get_mem_size(b,#mem,#size)
-#	sd cursor;set cursor mem#
-#	if cursor<^size
-#	end
-#	call error("error at pool read")
-#end
 #if pool.write!=(FALSE)
 #function pool_realentry(sd pos)
 #	sd id;set id actionpoolid()
@@ -167,6 +139,34 @@ end
 #			set pool.read (TRUE)   #based on current ifs for this charx
 #		end
 #	end
+#end
+#if pool.write!=(FALSE)
+#function pool_entry()
+#	sd id;set id actionpoolid()
+#	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
+#	char a=constpool_unique
+#	callg mem_block_add(pb,#a,1)
+#end
+function pool_reentry()
+	if pool.cursor<^pool.end
+		sd type;set type pool.cursor#
+		inc pool.cursor
+		if type=(constpool_unique)
+			return (not_an_id)
+		end
+		return (any_id)
+	end
+	callg error("error at pool read")
+end
+#elseif pool.read!=(FALSE)
+#function pool_reentry()
+#	sd id;set id actionpoolid()
+#	sd b;set b struct_ids_actionpool_filter((ids_get),id)
+#	ss mem;sd size;call block_get_mem_size(b,#mem,#size)
+#	sd cursor;set cursor mem#
+#	if cursor<^size
+#	end
+#	callg error("error at pool read")
 #end
 function pool_done()
 	if pool.file!=(NULL)
