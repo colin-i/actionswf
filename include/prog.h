@@ -24,7 +24,8 @@ const maxuint16=0xffFF
 const block_size=0x1000
 
 const mem_struct__size_off=4
-const mem_struct_size=8
+const mem_struct__size_size=4
+const mem_struct_size=mem_struct__size_off+mem_struct__size_size
 
 const mem_exp_init=0
 const mem_exp_add=1

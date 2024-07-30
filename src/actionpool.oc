@@ -127,7 +127,7 @@ function pool_init(sd flags,sd path)
 end
 #function pool_init(sd flags)
 #remember swf_mem.path_mem for pools at every frame
-#when entering a frame must know what is. a frame with no savings at read will set cursor to be 0 and later in that frame a pool request will error
+#when entering a frame must know what is. a frame with no savings at read will have cursor at start and later in that frame if is a pool request then will error
 #	sd test=flag_pool
 #	and test flags
 #	if test!=0
@@ -138,7 +138,10 @@ end
 #			set pool.write (FALSE) #based on current ifs for this charx
 #			set pool.read (TRUE)   #based on current ifs for this charx
 #		end
+#		ret
 #	end
+#	set pool.write (FALSE)
+#	set pool.read (FALSE)
 #end
 #if pool.write!=(FALSE)
 #function pool_entry()
@@ -162,9 +165,18 @@ end
 #function pool_reentry()
 #	sd id;set id actionpoolid()
 #	sd b;set b struct_ids_actionpool_filter((ids_get),id)
-#	ss mem;sd size;call block_get_mem_size(b,#mem,#size)
-#	sd cursor;set cursor mem#
-#	if cursor<^size
+#	sd mem
+#	set mem block_get_psize(b)
+#	sd cursor=mem_struct__size_size
+#	add cursor mem
+#	if cursor#<^mem#  ##size relative to where malloc started
+#		add mem cursor#
+#		inc cursor#
+#		sd type;set type cursor#
+#		if type=(constpool_unique)
+#			return (not_an_id)
+#		end
+#		return (any_id)
 #	end
 #	callg error("error at pool read")
 #end
