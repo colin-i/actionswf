@@ -354,6 +354,16 @@ function mem_cmp_bool(ss a,ss b,sd n)
 	return (TRUE)
 end
 
+#function mem_block_add_throwless(sv p_block,ss newblock,sd newblock_size)
+#	set error.throwless (TRUE)
+#	call mem_block_add(p_block,newblock,newblock_size)
+#	if error.throwless=(FALSE)
+#		return (FALSE)
+#	end
+#	set error.throwless (FALSE)
+#	return (TRUE)
+#end
+
 importx "malloc" malloc
 importx "fclose" fclose
 
@@ -374,6 +384,7 @@ endfunction
 
 
 function error(ss msg)
+char throwless=FALSE
 	call string_nl_print(msg)
 	call action_error()
 
@@ -440,6 +451,10 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 	add sz_test newblock_size
 
 	if sz_test>^0x7fFFffFF
+		if error.throwless=(TRUE)
+			set error.throwless (FALSE)
+			ret
+		end
 		call error("size error") #easy to test, call multiple action(...)
 	end
 
@@ -449,7 +464,14 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 		mult sz_test (block_size)
 		add sz_test (block_size)
 		#set allsize sz_test
-		setcall block memrealloc(block,sz_test)  #allsize
+		setcall block realloc(block,sz_test)  #allsize
+		if block=(NULL)
+			if error.throwless=(TRUE)
+				set error.throwless (FALSE)
+				ret
+			end
+			call error("realloc error at add")
+		end
 		set p_block# block
 		set block# sz_test  ##allsize
 	endif
@@ -558,6 +580,11 @@ function struct_ids_actionpool(sd proc,sd id)
     sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
     return v
 endfunction
+#function struct_ids_actionpool_filter(sd proc,sd id)
+#	vdatax actionpool_structures#max_structures
+#	sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
+#	return v
+#endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 	sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
 	if proc=(ids_get)

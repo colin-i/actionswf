@@ -221,16 +221,20 @@ end
 #			#wine same thing. #include <unistd.h>#include <stdio.h>void main(){FILE*f=fopen("q","rb");unlink("q");fseek(f,0,SEEK_END);printf("%lu\n",ftell(f));}
 #			call free(name)
 #			if f=(NULL)
-#				call error("pool read error")
+#				vstr er="pool read error"
+#				call error(er)
 #			end
 #			call fseek(f,0,(SEEK_END))
-#			sd sz;set sz ftell_errors(f)
+#			sd sz;set sz f_tell_errors(f)
 #			call fseek(f,0,(SEEK_SET))
-#			call mem_block_add(pb,(NULL),sz)
+#			sd bool;set bool mem_block_add_throwless(pb,(NULL),sz)
+#			if bool=(FALSE)
+#				call fclose(f)
+#				call error(er)
+#			end
 #			sd mem;set mem block_get_mem(pb#)
 #			add mem (pool_cursor_size)
 #			call fread(mem,sz,1,f)
-
 #			call fclose(f)
 #		else
 #			call free(name)
