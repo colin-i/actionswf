@@ -216,11 +216,16 @@ end
 #		sd name;set name pool_savepath(id,frame_nr)
 #		sd a;set a access(name,(R_OK))
 #		if a=0
-#			sd f;set f f_open_mem(name,"rb")
+#			sd f;set f fopen(name,"rb")
+#			call unlink(name) #"the file will remain in existence until the last file descriptor referring to it is closed"
+#			#wine same thing. #include <unistd.h>#include <stdio.h>void main(){FILE*f=fopen("q","rb");unlink("q");fseek(f,0,SEEK_END);printf("%lu\n",ftell(f));}
+#			call free(name)
+#			if f=(NULL)
+#				call error("pool read error")
+#			end
 #			call fseek(f,0,(SEEK_END))
-#			sd sz;set sz f_tell_errors(f)
+#			sd sz;set sz ftell_errors(f)
 #			call fseek(f,0,(SEEK_SET))
-
 #			call mem_block_add(pb,(NULL),sz)
 #			sd mem;set mem block_get_mem(pb#)
 #			add mem (pool_cursor_size)
@@ -233,9 +238,12 @@ end
 #	end
 #end
 #function pool_savepath_init(sd a)
-#	valuex p#1;set p a
-#	valuex s#1;set s strlen_of(p,(ext_str_len)) #size_t is long
+#	valuex path#1;set path a
+#	valuex size#1;set size strlen_of(path,(ext_str_len)) #size_t is ulong
 #function pool_savepath(sd id,sd fr)
+#	sd m;set m memalloc(pool_savepath_init.size)
+#	call sprintf("%s.%u.%u",pool_savepath_init.path,id,fr)
+#	return m
 #end
 
 #pool id (U16)

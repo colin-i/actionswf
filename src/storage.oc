@@ -153,6 +153,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
 		call memcpy(path_mem,arg,path_size)
+		#call pool_savepath_init(path_mem)
 		#1
 		setcall swf_frames_reg.main_id def_mem()
 		set id swf_frames_reg.main_id
