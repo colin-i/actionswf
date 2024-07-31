@@ -92,7 +92,7 @@ function identifiers_get()
 endfunction
 
 function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for buttons
-    call struct_ids((ids_free),id)
+	call struct_ids((ids_free),id)
 #these two are ok throwless
 	callg struct_ids_action((ids_free),id)
 	callg struct_ids_actionpool((ids_free),id)

@@ -12,5 +12,5 @@ const flag_x=0x80
 
 const flags_x=debug_x|debug_x_pad|flag_x
 
-#const flag_pool=0x100
-#const flag_pool_type=0x200 #write or read
+const flag_pool=0x100
+const flag_pool_type=0x200 #write or read
