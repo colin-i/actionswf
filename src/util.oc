@@ -130,11 +130,6 @@ function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack varia
     setcall p_mem# block_get_mem(block)
     setcall p_size# block_get_size(block)
 endfunction
-#function block_get_realsize(sd block)
-#	sd size;set size block_get_size(block)
-#	sub size (mem_struct_size)
-#	return size
-#end
 
 #mem procedures
 

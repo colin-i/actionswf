@@ -96,8 +96,8 @@ function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for button
 #these two are ok throwless
 	callg struct_ids_action((ids_free),id)
 	callg struct_ids_actionpool((ids_free),id)
-	#import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
-	#call struct_ids_actionpool_filter((ids_free),id)
+	import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
+	call struct_ids_actionpool_filter((ids_free),id)
 #
 	import "debug_spritedone" debug_spritedone
 	call debug_spritedone(id,finalId_or_containerId)
@@ -153,7 +153,8 @@ function swf_mem(sd proc,sd arg,sd len)
 		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
 		call memcpy(path_mem,arg,path_size)
-		#call pool_savepath_init(path_mem)
+		import "pool_savepath_init" pool_savepath_init
+		call pool_savepath_init(path_mem)
 		#1
 		setcall swf_frames_reg.main_id def_mem()
 		set id swf_frames_reg.main_id
@@ -331,7 +332,8 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			setcall poolblock actionpool_currentblock()
 			call block_reset_size(poolblock)
 			call block_reset_size(block)
-			#call pool_done(frames)
+			import "pool_done" pool_done
+			call pool_done(frames)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)
