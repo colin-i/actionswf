@@ -64,8 +64,6 @@ function debug_data()
 	endif
 	import "alt_free" alt_free
 	call alt_free()
-	import "pool" pool  #to be removed from here
-	call pool()         #to be removed from here
 endfunction
 
 function debug_phase_init(ss pointer)
@@ -159,7 +157,6 @@ import "alt_init" alt_init
 import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem" f_open_mem
-import "pool_init" pool_init
 import "strlen_of" strlen_of
 
 function flags_init(sd flags,sd path)
@@ -170,7 +167,7 @@ function flags_init(sd flags,sd path)
 
 	call frames_as_shows(flags)
 	call for_in(flags)
-	callg pool_init(flags,path)
+	#import "pool_init" pool_init
 	#callg pool_init(flags)
 endfunction
 

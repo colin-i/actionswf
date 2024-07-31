@@ -52,7 +52,7 @@ const ids_counter=5
 const fd_error=-1
 const fd_none=fd_error
 const not_an_id=-1
-const any_id=~not_an_id
+#const any_id=~not_an_id
 const dword_to_string_char=1+9+1
 
 const End=0
@@ -142,5 +142,5 @@ const totalvalues=maxuint16
 const doubleH_exp=0x7fF00000
 const doubleH_sign=0x80000000
 
-const F_OK=0  # 0 2 4 6 are same as windows
+#const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
