@@ -327,18 +327,16 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 			sd tagsz
 			setcall tagsz action_size(id)
 			call swf_tag_recordheader_entry((DoAction),tagsz)
-			call write_action(id)
+			call write_action(id,frames)
 			sd poolblock
 			setcall poolblock actionpool_currentblock()
 			call block_reset_size(poolblock)
 			call block_reset_size(block)
-			import "pool_done" pool_done
-			call pool_done(frames)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)
 			import "pool_read" pool_read
-			call pool_read(frames)
+			call pool_read(id,frames)
 		elseif frames=0    #here is an ending from done with no size and no previous show
 			if frames_as_shows.flag=0
 				call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok

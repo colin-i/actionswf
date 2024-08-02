@@ -343,18 +343,21 @@ import "action_code_member" action_code_member
 
 import "swf_actionrecordheader" swf_actionrecordheader
 import "swf_mem_add" swf_mem_add
-function write_action(sd id)
-    sd block
-    setcall block struct_ids_action((ids_get),id)
-    sd mem
-    setcall mem block_get_mem(block)
-    sd size
-    setcall size block_get_size(block)
-    call pool_wr(id)
-    call swf_mem_add(mem,size)
-    #this is ActionEndFlag after ACTIONRECORD [zero or more]
-    data end=0
-    call swf_mem_add(#end,1)
+function write_action(sd id,sd frame)
+	sd block
+	setcall block struct_ids_action((ids_get),id)
+	sd mem
+	setcall mem block_get_mem(block)
+	sd size
+	setcall size block_get_size(block)
+	call pool_wr(id)
+	call swf_mem_add(mem,size)
+	#this is ActionEndFlag after ACTIONRECORD [zero or more]
+	data end=0
+	call swf_mem_add(#end,1)
+
+	import "pool_done" pool_done
+	callg pool_done(id,frame)
 endfunction
 #void
 function pool_wr(sd id)

@@ -379,6 +379,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     import "new_sprite_id" new_sprite_id
     sd id
     setcall id new_sprite_id()
+
     call action_sprite_base(id,actions,(FALSE))
 
     add size (BUTTONCONDACTION_header_size)
@@ -403,7 +404,7 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     call swf_mem_add(#CharacterEndFlag,1)
     import "write_action" write_action
     call swf_mem_add(#BUTTONCONDACTION,(BUTTONCONDACTION_header_size))
-    call write_action(id)
+    call write_action(id,0)
 
     call free_sprite_id(id,ButtonId)
     return ButtonId
