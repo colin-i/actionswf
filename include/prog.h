@@ -52,7 +52,7 @@ const ids_counter=5
 const fd_error=-1
 const fd_none=fd_error
 const not_an_id=-1
-#const any_id=~not_an_id
+const any_id=~not_an_id
 const dword_to_string_char=1+9+1
 
 const End=0

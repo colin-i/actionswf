@@ -337,7 +337,8 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		elseif arg=(from_show)  #here is an ending from show with no size
 			call debug_show(id) #to keep the count of frames at debugger
 			call swf_frames_inc(frames,arg2)
-			#call pool_read(frames)
+			import "pool_read" pool_read
+			call pool_read(frames)
 		elseif frames=0    #here is an ending from done with no size and no previous show
 			if frames_as_shows.flag=0
 				call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok
