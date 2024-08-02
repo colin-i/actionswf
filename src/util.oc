@@ -349,15 +349,16 @@ function mem_cmp_bool(ss a,ss b,sd n)
 	return (TRUE)
 end
 
-#function mem_block_add_throwless(sv p_block,ss newblock,sd newblock_size)
-#	set error.throwless (TRUE)
-#	call mem_block_add(p_block,newblock,newblock_size)
-#	if error.throwless=(FALSE)
-#		return (FALSE)
-#	end
-#	set error.throwless (FALSE)
-#	return (TRUE)
-#end
+function mem_block_add_throwless(sv p_block,ss newblock,sd newblock_size)
+	char throwless=FALSE
+	set throwless (TRUE)
+	call mem_block_add(p_block,newblock,newblock_size)
+	if throwless=(FALSE)
+		return (FALSE)
+	end
+	set throwless (FALSE)
+	return (TRUE)
+end
 
 importx "malloc" malloc
 importx "fclose" fclose
@@ -380,7 +381,6 @@ endfunction
 
 
 function error(ss msg)
-char throwless=FALSE
 	call string_nl_print(msg)
 	call action_error()
 
@@ -447,8 +447,8 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 	add sz_test newblock_size
 
 	if sz_test>^0x7fFFffFF
-		if error.throwless=(TRUE)
-			set error.throwless (FALSE)
+		if mem_block_add_throwless.throwless=(TRUE)
+			set mem_block_add_throwless.throwless (FALSE)
 			ret
 		end
 		call error("size error") #easy to test, call multiple action(...)
@@ -462,8 +462,8 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 		#set allsize sz_test
 		setcall block realloc(block,sz_test)  #allsize
 		if block=(NULL)
-			if error.throwless=(TRUE)
-				set error.throwless (FALSE)
+			if mem_block_add_throwless.throwless=(TRUE)
+				set mem_block_add_throwless.throwless (FALSE)
 				ret
 			end
 			call error("realloc error at add")
@@ -601,10 +601,11 @@ function struct_ids_action_set(sd id)
 	callg struct_ids_action((ids_set),id)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
 end
+import "pool_read" pool_read
 function struct_ids_actionpool_set(sd id)
 	call struct_ids_actionpool((ids_set),id)
-	callg struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
-	#callg pool_read(-1) #not 0? cheap fast way, most of them have action and will also increment there
+	call struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
+	callg pool_read(-1) #not 0? cheap fast way, most of them have action and will also increment there
 end
 
 #strings
