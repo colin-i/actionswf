@@ -174,11 +174,11 @@ function swf_mem(sd proc,sd arg,sd len)
 		ret
 	endif
 	if proc=(mem_exp_free)
+		#0 freeing all ids(main(exports,root+sprites),acs,pools) #also new sprite on error and change here will free here
+		call struct_ids((ids_all_free))
 		if path_mem!=(NULL)
-			#0
+			#1
 			call mem_free(#path_mem)
-			#1 freeing all ids(main(exports,root+sprites),acs,pools)
-			call struct_ids((ids_all_free))
 			#2 exports
 			sd exports
 			setcall exports exportsId()

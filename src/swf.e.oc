@@ -385,7 +385,7 @@ import "swf_showframe_base" swf_showframe_base
 functionX swf_showframe()
 base swf_new.bp;call ebase(swf_new.bp)
 	sd p;set p swf_frames_pointer()
-	call swf_showframe_base(p)
+	call swf_showframe_base(p) #if on error will error at unregistered input id
 endfunction
 
 ######################
