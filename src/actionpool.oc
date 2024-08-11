@@ -56,6 +56,7 @@ importx "unlink" unlink
 importx "fclose" fclose
 importx "sprintf" sprintf
 importx "fopen" fopen
+importx "ftell" ftell
 
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
@@ -68,7 +69,6 @@ import "block_get_mem_size" block_get_mem_size
 
 #aftercallimport ebool
 
-import "f_tell_errors" f_tell_errors
 import "f_open_mem" f_open_mem
 import "f_write" f_write
 import "memalloc" memalloc
@@ -128,18 +128,25 @@ function pool_read(sd id,sd frame_nr)
 		sd a;set a access(name,(R_OK))
 		if a=0
 			sd f;set f fopen(name,"rb")
-			call unlink(name) #"the file will remain in existence until the last file descriptor referring to it is closed"
+			#call unlink(name) #"the file will remain in existence until the last file descriptor referring to it is closed"
 			#wine same thing. #include <unistd.h>#include <stdio.h>void main(){FILE*f=fopen("q","rb");unlink("q");fseek(f,0,SEEK_END);printf("%lu\n",ftell(f));}
-			call free(name)
+			#but now with java flashalizer only after fclose
 			if f=(NULL)
+				call free(name)
 				vstr er="pool read error"
 				call error(er)
 			end
 			call fseek(f,0,(SEEK_END))
-			sd sz;set sz f_tell_errors(f)
+			sd sz;set sz ftell(f)
+			if sz=-1
+				call free(name)
+				call fclose(f)
+				call error(er)
+			end
 			call fseek(f,0,(SEEK_SET))
 			sd bool;set bool mem_block_add_throwless(pb,(NULL),sz)
 			if bool=(FALSE)
+				call free(name)
 				call fclose(f)
 				call error(er)
 			end
@@ -147,9 +154,9 @@ function pool_read(sd id,sd frame_nr)
 			add mem (pool_cursor_size)
 			call fread(mem,sz,1,f)
 			call fclose(f)
-		else
-			call free(name)
+			call unlink(name)
 		end
+		call free(name)
 	end
 end
 function pool_done(sd id,sd frame_nr)
