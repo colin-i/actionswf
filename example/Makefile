@@ -71,7 +71,8 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		LD_LIBRARY_PATH=../src ${launcher} ./${name} =; \
+		LD_LIBRARY_PATH=../src ${launcher} ./${name} && \
+		LD_LIBRARY_PATH=../src ${launcher} ./${name} x; \
 	fi
 #\? is 0x3f log,alt,titles,x , inside -0x30, 0 is 0x30, \; to 0xb log,alt,x , = is 0xd log,titles,x
 
