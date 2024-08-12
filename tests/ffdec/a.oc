@@ -7,11 +7,11 @@ einclude "../../dev/import.h"
 
 include "../entryraw.oc" "../entry.oc"
 
-sd f=debug_log
+sd f=debug_log|flag_pool
 if argc=2
 	importx "puts" puts
-	call puts("alt flag")
-	set f (debug_alt)
+	call puts("debug_alt flag_pool_read")
+	set f (debug_alt|flag_pool|flag_pool_read)
 	sub a1# (0x30)
 	or f a1#
 end

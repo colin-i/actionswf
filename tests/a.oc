@@ -7,11 +7,11 @@ einclude "../dev/import.h"
 
 include "entryraw.oc" "entry.oc"
 
-sd f=debug_log|debug_x_pad|flag_pool_del
+sd f=debug_log|debug_x_pad|flag_pool
 if argc=2
 	importx "puts" puts
-	call puts("flag_x")
-	or f (flag_x)
+	call puts("flag_x flag_pool_read")
+	or f (flag_x|flag_pool_read)
 end
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 
