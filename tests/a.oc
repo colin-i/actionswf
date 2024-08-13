@@ -105,6 +105,10 @@ n(-NaN,NaN)
 //// https://www.h-schmidt.net/FloatConverter/IEEE754.html
 ")
 
+sd presprite;set presprite swf_sprite_new()
+call action_sprite(presprite,"var a")
+sd sprite;set sprite swf_sprite_done(presprite)
+
 call swf_done()
 
 call exit(0)
