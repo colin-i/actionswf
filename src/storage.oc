@@ -35,19 +35,17 @@ function swf_frames_reg()
 	sub reg (WORD)
 end
 #p
-function swf_frames_pointer()
-	sd block
-	set block struct_ids((ids_get),swf_frames_reg.main_id)
-	set block block_get_mem(block)
-	add block swf_frames_reg.reg
-	return block
-end
-#p
 function swf_sprite_frames_pointer(sd spriteid)
 	sd block
-	setcall block struct_ids((ids_get),spriteid)
-	setcall block block_get_mem(block)
-	add block (WORD)
+	if spriteid!=0
+		setcall block struct_ids((ids_get),spriteid)
+		setcall block block_get_mem(block)
+		add block (WORD)
+	else
+		set block struct_ids((ids_get),swf_frames_reg.main_id) #0
+		set block block_get_mem(block)
+		add block swf_frames_reg.reg
+	end
 	return block
 end
 
@@ -72,10 +70,9 @@ import "actionpool_currentblock" actionpool_currentblock
 import "action_size" action_size
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
-
+#import "is_ainit" is_ainit
 
 #aftercallimport ebool
-
 
 import "dtitles_frame" dtitles_frame
 import "strlen_of" strlen_of
@@ -263,7 +260,7 @@ function swf_frames_inc(sd frames,sw pointer)
 	inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
 	call stack_to_word_arg(frames,pointer)
 end
-
+#size
 function done_action(sd id,sd frames,sd type)
 	sv p_block
 	setcall p_block struct_ids_action((ids_get_pointer),id)
@@ -284,12 +281,13 @@ function done_action(sd id,sd frames,sd type)
 		setcall poolblock actionpool_currentblock()
 		call block_reset_size(poolblock)
 		call block_reset_size(block)
-	elseif type=(from_show)  #here is an ending from show with no size
+		return size
+	end
+	if type=(from_show)  #here is an ending from show with no size
 		import "pool_read" pool_read
 		call pool_read(id,frames)
-	#elseif frames=0    #here is an ending from done with no size and no previous show
-	#	if frames_as_shows.flag=0;#		call swf_frames_inc(frames,arg2) #a default frame, how was before at root, and at sprite is ok;#	end
-	endelseif
+	end
+	return 0
 end
 #
 function swf_actionblock(sd proc,sd arg,sd arg2)
@@ -329,15 +327,30 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		setcall p_block struct_ids_action((ids_get_pointer),id)
 		call mem_block_add(p_block,arg,arg2)
 	elseif proc=(mem_exp_part_done)
-		sd frames
-		setcall frames word_arg_to_stack(arg2)
+		sd frames;sd pframes
+		set pframes swf_sprite_frames_pointer(id)
+		set frames word_arg_to_stack(pframes)
+
+		sd sz
+#		call is_ainit((TRUE))
+#		set sz done_action(id,frames,arg)
+#		call is_ainit((FALSE))
+#		or sz done_action(id,frames,arg)
+		set sz done_action(id,frames,arg) #temporar until uncomment
+
 		if arg=(from_show) #example: two action() and one show here
 			call debug_show(id) #id is 0/spriteid, this is good at debugger to keep the count of frames
-			call swf_frames_inc(frames,arg2)
+			set pframes swf_sprite_frames_pointer(id) #mem was increased, pointer (maybe) was changed
+			call swf_frames_inc(frames,pframes)
 		elseif frames_as_shows.flag=0
-			call swf_frames_inc(frames,arg2)
+			if sz!=0
+				set pframes swf_sprite_frames_pointer(id)
+				call swf_frames_inc(frames,pframes)
+			elseif frames=0 #here is an ending from done with no size and no previous show
+				set pframes swf_sprite_frames_pointer(id)
+				call swf_frames_inc(frames,pframes) #a default frame, how was before at root, and at sprite is ok, at normal there is at least one tag inside
+			end
 		end
-		call done_action(id,frames,arg)
 	else
 	#if proc==(mem_exp_get_block)
 		setcall p_block struct_ids_action((ids_get_pointer),id)
@@ -373,11 +386,12 @@ endfunction
 
 #preid
 function new_sprite_id()
-    sd id
-    setcall id def_mem()
-    call struct_ids_action_set(id)
-    call struct_ids_actionpool_set(id)
-    return id
+	sd id
+	setcall id def_mem()
+#	call is_ainit((FALSE)) #at button and normal sprite
+	call struct_ids_action_set(id)
+	call struct_ids_actionpool_set(id)
+	return id
 endfunction
 
 #
@@ -396,8 +410,8 @@ function exportsId_get()
     return e#
 endfunction
 
-function swf_showframe_base(sd frames_pointer)
+function swf_showframe_base() #sd frames_pointer
 #showframe tag
-	call swf_actionblock((mem_exp_part_done),(from_show),frames_pointer)
+	call swf_actionblock((mem_exp_part_done),(from_show)) #,frames_pointer
 	call swf_tag_recordheader_entry((ShowFrame),0)
 endfunction

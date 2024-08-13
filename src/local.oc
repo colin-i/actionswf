@@ -20,6 +20,10 @@ import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "block_reset_size" block_reset_size
 
+import "alt_action" alt_action
+#this has throws but for mem_exp_change and back are not required
+import "swf_actionblock" swf_actionblock
+
 importx "strlen" strlen
 importx "memcpy" memcpy
 
@@ -568,3 +572,45 @@ function swf_exports_done_local()
         call block_reset_size(block)
     endif
 endfunction
+
+
+
+import "debug_base" debug_base
+import "action_base" action_base
+function action_local(ss ac)
+	sd alt_ac;set alt_ac alt_action(ac,0)
+	if alt_ac!=(NULL)  #can be two action() same DoAction
+		call debug_base(0)
+		call action_base(alt_ac)
+		if alt_ac!=ac
+			call file_get_content__resources_free()
+		end
+	end
+end
+import "action_format" action_format
+function actionf_local(sv pbuffer)
+	sd alt_ac;set alt_ac alt_action(pbuffer#,0)
+	if alt_ac!=(NULL)
+		call debug_base(0)
+		if pbuffer#=alt_ac
+			call action_format(pbuffer)
+		else
+			call action_base(alt_ac)
+			call file_get_content__resources_free()
+		end
+	end
+end
+function actionf_sprite_local(sd sprite,sv pbuffer)
+	sd alt_ac;set alt_ac alt_action(pbuffer#,sprite)
+	if alt_ac!=(NULL)
+		call debug_base(sprite)
+		call swf_actionblock((mem_exp_change),sprite)   #alt action is not using actionblock, is using swfblock
+		if pbuffer#=alt_ac
+			call action_format(pbuffer)
+		else
+			call action_base(alt_ac)
+			call file_get_content__resources_free()
+		end
+		call swf_actionblock((mem_exp_change_back))
+	end
+end

@@ -7,8 +7,8 @@ importx "memcpy" memcpy
 importx "strlen" strlen
 importx "memcmp" memcmp
 
-import "swf_frames_pointer" swf_frames_pointer
-import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
+#import "swf_frames_pointer" swf_frames_pointer
+#import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
 
 import "button_mem" button_mem
 
@@ -349,8 +349,8 @@ functionX swf_done()
 base swf_new.bp;call ebase(swf_new.bp)
 	call swf_exports_done_local();#remaining exports?
 
-	sd p;set p swf_frames_pointer()
-	call swf_actionblock((mem_exp_part_done),(from_done),p);#in case there are remaining actions
+#	sd p;set p swf_frames_pointer()
+	call swf_actionblock((mem_exp_part_done),(from_done)) #,p in case there are remaining actions
 
 #the swf is done and the total length is wrote and the memory is freed
     call swf_mem((mem_exp_done))
@@ -384,8 +384,8 @@ import "swf_showframe_base" swf_showframe_base
 
 functionX swf_showframe()
 base swf_new.bp;call ebase(swf_new.bp)
-	sd p;set p swf_frames_pointer()
-	call swf_showframe_base(p) #if on error will error at unregistered input id
+#	sd p;set p swf_frames_pointer()
+	call swf_showframe_base() #p if on error will error at unregistered input id
 endfunction
 
 ######################
@@ -399,8 +399,8 @@ base swf_new.bp;call ebase(swf_new.bp)
     call swf_mem((mem_exp_change),spriteid)
 
     call swf_actionblock((mem_exp_change),spriteid)
-	sd p;setcall p swf_sprite_frames_pointer(spriteid)
-	call swf_actionblock((mem_exp_part_done),(from_done),p);#in case there are remaining actions
+#	sd p;setcall p swf_sprite_frames_pointer(spriteid)
+	call swf_actionblock((mem_exp_part_done),(from_done)) # ,p in case there are remaining actions
     call swf_actionblock((mem_exp_change_back))
 
     import "swf_tag_end" swf_tag_end
@@ -474,8 +474,8 @@ base swf_new.bp;call ebase(swf_new.bp)
 #sd spriteid   pre-id
     call swf_mem((mem_exp_change),spriteid)
     call swf_actionblock((mem_exp_change),spriteid)
-	sd p;setcall p swf_sprite_frames_pointer(spriteid)
-	call swf_showframe_base(p)
+#	sd p;setcall p swf_sprite_frames_pointer(spriteid)
+	call swf_showframe_base() #p
     call swf_actionblock((mem_exp_change_back))
     call swf_mem((mem_exp_change_back))
 endfunction

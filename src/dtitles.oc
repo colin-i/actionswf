@@ -33,6 +33,8 @@ function dtitles_conclude(sd finalid,sd mem)
 			end
 			if RECORDHEADER=(DoAction)
 				call dtitles_conclude_record(mem,#store)
+#			elseif RECORDHEADER=(DoInitAction)
+#				call dtitles_conclude_record(mem,#store)
 			end
 			add mem length
 		end

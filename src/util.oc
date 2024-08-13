@@ -360,6 +360,24 @@ function mem_block_add_throwless(sv p_block,ss newblock,sd newblock_size)
 	return (TRUE)
 end
 
+function struct_ids_free(sd id)
+	sv ac_ptr
+	setcall ac_ptr struct_ids_action((ids_get),id)
+	if ac_ptr!=(NULL)
+		call free(ac_ptr)
+		setcall ac_ptr struct_ids_actionpool((ids_get),id)
+		if ac_ptr!=(NULL)
+			call free(ac_ptr)
+			call pool_data(id)
+		endif
+	endif
+end
+
+#function is_ainit(sd a)
+#	charx b#1
+#	set b a
+#end
+
 importx "malloc" malloc
 importx "fclose" fclose
 
@@ -488,7 +506,6 @@ function struct_ids(sd proc,sd id)
 	vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
 	vdata strct^structures
 	data counter=0
-	sv ac_ptr
 	sv pointer
 	if proc=(ids_counter)
 		return counter
@@ -503,15 +520,10 @@ function struct_ids(sd proc,sd id)
 			sub pointer :
 			if pointer#!=(NULL)
 				call free(pointer#)
-				setcall ac_ptr struct_ids_action((ids_get),counter)
-				if ac_ptr!=(NULL)
-					call free(ac_ptr)
-					setcall ac_ptr struct_ids_actionpool((ids_get),counter)
-					if ac_ptr!=(NULL)
-						call free(ac_ptr)
-						call pool_data(counter)
-					endif
-				endif
+#				call is_ainit((FALSE)) #is first, at button is the only one
+				call struct_ids_free(counter)
+#				call is_ainit((TRUE))
+#				call struct_ids_free(counter)
 			endif
 		endwhile
 		ret
@@ -550,6 +562,7 @@ function struct_ids(sd proc,sd id)
 		set pointer# newblock
 		#counter increment#
 		sd c;set c counter;inc counter
+		sv ac_ptr
 		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)  #required for example at exports and free all
 		#counter increment#
 		return ident
@@ -564,18 +577,36 @@ function struct_ids(sd proc,sd id)
 	#endelse
 endfunction
 function struct_ids_action(sd proc,sd id)
-    vdatax action_structures#max_structures
-    sd v;setcall v struct_ids_expand(proc,id,#action_structures)
-    return v
+	sd v
+	vdatax action_structures#max_structures
+#	vdatax action_structures_init#max_structures
+#	if is_ainit.b=(FALSE)
+		set v struct_ids_expand(proc,id,#action_structures)
+#	else
+#		set v struct_ids_expand(proc,id,#action_structures_init)
+#	end
+	return v
 endfunction
 function struct_ids_actionpool(sd proc,sd id)
-    vdatax actionpool_structures#max_structures
-    sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
-    return v
+	sd v
+	vdatax action_structures#max_structures
+#	vdatax action_structures_init#max_structures
+#	if is_ainit.b=(FALSE)
+		set v struct_ids_expand(proc,id,#action_structures)
+#	else
+#		set v struct_ids_expand(proc,id,#action_structures_init)
+#	end
+	return v
 endfunction
 function struct_ids_actionpool_filter(sd proc,sd id)
-	vdatax actionpool_structures#max_structures
-	sd v;setcall v struct_ids_expand(proc,id,#actionpool_structures)
+	sd v
+	vdatax action_structures#max_structures
+#	vdatax action_structures_init#max_structures
+#	if is_ainit.b=(FALSE)
+		set v struct_ids_expand(proc,id,#action_structures)
+#	else
+#		set v struct_ids_expand(proc,id,#action_structures_init)
+#	end
 	return v
 endfunction
 function struct_ids_expand(sd proc,sd id,sd p_action_structures)
