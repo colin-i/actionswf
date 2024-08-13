@@ -31,31 +31,34 @@ function dtitles_conclude(sd finalid,sd mem)
 				set length mem#
 				add mem (DWORD)
 			end
-			ss cursor
 			if RECORDHEADER=(DoAction)
-				set cursor mem
-				inc cursor           ##ACTIONRECORDHEADER ActionCode
-				sd Length
-				set Length word_arg_to_stack(cursor)
-				add cursor (WORD)
-				sd Count
-				set Count word_arg_to_stack(cursor)
-				add cursor (WORD)
-				if Count!=1
-					add cursor Length     ##now is +2 in offset [Count is u16]
-					sub cursor (1+   4+   1+   1+   2)
-					#           here 0000 X    null
-					#  previous str0       XXX
-					while cursor#!=(Nullchar)  #there are 3 more possible digits
-						dec cursor
-					end
-					inc cursor
-				end
-				call memcpy(cursor,#store,4)
+				call dtitles_conclude_record(mem,#store)
 			end
 			add mem length
 		end
 	end
+end
+function dtitles_conclude_record(sd mem,sd finalidstr)
+	ss cursor
+	set cursor mem
+	inc cursor           ##ACTIONRECORDHEADER ActionCode
+	sd Length
+	set Length word_arg_to_stack(cursor)
+	add cursor (WORD)
+	sd Count
+	set Count word_arg_to_stack(cursor)
+	add cursor (WORD)
+	if Count!=1
+		add cursor Length     ##now is +2 in offset [Count is u16]
+		sub cursor (1+   4+   1+   1+   2)
+		#           here 0000 X    null
+		#  previous str0       XXX
+		while cursor#!=(Nullchar)  #there are 3 more possible digits
+			dec cursor
+		end
+		inc cursor
+	end
+	call memcpy(cursor,finalidstr,4)
 end
 
 function dtitles_init(sd flags)
