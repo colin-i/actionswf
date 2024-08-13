@@ -37,7 +37,7 @@ end
 #p
 function swf_sprite_frames_pointer(sd spriteid)
 	sd block
-	if spriteid!=0
+	if spriteid!=swf_frames_reg.main_id
 		setcall block struct_ids((ids_get),spriteid)
 		setcall block block_get_mem(block)
 		add block (WORD)
