@@ -382,12 +382,15 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
 
     call action_sprite_base(id,actions,(FALSE))
 
+	sd ButtonId
+	setcall ButtonId identifiers_get()  #is final at buttons
+	import "dtitles_button" dtitles_button
+	call dtitles_button(id,ButtonId)
+
     add size (BUTTONCONDACTION_header_size)
     addcall size action_size(id)
 
     call swf_tag_recordheader_entry((DefineButton2),size)
-    sd ButtonId
-    setcall ButtonId identifiers_get()
     call swf_mem_add(#ButtonId,2)
     char TrackAsMenu=0
     call swf_mem_add(#TrackAsMenu,(BYTE))

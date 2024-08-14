@@ -72,11 +72,9 @@ function dtitles_init(sd flags)
 	set dtitles_conclude.bool (FALSE)
 end
 
-
+import "swf_actionblock" swf_actionblock #throwless here
 
 #aftercallimport ebool
-
-
 
 #here adds 0000X[X[X[X]]], if is root 0000 will be final, else is dummy now and will be sprite final id at conclude function
 function dtitles_frame(sd index)
@@ -87,4 +85,9 @@ function dtitles_frame(sd index)
 		import "actionpool_value_ex" actionpool_value_ex
 		call actionpool_value_ex(#format,(TRUE))  #force the write because debugger will look at the last pool constant there
 	end
+end
+function dtitles_button(sd index,sd finalindex)
+	call swf_actionblock((mem_exp_change),index)
+	call dtitles_frame(finalindex)
+	call swf_actionblock((mem_exp_change_back))
 end
