@@ -628,9 +628,11 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 		call free(pointer#)
 	endelse
 endfunction
-function struct_ids_action_set(sd id)
-	callg struct_ids_action((ids_set),id)
+function struct_ids_action_set(sd id) #,sd ainit)
+#	call is_ainit(ainit)
+	call struct_ids_action((ids_set),id)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
+	callg struct_ids_actionpool_set(id)
 end
 import "pool_read" pool_read
 function struct_ids_actionpool_set(sd id)

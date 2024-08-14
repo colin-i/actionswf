@@ -54,7 +54,7 @@ base action.bp;call ebase(action.bp)
 #	call is_ainit((FALSE))
 	call action_sprite_base(sprite,actions,(TRUE))
 endfunction
-#functionX action_sprite_init(sd sprite,ss actions)
+#functionX action_init_sprite(sd sprite,ss actions)
 #	call is_init((TRUE))
 #	call action_sprite_base(sprite,actions,(TRUE))
 #end
@@ -67,3 +67,7 @@ base action.bp;call ebase(action.bp)
 #	call is_ainit((FALSE))
 	call actionf_sprite_local(sprite,#buffer)
 endfunction
+#functionXx actionf_init_sprite(sd sprite,ss buffer,ss *format)
+#	call is_ainit((TRUE))
+#	call actionf_sprite_local(sprite,#buffer)
+#end

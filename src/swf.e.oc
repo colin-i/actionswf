@@ -437,6 +437,7 @@ base swf_new.bp;call ebase(swf_new.bp)
 #a pre-id to be used
     sd id
     setcall id new_sprite_id()
+#	call struct_ids_action_set(id,(TRUE))
     call swf_mem((mem_exp_change),id)
     sd reserve;#set later
     call swf_mem_add(#reserve,2)

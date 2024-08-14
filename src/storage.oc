@@ -104,7 +104,6 @@ import "error" error
 import "struct_ids_actionpool" struct_ids_actionpool
 import "struct_ids_action" struct_ids_action
 import "struct_ids_action_set" struct_ids_action_set
-import "struct_ids_actionpool_set" struct_ids_actionpool_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 import "debug_show" debug_show
@@ -318,8 +317,11 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		set id_back id
 		sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
 		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
+
 		call struct_ids_action_set(id)
-		call struct_ids_actionpool_set(id)
+#		call struct_ids_action_set(id,(FALSE))
+#		call struct_ids_action_set(id,(TRUE))
+
 		ret
 	endif
 	sv p_block
@@ -388,9 +390,8 @@ endfunction
 function new_sprite_id()
 	sd id
 	setcall id def_mem()
-#	call is_ainit((FALSE)) #at button and normal sprite
 	call struct_ids_action_set(id)
-	call struct_ids_actionpool_set(id)
+#	call struct_ids_action_set(id,(FALSE)) #at button and normal sprite
 	return id
 endfunction
 
