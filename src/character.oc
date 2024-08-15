@@ -109,9 +109,6 @@ import "matrix_translate" matrix_translate
 
 import "action_size" action_size
 
-
-
-
 #aftercallimport ebool
 
 import "swf_shape_local" swf_shape_local
@@ -379,13 +376,15 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     import "new_sprite_id" new_sprite_id
     sd id
     setcall id new_sprite_id()
+	import "pool_read" pool_read
+	call pool_read(id,-1)
 
     call action_sprite_base(id,actions,(FALSE))
 
 	sd ButtonId
 	setcall ButtonId identifiers_get()  #is final at buttons
-	import "dtitles_button" dtitles_button
-	call dtitles_button(id,ButtonId)
+	import "dtitles_frame_one" dtitles_frame_one
+	call dtitles_frame_one(id,ButtonId)
 
     add size (BUTTONCONDACTION_header_size)
     addcall size action_size(id)
@@ -405,12 +404,12 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     endif
     char CharacterEndFlag=0
     call swf_mem_add(#CharacterEndFlag,1)
-    import "write_action" write_action
     call swf_mem_add(#BUTTONCONDACTION,(BUTTONCONDACTION_header_size))
-    call write_action(id,0)
+	import "write_action_one" write_action_one
+	call write_action_one(id)
 
-    call free_sprite_id(id,ButtonId)
-    return ButtonId
+	call free_sprite_id(id,ButtonId)
+	return ButtonId
 endfunction
 
 #size/void

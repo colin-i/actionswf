@@ -19,10 +19,7 @@ valuex bp#1;base bp;call ebase(bp)
 #	call is_init((FALSE))
 	call action_local(ac)
 endfunction
-#functionX action_init(ss ac)
-#	call is_ainit((TRUE))
-#	call action_local(ac)
-#end
+#see at part_done functionX action_init(ss ac)
 functionXx actionf(ss buffer,ss *format)
 base action.bp;call ebase(action.bp)
 #ss buffer   the buffer where to sprintf the format and the arguments
@@ -31,10 +28,7 @@ base action.bp;call ebase(action.bp)
 #	call is_init((FALSE))
 	call actionf_local(#buffer)
 endfunction
-#functionXx actionf_init(ss buffer,ss *format)
-#	call is_init((TRUE))
-#	call actionf_local(#buffer)
-#end
+#see at part_done functionXx actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated
 	sd ptr;set ptr for_in_ptr()
 	sd was;set was ptr#

@@ -22,8 +22,8 @@ import "block_get_mem" block_get_mem
 import "free_sprite_id" free_sprite_id
 import "freereset" freereset   #..x with no args
 import "dtitles_conclude" dtitles_conclude
-
-
+#import "free_sprite_id_actions" free_sprite_id_actions
+#import "is_ainit" is_ainit
 
 import "ebase" ebase
 #aftercallimport ebool
@@ -426,7 +426,13 @@ base swf_new.bp;call ebase(swf_new.bp)
 
     call swf_mem_add(mem,size)
 
-    call free_sprite_id(spriteid,id)
+	#if is, add DoInitAction in timeline
+	#call is_ainit((TRUE))
+	#call done_action(spriteid,-1,id)
+#	call free_sprite_id_actions(spriteid)
+
+	#call is_ainit((FALSE))
+	call free_sprite_id(spriteid,id)
 
     return id
 endfunction
@@ -437,7 +443,11 @@ base swf_new.bp;call ebase(swf_new.bp)
 #a pre-id to be used
     sd id
     setcall id new_sprite_id()
+	import "pool_read" pool_read
+	call pool_read(id,0)
+#import "struct_ids_action_set" struct_ids_action_set
 #	call struct_ids_action_set(id,(TRUE))
+#	call pool_read(id,-1)
     call swf_mem((mem_exp_change),id)
     sd reserve;#set later
     call swf_mem_add(#reserve,2)

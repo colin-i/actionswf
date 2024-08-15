@@ -634,11 +634,9 @@ function struct_ids_action_set(sd id) #,sd ainit)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
 	callg struct_ids_actionpool_set(id)
 end
-import "pool_read" pool_read
 function struct_ids_actionpool_set(sd id)
 	call struct_ids_actionpool((ids_set),id)
-	call struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
-	callg pool_read(id,-1) #not 0? cheap fast way, most of them have action and will also increment there
+	callg struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
 end
 
 #strings

@@ -117,8 +117,6 @@ end
 const pool_cursor_size=mem_struct__size_size
 function pool_read(sd id,sd frame_nr)
 	if pool_data.read!=(FALSE)
-		inc frame_nr  ##for next frame preparation
-
 		sv pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
 		call block_reset_size(pb#)  #if is after a read is ok, else is useless
 		data cursor=pool_cursor_size
@@ -159,21 +157,30 @@ function pool_read(sd id,sd frame_nr)
 		call free(name)
 	end
 end
+function pool_done_write(sd id,sd frame_nr)
+	sd b;set b struct_ids_actionpool_filter((ids_get),id)
+	sd sz;set sz block_get_size(b)
+	if sz!=0
+		sd mem;set mem block_get_mem(b)
+		sd name;set name pool_savepath(id,frame_nr)
+		sd f;set f f_open_mem(name,"wb")
+		call f_write(f,mem,sz)
+		call fclose(f)
+		call block_reset_size(b)
+	end
+end
 function pool_done(sd id,sd frame_nr)
 	if pool_data.write!=(FALSE)
-		sd b;set b struct_ids_actionpool_filter((ids_get),id)
-		sd sz;set sz block_get_size(b)
-		if sz!=0
-			sd mem;set mem block_get_mem(b)
-			sd name;set name pool_savepath(id,frame_nr)
-			sd f;set f f_open_mem(name,"wb")
-			call f_write(f,mem,sz)
-			call fclose(f)
-			call block_reset_size(b)
-		end
+		callg pool_done_write(id,frame_nr)
 		ret
 	end
+	inc frame_nr
 	callg pool_read(id,frame_nr)
+end
+function pool_done_one(sd id)
+	if pool_data.write!=(FALSE)
+		callg pool_done_write(id,-1)
+	end
 end
 function pool_savepath_init(sd a)
 	valuex path#1;set path a
@@ -182,7 +189,11 @@ function pool_savepath_init(sd a)
 end
 function pool_savepath(sd id,sd fr)
 	sd m;set m memalloc(pool_savepath_init.size)
-	call sprintf(m,"%s.%u.%u",pool_savepath_init.path,id,fr)
+	if fr!=-1
+		call sprintf(m,"%s.%u.%u",pool_savepath_init.path,id,fr)
+	else #button initaction
+		call sprintf(m,"%s.%u",pool_savepath_init.path,id)
+	end
 	return m
 end
 

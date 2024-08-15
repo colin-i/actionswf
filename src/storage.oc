@@ -7,6 +7,7 @@ importx "memcpy" memcpy
 
 #this is throwless here
 import "struct_ids" struct_ids
+import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
 
 #
 function identifiers()
@@ -53,6 +54,12 @@ function frames_as_shows(datax flag)
 	and flag (flag_framesAsShows)
 end
 
+function free_sprite_id_actions(sd id)
+	call struct_ids_actionpool_filter((ids_free),id)
+	callg struct_ids_actionpool((ids_free),id)
+	callg struct_ids_action((ids_free),id) #without g is ok here
+end
+
 import "mem_free" mem_free
 import "action_code_values_free" action_code_values_free
 import "file_close" file_close
@@ -89,13 +96,8 @@ function identifiers_get()
 endfunction
 
 function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for buttons
+	call free_sprite_id_actions(id)
 	call struct_ids((ids_free),id)
-#these two are ok throwless
-	callg struct_ids_action((ids_free),id)
-	callg struct_ids_actionpool((ids_free),id)
-	import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
-	call struct_ids_actionpool_filter((ids_free),id)
-#
 	import "debug_spritedone" debug_spritedone
 	call debug_spritedone(id,finalId_or_containerId)
 endfunction
@@ -260,7 +262,7 @@ function swf_frames_inc(sd frames,sw pointer)
 	call stack_to_word_arg(frames,pointer)
 end
 #size
-function done_action(sd id,sd frames,sd type)
+function done_action(sd id,sd frames) #,sd finalid)
 	sv p_block
 	setcall p_block struct_ids_action((ids_get_pointer),id)
 	sd block
@@ -268,25 +270,28 @@ function done_action(sd id,sd frames,sd type)
 	sd size
 	setcall size block_get_size(block)
 	if size!=0  #here is an ending from show or done with size
-		#more at dtitles
-		call dtitles_frame(frames)
-
 		import "write_action" write_action
 		sd tagsz
-		setcall tagsz action_size(id)
-		call swf_tag_recordheader_entry((DoAction),tagsz)
-		call write_action(id,frames)
-		sd poolblock
-		setcall poolblock actionpool_currentblock()
-		call block_reset_size(poolblock)
-		call block_reset_size(block)
-		return size
+		#if frames!=-1
+			call dtitles_frame(frames)
+			setcall tagsz action_size(id)
+			call swf_tag_recordheader_entry((DoAction),tagsz)
+			call write_action(id,frames)
+			sd poolblock
+			setcall poolblock actionpool_currentblock()
+			call block_reset_size(poolblock)
+			call block_reset_size(block)
+			return size
+		#else
+		#	call dtitles_frame_one(id,finalid)
+		#	setcall tagsz action_size(id)
+		#	add tagsz (WORD)
+		#	call swf_tag_recordheader_entry((DoInitAction),tagsz)
+		#	call swf_mem_add(#id.(WORD))
+		#	import write_action_one
+		#	call write_action_one(id)
+		#end
 	end
-	if type=(from_show)  #here is an ending from show with no size
-		import "pool_read" pool_read
-		call pool_read(id,frames)
-	end
-	return 0
 end
 #
 function swf_actionblock(sd proc,sd arg,sd arg2)
@@ -318,9 +323,11 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
 		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
 
-		call struct_ids_action_set(id)
+		call struct_ids_action_set(id) #temporar
 #		call struct_ids_action_set(id,(FALSE))
-#		call struct_ids_action_set(id,(TRUE))
+#		#see at part_done call struct_ids_action_set(id,(TRUE))
+		import "pool_read" pool_read
+		callg pool_read(id,0)
 
 		ret
 	endif
@@ -333,17 +340,22 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		set pframes swf_sprite_frames_pointer(id)
 		set frames word_arg_to_stack(pframes)
 
+		#call is_ainit((TRUE)) this is not similiar with DoAction, has spriteid and only once per swf, and ffdec is forgetting the sprite id
+		# and, at ruffle, can add in multiple frames, but are executed all at once before any frames, and "this" is level0 for all
+		#then, this at done
+
 		sd sz
-#		call is_ainit((TRUE))
-#		set sz done_action(id,frames,arg)
-#		call is_ainit((FALSE))
-#		or sz done_action(id,frames,arg)
-		set sz done_action(id,frames,arg) #temporar until uncomment
+		#call is_ainit((FALSE))
+		set sz done_action(id,frames)
 
 		if arg=(from_show) #example: two action() and one show here
 			call debug_show(id) #id is 0/spriteid, this is good at debugger to keep the count of frames
 			set pframes swf_sprite_frames_pointer(id) #mem was increased, pointer (maybe) was changed
 			call swf_frames_inc(frames,pframes)
+			if sz=0 # else is an ending from show with no size
+				inc frames
+				call pool_read(id,frames)
+			end
 		elseif frames_as_shows.flag=0
 			if sz!=0
 				set pframes swf_sprite_frames_pointer(id)
@@ -390,7 +402,7 @@ endfunction
 function new_sprite_id()
 	sd id
 	setcall id def_mem()
-	call struct_ids_action_set(id)
+	call struct_ids_action_set(id) #temporar
 #	call struct_ids_action_set(id,(FALSE)) #at button and normal sprite
 	return id
 endfunction
