@@ -1,8 +1,8 @@
 
-#1 file.swf  2 what to call (ex: ./a.out ...)  optional 3 verbose
+#1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
+#isdebug=
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
-if [ -z "${2}" ]; then echo alternative path required; exit 1; fi
 
 dname=`dirname ${1}`
 cd ${dname} || exit 1
@@ -11,8 +11,6 @@ bname=`basename ${1}`
 
 log=${bname}.log
 if [ ! -e ${log} ]; then echo no log; exit 1; fi
-
-isdebug=${3}
 
 folder="${bname%.*}"
 if [ -n "${isdebug}" ]; then echo ${folder}; fi
@@ -38,8 +36,10 @@ move () {
 doaction () {
 	to=${1}
 	shift
-	if [ -z "$@" ]; then return 1; fi
-	for var in "$@"; do
+	if [ ${#@} = 0 ]; then
+		return 1
+	fi
+	for var in "${@}"; do
 		f=`echo ${var} | grep -o "frame_.*/"`   #/ is important to stop the search
 		f=${f::-1}
 		f=${to}_${f:6}
@@ -67,11 +67,13 @@ while read p; do
 				echo show
 			else
 				if [ -n "${isdebug}" ]; then echo finalId = ${p}; fi
-				doaction ${s} `find -name DoAction.as | grep "DefineSprite_${p}_movie"` || { #else is a button
+				doaction ${s} `find -name DoAction.as | grep "DefineSprite_${p}_movie"` || {
 					f=`find -name "BUTTONCONDACTION on(release).as" | grep "DefineButton2_${p}"` # | xargs -I {} echo "\"{}\""`; doaction ${s} "${f}" #double escape the quotes
-					d=../${out}/${s}
-					move "${f}" ${d}
-					sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
+					if [ -n "${f}" ]; then #is a button
+						d=../${out}/${s}
+						move "${f}" ${d}
+						sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
+					fi #else is empty
 				}
 			fi
 			s=
@@ -88,8 +90,11 @@ done <../${log}
 
 doaction 0 `find -maxdepth 3 -name DoAction.as`
 
-cd ..
-mv ${1} ${1}.orig
-${2} && \
-diff ${1} ${1}.orig && \
-rm -r ${v} ${folder}
+#part 2
+if [ -n "${2}" ]; then
+	cd ..
+	move ${1} ${1}.orig && \
+	${2} && \
+	diff ${1} ${1}.orig && \
+	rm -r ${v} ${folder}
+fi
