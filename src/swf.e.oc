@@ -22,8 +22,8 @@ import "block_get_mem" block_get_mem
 import "free_sprite_id" free_sprite_id
 import "freereset" freereset   #..x with no args
 import "dtitles_conclude" dtitles_conclude
-#import "free_sprite_id_actions" free_sprite_id_actions
-#import "is_ainit" is_ainit
+import "free_sprite_id_actions" free_sprite_id_actions
+import "is_ainit" is_ainit
 
 import "ebase" ebase
 #aftercallimport ebool
@@ -399,8 +399,7 @@ base swf_new.bp;call ebase(swf_new.bp)
     call swf_mem((mem_exp_change),spriteid)
 
     call swf_actionblock((mem_exp_change),spriteid)
-#	sd p;setcall p swf_sprite_frames_pointer(spriteid)
-	call swf_actionblock((mem_exp_part_done),(from_done)) # ,p in case there are remaining actions
+	call swf_actionblock((mem_exp_part_done),(from_done)) # in case there are remaining actions
     call swf_actionblock((mem_exp_change_back))
 
     import "swf_tag_end" swf_tag_end
@@ -427,12 +426,12 @@ base swf_new.bp;call ebase(swf_new.bp)
     call swf_mem_add(mem,size)
 
 	#if is, add DoInitAction in timeline
-	#call is_ainit((TRUE))
+	call is_ainit((TRUE))
 	#import "done_action_one" done_action_one
 	#call done_action_one(spriteid,id)
-#	call free_sprite_id_actions(spriteid)
+	call free_sprite_id_actions(spriteid)
 
-	#call is_ainit((FALSE))
+	call is_ainit((FALSE))
 	call free_sprite_id(spriteid,id)
 
     return id
@@ -446,8 +445,8 @@ base swf_new.bp;call ebase(swf_new.bp)
     setcall id new_sprite_id()
 	import "pool_read" pool_read
 	call pool_read(id,0)
-#import "struct_ids_action_set" struct_ids_action_set
-#	call struct_ids_action_set(id,(TRUE))
+	import "struct_ids_action_set" struct_ids_action_set
+	call struct_ids_action_set(id,(TRUE))
 #	call pool_read(id,-1)
     call swf_mem((mem_exp_change),id)
     sd reserve;#set later

@@ -1,6 +1,7 @@
 
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #isdebug=
+#wait=
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
 
@@ -18,8 +19,10 @@ if [ -n "${isdebug}" ]; then echo ${folder}; fi
 if [ -z "${isdebug}" ]; then
 	ffdec -export script ${folder} ${1} > /dev/null || exit 1  #silent somehow
 else
+	echo ffdec -export script ${folder} ${1}
 	ffdec -export script ${folder} ${1} || exit 1
 fi
+if [ -n "${wait}" ]; then read; fi
 
 out=${folder}.dbg
 mkdir -p ${out}

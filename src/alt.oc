@@ -31,6 +31,8 @@ function alt_free()
 	end
 end
 
+#import "ainit" ainit
+
 importx "strlen" strlen
 
 #aftercallimport ebool
@@ -67,18 +69,24 @@ function alt_action(sd orig_action,sd preid)
 end
 function alt_action_base(sd orig_action,sd preid,sd has_frames)
 	if alt_join.folder!=(NULL)
-		if has_frames=(TRUE)
-			sw p
-			#if preid!=0
-			set p swf_sprite_frames_pointer(preid)
-			#else
-			#set p swf_frames_pointer()
-			#end
-			sd f;set f word_arg_to_stack(p)
-			inc f  ##index 0 is frame 1 at ffdec
-			call sprintf(alt_join.concat_point,"%u_%u",preid,f)
-		else
+		whiletrue
+			if has_frames=(TRUE)
+				#sd ai;set ai ainit()
+				#if ai=(FALSE)
+					sw p
+					#if preid!=0
+					set p swf_sprite_frames_pointer(preid)
+					#else
+					#set p swf_frames_pointer()
+					#end
+					sd f;set f word_arg_to_stack(p)
+					inc f  ##index 0 is frame 1 at ffdec
+					call sprintf(alt_join.concat_point,"%u_%u",preid,f)
+					break
+				#end
+			end
 			call sprintf(alt_join.concat_point,"%u",preid)
+			break
 		end
 		datax int#1;set int access(alt_join.folder,(R_OK))
 		if int=0

@@ -77,7 +77,7 @@ import "actionpool_currentblock" actionpool_currentblock
 import "action_size" action_size
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
-#import "is_ainit" is_ainit
+import "is_ainit" is_ainit
 
 #aftercallimport ebool
 
@@ -331,9 +331,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
 		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
 
-		call struct_ids_action_set(id) #temporar
-#		call struct_ids_action_set(id,(FALSE))
-#		#see at part_done call struct_ids_action_set(id,(TRUE))
+		call struct_ids_action_set(id,(FALSE)) #see at part_done call struct_ids_action_set(id,(TRUE))
 		import "pool_read" pool_read
 		callg pool_read(id,0)
 
@@ -353,7 +351,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		#then, this at done
 
 		sd sz
-		#call is_ainit((FALSE))
+		call is_ainit((FALSE))
 		set sz done_action(id,frames)
 
 		if arg=(from_show) #example: two action() and one show here

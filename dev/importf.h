@@ -63,6 +63,7 @@ importX "action" action
 importX "actionf" actionf
 importX "actiond" actiond
 importX "action_sprite" action_sprite
+importX "action_init_sprite" action_init_sprite
 importX "actionf_sprite" actionf_sprite
 
 #tool
