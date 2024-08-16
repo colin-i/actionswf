@@ -87,6 +87,10 @@ for(a in b){c=1+c;}
 #call actiond("for(a in b){c=1+c;}") will be ""b"" and here straight "b"
 call action("return 1")
 
+sd id;set id swf_sprite_new()
+call action_init_sprite(id,"var a")
+call swf_sprite_done(id)
+
 call swf_done()
 
 call exit(0)
