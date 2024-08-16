@@ -3,7 +3,7 @@ Format ElfObj64
 include "../include/prog.h"
 
 import "for_in_ptr" for_in_ptr
-#import "is_ainit" is_ainit
+import "is_ainit" is_ainit
 
 import "ebase" ebase
 #aftercallimport ebool
@@ -16,7 +16,7 @@ import "actionf_local" actionf_local
 functionX action(ss ac)
 valuex bp#1;base bp;call ebase(bp)
 #ss ac       actionscript string to be parsed
-#	call is_init((FALSE))
+	call is_ainit((FALSE))
 	call action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
@@ -25,7 +25,7 @@ base action.bp;call ebase(action.bp)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
-#	call is_init((FALSE))
+	call is_ainit((FALSE))
 	call actionf_local(#buffer)
 endfunction
 #see at part_done functionXx actionf_init(ss buffer,ss *format)
@@ -45,7 +45,7 @@ functionX action_sprite(sd sprite,ss actions)
 base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss actions   same as action
-#	call is_ainit((FALSE))
+	call is_ainit((FALSE))
 	call action_sprite_base(sprite,actions,(TRUE))
 endfunction
 #functionX action_init_sprite(sd sprite,ss actions)
@@ -58,7 +58,7 @@ base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
-#	call is_ainit((FALSE))
+	call is_ainit((FALSE))
 	call actionf_sprite_local(sprite,#buffer)
 endfunction
 #functionXx actionf_init_sprite(sd sprite,ss buffer,ss *format)

@@ -261,8 +261,9 @@ function swf_frames_inc(sd frames,sw pointer)
 	inc frames      ##even if is not a ShowFrame in the swf, is action that resides in a frame, ffdec is saying same
 	call stack_to_word_arg(frames,pointer)
 end
+import "write_action" write_action
 #size
-function done_action(sd id,sd frames) #,sd finalid)
+function done_action(sd id,sd frames)
 	sv p_block
 	setcall p_block struct_ids_action((ids_get_pointer),id)
 	sd block
@@ -270,30 +271,36 @@ function done_action(sd id,sd frames) #,sd finalid)
 	sd size
 	setcall size block_get_size(block)
 	if size!=0  #here is an ending from show or done with size
-		import "write_action" write_action
 		sd tagsz
-		#if frames!=-1
-			call dtitles_frame(frames)
-			setcall tagsz action_size(id)
-			call swf_tag_recordheader_entry((DoAction),tagsz)
-			call write_action(id,frames)
-			sd poolblock
-			setcall poolblock actionpool_currentblock()
-			call block_reset_size(poolblock)
-			call block_reset_size(block)
-		#else
-		#	call dtitles_frame_one(id,finalid)
-		#	setcall tagsz action_size(id)
-		#	add tagsz (WORD)
-		#	call swf_tag_recordheader_entry((DoInitAction),tagsz)
-		#	call swf_mem_add(#id.(WORD))
-		#	import write_action_one
-		#	call write_action_one(id)
-		#	ret
-		#end
+		call dtitles_frame(frames)
+		setcall tagsz action_size(id)
+		call swf_tag_recordheader_entry((DoAction),tagsz)
+		call write_action(id,frames)
+		sd poolblock
+		setcall poolblock actionpool_currentblock()
+		call block_reset_size(poolblock)
+		call block_reset_size(block)
 	end
 	return size
 end
+#function done_action_one(sd id,sd finalid)
+#	sv p_block
+#	setcall p_block struct_ids_action((ids_get_pointer),id)
+#	sd block
+#	set block p_block#
+#	sd size
+#	setcall size block_get_size(block)
+#	if size!=0  #here is an ending from show or done with size
+#		sd tagsz
+#		call dtitles_frame_one(id,finalid)
+#		setcall tagsz action_size(id)
+#		add tagsz (WORD)
+#		call swf_tag_recordheader_entry((DoInitAction),tagsz)
+#		call swf_mem_add(#id.(WORD))
+#		import "write_action_one" write_action_one
+#		callg write_action_one(id)
+#	end
+#end
 #
 function swf_actionblock(sd proc,sd arg,sd arg2)
     data id#1
@@ -403,8 +410,7 @@ endfunction
 function new_sprite_id()
 	sd id
 	setcall id def_mem()
-	call struct_ids_action_set(id) #temporar
-#	call struct_ids_action_set(id,(FALSE)) #at button and normal sprite
+	call struct_ids_action_set(id,(FALSE)) #at button and normal sprite
 	return id
 endfunction
 

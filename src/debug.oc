@@ -143,6 +143,7 @@ import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
 import "for_in" for_in
 import "frames_as_shows" frames_as_shows
+import "ainit" ainit
 
 importx "fseek" fseek
 importx "fread" fread
@@ -280,6 +281,8 @@ function debug_base(sd id)
 	sv of%p_offsets
 	if of#!=(NULL)
 		call debug_base_core(id)
+		sd ai;set ai ainit()
+		call f_printf((fprintf_min+1),debug_data.file,"%u\n",ai)
 	end
 end
 function debug_show(sd id)

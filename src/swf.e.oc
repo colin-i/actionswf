@@ -428,7 +428,8 @@ base swf_new.bp;call ebase(swf_new.bp)
 
 	#if is, add DoInitAction in timeline
 	#call is_ainit((TRUE))
-	#call done_action(spriteid,-1,id)
+	#import "done_action_one" done_action_one
+	#call done_action_one(spriteid,id)
 #	call free_sprite_id_actions(spriteid)
 
 	#call is_ainit((FALSE))

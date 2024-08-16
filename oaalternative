@@ -32,7 +32,6 @@ if [ -n "${isdebug}" ]; then v=-v; fi
 move () {
 	mv ${v} "${1}" ${2}
 }
-
 doaction () {
 	to=${1}
 	shift
@@ -47,20 +46,25 @@ doaction () {
 	done
 	return 0
 }
+new_tag () {
+	s=${p}
+	t= #type
+	if [ -n "${isdebug}" ]; then echo id = ${s}; fi
+}
+
 s= #id
 while read p; do
 	if [ -z "${s}" ]; then
-		s=${p}
-		t= #type
-		if [ -n "${isdebug}" ]; then echo id = ${s}; fi
+		new_tag
 	else
 		if [ -z "${t}" ]; then
 			if [ -z "${p}" ]; then
 				t=1 #can be show or done
 			else
 				t=2 #action
-				lines=${p}
-				if [ -n "${isdebug}" ]; then echo lines = ${lines}; fi
+				at=${p}
+				lines=
+				if [ -n "${isdebug}" ]; then echo at = ${at}; fi
 			fi
 		elif [ ${t} = 1 ]; then
 			if [ -z "${p}" ]; then
@@ -77,12 +81,14 @@ while read p; do
 				}
 			fi
 			s=
+		elif [ -z "${lines}" ]; then
+			lines=${p}
+			if [ -n "${isdebug}" ]; then echo lines = ${lines}; fi
 		else
 			if [ ${lines} -gt 0 ]; then
 				lines=$((lines-1))
 			elif [ -z "`echo ${p} | grep ,`" ]; then
-				s=${p}
-				t=
+				new_tag
 			fi
 		fi
 	fi

@@ -373,10 +373,13 @@ function struct_ids_free(sd id)
 	endif
 end
 
-#function is_ainit(sd a)
-#	charx b#1
-#	set b a
-#end
+function is_ainit(sd a)
+	charx b#1
+	set b a
+end
+function ainit()
+	return is_ainit.b
+end
 
 importx "malloc" malloc
 importx "fclose" fclose
@@ -628,8 +631,8 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 		call free(pointer#)
 	endelse
 endfunction
-function struct_ids_action_set(sd id) #,sd ainit)
-#	call is_ainit(ainit)
+function struct_ids_action_set(sd id,sd ainitvalue)
+	call is_ainit(ainitvalue)
 	call struct_ids_action((ids_set),id)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
 	callg struct_ids_actionpool_set(id)
