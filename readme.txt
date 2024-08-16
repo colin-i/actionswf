@@ -7,6 +7,7 @@ The files swf.es and action.es has the main functions that can be used; function
 When using the debug_log flag at swf_new_ex, action,action_sprite,swf_sprite_done calls are logged. The syntax is as follow:
 
 SpriteId
+ActionInitBool
 TextLinesNumber
 TextLines
 {NumberA,NumberB1...NumberBN}
@@ -25,6 +26,7 @@ FinalSpriteId
 
 Where:
 SpriteId or 0 for root.
+ActionInitBool is a 0/1 digit.
 TextLinesNumber is the number of lines that TextLines has.
 TextLines is the text like in action[_sprite] call.
 NumberA lines, then NumberA1+...+NumberAN=TextLinesNumber
