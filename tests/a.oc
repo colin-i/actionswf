@@ -104,7 +104,7 @@ n(-NaN,NaN)
 // https://baseconvert.com/ieee-754-floating-point
 //// https://www.h-schmidt.net/FloatConverter/IEEE754.html
 
-//example of extending clip symbols (and one time DoActionInit)
+//example of extending clip symbols (and one time DoInitAction tag)
 var a=new Object();
 a.value=2;
 attachMovie('carSymbol','fastCar_mc',1,a)
