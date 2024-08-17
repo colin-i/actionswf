@@ -103,11 +103,23 @@ n(-NaN,NaN)
 // https://www.omnicalculator.com/other/floating-point
 // https://baseconvert.com/ieee-754-floating-point
 //// https://www.h-schmidt.net/FloatConverter/IEEE754.html
+
+//example of extending clip symbols (and one time DoActionInit)
+var a=new Object();
+a.value=2;
+attachMovie('carSymbol','fastCar_mc',1,a)
 ")
 
 sd presprite;set presprite swf_sprite_new()
-call action_sprite(presprite,"var a")
+call action_sprite(presprite,"trace('b'+this.value)")
+call action_init_sprite(presprite,"
+function Vehicle(){
+	trace('a'+this.value)
+}
+Object.registerClass('carSymbol',Vehicle)
+")
 sd sprite;set sprite swf_sprite_done(presprite)
+call swf_exports_add(sprite,"carSymbol")
 
 call swf_done()
 
