@@ -1,3 +1,9 @@
+actionswf (1-90) bionic; urgency=medium
+
+  * DoInitAction
+
+ -- bc <bc@bc-desktop>  Sat, 17 Aug 2024 14:40:39 +0300
+
 actionswf (1-89) bionic; urgency=medium
 
   * fix test
