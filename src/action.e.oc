@@ -17,7 +17,7 @@ functionX action(ss ac)
 valuex bp#1;base bp;call ebase(bp)
 #ss ac       actionscript string to be parsed
 	call is_ainit((FALSE))
-	call action_local(ac)
+	callg action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
 functionXx actionf(ss buffer,ss *format)
@@ -26,7 +26,7 @@ base action.bp;call ebase(action.bp)
 #ss format   the format
 #...         % arguments here
 	call is_ainit((FALSE))
-	call actionf_local(#buffer)
+	callg actionf_local(#buffer)
 endfunction
 #see at part_done functionXx actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated
@@ -46,11 +46,11 @@ base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss actions   same as action
 	call is_ainit((FALSE))
-	call action_sprite_base(sprite,actions,(TRUE))
+	callg action_sprite_base(sprite,actions,(TRUE))
 endfunction
-functionX action_init_sprite() #sd sprite,ss actions)
+functionX action_init_sprite(sd sprite,ss actions)
 	call is_ainit((TRUE))
-	#call action_sprite_base(sprite,actions,(TRUE))
+	callg action_sprite_base(sprite,actions,(TRUE))
 end
 import "actionf_sprite_local" actionf_sprite_local
 functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
@@ -59,9 +59,9 @@ base action.bp;call ebase(action.bp)
 #ss buffer    same as actionf
 #ss format    same as actionf
 	call is_ainit((FALSE))
-	call actionf_sprite_local(sprite,#buffer)
+	callg actionf_sprite_local(sprite,#buffer)
 endfunction
-#functionXx actionf_init_sprite(sd sprite,ss buffer,ss *format)
-#	call is_ainit((TRUE))
-#	call actionf_sprite_local(sprite,#buffer)
-#end
+functionXx actionf_init_sprite(sd sprite,ss buffer,ss *format)
+	call is_ainit((TRUE))
+	callg actionf_sprite_local(sprite,#buffer)
+end

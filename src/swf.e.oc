@@ -427,8 +427,8 @@ base swf_new.bp;call ebase(swf_new.bp)
 
 	#if is, add DoInitAction in timeline
 	call is_ainit((TRUE))
-	#import "done_action_one" done_action_one
-	#call done_action_one(spriteid,id)
+	import "done_action_one" done_action_one
+	call done_action_one(spriteid,id)
 	call free_sprite_id_actions(spriteid)
 
 	call is_ainit((FALSE))
@@ -447,7 +447,7 @@ base swf_new.bp;call ebase(swf_new.bp)
 	call pool_read(id,0)
 	import "struct_ids_action_set" struct_ids_action_set
 	call struct_ids_action_set(id,(TRUE))
-#	call pool_read(id,-1)
+	call pool_read(id,-1)
     call swf_mem((mem_exp_change),id)
     sd reserve;#set later
     call swf_mem_add(#reserve,2)

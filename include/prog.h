@@ -72,7 +72,7 @@ const DefineEditText=37
 const DefineSprite=39
 const DefineFont2=48
 const ExportAssets=56
-#const DoInitAction=59
+const DoInitAction=59
 
 include "action.h"
 

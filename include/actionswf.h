@@ -165,6 +165,8 @@ void actionf(char* buffer,char* format,...);
 
 void action_sprite(int sprite,char* ac);
 void actionf_sprite(int sprite,char* buffer,char* format,...);
+void action_init_sprite(int sprite,char* ac);
+void actionf_init_sprite(int sprite,char* buffer,char* format,...);
 
 
 

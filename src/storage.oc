@@ -82,6 +82,7 @@ import "is_ainit" is_ainit
 #aftercallimport ebool
 
 import "dtitles_frame" dtitles_frame
+import "dtitles_frame_one" dtitles_frame_one
 import "strlen_of" strlen_of
 
 #id
@@ -283,24 +284,24 @@ function done_action(sd id,sd frames)
 	end
 	return size
 end
-#function done_action_one(sd id,sd finalid)
-#	sv p_block
-#	setcall p_block struct_ids_action((ids_get_pointer),id)
-#	sd block
-#	set block p_block#
-#	sd size
-#	setcall size block_get_size(block)
-#	if size!=0  #here is an ending from show or done with size
-#		sd tagsz
-#		call dtitles_frame_one(id,finalid)
-#		setcall tagsz action_size(id)
-#		add tagsz (WORD)
-#		call swf_tag_recordheader_entry((DoInitAction),tagsz)
-#		call swf_mem_add(#id.(WORD))
-#		import "write_action_one" write_action_one
-#		callg write_action_one(id)
-#	end
-#end
+function done_action_one(sd id,sd finalid)
+	sv p_block
+	setcall p_block struct_ids_action((ids_get_pointer),id)
+	sd block
+	set block p_block#
+	sd size
+	setcall size block_get_size(block)
+	if size!=0  #here is an ending from show or done with size
+		sd tagsz
+		call dtitles_frame_one(id,finalid)
+		setcall tagsz action_size(id)
+		add tagsz (WORD)
+		call swf_tag_recordheader_entry((DoInitAction),tagsz)
+		call swf_mem_add(#finalid,(WORD))
+		import "write_action_one" write_action_one
+		callg write_action_one(id)
+	end
+end
 #
 function swf_actionblock(sd proc,sd arg,sd arg2)
     data id#1
