@@ -1,3 +1,9 @@
+actionswf (1-91) bionic; urgency=medium
+
+  * fix log
+
+ -- bc <bc@bc-desktop>  Mon, 19 Aug 2024 08:53:16 +0300
+
 actionswf (1-90) bionic; urgency=medium
 
   * DoInitAction
