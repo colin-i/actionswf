@@ -29,8 +29,7 @@ function actionpush()
 	if push.size!=0
 		call actionrecordheader_core((ActionPush),push.size)
 		call swf_actionblock_add(push.mem,push.size)
-		import "debug_phase_code_add" debug_phase_code_add
-		call debug_phase_code_add((TRUE),#push.size)
+		#this is already in actionrecordheader_core call debug_phase_code_add((TRUE),#push.size)
 		set push.size 0
 	end
 end
