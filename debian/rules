@@ -6,10 +6,16 @@ export DH_VERBOSE = 1
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
 %:
-	dh $@ --with autoreconf
+	dh $@
+# --with autoreconf
 
 override_dh_auto_install:
 	dh_auto_install -- prefix=/usr
 
 #override_dh_install:
 #	dh_install --list-missing -X.pyc -X.pyo
+
+#for a reason this is not working like otoc
+#override_dh_auto_configure:
+#	dh_auto_configure
+#	sed -i '/^oad/d' debian/actionswf.install

@@ -9,6 +9,7 @@ conv_64=0
 endif
 
 SUBDIRS := src example
+# oad
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
