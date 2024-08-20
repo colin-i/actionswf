@@ -1,4 +1,5 @@
 
 format elfobj64
 
-entry main()
+functionx oadata_make(ss *swf_fullpath)
+end
