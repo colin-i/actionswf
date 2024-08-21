@@ -19,4 +19,6 @@ $(SUBDIRS):
 test:
 	cd tests && conv_64=${conv_64} /bin/bash ./as && conv_64=${conv_64} /bin/bash ./c 1 && cd ffdec && conv_64=${conv_64} /bin/bash ./as && echo tests ok
 
+clean:
+	cd tests; /bin/bash ./c; cd ffdec; /bin/bash ./c
 .NOTPARALLEL:
