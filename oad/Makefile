@@ -16,7 +16,15 @@ OFLAGS=x_file 2
 
 libname=liboadbgdata.so
 
-all: ${libname}
+all: ${libname} oadbgdatai.h
+
+%.oh: %.h.oh
+	echo "format elfobj64" > $@
+	echo "orphan off" >> $@
+	cat $< >> $@
+%.h: %.oh
+	${OCOMP} $< ${OFLAGS}
+	${OCONV} $<.x
 
 ${libname}: main.o
 	${OLINK} main.oc.log
@@ -35,6 +43,10 @@ clean:
 	-rm -f main.oc.x
 	-rm -f main.c
 	-rm -f ${libname}
+	-rm -f oadbgdatai.oh.log
+	-rm -f oadbgdatai.oh.x
+	-rm -f oadbgdatai.oh
+	-rm -f oadbgdatai.h
 
 distclean: clean
 

@@ -1,0 +1,4 @@
+
+o a.oc x_file 1 && \
+otoc a.oc.x && \
+cc a.c -L../../oad -loadbgdata
