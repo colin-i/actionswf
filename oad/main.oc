@@ -1,5 +1,19 @@
 
 format elfobj64
 
-functionx oadata_make(ss *swf_fullpath)
+importx "strlen" strlen
+importx "malloc" malloc
+importx "free" free
+
+const NULL=0
+
+functionx oadata_make(ss swf_fullpath)
+	sd size;set size strlen(swf_fullpath)
+	#.log
+	sd mem;set mem malloc(size)
+	if mem!=(NULL)
+		call free(mem)
+		return 0
+	end
+	return -1
 end

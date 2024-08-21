@@ -9,4 +9,4 @@ entry main()
 
 call oadata_make("./a.swf")
 
-ret
+return 0

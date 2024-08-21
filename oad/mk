@@ -1,2 +1,3 @@
 
-OCONV=~/o/ocompiler-1/otoc/otoc make
+if [ -n "${1}" ]; then OCOMP="q ~/o/ocompiler-1/src/o"; fi
+OCONV=~/o/ocompiler-1/otoc/otoc OCOMP=${OCOMP} make
