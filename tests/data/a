@@ -1,5 +1,5 @@
 
 o a.oc x_file 1 && \
 otoc a.oc.x && \
-cc a.c -L../../oad -loadbgdata && \
+cc -g a.c -L../../oad -loadbgdata && \
 LD_LIBRARY_PATH=../../oad ./a.out && echo $?

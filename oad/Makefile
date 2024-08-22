@@ -17,6 +17,9 @@ OFLAGS=x_file 2
 libname=liboadbgdata.so
 
 all: ${libname} oadbgdatai.h
+re:
+	$(MAKE) clean
+	$(MAKE) all
 
 %.oh: %.h.oh
 	echo "format elfobj64" > $@
@@ -35,7 +38,7 @@ ${libname}: main.o
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
-	$(CC) -c $*.c
+	$(CC) -c -w ${compilerflags} $*.c
 
 clean:
 	-rm -f main.o
