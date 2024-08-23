@@ -5,11 +5,12 @@ importx "strlen" strlen
 importx "malloc" malloc
 importx "free" free
 importx "memcpy" memcpy
+importx "fclose" fclose
 
-const NULL=0
-const EXIT_SUCCESS=0
-const EXIT_FAILURE=-1
+override include_sec 1
+include "common.h" "common.h.oh"
 
+import "fopen_mem" fopen_mem
 functionx oadata_make(ss swf_fullpath)
 	#.x
 	sd size;add size strlen(swf_fullpath)
@@ -20,6 +21,10 @@ functionx oadata_make(ss swf_fullpath)
 		add size mem
 		char xext=".x";vstr sxext^xext
 		call memcpy(size,sxext,\.xext)
+		sd f;set f fopen_mem(mem)
+		if f!=(NULL)
+			call fclose(f)
+		end
 		call free(mem)
 		return (EXIT_SUCCESS)
 	end

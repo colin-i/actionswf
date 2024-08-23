@@ -1,0 +1,9 @@
+
+format elfobj64
+
+override include_sec 1
+include "common.h" "common.h.oh"
+
+function fopen_mem(sd *path)
+	return (NULL)
+end

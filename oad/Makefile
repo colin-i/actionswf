@@ -15,6 +15,7 @@ endif
 OFLAGS=x_file 2
 
 libname=liboadbgdata.so
+exte=libexte.a
 
 all: ${libname} oadbgdatai.h
 re:
@@ -29,10 +30,12 @@ re:
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
 
-${libname}: main.o
-	${OLINK} main.oc.log
-	@echo
-	$(CC) ${linkerflags} -shared $< -o ${libname}
+${exte}: intern.o
+	$(AR) cr ${exte} $^
+
+${libname}: common.h ${exte} main.o
+	${OLINK} main.oc.log intern.oc.log
+	$(CC) ${linkerflags} -shared $(word 3,$^) -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
 	# `pkg-config --libs gtk4`
 
 %.o: %.oc
@@ -41,15 +44,11 @@ ${libname}: main.o
 	$(CC) -c -w ${compilerflags} $*.c
 
 clean:
-	-rm -f main.o
-	-rm -f main.oc.log
-	-rm -f main.oc.x
-	-rm -f main.c
-	-rm -f ${libname}
-	-rm -f oadbgdatai.oh.log
-	-rm -f oadbgdatai.oh.x
-	-rm -f oadbgdatai.oh
-	-rm -f oadbgdatai.h
+	-rm -f common.oh.log common.oh.x common.oh common.h
+	-rm -f intern.o intern.oc.log intern.oc.x intern.c
+	-rm -f main.o main.oc.log main.oc.x main.c
+	-rm -f ${exte} ${libname}
+	-rm -f oadbgdatai.oh.log oadbgdatai.oh.x oadbgdatai.oh oadbgdatai.h
 
 distclean: clean
 
