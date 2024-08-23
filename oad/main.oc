@@ -18,9 +18,8 @@ functionx oadata_make(ss swf_fullpath)
 	if mem!=(NULL)
 		call memcpy(mem,swf_fullpath,size)
 		add size mem
-		#char xext=".x"
-		#vstr sxext^xext
-		#call memcpy(size,sxext,\.xext)
+		char xext=".x";vstr sxext^xext
+		call memcpy(size,sxext,\.xext)
 		call free(mem)
 		return (EXIT_SUCCESS)
 	end
