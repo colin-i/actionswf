@@ -81,14 +81,14 @@ all: ${libname}
 ifeq (${conv_64},1)
 ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 ${libname}: ${name}
-	cp ${name} ${libname}
+	ln ${name} ${libname}
 
 else
 #same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
 ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} ${L} -lc -L. -l:${exte} --exclude-libs ${exte}
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
-	cp ${name} ${libname}
+	ln ${name} ${libname}
 	#is not with ln -s because will be one file install
 else
 ${libname}: ${name}

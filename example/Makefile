@@ -32,6 +32,9 @@ else
 	endif
 	#exit_end 1 #same problem as ocompiler, even at qemu-amd64
 	#endif
+	ifndef _L
+		_L=../src
+	endif
 endif
 
 all: build exe
@@ -53,11 +56,11 @@ lib:
 link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L../src -l:${libname}; \
+			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -L${_L} -l:${libname}; \
 		elif [ -z "${ldprefer}" ]; then \
-			$(CC) ${linkerflags} ${name}.o -o ${name} -L../src -l:${libname}; \
+			$(CC) ${linkerflags} ${name}.o -o ${name} -L${_L} -l:${libname}; \
 		else \
-			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} ${L} -lc -L../src -l:${libname}; \
+			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} ${L} -lc -L${_L} -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
@@ -71,8 +74,8 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		LD_LIBRARY_PATH=../src ${launcher} ./${name} && \
-		LD_LIBRARY_PATH=../src ${launcher} ./${name} x; \
+		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} && \
+		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x; \
 	fi
 #\? is 0x3f log,alt,titles,x , inside -0x30, 0 is 0x30, \; to 0xb log,alt,x , = is 0xd log,titles,x
 

@@ -36,6 +36,7 @@ ${exte}: intern.o
 ${libname}: common.h ${exte} main.o
 	${OLINK} main.oc.log intern.oc.log
 	$(CC) ${linkerflags} -shared $(word 3,$^) -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
+	# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
 	# `pkg-config --libs gtk4`
 
 %.o: %.oc
