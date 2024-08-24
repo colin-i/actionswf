@@ -7,6 +7,6 @@ include "../../oad/oadbgdatai.h" "../../oad/oadbgdatai.h.oh"
 
 entry main()
 
-call oadata_make("./a.swf")
+call oadata_make("../../example/example.swf")
 
 return 0
