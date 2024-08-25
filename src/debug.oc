@@ -253,23 +253,25 @@ function debug_phase_code(sd codepointer)
 				#do not write now, can be break;} or Not Not If  and need to truncate that
 				datax size#1;set size debug_data.size
 				set debug_data.size 0
-				set debug_data.rows rows
+				add debug_data.rows rows  ## add? is the case with break+ret and remove them and will be an empty row and that flush was skipped, below example
+				#example, add var q , at while break below example (at debug_phase_code_flush)
 			end
 		endif
 	endif
 endfunction
 function debug_phase_code_flush()
 	if debug_data.rows!=0
-		#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
-		#will not bother concludefunction where is asking with ftell
-		sv file%p_debug_file
-		call f_printf((fprintf_min+1),file#,"%lu",debug_data.rows)
 		if debug_phase_code.size!=0
-		# while(q){break;}
+		# while(q){\nbreak;\n}  and with this example showing that previous ifs are ok also at last flush call
+		#there are rows with only one action_one, example in tests/ffdec
+			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
+			#will not bother concludefunction where is asking with ftell
+			sv file%p_debug_file
+			call f_printf((fprintf_min+1),file#,"%lu",debug_data.rows)
 			call f_write(file#,debug_data.mem,debug_phase_code.size)
+			call f_write(file#,"\n",1)
+			set debug_data.rows 0
 		end
-		call f_write(file#,"\n",1)
-		set debug_data.rows 0
 	end
 end
 
@@ -308,7 +310,7 @@ end
 function debug_phase_code_add(sd is_long,ss arg2)
 	sv of%p_offsets
 	if of#!=(NULL)
-		call debug_phase_code_flush()
+		call debug_phase_code_flush()  #since Dot, function c(){\n} , will also add empty row but with one .
 		sd sz;set sz debug_data.size
 		if is_long=(TRUE)
 			add sz (action_debug_comma+2+2)

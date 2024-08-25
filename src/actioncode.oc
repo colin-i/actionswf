@@ -927,6 +927,7 @@ function action_definefunction(sd codepointer)
 	sd debug_related#3  #for debug file offset and codeSize pointer and line offset, must be recursive too
 	setcall codepointer action_deffunction(codepointer,#debug_related)
 
+	call debug_xlog() #this on same row with dummy at .log
 	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
 
@@ -939,7 +940,6 @@ function action_definefunction(sd codepointer)
 	setcall index_atstart brace_blocks_counter()
 	set index_atstart index_atstart#
 	#
-	call debug_xlog()
 	sd index_current=0x7fFFffFF
 	while index_atstart<=index_current
 		setcall codepointer action__code_row(codepointer)
