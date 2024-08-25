@@ -246,6 +246,8 @@ import "brace_blocks_add_write" brace_blocks_add_write
 import "brace_blocks_add_write_offset" brace_blocks_add_write_offset
 import "brace_blocks_remove_write" brace_blocks_remove_write
 import "brace_blocks_remove_write_ex" brace_blocks_remove_write_ex
+import "debug_xlog" debug_xlog
+
 #position
 function action__code_row(sd codepointer)
 	charx rcb#1;set rcb (FALSE)   #at definefunction is another collision with this but is not a problem now
@@ -281,19 +283,20 @@ function action__code_row_ex(sd codepointer)
         return codepointer
 	endif
 	if attrib=(block_end)
-        add codepointer (DWORD)
-        if codepointer#=(else_flag)
+		add codepointer (DWORD)
+		if codepointer#=(else_flag)
 			ss p;set p ret_cont_break()
 			if p#=(ret_cont_break_nothing)
 				call action_code_else_add()
 			else #dead jump after return/continue/break
 				call action_code_else_resolve((skip_flag)) #and add the condition because there is number_of_unclosed after block_else_end
 			end
-            add codepointer (DWORD)
-        else
-            call brace_blocks_remove_write()
-        endelse
-        return codepointer
+			add codepointer (DWORD)
+			call debug_xlog() #here is after stepout from previous if (start of elseif or else)
+		else
+			call brace_blocks_remove_write()
+		endelse
+		return codepointer
 	endif
 	if attrib=(block_else_end)
         setcall codepointer action_code_conditions_end(codepointer)
@@ -456,6 +459,7 @@ function action_code_write_conditions(sd codepointer)
 			endelse
 			call action_push((ap_RegisterNumber),first_reg)
 			call action_one(attr2)
+			call debug_xlog()
 			return codepointer
 		endif
 		add codepointer (DWORD)
@@ -471,6 +475,7 @@ function action_code_write_conditions(sd codepointer)
 		call add_while_top_off((while_marker))
 		#
 		if codepointer#!=(inter_for)
+			call debug_xlog()
 			setcall codepointer action_code_pack(codepointer)
 			import "write_forward_offset" write_forward_offset
 			sub sizeOff (WORD)
@@ -497,6 +502,7 @@ function action_code_write_conditions(sd codepointer)
 		setcall codepointer action_code_right_util_ex(codepointer,#c2)
 		call write_ifjump_withNot(c2)
 	end
+	call debug_xlog() #and infinite? .x is also not knowing about that
 	#return the current pointer
 	return codepointer
 endfunction
@@ -817,8 +823,10 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			else
 				call write_ifjump_withNot(0)
 			end
+			call debug_xlog()
 			setcall codepointer action_code_right_util(codepointer)
 			call action_code_else_add()
+			call debug_xlog()
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
@@ -911,38 +919,39 @@ endfunction
 
 #codepointer
 function action_definefunction(sd codepointer)
-    if codepointer#!=(function_action)
-        return codepointer
-    endif
-    add codepointer (DWORD)
+	if codepointer#!=(function_action)
+		return codepointer
+	endif
+	add codepointer (DWORD)
 
 	sd debug_related#3  #for debug file offset and codeSize pointer and line offset, must be recursive too
-    setcall codepointer action_deffunction(codepointer,#debug_related)
+	setcall codepointer action_deffunction(codepointer,#debug_related)
 
 	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
 
-    #a function marker for return and for..in case
-    sd block;setcall block cond_blocks();set block# (brace_blocks_function);call brace_blocks_counter_inc()
-    #
-    call brace_blocks_add_write()
-    #
-    sd index_atstart
-    setcall index_atstart brace_blocks_counter()
-    set index_atstart index_atstart#
-    #
-    sd index_current=0x7fFFffFF
-    while index_atstart<=index_current
-        setcall codepointer action__code_row(codepointer)
-        setcall index_current brace_blocks_counter()
-        set index_current index_current#
-    endwhile
-    #close function marker for return and for..in case
-    call brace_blocks_counter_dec()
+	#a function marker for return and for..in case
+	sd block;setcall block cond_blocks();set block# (brace_blocks_function);call brace_blocks_counter_inc()
+	#
+	call brace_blocks_add_write()
+	#
+	sd index_atstart
+	setcall index_atstart brace_blocks_counter()
+	set index_atstart index_atstart#
+	#
+	call debug_xlog()
+	sd index_current=0x7fFFffFF
+	while index_atstart<=index_current
+		setcall codepointer action__code_row(codepointer)
+		setcall index_current brace_blocks_counter()
+		set index_current index_current#
+	endwhile
+	#close function marker for return and for..in case
+	call brace_blocks_counter_dec()
 	#for debug log codeSize
 	call debug_concludefunction(#debug_related)
 	#
-    return codepointer
+	return codepointer
 endfunction
 #codepointer
 function action_deffunction(sv codepointer,sv debug_related)

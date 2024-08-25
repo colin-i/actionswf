@@ -305,7 +305,7 @@ function debug_spritedone(sd p,sd i)
 	end
 end
 
-function debug_phase_code_add(sd is_long,ss plength)
+function debug_phase_code_add(sd is_long,ss arg2)
 	sv of%p_offsets
 	if of#!=(NULL)
 		call debug_phase_code_flush()
@@ -322,24 +322,24 @@ function debug_phase_code_add(sd is_long,ss plength)
 		end
 		ss m;set m debug_data.mem
 		add m debug_data.size
-
-		set m# (Comma) #even if is only 1 action is lines,a1,a2...an
-
 		if is_long=(TRUE)
+			set m# (Comma)
 			inc m
 			sd here_sz
 			ss second=1
-			add second plength
+			add second arg2
 			if second#!=0
 				set here_sz md_printf(m,"%X",second#) #printf("%X",0xff) is FF only
 				add m here_sz
 				sub here_sz 2
-				call md_printf(m,"%02X",plength#)
+				call md_printf(m,"%02X",arg2#)
 			else
-				set here_sz md_printf(m,"%X",plength#)  #only 0 is also printed
+				set here_sz md_printf(m,"%X",arg2#)  #only 0 is also printed
 				sub here_sz 2+2
 			end
 			add sz here_sz   ##is +0 or -1[+-1]  and for the else is -2 -3
+		else
+			set m# arg2 ##even if is only 1 action is lines,a1,a2...an
 		end
 		set debug_data.size sz
 	endif
@@ -415,4 +415,10 @@ function debug_concludefunction(sv pointers)
 			call md_printf(c,format,size)
 		end
 	endif
+end
+
+function debug_xlog()
+	if debug_mark_get.offsets!=(NULL)
+		call debug_phase_code_add((FALSE),(Period))
+	end
 end
