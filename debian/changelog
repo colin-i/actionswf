@@ -1,3 +1,9 @@
+actionswf (1-92) bionic; urgency=medium
+
+  * .log with branches
+
+ -- bc <bc@bc-desktop>  Sun, 25 Aug 2024 15:33:48 +0300
+
 actionswf (1-91) bionic; urgency=medium
 
   * fix log
