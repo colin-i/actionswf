@@ -291,8 +291,8 @@ function action__code_row_ex(sd codepointer)
 			else #dead jump after return/continue/break
 				call action_code_else_resolve((skip_flag)) #and add the condition because there is number_of_unclosed after block_else_end
 			end
+			call debug_xlog(codepointer) #here is after stepout from previous if (start of elseif or else)
 			add codepointer (DWORD)
-			call debug_xlog() #here is after stepout from previous if (start of elseif or else)
 		else
 			call brace_blocks_remove_write()
 		endelse
@@ -459,7 +459,7 @@ function action_code_write_conditions(sd codepointer)
 			endelse
 			call action_push((ap_RegisterNumber),first_reg)
 			call action_one(attr2)
-			call debug_xlog()
+			call debug_xlog(codepointer) #stepped in for in
 			return codepointer
 		endif
 		add codepointer (DWORD)
@@ -475,7 +475,7 @@ function action_code_write_conditions(sd codepointer)
 		call add_while_top_off((while_marker))
 		#
 		if codepointer#!=(inter_for)
-			call debug_xlog()
+			call debug_xlog(codepointer) #after jump
 			setcall codepointer action_code_pack(codepointer)
 			import "write_forward_offset" write_forward_offset
 			sub sizeOff (WORD)
@@ -502,7 +502,8 @@ function action_code_write_conditions(sd codepointer)
 		setcall codepointer action_code_right_util_ex(codepointer,#c2)
 		call write_ifjump_withNot(c2)
 	end
-	call debug_xlog() #and infinite? .x is also not knowing about that
+	call debug_xlog(codepointer) #after jump
+	#and infinite? .x is also not knowing about that
 	#return the current pointer
 	return codepointer
 endfunction
@@ -823,10 +824,10 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			else
 				call write_ifjump_withNot(0)
 			end
-			call debug_xlog()
+			call debug_xlog(codepointer) #after jump
 			setcall codepointer action_code_right_util(codepointer)
 			call action_code_else_add()
-			call debug_xlog()
+			call debug_xlog(codepointer) #at start of second part and after
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
@@ -927,7 +928,8 @@ function action_definefunction(sd codepointer)
 	sd debug_related#3  #for debug file offset and codeSize pointer and line offset, must be recursive too
 	setcall codepointer action_deffunction(codepointer,#debug_related)
 
-	call debug_xlog() #this on same row with dummy at .log
+	#this on same row with dummy at .log
+	call debug_xlog(codepointer) #after define function tag
 	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
 

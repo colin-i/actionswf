@@ -10,10 +10,14 @@ function x_data()
 	value f=NULL
 	datax size#1
 	value mem=NULL
+	value flog=NULL
 	if f!=(NULL)
 		call f_close(#f)
 	elseif mem!=(NULL)
 		call mem_free(#mem)
+		if flog!=(NULL)
+			call f_close(#flog)
+		end
 	end
 end
 
@@ -59,6 +63,17 @@ importx "fclose" fclose
 
 #aftercallimport ebool
 
+import "f_write" f_write
+
+function x_log(sd codepointer)
+	valuex base#1
+	if x_data.flog!=(NULL)
+#before: is visible that var a is 6 bytes in swf and 12 in x ; divu test 0x10000;call debug_phase_code_add((TRUE),#test)
+#there are more calculations if write at .log, expands comes from member(compressed)/fn/args to fn/args/member(uncompressed)
+		sub codepointer base
+		callg f_write(x_data.flog,#codepointer,(DWORD)) #DWORD like x_data.size
+	end
+end
 
 import "action__code_row" action__code_row
 import "strlen_of" strlen_of
@@ -68,7 +83,7 @@ function actionx()
 	vdatax pointer#1
 	valuex end#1
 	if x_data.mem!=(NULL)
-	#flag_x | log, alt, debug_x
+	#flag_x log(xx) | log, alt, debug_x|debug_x_pad
 		if end<=^pointer
 			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
@@ -77,6 +92,9 @@ function actionx()
 		incst pointer              ##here at parse was the escaped mem
 		set x_pointer.base pointer ##for x_pointer function
 		add pointer size           ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		if x_data.flog!=(NULL)
+			set x_log.base pointer
+		end
 		while pointer#!=(math_end)
 			set pointer action__code_row(pointer)
 		endwhile
@@ -91,7 +109,6 @@ import "error" error
 import "memalloc" memalloc
 import "f_open_mem" f_open_mem
 import "f_tell" f_tell
-import "f_write" f_write
 import "f_tell_errors" f_tell_errors
 import "memalloc_errors" memalloc_errors
 
@@ -103,7 +120,7 @@ function x_init(sd flags,sd path)
 		call error(err)
 	end
 	datax flag#1
-	set flag flags  ##log is on current x, here is another x, no parse, no log
+	set flag flags  ##log is on current x, here is another x, no parse, no log/alt
 	and flag (flags_x)
 	if flag!=0
 		sd size;setcall size strlen_of(path,2+1)
@@ -125,7 +142,18 @@ function x_init(sd flags,sd path)
 			call fclose(file)
 			set actionx.pointer x_data.mem
 			add actionx.end actionx.pointer
-			and flags (~debug_log)
+
+			sd xx=debug_log
+			and xx flags
+			if xx!=0
+				inc size
+				set b memalloc(size)
+				call sprintf(b,"%s.xx",path)
+				set x_data.flog f_open_mem(b,"wb")
+			end
+
+			const antix_read=debug_log|debug_alt
+			and flags (~antix_read)
 		end
 	end
 	return flags

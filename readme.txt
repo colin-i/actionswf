@@ -31,5 +31,5 @@ TextLinesNumber is the number of lines that TextLines has.
 TextLines is the text like in action[_sprite] call.
 NumberA lines, then NumberA1+...+NumberAN=TextLinesNumber
 NumberB1-NumberBN: example 1F,,0F -> 3 actions, first is an action with ACTIONRECORDHEADER of 0x1F Length, second has ActionCode < 0x80, third has Length 0xF
-	Dots in this construct are for liboadbgdata
+	Slashes in this construct are for liboadbgdata
 FinalSpriteId is the id in the swf

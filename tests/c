@@ -2,7 +2,7 @@
 # 0 is diff and move else is diff or exit, without ${1} is clean
 
 if [ -z "${1}" ]; then
-	rm -f a.o a.out a.swf a.swf.x a.swf.log
+	rm -f a.o a.out a.swf a.swf.x a.swf.log a.swf.xx
 	if [ -e .expected/a.swf ]; then rm .expected/a.swf; fi
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
 	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
