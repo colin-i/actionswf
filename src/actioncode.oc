@@ -247,17 +247,17 @@ import "brace_blocks_add_write_offset" brace_blocks_add_write_offset
 import "brace_blocks_remove_write" brace_blocks_remove_write
 import "brace_blocks_remove_write_ex" brace_blocks_remove_write_ex
 import "debug_xlog" debug_xlog
+import "debug_xlog_stepout" debug_xlog_stepout
 
 #position
 function action__code_row(sd codepointer)
-	charx rcb#1;set rcb (FALSE)   #at definefunction is another collision with this but is not a problem now
+	charx rcb#1;set rcb (ret_cont_break_nothing)   #at definefunction is another collision with this but is not a problem now
 
 	setcall codepointer action__code_row_ex(codepointer)
 	call debug_phase_code(codepointer)
 
 	ss p;set p ret_cont_break()
 	set p# rcb
-
 	return codepointer
 endfunction
 #position
@@ -282,7 +282,7 @@ function action__code_row_ex(sd codepointer)
 		set action__code_row.rcb (ret_cont_break_something)
         return codepointer
 	endif
-	if attrib=(block_end)
+	if attrib=(if_marker) #block_end
 		add codepointer (DWORD)
 		if codepointer#=(else_flag)
 			ss p;set p ret_cont_break()
@@ -295,18 +295,26 @@ function action__code_row_ex(sd codepointer)
 			add codepointer (DWORD)
 		else
 			call brace_blocks_remove_write()
+			call debug_xlog(codepointer) #simple if}[
 		endelse
 		return codepointer
 	endif
+	if attrib=(function_marker) #block_end
+		add codepointer (DWORD)
+		call brace_blocks_remove_write()
+		return codepointer
+	end
 	if attrib=(block_else_end)
-        setcall codepointer action_code_conditions_end(codepointer)
-        return codepointer
+		setcall codepointer action_code_conditions_end(codepointer)
+		return codepointer
 	endif
 	if attrib=(whileblock_end)
-        import "brace_blocks_remove_write_jump" brace_blocks_remove_write_jump
-        call brace_blocks_remove_write_jump()
-        add codepointer (DWORD)
-        return codepointer
+		import "brace_blocks_remove_write_jump" brace_blocks_remove_write_jump
+		call brace_blocks_remove_write_jump()
+		add codepointer (DWORD)
+		call debug_xlog(codepointer) #what when break} ? still can't be from that branch because loop condition is breaking that
+		#and at whiletrue? an inner break will also break that branch. yes while(true){var a;break;} is extra but this is not logical
+		return codepointer
 	endif
 	if attrib=(break_flag)
 		call action_code_break()
@@ -480,6 +488,7 @@ function action_code_write_conditions(sd codepointer)
 			import "write_forward_offset" write_forward_offset
 			sub sizeOff (WORD)
 			call write_forward_offset(sizeOff)
+			call debug_xlog_stepout(codepointer) #next is 100% from prev branch
 		endif
 		add codepointer (DWORD)
 		#
@@ -501,9 +510,9 @@ function action_code_write_conditions(sd codepointer)
 		sd c2=0
 		setcall codepointer action_code_right_util_ex(codepointer,#c2)
 		call write_ifjump_withNot(c2)
+		call debug_xlog(codepointer) #after jump
+		#before: .x is also not knowing about that . but now with .xx is not a .x parse
 	end
-	call debug_xlog(codepointer) #after jump
-	#and infinite? .x is also not knowing about that
 	#return the current pointer
 	return codepointer
 endfunction
@@ -827,7 +836,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			call debug_xlog(codepointer) #after jump
 			setcall codepointer action_code_right_util(codepointer)
 			call action_code_else_add()
-			call debug_xlog(codepointer) #at start of second part and after
+			call debug_xlog(codepointer) #at start of second part and after.stepout, but if before was a return? this is a new branch 
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
@@ -952,7 +961,8 @@ function action_definefunction(sd codepointer)
 	call brace_blocks_counter_dec()
 	#for debug log codeSize
 	call debug_concludefunction(#debug_related)
-	#
+
+	call debug_xlog_stepout(codepointer) #step out and back to same branch . oaalt need to recon rows with only one |. \ is not while read parsing right in oaalt
 	return codepointer
 endfunction
 #codepointer

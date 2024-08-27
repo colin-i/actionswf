@@ -16,8 +16,7 @@ const math_end=0xffFFffFF             #0 RG RH
 const args_end=0xfeEEeeEE             #C
 const whileblock_end=0xfdDDddDD       #1 FR
 const block_else_end=0xfcCCccCC       #1
-const block_end=0xfbBBbbBB            #F IF
-const member_end=0xfaAAaaAA           #M
+const member_end=0xfbBBbbBB           #M
 
 const no_action=0
 const call_action_left=0xf1011010     #1
@@ -43,9 +42,9 @@ const consecutive_flag=0x80<<24        #parse only
 const brace_blocks_function=0x7fFFffFF #code only
 
 const normal_marker=0x01010202        #parse only
-const if_marker=0x03030404            #parse only
+const if_marker=0x03030404            #I
 const while_marker=0x05050606         #1
-const function_marker=0x07070808      #parse only
+const function_marker=0x07070808      #F
 const forin_marker=0x09090a0a         #code only
 
 const ActionSubtract=0x0B      #OP

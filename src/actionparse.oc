@@ -1087,8 +1087,10 @@ function brace_blocks_remove_parse()
         if type!=(normal_marker)
             if type=(while_marker)
                 call action_code_set((whileblock_end))
-            else
-                call action_code_set((block_end))
+            elseif type=(function_marker)
+                call action_code_set(type) #block_end
+		else #if_marker
+                call action_code_set(type) #block_end
             endelse
         endif
     endwhile
@@ -1168,7 +1170,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
 		call add_dummy_jump()
 	elseif ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
-	#look to see if last jump is zero and if is not forin, that has a different break than for3/while
+	#look to see top_flag and if is not forin, that has a different break than for3/while
 		sd start;set start cond_blocks_at_index(0)
 		sd blocks;set blocks cond_blocks_noerror()
 		while start!=blocks
@@ -1189,7 +1191,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	call brace_blocks_counter_dec() #with errors check
 	sub blocks (DWORD)
 	sd offset;set offset blocks#
-	if offset!=(top_flag) #can be whiletrue with no breaks even if that is not making any sense
+	if offset!=(top_flag) #can be whiletrue with no breaks (a return in a branch)
 		whiletrue
 			call brace_blocks_counter_dec() #with errors check
 			sub blocks (DWORD)
@@ -1214,7 +1216,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		ret
 	end
 
-	if offset!=(top_flag) #can be whiletrue with no breaks even if that is not making any sense
+	if offset!=(top_flag) #can be whiletrue with no breaks (a return in a branch)
 		#resolve the skipped offset
 		call write_forward_offset(offset)
 	end

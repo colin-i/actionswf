@@ -420,10 +420,18 @@ function debug_concludefunction(sv pointers)
 end
 
 import "x_log" x_log
-function debug_xlog(sd codepointer)
+function debug_xlog_ex(sd codepointer,sd type)
 	if debug_mark_get.offsets!=(NULL)
-		call debug_phase_code_add((FALSE),(Slash))
+		call debug_phase_code_add((FALSE),type)
 	else
 		callg x_log(codepointer)
 	end
+end
+function debug_xlog(sd codepointer)
+# [else loop}[ forin{[ for;;[ if/loop{[ ?[ :[ func{[ if}[
+	call debug_xlog_ex(codepointer,(Slash))
+end
+function debug_xlog_stepout(sd codepointer)
+# for;;[| func{[}|
+	call debug_xlog_ex(codepointer,(Verticalbar))
 end
