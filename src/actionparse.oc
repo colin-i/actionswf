@@ -1075,7 +1075,7 @@ function brace_blocks_remove_parse_else()
         call action_code_set(else_number)
     endif
 endfunction
-function brace_blocks_remove_parse()
+function brace_blocks_remove_parse() #else is at brace_blocks_remove_parse_else
 	sd p_type
 	sd type
 	sd consecutive=consecutive_flag
@@ -1085,12 +1085,9 @@ function brace_blocks_remove_parse()
 		set p_type cond_blocks_noerror()
 		setcall type type_consecutive(p_type#,#consecutive)
 		if type!=(normal_marker)
-			if type=(while_marker)
+			if type=(while_marker) #including fors
 				call action_code_set((whileblock_end))
-			#elseif type=(function_marker)
-			#	call action_code_set(type) #block_end
-			#if_marker
-			else
+			else #if_marker function_marker
 				call action_code_set(type) #block_end
 			endelse
 		endif
