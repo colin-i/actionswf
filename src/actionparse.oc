@@ -1076,25 +1076,25 @@ function brace_blocks_remove_parse_else()
     endif
 endfunction
 function brace_blocks_remove_parse()
-    sd p_type
-    sd type
-    sd consecutive=consecutive_flag
-    while consecutive=(consecutive_flag)
-        call brace_blocks_counter_dec()
-        #
-        set p_type cond_blocks_noerror()
-        setcall type type_consecutive(p_type#,#consecutive)
-        if type!=(normal_marker)
-            if type=(while_marker)
-                call action_code_set((whileblock_end))
-            #elseif type=(function_marker)
-            #    call action_code_set(type) #block_end
-		#if_marker
-		else
-                call action_code_set(type) #block_end
-            endelse
-        endif
-    endwhile
+	sd p_type
+	sd type
+	sd consecutive=consecutive_flag
+	while consecutive=(consecutive_flag)
+		call brace_blocks_counter_dec()
+		#
+		set p_type cond_blocks_noerror()
+		setcall type type_consecutive(p_type#,#consecutive)
+		if type!=(normal_marker)
+			if type=(while_marker)
+				call action_code_set((whileblock_end))
+			#elseif type=(function_marker)
+			#	call action_code_set(type) #block_end
+			#if_marker
+			else
+				call action_code_set(type) #block_end
+			endelse
+		endif
+	endwhile
 endfunction
 #type
 function type_consecutive(sd type,sd p_consecutive)
