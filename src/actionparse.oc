@@ -1087,9 +1087,10 @@ function brace_blocks_remove_parse()
         if type!=(normal_marker)
             if type=(while_marker)
                 call action_code_set((whileblock_end))
-            elseif type=(function_marker)
-                call action_code_set(type) #block_end
-		else #if_marker
+            #elseif type=(function_marker)
+            #    call action_code_set(type) #block_end
+		#if_marker
+		else
                 call action_code_set(type) #block_end
             endelse
         endif
