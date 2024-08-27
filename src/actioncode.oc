@@ -836,7 +836,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			call debug_xlog(codepointer) #after jump
 			setcall codepointer action_code_right_util(codepointer)
 			call action_code_else_add()
-			call debug_xlog(codepointer) #at start of second part and after.stepout, but if before was a return? this is a new branch 
+			call debug_xlog(codepointer) #at start of second part and after.stepout, but if before was a return? this is a new branch
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
