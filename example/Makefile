@@ -21,7 +21,7 @@ linkfile=${linkname}.lib
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0
 else
-	libname=${linkname}.so
+	libname=lib${linkname}.so
 	OFLAGS += underscore_pref 1
 	ifdef ldprefer
 		OFLAGS += include_sec 1
@@ -89,7 +89,7 @@ clean:
 	-rm -f ${name}.exe
 	-rm -f ${linkfile}
 	-rm -f ${sfile}.log
-	-rm -f ${sfile}.x
+	-rm -f ${sfile}.x ${sfile}.xx
 	-rm -f ${sfile}
 
 distclean: clean
