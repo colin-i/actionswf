@@ -54,9 +54,12 @@ call swf_exports_done()
 call action("
 var x_coef=1;
 var y_coef=1;
-this.attachMovie('movie','_movie',1);
-_movie._x=100;
-_movie._y=100;
+function test(){
+	attachMovie('movie','_movie',1);
+	_movie._x=100;
+	_movie._y=100;
+}
+test()
 ")
 
 call swf_showframe()
