@@ -71,7 +71,7 @@ function x_log(sd codepointer)
 #before: is visible that var a is 6 bytes in swf and 12 in x ; divu test 0x10000;call debug_phase_code_add((TRUE),#test)
 #there are more calculations if write at .log, expands comes from member(compressed)/fn/args to fn/args/member(uncompressed)
 		sub codepointer base
-		callg f_write(x_data.flog,#codepointer,(DWORD)) #DWORD like x_data.size
+		callg x_log_val(1,(DWORD),codepointer) #DWORD like x_data.size
 	end
 end
 
@@ -94,10 +94,14 @@ function actionx()
 		add pointer size           ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
 		if x_data.flog!=(NULL)
 			set x_log.base pointer
+			call x_log_val(0,0) #also need to know actionx with no constantpool
 		end
 		while pointer#!=(math_end)
 			set pointer action__code_row(pointer)
 		endwhile
+		#if x_data.flog!=(NULL)
+		#	call x_log_val(5,0)
+		#end
 		add pointer (DWORD) #this will continue at next actionx
 		return (TRUE)
 	end
@@ -143,9 +147,10 @@ function x_init(sd flags,sd path)
 			set actionx.pointer x_data.mem
 			add actionx.end actionx.pointer
 
-			sd xx=debug_log
+			const xx_flags=debug_log|flag_pool_read
+			sd xx=xx_flags
 			and xx flags
-			if xx!=0
+			if xx=(xx_flags)
 				inc size
 				set b memalloc(size)
 				call sprintf(b,"%s.xx",path)
@@ -257,3 +262,21 @@ function x_call(sv pmember,sv pfname,sv codepointer)
 	end
 	return codepointer
 end
+
+function x_log_val(sd type,sd size,sd val)
+	call f_write(x_data.flog,#type,(BYTE))
+	if size!=0
+		callg f_write(x_data.flog,#val,size)
+	end
+end
+#function x_log_val_if(sd type,sd size,sd val)
+#	if x_data.flog!=(NULL)
+#		callg x_log_val(type,size,val)
+#	end
+#end
+#function x_log_const(sd offset)
+#	if x_data.flog!=(NULL) #flag_pool_read is already tested
+#		sub str x_pointer.base
+#		callg x_log_val(3,(QWORD),offset)
+#	end
+#end

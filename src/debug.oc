@@ -435,3 +435,8 @@ function debug_xlog_stepout(sd codepointer)
 # for;;[| func{[}|
 	call debug_xlog_ex(codepointer,(Verticalbar))
 end
+#function debug_xlog_pool() #pool_flag is already tested
+#	if debug_mark_get.offsets!=(NULL)
+#		call debug_phase_code_add((FALSE),(Caret))
+#	end
+#end
