@@ -119,20 +119,21 @@ function x_init(sd flags,sd path)
 	elseif x_data.mem!=(NULL)
 		call error(err)
 	end
-	datax flag#1
-	set flag flags  ##log is on current x, here is another x, no parse, no log/alt
-	and flag (flags_x)
-	if flag!=0
+
+	sd test=flags_x
+	and test flags
+	if test!=0
 		sd size;setcall size strlen_of(path,2+1)
 		sd b;setcall b memalloc(size)
 		call sprintf(b,"%s.x",path)
 
-		sd x=flag_x
-		and x flag
-		if x=0 #save
+		and test (flag_x)
+		if test=0 #save
 			set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-			and flag (debug_x_pad)
-		else #restore
+			datax flag#1
+			set flag (debug_x_pad)
+			and flag flags
+		else #restore ,no parse, no log/alt
 			sd file;set file f_open_mem(b,"rb")
 			call fseek(file,0,(SEEK_END))
 			set actionx.end f_tell_errors(file)
@@ -143,7 +144,6 @@ function x_init(sd flags,sd path)
 			set actionx.pointer x_data.mem
 			add actionx.end actionx.pointer
 
-			const xx_flags=debug_log|flag_pool_read
 			sd xx=xx_flags
 			and xx flags
 			if xx=(xx_flags)
@@ -152,8 +152,6 @@ function x_init(sd flags,sd path)
 				call sprintf(b,"%s.xx",path)
 				set x_data.flog f_open_mem(b,"wb")
 			end
-
-			const antix_read=debug_log|debug_alt
 			and flags (~antix_read)
 		end
 	end

@@ -159,8 +159,10 @@ import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem" f_open_mem
 import "strlen_of" strlen_of
+import "pool_init" pool_init
 
 function flags_init(sd flags,sd path)
+	set flags pool_init(flags)
 	set flags x_init(flags,path)
 	call log_init(flags,path)
 	call alt_init(flags,path)
@@ -168,17 +170,16 @@ function flags_init(sd flags,sd path)
 
 	call frames_as_shows(flags)
 	call for_in(flags)
-	import "pool_init" pool_init
-	callg pool_init(flags)
 endfunction
 
-function log_init(sd flags,sd path)
+function log_init(datax prexx,sd path)
 	sv of%p_offsets
 	if of#!=(NULL)
 		call error("swf started, log not closed")
 	end
-	and flags (debug_log)
-	if flags=(debug_log)
+	sd test=debug_log
+	and test prexx
+	if test=(debug_log)
 		setcall of# memalloc(1)  #0 on some systems can be NULL return
 
 		sd size;setcall size strlen_of(path,4+1)
@@ -191,6 +192,7 @@ function log_init(sd flags,sd path)
 		#this is later #set debug_data.size 0
 		set debug_data.all_size 1
 	end
+	and prexx (prexx_flags)
 end
 
 import "f_printf" f_printf
@@ -421,7 +423,7 @@ end
 
 import "x_log" x_log
 function debug_xlog_ex(sd codepointer,sd type)
-	if debug_mark_get.offsets!=(NULL)
+	if log_init.prexx=(prexx_flags)
 		call debug_phase_code_add((FALSE),type)
 	else
 		callg x_log(codepointer)
@@ -429,14 +431,14 @@ function debug_xlog_ex(sd codepointer,sd type)
 end
 function debug_xlog(sd codepointer)
 # [else loop}[ forin{[ for;;[ if/loop{[ ?[ :[ func{[ if}[
-	call debug_xlog_ex(codepointer,(Slash))
+	callg debug_xlog_ex(codepointer,(Slash))
 end
 function debug_xlog_stepout(sd codepointer)
 # for;;[| func{[}|
-	call debug_xlog_ex(codepointer,(Verticalbar))
+	callg debug_xlog_ex(codepointer,(Verticalbar))
 end
 #function debug_xlog_pool() #pool_flag is already tested
 #	if debug_mark_get.offsets!=(NULL)
-#		call debug_phase_code_add((FALSE),(Caret))
+#		callg debug_phase_code_add((FALSE),(Caret))
 #	end
 #end

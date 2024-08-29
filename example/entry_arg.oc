@@ -1,9 +1,8 @@
 
 entry main(sd argc,sv *argv)
-sd flags=flag_pool
+sd flags=debug_log|flag_pool_write|debug_xpad
 if argc!=1
-	or flags (flag_pool_read)
-	or flags (debug_x_pad|debug_log) #for tests/data
-	or flags (debug_titles) #only to be same with entryraw
+	or flags (flag_pool_read|flag_x) #for tests/data
+	or flags (debug_titles)
 end
 #incst argv;ss argv1;set argv1 argv#;sub argv1# 0x30
