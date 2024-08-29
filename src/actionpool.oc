@@ -111,7 +111,7 @@ function pool_reentry()
 		add mem cursor
 		if mem#s=(constpool_unique)
 			#import "x_log_val_if" x_log_val_if
-			#callg x_log_val_if(2,0)
+			#callg x_log_val_if((xlog_unique),0)
 			return (not_an_id)
 		end
 		return (any_id)
@@ -241,7 +241,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 				if testid=(not_an_id)
 					return (not_an_id)
 				#else
-				#	import "x_log_val_if" x_log_val_if
+				#	import "x_log_const" x_log_const
 				#	call x_log_const(value)
 				end
 			end
@@ -270,7 +270,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 							#this at poolwrite and log. can do the same for /| and debug_x[_pad] because is not needed at alt
 							#call debug_xlog_pool()
 						#else
-						#	callg x_log_val_if(4,(WORD),nr) #read and rest of xx flags
+						#	callg x_log_val_if((xlog_id),(WORD),nr) #read and rest of xx flags
 						end
 						return nr
 					endif

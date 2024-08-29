@@ -145,3 +145,5 @@ const doubleH_sign=0x80000000
 
 #const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
+
+include "xlog.h"
