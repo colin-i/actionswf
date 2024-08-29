@@ -144,12 +144,11 @@ import "word_arg_to_stack" word_arg_to_stack
 import "for_in" for_in
 import "frames_as_shows" frames_as_shows
 import "ainit" ainit
+import "pool_init" pool_init
 
 importx "fseek" fseek
 importx "fread" fread
 importx "fprintf" fprintf
-
-
 
 #aftercallimport ebool
 
@@ -159,7 +158,6 @@ import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem" f_open_mem
 import "strlen_of" strlen_of
-import "pool_init" pool_init
 
 function flags_init(sd flags,sd path)
 	set flags pool_init(flags)
