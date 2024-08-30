@@ -99,9 +99,9 @@ function pool_entry()
 	sd id;set id actionpoolid_get()
 	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
 	char a=constpool_unique
-	callg mem_block_add(pb,#a,1)
-	#import "debug_xlog_pool" debug_xlog_pool
-	#callgggggg debug_xlog_pool()
+	call mem_block_add(pb,#a,1)
+	import "debug_xlog_pool" debug_xlog_pool
+	callg debug_xlog_pool()
 end
 function pool_reentry()
 	sd id;set id actionpoolid_get()
@@ -113,8 +113,8 @@ function pool_reentry()
 		inc mem#
 		add mem cursor
 		if mem#s=(constpool_unique)
-			#import "x_log_val_if" x_log_val_if
-			#callg x_log_val_if((xlog_unique),0)
+			import "x_log_val_if" x_log_val_if
+			callg x_log_val_if((xlog_unique),0)
 			return (not_an_id)
 		end
 		return (any_id)
@@ -243,10 +243,9 @@ function actionpool_getvalue_ex(ss value,sd force)
 				set testid pool_reentry()
 				if testid=(not_an_id)
 					return (not_an_id)
-				#else
-				#	import "x_log_const" x_log_const
-				#	call x_log_const(value)
 				end
+				import "x_log_const" x_log_const
+				call x_log_const(value)
 			end
 		end
 		sd onevalue=1
@@ -270,10 +269,9 @@ function actionpool_getvalue_ex(ss value,sd force)
 						sub nr count
 						if pool_data.write!=(FALSE)
 							call pool_realentry(nr)
-							#this at poolwrite and log. can do the same for /| and debug_x[_pad] because is not needed at alt
-							#call debug_xlog_pool()
-						#else
-						#	callg x_log_val_if((xlog_id),(WORD),nr) #read and rest of xx flags
+							call debug_xlog_pool()
+						else
+							callg x_log_val_if((xlog_id),(WORD),nr) #read and rest of xx flags
 						end
 						return nr
 					endif
@@ -288,9 +286,8 @@ function actionpool_getvalue_ex(ss value,sd force)
 				set testid pool_reentry()
 				if testid=(not_an_id)
 					return (not_an_id)
-				#else
-				#	call x_log_const(value)
 				end
+				call x_log_const(value)
 			end
 			setcall mem block_get_mem(block)
 		end

@@ -263,14 +263,14 @@ function x_log_val(sd type,sd size,sd val)
 		callg f_write(x_data.flog,#val,size)
 	end
 end
-#function x_log_val_if(sd type,sd size,sd val)
-#	if x_data.flog!=(NULL)
-#		callg x_log_val(type,size,val)
-#	end
-#end
-#function x_log_const(sd offset)
-#	if x_data.flog!=(NULL) #flag_pool_read is already tested
-#		sub str x_pointer.base
-#		callg x_log_val((xlog_new),(QWORD),offset)
-#	end
-#end
+function x_log_val_if(sd type,sd size,sd val)
+	if x_data.flog!=(NULL)
+		callg x_log_val(type,size,val)
+	end
+end
+function x_log_const(sd offset)
+	if x_data.flog!=(NULL) #flag_pool_read is already tested
+		sub offset x_pointer.base
+		callg x_log_val((xlog_new),(QWORD),offset)
+	end
+end
