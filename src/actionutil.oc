@@ -18,7 +18,7 @@ function row_termination(sv p_ac,sv p_row)
 		return 0
 	endif
 	if ac#=(CarriageReturn)
-		inc ac;if ac#=0xa;set p_ac# ac;endif
+		inc ac;if ac#=(LineFeed);set p_ac# ac;endif
 		inc p_row#
 		return 0
 	endif

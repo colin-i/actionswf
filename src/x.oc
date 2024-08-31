@@ -8,7 +8,7 @@ import "mem_free" mem_free
 
 function x_data()
 	value f=NULL
-	datax size#1
+	datax size#1   #there is a debate when expands are made on same UINT16 max values size
 	value mem=NULL
 	value flog=NULL
 	if f!=(NULL)
@@ -91,7 +91,8 @@ function actionx()
 		set size pointer#v         ;#size of escaped block that was at parse + pad if debug_x_pad flag
 		incst pointer              ##here at parse was the escaped mem
 		set x_pointer.base pointer ##for x_pointer function
-		add pointer size           ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		add pointer size           ##and add DWORD since liboadata read size without parse
+		add pointer (DWORD)        ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
 		if x_data.flog!=(NULL)
 			set x_log.base pointer
 		end
@@ -187,6 +188,10 @@ function debug_x_pointers(valuex start,valuex size)
 				call f_write(x_data.f,#zero,pad)
 			end
 		end
+		#and need to write x size to fast grab at liboadata branches without x parse
+		valuex xmark#1
+		call f_write(x_data.f,#zero,(DWORD)) #write something dummy here, size is DWORD like like x_data.size
+		set xmark f_tell(x_data.f)
 	end
 end
 
@@ -203,9 +208,18 @@ function debug_x(sd mem,sd nr)
 		mult nr (action_code_values_unit)
 		call debug_x_base(mem,nr)
 
+		valuex current#1
+		set current f_tell(x_data.f)
+		sub current debug_x_pointers.xmark
+		sub debug_x_pointers.xmark (DWORD)
+
 		call fseek(x_data.f,debug_x_pointers.mark,(SEEK_SET))
 		call fwrite(debug_x_pointers.start,debug_x_pointers.size,1,x_data.f)
-		call fseek(x_data.f,0,(SEEK_END))
+
+		call fseek(x_data.f,debug_x_pointers.xmark,(SEEK_SET))
+		call fwrite(#current,(DWORD),1,x_data.f)
+
+		call fseek(x_data.f,0,(SEEK_END)) #for next writes
 	end
 end
 
