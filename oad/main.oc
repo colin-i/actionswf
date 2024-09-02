@@ -10,6 +10,8 @@ override include_sec 1
 include "common.h" "common.h.oh"
 
 import "fcontent" fcontent
+import "loop" loop
+
 functionx oadata_make(ss swf_fullpath)
 	sd size;add size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
@@ -22,15 +24,17 @@ functionx oadata_make(ss swf_fullpath)
 		call memcpy(mem,swf_fullpath,size)
 		add size mem
 		call memcpy(size,slogext,\.logext)
-		sd logcontent;set logcontent fcontent(mem)
+		sd logsize
+		sd logcontent;set logcontent fcontent(mem,#logsize)
 		if logcontent!=(NULL)
 			call memcpy(size,sxext,\.xext)
-			sd xcontent;set xcontent fcontent(mem)
+			sd dummy
+			sd xcontent;set xcontent fcontent(mem,#dummy)
 			if xcontent!=(NULL)
 				call memcpy(size,sxxext,\.xxext)
-				sd xxcontent;set xxcontent fcontent(mem)
+				sd xxcontent;set xxcontent fcontent(mem,#dummy)
 				if xxcontent!=(NULL)
-					set exit (EXIT_SUCCESS)
+					set exit loop(logcontent,logsize,xcontent,xxcontent)
 					call free(xxcontent)
 				else
 					set exit (EXIT_FAILURE)

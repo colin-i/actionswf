@@ -10,8 +10,9 @@ importx "ftell" ftell
 importx "malloc" malloc
 importx "fread" fread
 importx "fclose" fclose
+importx "memchr" memchr
 
-function fcontent(sd path)
+function fcontent(sd path,sv psize)
 	sd f;set f fopen(path,"rb")
 	if f!=(NULL)
 		call fseek(f,0,(SEEK_END))
@@ -22,10 +23,35 @@ function fcontent(sd path)
 			if mem!=(NULL)
 				call fread(mem,size,1,f)
 				call fclose(f)
+				set psize# size
 				return mem
 			end
 		end
 		call fclose(f)
 	end
 	return (NULL)
+end
+
+function logline(sd *line,sd *size)
+end
+function loop(ss log,sd logsize,sd *x,sd *xx)
+	whiletrue
+		ss p;set p memchr(log,(NewLine),logsize)
+		if p=(NULL)
+			call logline(log,logsize)
+			break
+		end
+		sd next=1;add next p
+		if p!=log
+			dec p
+			if p#!=(CReturn)
+				inc p
+			end
+		end
+		sub p log
+		call logline(log,p)
+		sub logsize p
+		set log next
+	end
+	return (EXIT_SUCCESS)
 end
