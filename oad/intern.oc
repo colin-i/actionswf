@@ -10,7 +10,6 @@ importx "ftell" ftell
 importx "malloc" malloc
 importx "fread" fread
 importx "fclose" fclose
-importx "memchr" memchr
 
 function fcontent(sd path,sv psize)
 	sd f;set f fopen(path,"rb")
@@ -32,26 +31,32 @@ function fcontent(sd path,sv psize)
 	return (NULL)
 end
 
-function logline(sd *line,sd *size)
+function memnl(ss log,sv pnext)
+	set pnext# 1
+	if log#!=(NewLine) #emptyrow
+		inc log
+		while log#!=(NewLine)
+			inc log
+		end
+		add pnext# log
+		dec log
+		if log#!=(CReturn)  #an example: ffdec action output is \r\n
+			inc log
+		end
+	else
+		add pnext# log
+	end
+	return log
 end
-function loop(ss log,sd logsize,sd *x,sd *xx)
-	whiletrue
-		ss p;set p memchr(log,(NewLine),logsize)
-		if p=(NULL)
-			call logline(log,logsize)
-			break
-		end
-		sd next=1;add next p
-		if p!=log
-			dec p
-			if p#!=(CReturn)
-				inc p
-			end
-		end
-		sub p log
-		call logline(log,p)
-		sub logsize p
+function loop(ss log,sd *x,sd *xx,sd logsize)
+	add logsize log
+	while log!=logsize
+		sd next
+		ss p;set p memnl(log,#next) #,(),logsize) #preid
+		#[log,p)
 		set log next
+		# empty: show/done
+		# else: ainit,linesnr,lines[,actions]
 	end
 	return (EXIT_SUCCESS)
 end

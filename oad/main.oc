@@ -34,7 +34,7 @@ functionx oadata_make(ss swf_fullpath)
 				call memcpy(size,sxxext,\.xxext)
 				sd xxcontent;set xxcontent fcontent(mem,#dummy)
 				if xxcontent!=(NULL)
-					set exit loop(logcontent,logsize,xcontent,xxcontent)
+					set exit loop(logcontent,xcontent,xxcontent,logsize)
 					call free(xxcontent)
 				else
 					set exit (EXIT_FAILURE)
