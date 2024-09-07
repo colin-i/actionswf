@@ -72,6 +72,7 @@ function actionrow(sd log,sd end,sv xx)
 	inc test    ##first is a digit
 	while test!=end
 		if test#=(xlog_act) #action
+			add xx# (xlog_code_size)
 			inc test
 			set log test
 		elseif test#=(xlog_string) #string

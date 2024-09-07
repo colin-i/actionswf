@@ -74,7 +74,7 @@ function x_log(sd codepointer)
 #there are more calculations if write at .log, expands comes from member(compressed)/fn/args to fn/args/member(uncompressed)
 		sub codepointer base
 		#callg x_log_val((xlog_code),(DWORD),codepointer) #is parallel, to add a type is extra
-		callg f_write(x_data.flog,#codepointer,(DWORD)) #DWORD like x_data.size
+		callg f_write(x_data.flog,#codepointer,(xlog_code_size)) #DWORD like x_data.size
 	end
 end
 

@@ -1,5 +1,6 @@
 
 const xlog_type_size=1 #BYTE
+const xlog_code_size=4 #DWORD
 const xlog_unique=0
 const xlog_new=1
 const xlog_new_size=8 #QWORD
