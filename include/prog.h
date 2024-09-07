@@ -13,7 +13,7 @@ const NULL=0
 const BYTE=1
 const WORD=2
 const DWORD=4
-const QWORD=8
+#const QWORD=8
 
 const SEEK_SET=0
 const SEEK_CUR=1
@@ -146,4 +146,4 @@ const doubleH_sign=0x80000000
 #const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
 
-include "xlog.h"
+include "xlog.h.oh"

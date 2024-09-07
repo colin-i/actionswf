@@ -73,7 +73,8 @@ function x_log(sd codepointer)
 #before: is visible that var a is 6 bytes in swf and 12 in x ; divu test 0x10000;call debug_phase_code_add((TRUE),#test)
 #there are more calculations if write at .log, expands comes from member(compressed)/fn/args to fn/args/member(uncompressed)
 		sub codepointer base
-		callg x_log_val((xlog_code),(DWORD),codepointer) #DWORD like x_data.size
+		#callg x_log_val((xlog_code),(DWORD),codepointer) #is parallel, to add a type is extra
+		callg f_write(x_data.flog,#codepointer,(DWORD)) #DWORD like x_data.size
 	end
 end
 
@@ -274,7 +275,7 @@ function x_call(sv pmember,sv pfname,sv codepointer)
 end
 
 function x_log_val(sd type,sd size,sd val)
-	call f_write(x_data.flog,#type,(BYTE))
+	call f_write(x_data.flog,#type,(xlog_type_size))
 	if size!=0
 		callg f_write(x_data.flog,#val,size)
 	end
@@ -287,6 +288,6 @@ end
 function x_log_const(sd offset)
 	if x_data.flog!=(NULL) #flag_pool_read is already tested
 		sub offset x_pointer.base
-		callg x_log_val((xlog_new),(QWORD),offset)
+		callg x_log_val((xlog_new),(xlog_new_size),offset)
 	end
 end

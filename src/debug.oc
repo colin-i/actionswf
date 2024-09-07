@@ -325,7 +325,7 @@ function debug_phase_code_add(sd is_long,ss arg2)
 		ss m;set m debug_data.mem
 		add m debug_data.size
 		if is_long=(TRUE)
-			set m# (Comma)
+			set m# (xlog_act)
 			inc m
 			sd here_sz
 			ss second=1
@@ -429,14 +429,14 @@ function debug_xlog_ex(sd codepointer,sd type)
 end
 function debug_xlog(sd codepointer)
 # [else loop}[ forin{[ for;;[ if/loop{[ ?[ :[ func{[ if}[
-	callg debug_xlog_ex(codepointer,(Slash))
+	callg debug_xlog_ex(codepointer,(xlog_branch))
 end
 function debug_xlog_stepout(sd codepointer)
 # for;;[| func{[}|
-	callg debug_xlog_ex(codepointer,(Verticalbar))
+	callg debug_xlog_ex(codepointer,(xlog_innerbranchend))
 end
 function debug_xlog_pool() #pool_flag is already tested
 	if log_init.prexx=(prexx_flags)
-		callg debug_phase_code_add((FALSE),(Caret))
+		callg debug_phase_code_add((FALSE),(xlog_string))
 	end
 end

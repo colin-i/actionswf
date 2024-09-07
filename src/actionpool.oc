@@ -271,7 +271,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 							call pool_realentry(nr)
 							call debug_xlog_pool()
 						else
-							callg x_log_val_if((xlog_id),(WORD),nr) #read and rest of xx flags
+							callg x_log_val_if((xlog_id),(xlog_id_size),nr) #read and rest of xx flags
 						end
 						return nr
 					endif

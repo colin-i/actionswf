@@ -22,6 +22,7 @@ re:
 	$(MAKE) clean
 	$(MAKE) all
 
+xlog=../include/xlog.
 %.oh: %.h.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@
@@ -29,6 +30,10 @@ re:
 %.h: %.oh
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
+common.h: ${xlog}h
+	$(MAKE) common.oh
+	${OCOMP} common.oh ${OFLAGS}
+	${OCONV} common.oh.x
 
 ${exte}: intern.o
 	$(AR) cr ${exte} $^
@@ -46,6 +51,7 @@ ${libname}: common.h ${exte} main.o
 
 clean:
 	-rm -f common.oh.log common.oh.x common.oh common.h
+	-rm -f ${xlog}oh.log ${xlog}oh.x ${xlog}oh ${xlog}h
 	-rm -f intern.o intern.oc.log intern.oc.x intern.c
 	-rm -f main.o main.oc.log main.oc.x main.c
 	-rm -f ${exte} ${libname}

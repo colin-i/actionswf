@@ -9,8 +9,6 @@ const SEEK_END=2
 
 const NewLine=0xa
 const CReturn=0xd
-const Comma=0x2c
-const Slash=0x2f
 const ZeroChar=0x30
-const Caret=0x5e
-const VerticalBar=0x7c
+
+einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
