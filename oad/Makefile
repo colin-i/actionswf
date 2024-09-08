@@ -28,9 +28,9 @@ ${exte}: intern.o
 	$(AR) cr ${exte} $^
 objects=main.o intern.o
 ${objects}: common.h
-${libname}: ${exte} main.o
+${libname}: main.o ${exte}
 	${OLINK} main.oc.log intern.oc.log
-	$(CC) ${linkerflags} -shared $(word 3,$^) -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
+	$(CC) ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
 	# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
 
 %.o: %.oc
