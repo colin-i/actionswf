@@ -156,7 +156,7 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
-.PHONY: all install clean distclean uninstall test
+.PHONY: all install install-lib clean distclean uninstall test
 
 .NOTPARALLEL:
 

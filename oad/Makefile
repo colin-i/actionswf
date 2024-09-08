@@ -23,22 +23,12 @@ re:
 	$(MAKE) all
 
 xlog=../include/xlog.
-%.oh: %.h.oh
-	echo "format elfobj64" > $@
-	echo "orphan off" >> $@
-	cat $< >> $@
-%.h: %.oh
-	${OCOMP} $< ${OFLAGS}
-	${OCONV} $<.x
-common.h: ${xlog}h
-	$(MAKE) common.oh
-	${OCOMP} common.oh ${OFLAGS}
-	${OCONV} common.oh.x
 
 ${exte}: intern.o
 	$(AR) cr ${exte} $^
-
-${libname}: common.h ${exte} main.o
+objects=main.o intern.o
+${objects}: common.h
+${libname}: ${exte} main.o
 	${OLINK} main.oc.log intern.oc.log
 	$(CC) ${linkerflags} -shared $(word 3,$^) -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
 	# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
@@ -48,6 +38,14 @@ ${libname}: common.h ${exte} main.o
 	${OCONV} $<.x
 	$(CC) -c -w ${compilerflags} $*.c
 	#-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
+%.oh: %.h.oh
+	echo "format elfobj64" > $@
+	echo "orphan off" >> $@
+	cat $< >> $@
+%.h: %.oh
+	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
+	${OCOMP} $< ${OFLAGS}
+	${OCONV} $<.x
 
 clean:
 	-rm -f common.oh.log common.oh.x common.oh common.h
@@ -71,4 +69,6 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
-#.PHONY: all install clean distclean uninstall test
+#.PHONY targets are not default files, then, make will not try to test if a rule has an updated file on the disk (if has will skip that rule)
+.PHONY: all install install-lib clean distclean uninstall test re
+#tested: .NOTPARALLEL: in parent is not preserved here
