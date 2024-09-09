@@ -67,29 +67,39 @@ function memdec(ss start,value end)
 	return val
 end
 
-function actionrow(sd log,sd end,sv xx)
+dataxu xoffset#1
+function newbranch(sv px,sv pxx)
+	sd xx;set xx pxx#
+	sd branchsize;set branchsize xx#
+	sub branchsize global.xoffset
+	add global.xoffset branchsize
+	add px# branchsize
+	add pxx# (xlog_code_size)
+end
+function actionrow(sd log,sd end,sv px,sv pxx)
 	ss test;set test log
 	inc test    ##first is a digit
 	while test!=end
 		if test#=(xlog_act) #action
-			add xx# (xlog_code_size)
 			inc test
 			set log test
 		elseif test#=(xlog_string) #string
-			ss xxcontent;set xxcontent xx#
-			add xx# (xlog_type_size)
+			ss xxcontent;set xxcontent pxx#
+			add pxx# (xlog_type_size)
 			if xxcontent#=(xlog_unique)
 			elseif xxcontent#=(xlog_new)
-				add xx# (xlog_new_size)
+				add pxx# (xlog_new_size)
 			else #xlog_id
-				add xx# (xlog_id_size)
+				add pxx# (xlog_id_size)
 			end
 			inc test
 			set log test
 		elseif test#=(xlog_branch) #branch start
+			call newbranch(px,pxx)
 			inc test
 			set log test
 		elseif test#=(xlog_innerbranchend) #innerbranch end
+			call newbranch(px,pxx)
 			inc test
 			set log test
 		else
@@ -98,11 +108,10 @@ function actionrow(sd log,sd end,sv xx)
 	end
 	return log
 end
-vdata xpointer#1
 function loop(ss log,sd x,sd xx,sd logsize)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
-		set global.xpointer x
+		set global.xoffset 0
 		sd next
 		ss p;set p memnl(log,#next)
 		whiletrue
@@ -141,7 +150,7 @@ function loop(ss log,sd x,sd xx,sd logsize)
 					end
 					set p memnl(log,#next)
 					sd pointer
-					set pointer actionrow(log,p,#xx)
+					set pointer actionrow(log,p,#x,#xx)
 					if log=pointer
 						break  #[log,p) will continue at preid
 					end
