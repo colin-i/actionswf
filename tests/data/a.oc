@@ -6,7 +6,7 @@ override include_sec 1
 include "../../oad/oadbgdatai.h" "../../oad/oadbgdatai.h.oh"
 
 entry main()
-
-call oadata_make("../../example/example.swf")
-
-return 0
+vstr path="../../example/example.swf";sd a
+set a oadata_make(path);if a!=0;return a;end
+set a oadata_ok(path)
+return a
