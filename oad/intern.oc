@@ -162,4 +162,35 @@ function loop(ss log,sd x,sd xx,sd logsize)
 	return (EXIT_SUCCESS)
 end
 
+importx "strlen" strlen
+importx "memcpy" memcpy
+importx "free" free
+
+char inter_extension_data=".last.data";vstr p_inter_extension_data^inter_extension_data
+function inter_extension(sv psize)
+	set psize# (\global.p_inter_extension_data)
+	return global.p_inter_extension_data
+end
+function inter(ss swf_fullpath)
+	sd size;set size strlen(swf_fullpath)
+	ss slastinter;sd size1
+	set slastinter inter_extension(#size1)
+	add size1 size
+	sd from;set from malloc(size1)
+	if from!=(NULL)
+		call memcpy(from,swf_fullpath,size)
+		sub size1 size
+		add size from
+		call memcpy(size,slastinter,size1)
+		sd file
+		set file fopen(from,"wb")
+		call free(from)
+		if file!=(NULL)
+			call fclose(file)
+			return (EXIT_SUCCESS)
+		end
+	end
+	return (EXIT_FAILURE)
+end
+
 entryraw global() #this blank (an empty struct). is here only for global variables

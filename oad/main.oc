@@ -12,6 +12,7 @@ include "common.h" "common.h.oh"
 
 import "fcontent" fcontent
 import "loop" loop
+import "inter" inter
 
 functionx oadata_make(ss swf_fullpath)
 	sd size;set size strlen(swf_fullpath)
@@ -37,6 +38,9 @@ functionx oadata_make(ss swf_fullpath)
 				if xxcontent!=(NULL)
 					set exit loop(logcontent,xcontent,xxcontent,logsize)
 					call free(xxcontent)
+					if exit=(EXIT_SUCCESS)
+						set exit inter(swf_fullpath)
+					end
 				else
 					set exit (EXIT_FAILURE)
 				end
@@ -54,24 +58,28 @@ functionx oadata_make(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
+import "inter_extension" inter_extension
+
 functionx oadata_ok(ss swf_fullpath)
 # move ...last.data ...data
 	sd size;set size strlen(swf_fullpath)
-	char lastinter=".last.data";vstr slastinter^lastinter
-	sd allsize1=\.lastinter;add allsize1 size
-	sd from;set from malloc(allsize1)
+	ss slastinter;sd size1
+	set slastinter inter_extension(#size1)
+	add size1 size
+	sd from;set from malloc(size1)
 	if from!=(NULL)
-		char inter=".data";vstr sinter^inter
-		sd allsize2=\.inter;add allsize2 size
+		char interfinal=".data";vstr sinterfinal^interfinal
+		sd allsize2=\.interfinal;add allsize2 size
 		sd to;set to malloc(allsize2)
 		if to!=(NULL)
 			call memcpy(from,swf_fullpath,size)
 			call memcpy(to,swf_fullpath,size)
+			sub size1 size
 			add size from
-			call memcpy(size,slastinter,\.lastinter)
+			call memcpy(size,slastinter,size1)
 			sub size from
 			add size to
-			call memcpy(size,sinter,\.inter)
+			call memcpy(size,sinterfinal,\.interfinal)
 
 			sd r ;#same 0/-1
 			set r rename(from,to)
