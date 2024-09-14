@@ -24,9 +24,10 @@ re:
 
 xlog=../include/xlog.
 
-${exte}: intern.o
+subobjects=intern.o compare.o
+${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
-objects=main.o intern.o
+objects=main.o ${subobjects}
 ${objects}: common.h
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log intern.oc.log
@@ -50,7 +51,10 @@ ${libname}: main.o ${exte}
 clean:
 	-rm -f common.oh.log common.oh.x common.oh common.h
 	-rm -f ${xlog}oh.log ${xlog}oh.x ${xlog}oh ${xlog}h
+
 	-rm -f intern.o intern.oc.log intern.oc.x intern.c
+	-rm -f compare.o compare.oc.log compare.oc.x compare.c
+
 	-rm -f main.o main.oc.log main.oc.x main.c
 	-rm -f ${exte} ${libname}
 	-rm -f oadbgdatai.oh.log oadbgdatai.oh.x oadbgdatai.oh oadbgdatai.h

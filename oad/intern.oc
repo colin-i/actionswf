@@ -166,28 +166,30 @@ importx "strlen" strlen
 importx "memcpy" memcpy
 importx "free" free
 
-char inter_extension_data=".last.data";vstr p_inter_extension_data^inter_extension_data
-function inter_extension(sv psize)
-	set psize# (\global.p_inter_extension_data)
-	return global.p_inter_extension_data
+import "compare" compare
+
+char inter_last_extension_data=".last.data";vstr p_inter_last_extension_data^inter_last_extension_data
+function inter_last_extension(sv psize)
+	set psize# (\global.inter_last_extension_data)
+	return global.p_inter_last_extension_data
 end
 function inter(ss swf_fullpath)
 	sd size;set size strlen(swf_fullpath)
-	ss slastinter;sd size1
-	set slastinter inter_extension(#size1)
+	sd size1=\global.inter_last_extension_data
 	add size1 size
 	sd from;set from malloc(size1)
 	if from!=(NULL)
 		call memcpy(from,swf_fullpath,size)
 		sub size1 size
 		add size from
-		call memcpy(size,slastinter,size1)
+		call memcpy(size,global.p_inter_last_extension_data,size1)
 		sd file
 		set file fopen(from,"wb")
 		call free(from)
 		if file!=(NULL)
 			call fclose(file)
-			return (EXIT_SUCCESS)
+			sd exit;set exit compare(swf_fullpath)
+			return exit
 		end
 	end
 	return (EXIT_FAILURE)
