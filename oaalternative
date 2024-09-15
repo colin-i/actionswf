@@ -104,7 +104,7 @@ while read p; do
 		else
 			if [ ${lines} -gt 0 ]; then
 				lines=$((lines-1))
-			elif [ -z "`echo ${p} | grep ,`" ]; then
+			elif [ "${p:0:1}" != "*" ]; then
 				new_tag
 			fi
 		fi
