@@ -7,6 +7,7 @@ const xlog_new_size=8 #QWORD
 const xlog_id=2
 const xlog_id_size=2 #WORD
 
+const xlog_actions=0x2A
 const xlog_act=0x2C
 const xlog_branch=0x2F
 const xlog_string=0x5E

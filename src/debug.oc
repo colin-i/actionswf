@@ -267,7 +267,8 @@ function debug_phase_code_flush()
 			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
 			#will not bother concludefunction where is asking with ftell
 			sv file%p_debug_file
-			call f_printf((fprintf_min+1),file#,"*%lu",debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
+			char format=xlog_actions;char *="%lu"
+			call f_printf((fprintf_min+1),file#,#format,debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
 			call f_write(file#,debug_data.mem,debug_phase_code.size)
 			call f_write(file#,"\n",1)
 			set debug_data.rows 0

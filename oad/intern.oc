@@ -76,14 +76,12 @@ function newbranch(sv px,sv pxx)
 	add px# branchsize
 	add pxx# (xlog_code_size)
 end
-function actionrow(sd log,sd end,sv px,sv pxx)
-	ss test;set test log
-	inc test    ##first is a digit
-	while test!=end
-		if test#=(xlog_act) #action
-			inc test
-			set log test
-		elseif test#=(xlog_string) #string
+function actionrow(ss log,sd end,sv px,sv pxx)
+	inc log    ##first is a digit
+	while log!=end
+		if log#=(xlog_act) #action
+			inc log
+		elseif log#=(xlog_string) #string
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
 			if xxcontent#=(xlog_unique)
@@ -92,21 +90,17 @@ function actionrow(sd log,sd end,sv px,sv pxx)
 			else #xlog_id
 				add pxx# (xlog_id_size)
 			end
-			inc test
-			set log test
-		elseif test#=(xlog_branch) #branch start
+			inc log
+		elseif log#=(xlog_branch) #branch start
 			call newbranch(px,pxx)
-			inc test
-			set log test
-		elseif test#=(xlog_innerbranchend) #innerbranch end
+			inc log
+		elseif log#=(xlog_innerbranchend) #innerbranch end
 			call newbranch(px,pxx)
-			inc test
-			set log test
+			inc log
 		else
-			inc test
+			inc log
 		end
 	end
-	return log
 end
 function loop(ss log,sd x,sd xx,sd logsize)
 	add logsize log
@@ -149,10 +143,11 @@ function loop(ss log,sd x,sd xx,sd logsize)
 						return (EXIT_SUCCESS) #no [more] actions and nothing else
 					end
 					set p memnl(log,#next)
-					sd pointer
-					set pointer actionrow(log,p,#x,#xx)
-					if log=pointer
-						break  #[log,p) will continue at preid
+					if log#=(xlog_actions)
+						inc log
+						call actionrow(log,p,#x,#xx)
+					else
+						break #[log,p) will continue at preid
 					end
 					set log next   ##was a row with actions
 				end
