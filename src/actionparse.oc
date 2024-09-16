@@ -1124,10 +1124,10 @@ function brace_blocks_add_write_offset(sd offset,sd flag)
     call brace_blocks_counter_inc()
 endfunction
 #
-function brace_blocks_remove_write()
-    sd offset
-    setcall offset brace_blocks_remove_write_offset()
-    call write_forward_offset(offset)
+function brace_blocks_remove_write(sd is_from_function)
+	sd offset
+	setcall offset brace_blocks_remove_write_offset()
+	call write_forward_offset_ex(offset,is_from_function)
 endfunction
 function brace_blocks_remove_write_ex()
 	sd offset
@@ -1139,6 +1139,9 @@ function brace_blocks_remove_write_ex()
 	end
 endfunction
 function write_forward_offset(sd offset)
+	callg write_forward_offset_ex(offset,(FALSE))
+end
+function write_forward_offset_ex(sd offset,sd is_from_function)
 	sd mem
 	sd size
 	sd memblock
@@ -1155,6 +1158,10 @@ function write_forward_offset(sd offset)
 	#
 	import "stack_to_word_arg" stack_to_word_arg
 	call stack_to_word_arg(size,mem)
+	if is_from_function=(FALSE)
+		import "debug_phase_code_add_long_if" debug_phase_code_add_long_if
+		callg debug_phase_code_add_long_if(mem)
+	end
 endfunction
 #offset
 function brace_blocks_remove_write_offset()

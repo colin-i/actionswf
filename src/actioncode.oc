@@ -294,14 +294,14 @@ function action__code_row_ex(sd codepointer)
 			call debug_xlog(codepointer) #here is after stepout from previous if (start of elseif or else)
 			add codepointer (DWORD)
 		else
-			call brace_blocks_remove_write()
+			call brace_blocks_remove_write((FALSE))
 			call debug_xlog(codepointer) #simple if}[
 		endelse
 		return codepointer
 	endif
 	if attrib=(function_marker) #block_end
 		add codepointer (DWORD)
-		call brace_blocks_remove_write()
+		call brace_blocks_remove_write((TRUE))
 		return codepointer
 	end
 	if attrib=(block_else_end)
@@ -632,10 +632,10 @@ function action_code_else_add()
 	call action_code_else_resolve((no_flag))
 end
 function action_code_else_resolve(sd flag)
-    #end previous if
-    call brace_blocks_remove_write()
-    #add current offset
-    call brace_blocks_add_write_offset((smallbackjump),flag)
+	#end previous if
+	call brace_blocks_remove_write((FALSE))
+	#add current offset
+	call brace_blocks_add_write_offset((smallbackjump),flag)
 endfunction
 function action_code_conditions_end(sd codepointer)
     add codepointer (DWORD)
@@ -840,7 +840,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
-			call brace_blocks_remove_write()
+			call brace_blocks_remove_write((FALSE))
 			return codepointer
 		endelseif
 		setcall codepointer action_code_right_number(codepointer)

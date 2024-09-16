@@ -308,7 +308,7 @@ function debug_spritedone(sd p,sd i)
 	end
 end
 
-function debug_phase_code_add_ex(sd is_long,ss arg2,sd delim)
+function debug_phase_code_add(sd is_long,ss arg2,sd delim)
 	call debug_phase_code_flush()  #since Slash, function c(){\n} , will also add empty row but with one .
 	sd sz;set sz debug_data.size
 	if is_long=(TRUE)
@@ -344,12 +344,17 @@ function debug_phase_code_add_ex(sd is_long,ss arg2,sd delim)
 	end
 	set debug_data.size sz
 end
-function debug_phase_code_add(sd is_long,ss arg2)
-	callg debug_phase_code_add_ex(is_long,arg2,(xlog_act))
+function debug_phase_code_add_long_if(ss arg2)
+	if log_init.prexx=(prexx_flags)
+		callg debug_phase_code_add((TRUE),arg2,(xlog_jump))
+	end
+end
+function debug_phase_code_add_one(ss arg2)
+	callg debug_phase_code_add((FALSE),arg2,(xlog_act))
 endfunction
 function debug_phase_code_add_if(sd is_long,ss arg2)
 	if log_init.prexx=(prexx_flags) #at oalt no action sizes
-		callg debug_phase_code_add_ex(is_long,arg2,(xlog_act))
+		callg debug_phase_code_add(is_long,arg2,(xlog_act))
 	endif
 endfunction
 function debug_phase_code_remove(sd swflength,sd length)
@@ -379,7 +384,7 @@ function debug_definefunction(sv pointers)
 		sd offset
 		set offset debug_data.size
 		char dummy={0xff,0xff} #0,0 is not ok inside
-		call debug_phase_code_add_ex((TRUE),#dummy,(xlog_function))
+		call debug_phase_code_add((TRUE),#dummy,(xlog_function))
 		#inc offset ##to skip Comma  #but at fseek is not needed because fread is already skipping that
 		set pointers#d^ offset
 	endif
@@ -428,7 +433,7 @@ end
 import "x_log" x_log
 function debug_xlog_ex(sd codepointer,sd type)
 	if log_init.prexx=(prexx_flags)
-		call debug_phase_code_add((FALSE),type)
+		call debug_phase_code_add_one(type)
 	else
 		callg x_log(codepointer)
 	end
@@ -443,6 +448,6 @@ function debug_xlog_stepout(sd codepointer)
 end
 function debug_xlog_pool() #pool_flag is already tested
 	if log_init.prexx=(prexx_flags)
-		callg debug_phase_code_add((FALSE),(xlog_string))
+		callg debug_phase_code_add_one((xlog_string))
 	end
 end
