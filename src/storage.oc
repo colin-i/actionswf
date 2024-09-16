@@ -389,7 +389,7 @@ function actionrecordheader_core(sd tag,sd size)
 	call stack_to_word_arg(size,#length)
 	call swf_actionblock_add(#t,(actionrecordheader_size))
 	import "debug_phase_code_add_if" debug_phase_code_add_if
-	call debug_phase_code_add_if((TRUE),#length)
+	callg debug_phase_code_add_if((TRUE),#length)
 end
 function actionrecordheader(sd tag,sd size)
 #push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
