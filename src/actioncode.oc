@@ -323,7 +323,7 @@ function action__code_row_ex(sd codepointer)
 		return codepointer
 	endif
 	if attrib=(continue_flag)
-        call action_code_continue()
+		call action_code_continue()
 		add codepointer (DWORD)
 		set action__code_row.rcb (ret_cont_break_something)
 		return codepointer

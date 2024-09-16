@@ -1139,22 +1139,22 @@ function brace_blocks_remove_write_ex()
 	end
 endfunction
 function write_forward_offset(sd offset)
-    sd mem
-    sd size
-    sd memblock
-    setcall memblock brace_blocks_get_memblock()
-    call block_get_mem_size(memblock,#mem,#size)
-    #
-    add mem offset
-    add offset (WORD)
-    sub size offset
-    #
-    if size>^0x7fFF
-        call error("offset>(signed word size) error")
-    endif
-    #
-    import "stack_to_word_arg" stack_to_word_arg
-    call stack_to_word_arg(size,mem)
+	sd mem
+	sd size
+	sd memblock
+	setcall memblock brace_blocks_get_memblock()
+	call block_get_mem_size(memblock,#mem,#size)
+	#
+	add mem offset
+	add offset (WORD)
+	sub size offset
+	#
+	if size>^0x7fFF
+		call error("offset>(signed word size) error")
+	endif
+	#
+	import "stack_to_word_arg" stack_to_word_arg
+	call stack_to_word_arg(size,mem)
 endfunction
 #offset
 function brace_blocks_remove_write_offset()
