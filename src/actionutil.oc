@@ -219,8 +219,8 @@ function action_one(sd tag)
 	import "actionpush" actionpush
 	call actionpush()
 	call swf_actionblock_add(#tag,(actionrecordheader_tag_size))
-	import "debug_phase_code_add" debug_phase_code_add
-	call debug_phase_code_add((FALSE),(Comma))
+	import "debug_phase_code_add_if" debug_phase_code_add_if
+	call debug_phase_code_add_if((FALSE),(Comma))
 endfunction
 
 import "action_code_right_util" action_code_right_util

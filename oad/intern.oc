@@ -78,6 +78,17 @@ function newbranch(sv px,sv pxx)
 end
 function actionrow(ss log,sd end,sv px,sv pxx)
 	inc log    ##first is a digit
+	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
+		charx chr#1
+		set chr log#
+		if log<(ZeroChar)
+			break
+		end
+		if log>(NineChar)
+			break
+		end
+		inc log
+	end
 	while log!=end
 		if log#=(xlog_act) #action
 			inc log
@@ -96,6 +107,8 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 			inc log
 		elseif log#=(xlog_innerbranchend) #innerbranch end
 			call newbranch(px,pxx)
+			inc log
+		elseif log#=(xlog_function)
 			inc log
 		else
 			inc log
