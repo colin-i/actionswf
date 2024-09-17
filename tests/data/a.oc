@@ -6,8 +6,12 @@ override include_sec 1
 include "../../oad/oadbgdatai.h" "../../oad/oadbgdatai.h.oh"
 
 entry main(data srgc,sv argv)
+
 incst argv
 ss path;set path argv#
-sd a;set a oadata_make(path);if a!=0;return a;end
+sd oadata
+sd a;set a oadata_make(path,#oadata)
+call oadata_free(oadata)
+if a!=0;return a;end
 set a oadata_ok(path)
 return a
