@@ -11,5 +11,7 @@ const NewLine=0xa
 const CReturn=0xd
 const ZeroChar=0x30
 const NineChar=0x39
+const A=0x41
+const F=0x46
 
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else

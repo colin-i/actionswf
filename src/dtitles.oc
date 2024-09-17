@@ -106,7 +106,7 @@ import "action_one" action_one
 
 function dtitles_func()
 	if dtitles_conclude.bool=(TRUE)
-		#this will not be sync'ed with prev log F & if on xx_flags
+		#this will not be sync'ed with prev log @ & if on xx_flags
 		call action_push((ap_Integer),dtitles_init.func)
 		call actionpush()
 		inc dtitles_init.func

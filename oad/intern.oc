@@ -66,6 +66,19 @@ function memdec(ss start,value end)
 	end
 	return val
 end
+#end
+function memhex_parse_withinc(ss start)
+	whiletrue
+		inc start
+		charx c#1;set c start#
+		if c<(ZeroChar);break;end
+		if c<=(NineChar);continue;end
+		if c<(A);break;end
+		if c<=(F);continue;end
+		break
+	end
+	return start
+end
 
 dataxu xoffset#1
 function newbranch(sv px,sv pxx)
@@ -91,7 +104,7 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 	end
 	while log!=end
 		if log#=(xlog_act) #action
-			inc log
+			set log memhex_parse_withinc(log)
 		elseif log#=(xlog_string) #string
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
@@ -102,16 +115,17 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 				add pxx# (xlog_id_size)
 			end
 			inc log
+		elseif log#=(xlog_jump)
+			set log memhex_parse_withinc(log)
 		elseif log#=(xlog_branch) #branch start
 			call newbranch(px,pxx)
 			inc log
 		elseif log#=(xlog_innerbranchend) #innerbranch end
 			call newbranch(px,pxx)
 			inc log
-		elseif log#=(xlog_function)
-			inc log
 		else
-			inc log
+		#if log#=(xlog_function)
+			set log memhex_parse_withinc(log)
 		end
 	end
 end
