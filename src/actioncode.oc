@@ -950,9 +950,11 @@ function action_definefunction(sd codepointer)
 	sd index_atstart
 	setcall index_atstart brace_blocks_counter()
 	set index_atstart index_atstart#
+	sd index_current=0xffFFffFF
 	#
-	sd index_current=0x7fFFffFF
-	while index_atstart<=index_current
+	import "dtitles_func" dtitles_func
+	call dtitles_func()
+	while index_atstart<=^index_current
 		setcall codepointer action__code_row(codepointer)
 		setcall index_current brace_blocks_counter()
 		set index_current index_current#

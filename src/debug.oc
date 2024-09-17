@@ -180,7 +180,7 @@ function log_init(datax prexx,sd path)
 		sd b;setcall b memalloc(size)
 		call sprintf(b,"%s.log",path)
 		sv file%p_debug_file
-		setcall file# f_open_mem(b,"w+b")  #+ is because at definefunction it is reading back for comma character
+		setcall file# f_open_mem(b,"w+b")  #+ is because at definefunction it is reading back for delimiter character
 
 		and prexx (prexx_flags)
 		if prexx=(prexx_flags)
@@ -405,15 +405,19 @@ function debug_concludefunction(sv pointers)
 		sd offset;set offset pointers#d^
 		vstr format="%04X"
 		if prev_fileoffset!=now   ##often case where the function has multiple lines, now line is on the file and not in mem
+			add prev_fileoffset 2 # * from the start of the row and first digit
 			call fseek(debug_data.file,prev_fileoffset,(SEEK_SET))
 			#now need to skip first number that is the number of rows
 			whiletrue
 				char a#1
 				sd ret
 				set ret fread(#a,1,1,debug_data.file)
-				if a=(Comma)  #there is a comma from here
+				if a<(_0)  #there is a delimiter from here
 					break
 				endif
+				if a>(_9) #many are starting with string delim
+					break
+				end
 				if ret!=1
 					call error("Who modified the debug file?") #but since files are not exclusives, need to also verify the return
 				end
@@ -423,7 +427,7 @@ function debug_concludefunction(sv pointers)
 			call fseek(debug_data.file,0,(SEEK_END))
 		else #on mem
 			sd c;set c debug_data.mem
-			inc offset ##to skip Comma
+			inc offset ##to skip delimiter
 			add c offset
 			call md_printf(c,format,size)
 		end
@@ -438,12 +442,13 @@ function debug_xlog_ex(sd codepointer,sd type)
 		callg x_log(codepointer)
 	end
 end
-function debug_xlog(sd codepointer)
-# [else loop}[ forin{[ for;;[ if/loop{[ ?[ :[ func{[ if}[
+function debug_xlog(sd codepointer) #/
+# forin{[ for;;[ if/loop{[ ?[ func{[   [else :[   loop}[ if}[
+#not all &jump will start a new branch: if else/...&resolvingIfEnd...
 	callg debug_xlog_ex(codepointer,(xlog_branch))
 end
-function debug_xlog_stepout(sd codepointer)
-# for;;[| func{[}|
+function debug_xlog_stepout(sd codepointer) #|
+# for;;[ func}[
 	callg debug_xlog_ex(codepointer,(xlog_innerbranchend))
 end
 function debug_xlog_pool() #pool_flag is already tested

@@ -66,6 +66,8 @@ function dtitles_init(sd flags)
 	and flags (debug_titles)
 	if flags!=0
 		set dtitles_conclude.bool (TRUE)
+		dataxu func#1 #like ui32 swf size
+		set func 0
 		ret
 	end
 	set dtitles_conclude.bool (FALSE)
@@ -95,5 +97,19 @@ function dtitles_frame_one(sd preid,sd finalid) #is called at swf_sprite_done an
 		call swf_actionblock((mem_exp_change),preid)
 		call actionpool_value_ex(#store,(TRUE))
 		call swf_actionblock((mem_exp_change_back),preid)
+	end
+end
+
+import "action_push" action_push
+import "actionpush" actionpush
+import "action_one" action_one
+
+function dtitles_func()
+	if dtitles_conclude.bool=(TRUE)
+		#this will not be sync'ed with prev log F & if on xx_flags
+		call action_push((ap_Integer),dtitles_init.func)
+		call actionpush()
+		inc dtitles_init.func
+		callg action_one((ActionPop))
 	end
 end
