@@ -13,8 +13,10 @@ include "common.h" "common.h.oh"
 import "fcontent" fcontent
 import "loop" loop
 import "inter" inter
+import "outinit" outinit
 
-functionx oadata_make(ss swf_fullpath)
+functionx oadata_make(ss swf_fullpath,sv poadata)
+	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
 	sd allsize=\.logext;add allsize size
@@ -36,11 +38,14 @@ functionx oadata_make(ss swf_fullpath)
 				call memcpy(size,sxxext,\.xxext)
 				sd xxcontent;set xxcontent fcontent(mem,#dummy)
 				if xxcontent!=(NULL)
-					set exit loop(logcontent,xcontent,xxcontent,logsize)
-					call free(xxcontent)
+					set exit outinit(poadata)
 					if exit=(EXIT_SUCCESS)
-						set exit inter(swf_fullpath)
+						set exit loop(logcontent,xcontent,xxcontent,logsize)
+						if exit=(EXIT_SUCCESS)
+							set exit inter(swf_fullpath)
+						end
 					end
+					call free(xxcontent)
 				else
 					set exit (EXIT_FAILURE)
 				end
@@ -94,4 +99,10 @@ functionx oadata_ok(ss swf_fullpath)
 		call free(from)
 	end
 	return (EXIT_FAILURE)
+end
+
+functionx oadata_free(sv oadata)
+	if oadata!=(NULL)
+		call free(oadata)
+	end
 end

@@ -217,4 +217,9 @@ function inter(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
+function outinit(sv *poadata)
+	#set poadata# malloc(\oadata\)
+	return (EXIT_SUCCESS)
+end
+
 entryraw global() #this blank (an empty struct). is here only for global variables
