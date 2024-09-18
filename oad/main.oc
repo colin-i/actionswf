@@ -15,6 +15,8 @@ import "loop" loop
 import "inter" inter
 import "outinit" outinit
 
+#functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another !=)
+
 functionx oadata_make(ss swf_fullpath,sv poadata)
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
@@ -44,6 +46,8 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 						if exit=(EXIT_SUCCESS)
 							set exit inter(swf_fullpath)
 						end
+					else
+						call oadata_free(poadata#) #there are multiple mallocs in outinit
 					end
 					call free(xxcontent)
 				else
@@ -101,8 +105,16 @@ functionx oadata_ok(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-functionx oadata_free(sv oadata)
-	if oadata!=(NULL)
-		call free(oadata)
+functionx oadata_free(sv data)
+	if data!=(NULL)
+		sv sprites;set sprites data#:oadata.sprites
+		if sprites!=(NULL)
+			sv marks;set marks data#:oadata.marks
+			if marks!=(NULL)
+				call free(marks)
+			end
+			call free(sprites)
+		end
+		call free(data)
 	end
 end

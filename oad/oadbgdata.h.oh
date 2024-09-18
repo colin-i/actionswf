@@ -1,4 +1,12 @@
 
 function oadata()
-	valuex *sprites#1
+	valuex sprites#1
+	valuex marks#1
+end
+function sprite()
+	valuex *frame#1
+end
+function mark()
+	datax prev#1
+	datax next#1
 end

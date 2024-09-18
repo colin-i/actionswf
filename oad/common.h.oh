@@ -16,3 +16,4 @@ const F=0x46
 
 override include_sec 1
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
+include "oadbgdata.h" "oadbgdata.h.oh"

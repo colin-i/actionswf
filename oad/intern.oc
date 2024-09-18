@@ -3,7 +3,6 @@ format elfobj64
 
 override include_sec 1
 include "common.h" "common.h.oh"
-include "oadbgdata.h" "oadbgdata.h.oh"
 
 importx "fopen" fopen
 importx "fseek" fseek
@@ -220,7 +219,20 @@ end
 
 function outinit(sv poadata)
 	set poadata# malloc(\oadata\)
-	return (EXIT_SUCCESS)
+	sv a;set a poadata#
+	if a!=(NULL)
+		set a#:oadata.sprites malloc(\sprite\)
+		if a#:oadata.sprites!=(NULL)
+			set a#:oadata.marks malloc(\mark\)
+			sd m;set m a#:oadata.marks
+			if m!=(NULL)
+				set m#:mark.prev -1
+				set m#:mark.next -1
+				return (EXIT_SUCCESS)
+			end
+		end
+	end
+	return (EXIT_FAILURE)
 end
 
 entryraw global() #this blank (an empty struct). is here only for global variables
