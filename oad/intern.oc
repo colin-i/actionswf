@@ -3,6 +3,7 @@ format elfobj64
 
 override include_sec 1
 include "common.h" "common.h.oh"
+include "oadbgdata.h" "oadbgdata.h.oh"
 
 importx "fopen" fopen
 importx "fseek" fseek
@@ -217,8 +218,8 @@ function inter(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-function outinit(sv *poadata)
-	#set poadata# malloc(\oadata\)
+function outinit(sv poadata)
+	set poadata# malloc(\oadata\)
 	return (EXIT_SUCCESS)
 end
 

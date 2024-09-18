@@ -28,7 +28,7 @@ subobjects=intern.o compare.o
 ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 objects=main.o ${subobjects}
-${objects}: common.h
+${objects}: common.h oadbgdata.h
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log intern.oc.log
 	$(CC) ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
@@ -57,7 +57,9 @@ clean:
 
 	-rm -f main.o main.oc.log main.oc.x main.c
 	-rm -f ${exte} ${libname}
+
 	-rm -f oadbgdatai.oh.log oadbgdatai.oh.x oadbgdatai.oh oadbgdatai.h
+	-rm -f oadbgdata.oh.log oadbgdata.oh.x oadbgdata.oh oadbgdata.h
 
 distclean: clean
 
