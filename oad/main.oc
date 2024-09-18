@@ -46,7 +46,8 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 						if exit=(EXIT_SUCCESS)
 							set exit inter(swf_fullpath)
 						end
-					else
+					end
+					if exit!=(EXIT_SUCCESS)
 						call oadata_free(poadata#) #there are multiple mallocs in outinit
 					end
 					call free(xxcontent)
