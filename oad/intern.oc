@@ -228,7 +228,12 @@ function outinit(sv poadata)
 			if m!=(NULL)
 				set m#:mark.prev (mark_nothing)
 				set m#:mark.next (mark_nothing)
-				return (EXIT_SUCCESS)
+				set a#:oadata.functions malloc(:)
+				sv f;set f a#:oadata.functions
+				if f!=(NULL)
+					set f# (NULL)
+					return (EXIT_SUCCESS)
+				end
 			end
 		end
 	end

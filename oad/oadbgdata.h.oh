@@ -2,6 +2,7 @@
 function oadata()
 	valuex sprites#1
 	valuex marks#1
+	valuex functions#1
 end
 function sprite()
 	valuex *frame#1

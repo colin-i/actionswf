@@ -113,6 +113,7 @@ functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
 		sv sprites;set sprites data#:oadata.sprites
 		if sprites!=(NULL)
+			call free(sprites)
 			sv marks;set marks data#:oadata.marks
 			if marks!=(NULL)
 				if log=(TRUE)
@@ -130,8 +131,14 @@ functionx oadata_free(sv data,charx log)
 					end
 				end
 				call free(marks)
+				sv fns;set fns data#:oadata.functions
+				if fns!=(NULL)
+					sv f;set f fns
+					while f#!=(NULL)
+					end
+					call free(fns)
+				end
 			end
-			call free(sprites)
 		end
 		call free(data)
 	end
