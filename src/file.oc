@@ -61,21 +61,13 @@ importx "free" free
 import "error" error
 
 #file
-function f_open(sd path,sd format)
-	sd f;setcall f fopen(path,format)
-	if f=(NULL)
-		char a="fopen error"
-		vstr e^a
-		call error(e)
-	endif
-	return f
-endfunction
-#file
 function f_open_mem(sd path,sd format)
 	sd f;setcall f fopen(path,format)
 	if f=(NULL)
 		call free(path)
-		call error(f_open.e)
+		char a="fopen error"
+		vstr e^a
+		call error(e)
 	endif
 	call free(path)
 	return f

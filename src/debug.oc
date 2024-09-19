@@ -201,22 +201,21 @@ import "f_tell" f_tell
 
 function debug_action_init(ss ac)
 	if debug_data.file!=(NULL)
-		sd start;set start ac
-
-		sd row=1     #at least one row, example: row 1,3 actions
-		while ac#!=0
-			call row_termination(#ac,#row)
-			inc ac
-		endwhile
-
-		#out rows\nac\n
-		sv file%p_debug_file
-		char f={Percent,l,u,LineFeed,Percent,s,LineFeed,Nullchar}
-		call f_printf((fprintf_min+2),file#,#f,row,start)
-
 		set debug_data.rows 0 #for fast check
-
 		if log_init.prexx=(prexx_flags)
+			sd start;set start ac
+
+			sd row=1     #at least one row, example: row 1,3 actions
+			while ac#!=0
+				call row_termination(#ac,#row)
+				inc ac
+			endwhile
+
+			#out rows\nac\n
+			sv file%p_debug_file
+			char f={Percent,l,u,LineFeed,Percent,s,LineFeed,Nullchar}
+			call f_printf((fprintf_min+2),file#,#f,row,start)
+
 			mult row :
 			import "memrealloc" memrealloc
 			setcall debug_mark_get.offsets memrealloc(debug_mark_get.offsets,row)

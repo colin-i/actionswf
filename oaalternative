@@ -34,6 +34,9 @@ if [ -n "${isdebug}" ]; then v=-v; fi
 
 move () {
 	mv ${v} "${1}" ${2}
+	if [ -n "${isdebug}" ]; then
+		cat ${2}
+	fi
 }
 doaction () {
 	to=${1}
@@ -68,7 +71,6 @@ while read p; do
 			else
 				t=2 #action
 				at=${p}
-				lines=
 				if [ -n "${isdebug}" ]; then echo at = ${at}; fi
 				ainits[${s}]=${at}
 			fi
@@ -98,15 +100,8 @@ while read p; do
 				}
 			fi
 			s=
-		elif [ -z "${lines}" ]; then
-			lines=${p}
-			if [ -n "${isdebug}" ]; then echo lines = ${lines}; fi
 		else
-			if [ ${lines} -gt 0 ]; then
-				lines=$((lines-1))
-			else
-				new_tag
-			fi
+			new_tag
 		fi
 	fi
 done <../${log}
@@ -116,7 +111,7 @@ doaction 0 `find -maxdepth 3 -name DoAction.as`
 #part 2
 if [ -n "${2}" ]; then
 	cd ..
-	move ${1} ${1}.orig && \
+	mv ${v} ${1} ${1}.orig && \
 	${2} && \
 	diff ${1} ${1}.orig && \
 	rm -r ${v} ${folder}
