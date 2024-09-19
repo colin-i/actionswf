@@ -226,8 +226,8 @@ function outinit(sv poadata)
 			set a#:oadata.marks malloc(\mark\)
 			sd m;set m a#:oadata.marks
 			if m!=(NULL)
-				set m#:mark.prev -1
-				set m#:mark.next -1
+				set m#:mark.prev (mark_nothing)
+				set m#:mark.next (mark_nothing)
 				return (EXIT_SUCCESS)
 			end
 		end

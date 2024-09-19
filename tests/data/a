@@ -7,5 +7,5 @@ o a.oc x_file 1 && \
 otoc a.oc.x && \
 cc -w -g a.c -L../../oad -loadbgdata && \
 LD_LIBRARY_PATH=../../oad ${g} ./a.out ${f} && \
-echo $? && \
+echo ok && \
 rm ${f}.data

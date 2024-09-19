@@ -32,13 +32,13 @@ ${objects}: common.h oadbgdata.h
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log intern.oc.log
 	$(CC) ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
-	# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
+# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
 	$(CC) -c -w ${compilerflags} $*.c
-	#-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
+#-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
 %.oh: %.h.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@

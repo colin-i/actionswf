@@ -5,7 +5,6 @@ importx "strlen" strlen
 importx "malloc" malloc
 importx "free" free
 importx "memcpy" memcpy
-importx "rename" rename
 
 override include_sec 1
 include "common.h" "common.h.oh"
@@ -48,7 +47,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 						end
 					end
 					if exit!=(EXIT_SUCCESS)
-						call oadata_free(poadata#) #there are multiple mallocs in outinit
+						call oadata_free(poadata#,(FALSE)) #there are multiple mallocs in outinit
 					end
 					call free(xxcontent)
 				else
@@ -68,6 +67,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 	return (EXIT_FAILURE)
 end
 
+importx "rename" rename
 import "inter_extension" inter_extension
 import "inter_last_extension" inter_last_extension
 
@@ -106,12 +106,29 @@ functionx oadata_ok(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-functionx oadata_free(sv data)
+importx "puts" puts
+importx "printf" printf
+
+functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
 		sv sprites;set sprites data#:oadata.sprites
 		if sprites!=(NULL)
 			sv marks;set marks data#:oadata.marks
 			if marks!=(NULL)
+				if log=(TRUE)
+					call puts("mark struct:")
+					sd m;set m marks
+					datau i=0
+					whiletrue
+						datax next#1;set next m#:mark.next
+						call printf("\t%u\n\t\t%d\n\t\t%d\n",i,m#:mark.prev,next)
+						if next=(mark_nothing)
+							break
+						end
+						#add m \mark\
+						#inc i
+					end
+				end
 				call free(marks)
 			end
 			call free(sprites)
