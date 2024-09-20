@@ -222,7 +222,9 @@ function outinit(sv poadata)
 	sv a;set a poadata#
 	if a!=(NULL)
 		set a#:oadata.sprites malloc(\sprite\)
-		if a#:oadata.sprites!=(NULL)
+		sv s;set s a#:oadata.sprites
+		if s!=(NULL)
+			set s# (NULL)
 			set a#:oadata.marks malloc(\mark\)
 			sd m;set m a#:oadata.marks
 			if m!=(NULL)
