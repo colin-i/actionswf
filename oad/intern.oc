@@ -217,11 +217,11 @@ function inter(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-function outinit(sv poadata)
+function oadata_init(sv poadata)
 	set poadata# malloc(\oadata\)
 	sv a;set a poadata#
 	if a!=(NULL)
-		set a#:oadata.sprites malloc(\sprite\)
+		set a#:oadata.sprites malloc(:)
 		sv s;set s a#:oadata.sprites
 		if s!=(NULL)
 			set s# (NULL)

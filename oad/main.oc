@@ -12,9 +12,11 @@ include "common.h" "common.h.oh"
 import "fcontent" fcontent
 import "loop" loop
 import "inter" inter
-import "outinit" outinit
+import "oadata_init" oadata_init
+import "preoadata_init" preoadata_init
+import "preoadata_free" preoadata_free
 
-#functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another !=)
+#functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
 functionx oadata_make(ss swf_fullpath,sv poadata)
 	set poadata# (NULL)
@@ -39,12 +41,16 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 				call memcpy(size,sxxext,\.xxext)
 				sd xxcontent;set xxcontent fcontent(mem,#dummy)
 				if xxcontent!=(NULL)
-					set exit outinit(poadata)
+					set exit oadata_init(poadata)
 					if exit=(EXIT_SUCCESS)
-						set exit loop(logcontent,xcontent,xxcontent,logsize)
+						sv presprites;set exit preoadata_init(#presprites)
 						if exit=(EXIT_SUCCESS)
-							set exit inter(swf_fullpath)
+							set exit loop(logcontent,xcontent,xxcontent,logsize)
+							if exit=(EXIT_SUCCESS)
+								set exit inter(swf_fullpath)
+							end
 						end
+						call preoadata_free(presprites)
 					end
 					if exit!=(EXIT_SUCCESS)
 						call oadata_free(poadata#,(FALSE)) #there are multiple mallocs in outinit
@@ -117,6 +123,7 @@ functionx oadata_free(sv data,charx log)
 			while s#!=(NULL)
 			end
 			call free(sprites)
+
 			sv marks;set marks data#:oadata.marks
 			if marks!=(NULL)
 				if log=(TRUE)
@@ -134,6 +141,7 @@ functionx oadata_free(sv data,charx log)
 					end
 				end
 				call free(marks)
+
 				sv fns;set fns data#:oadata.functions
 				if fns!=(NULL)
 					sv f;set f fns
