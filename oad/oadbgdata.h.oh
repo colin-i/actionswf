@@ -17,7 +17,6 @@ end
 #	valuexu actions#1
 #end
 #function action()
-#	wordxu size#1
 #	valuexu next#1
 #	datax mark#1
 #end
@@ -35,12 +34,12 @@ end
 #	valuexu strings#1
 #end
 #function branch()
-#	wordxu size#1
+#	dataxu size#1
 #	vdataxu x#1
 #	valuexu subbranches#1
 
 #	datax fncodesize#1
-#	vwordxu actionsizes#1
+#	dataxu swfsize#1
 #	valuexu action#1
 #end
 #function string()
