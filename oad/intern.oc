@@ -67,17 +67,36 @@ function memdec(ss start,value end)
 	return val
 end
 #end
-function memhex_parse_withinc(ss start)
+function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
+	inc start
+	ss a;set a start
 	whiletrue
-		inc start
-		charx c#1;set c start#
+		charx c#1;set c a#
 		if c<(ZeroChar);break;end
-		if c<=(NineChar);continue;end
-		if c<(A);break;end
-		if c<=(F);continue;end
-		break
+		if c<=(NineChar)
+		elseif c<(A);break;end
+		if c>(F);break;end
+		inc a
 	end
-	return start
+	set out# 0
+	if a!=start   ##there are many ,, with no size
+		ss b;set b a
+		dataxu n#1;set n 1
+		while start!=b
+			dec b
+			dataxu nr#1
+			set nr b#
+			if nr<=(NineChar)
+				sub nr (ZeroChar)
+			else
+				sub nr (A+10)
+			end
+			mult nr n
+			add out# nr
+			mult n 0x10
+		end
+	end
+	return a
 end
 
 dataxu xoffset#1
@@ -103,8 +122,9 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 		inc log
 	end
 	while log!=end
+		dataxu number#1  #u16,u32,u16
 		if log#=(xlog_act) #action
-			set log memhex_parse_withinc(log)
+			set log memhex_parse_withinc(log,#number)
 		elseif log#=(xlog_string) #string
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
@@ -116,7 +136,7 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 			end
 			inc log
 		elseif log#=(xlog_jump)
-			set log memhex_parse_withinc(log)
+			set log memhex_parse_withinc(log,#number)
 		elseif log#=(xlog_branch) #branch start
 			call newbranch(px,pxx)
 			inc log
@@ -125,7 +145,7 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 			inc log
 		else
 		#if log#=(xlog_function)
-			set log memhex_parse_withinc(log)
+			set log memhex_parse_withinc(log,#number)
 		end
 	end
 end

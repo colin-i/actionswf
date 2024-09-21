@@ -2,6 +2,7 @@
 set -o pipefail && ./a | tee data.txt || exit 1
 diff ../.expected/data.txt data.txt
 if [ $? = 0 ]; then
+	rm data.txt
 	exit 0
 fi
 if [ -n "${1}" ]; then exit 1; fi
