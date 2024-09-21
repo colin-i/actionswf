@@ -30,22 +30,30 @@ smart_diff () {
 	fi
 	return 1
 }
+smart_ask () {
+	stat --printf="\n%s\n" .expected/a.swf${1}
+	stat --printf="%s\n" a.swf${2}
+	echo y \? m \?; read -n1 -t $((60*60*24)) ans
+	if [ "${ans}" = "m" ]; then
+		if [ -z "${1}" ]; then
+			swfdump -D .expected/a.swf${1} > 1
+			swfdump -D a.swf${2} > 2
+		else
+			xxd .expected/a.swf${1} > 1
+			xxd a.swf${2} > 2
+		fi
+		diff 1 2
+		rm 1 2
+		echo y \?; read -n1 -t $((60*60*24)) ans
+	fi
+	if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
+	base64 a.swf${2} > .expected/a.swf${1}.txt
+}
 	base64 -d .expected/a.swf.txt > .expected/a.swf || { echo not ok; exit 1; }
 	smart_diff .expected/a.swf a.swf
 	if [ $? != 0 ]; then
 		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
-		stat --printf="\n%s\n" .expected/a.swf
-		stat --printf="%s\n" a.swf
-		echo y \? m \?; read -n1 -t $((60*60*24)) ans
-		if [ "${ans}" = "m" ]; then
-			swfdump -D .expected/a.swf > 1
-			swfdump -D a.swf > 2
-			diff 1 2
-			rm 1 2
-			echo y \?; read -n1 -t $((60*60*24)) ans
-		fi
-		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
-		base64 a.swf > .expected/a.swf.txt
+		smart_ask
 	fi
 
 	if [ "${conv_64}" = 1 ]; then
@@ -55,11 +63,7 @@ smart_diff () {
 	smart_diff .expected/a.swf.x${v} a.swf.x
 	if [ $? != 0 ]; then
 		if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
-		stat --printf="\n%s\n" .expected/a.swf.x${v}
-		stat --printf="%s\n" a.swf.x
-		echo y \?; read -n1 -t $((60*60*24)) ans
-		if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
-		base64 a.swf.x > .expected/a.swf.x${v}.txt
+		smart_ask .x${v} .x
 	fi
 
 	smart_diff .expected/a.swf.log a.swf.log x
