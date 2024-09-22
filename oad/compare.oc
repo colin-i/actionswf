@@ -38,7 +38,7 @@ function compare(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-valueu presprites_size#1  #same as sprites_size
+valueu presprites_size#1  #same as sprites_size, but add 4 more for less calculation
 function preoadata_init(sv ppresprites)
 	set ppresprites# malloc((sprites_realloc_onepart))
 	if ppresprites#!=(NULL)
