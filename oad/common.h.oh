@@ -17,8 +17,10 @@ const NineChar=0x39
 const A=0x41
 const F=0x46
 
-const mark_nothing=-1
-
 override include_sec 1
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
 include "oadbgdata.h" "oadbgdata.h.oh"
+
+const mark_nothing=-1
+
+const double_null_init=:+:

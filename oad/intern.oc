@@ -241,10 +241,11 @@ function oadata_init(sv poadata)
 	set poadata# malloc(\oadata\)
 	sv a;set a poadata#
 	if a!=(NULL)
-		set a#:oadata.sprites malloc(:)
+		set a#:oadata.sprites malloc((double_null_init)) #to not ad id and reconnaissance
 		sv s;set s a#:oadata.sprites
 		if s!=(NULL)
 			set s# (NULL)
+			incst s;set s# (NULL)
 			set a#:oadata.marks malloc(\mark\)
 			sd m;set m a#:oadata.marks
 			if m!=(NULL)

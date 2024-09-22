@@ -39,10 +39,11 @@ function compare(ss swf_fullpath)
 end
 
 function preoadata_init(sv ppresprites)
-	set ppresprites# malloc(:)
+	set ppresprites# malloc((double_null_init))
 	sv ps;set ps ppresprites#
 	if ps!=(NULL)
 		set ps# (NULL)
+		incst ps;set ps# (NULL)
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
@@ -50,7 +51,13 @@ end
 function preoadata_free(sv presprites)
 	if presprites!=(NULL)
 		sv ps;set ps presprites
-		while ps#!=(NULL)
+		whiletrue
+			while ps#!=(NULL)
+			end
+			incst ps
+			if ps#=(NULL)
+				break
+			end
 		end
 		call free(presprites)
 	end
