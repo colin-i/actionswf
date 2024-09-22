@@ -1,5 +1,7 @@
 
 function oadata()
+	valueu sprites_size#1 ;#1(root)+ui16 *: ,for free, but reserve 4 more for less calculation
+	valueu functions_size#1  #anyway is using a counter at appending (preferred instead of null), DefineFunction is at minimum 8, so is a : on 64, but there are multiple DoAction
 	valuexu sprites#1
 	valuexu marks#1
 	valuexu functions#1
@@ -25,7 +27,7 @@ function mark()
 	datax next#1
 end
 
-#function presprite()
+#function presprite() #presprites_size is intern
 #	valuexu preframe#1
 #	valuexu preframes#1
 #end

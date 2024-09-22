@@ -38,29 +38,26 @@ function compare(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
+valueu presprites_size#1  #same as sprites_size
 function preoadata_init(sv ppresprites)
-	set ppresprites# malloc((double_null_init))
-	sv ps;set ps ppresprites#
-	if ps!=(NULL)
-		set ps# (NULL)
-		incst ps;set ps# (NULL)
+	set ppresprites# malloc((sprites_realloc_onepart))
+	if ppresprites#!=(NULL)
+		set global.presprites_size 0
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
 end
 function preoadata_free(sv presprites)
 	if presprites!=(NULL)
+		add global.presprites_size presprites
 		sv ps;set ps presprites
-		whiletrue
-			while ps#!=(NULL)
-			end
-			incst ps
-			if ps#=(NULL)
-				break
-			end
+		while ps!=global.presprites_size
 		end
 		call free(presprites)
 	end
+end
+
+function presprites_init() #wordxu *preid) #sv *ppresprites
 end
 
 entryraw global()

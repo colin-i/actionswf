@@ -120,13 +120,9 @@ functionx oadata_free(sv data,charx log)
 		sv sprites;set sprites data#:oadata.sprites
 		if sprites!=(NULL)
 			sv s;set s sprites
-			whiletrue
-				while s#!=(NULL)
-				end
-				incst s
-				if s#=(NULL)
-					break
-				end
+			sv end;set end data#:oadata.sprites_size
+			add end s
+			while s!=end
 			end
 			call free(sprites)
 
@@ -148,12 +144,14 @@ functionx oadata_free(sv data,charx log)
 				end
 				call free(marks)
 
-				sv fns;set fns data#:oadata.functions
-				if fns!=(NULL)
-					sv f;set f fns
-					while f#!=(NULL)
+				sv functions;set functions data#:oadata.functions
+				if functions!=(NULL)
+					set s functions
+					set end data#:oadata.functions_size
+					add end s
+					while s!=end
 					end
-					call free(fns)
+					call free(functions)
 				end
 			end
 		end

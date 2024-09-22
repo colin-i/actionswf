@@ -23,4 +23,4 @@ include "oadbgdata.h" "oadbgdata.h.oh"
 
 const mark_nothing=-1
 
-const double_null_init=:+:
+const sprites_realloc_onepart=10*:
