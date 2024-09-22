@@ -11,6 +11,10 @@ importx "malloc" malloc
 importx "fread" fread
 importx "fclose" fclose
 
+#multithread unsafe
+dataxu xoffset#1
+#
+
 function fcontent(sd path,sv psize)
 	sd f;set f fopen(path,"rb")
 	if f!=(NULL)
@@ -99,7 +103,6 @@ function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
 	return a
 end
 
-dataxu xoffset#1
 function newbranch(sv px,sv pxx)
 	sd xx;set xx pxx#
 	sd branchsize;set branchsize xx#
