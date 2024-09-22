@@ -1,9 +1,9 @@
 
 function oadata()
-	datau sprites_size#1 ;#1(root)+ui16 *: ,for free
-	valueu functions_size#1  #anyway is using a counter at appending (preferred instead of null), DefineFunction is at minimum 8, so is a : on 64, but there are multiple DoAction
+	dataxu sprites_size#1 ;#1(root)+ui16 *: ,for free
 	valuexu sprites#1
 	valuexu marks#1
+	dataxu functions_size#1  #anyway is using a counter at appending (preferred instead of null), DefineFunction is at minimum 8 like 64 :, anyway swfsize is ui32(that minus some tags)
 	valuexu functions#1
 end
 #function sprite()
