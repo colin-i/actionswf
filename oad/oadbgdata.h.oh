@@ -1,8 +1,10 @@
 
 function oadata()
-	dataxu sprites_size#1 ;#1(root)+ui16 *: ,for free
 	valuexu sprites#1
+	dataxu sprites_size#1 ;#1(root)+ui16 *: ,for free
+
 	valuexu marks#1
+
 	dataxu functions_size#1  #anyway is using a counter at appending (preferred instead of null), DefineFunction is at minimum 8 like 64 :, anyway swfsize is ui32(that minus some tags)
 	valuexu functions#1
 end
@@ -11,8 +13,8 @@ end
 #	valuexu frames#1
 #end
 #function frame()
-#	valueu total#1    #big blank lines group
 #	valuexu lines#1
+#	valueu total#1    #big blank lines group
 #end
 #function line()
 #	valueu index#1    #same as lines total

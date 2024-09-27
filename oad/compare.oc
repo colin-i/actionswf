@@ -55,8 +55,19 @@ function preoadata_free(sv presprites)
 		add global.presprites_size presprites
 		sv ps;set ps presprites
 		while ps!=global.presprites_size
-			if ps#!=(NULL)
-				call free(ps#)
+			sv pres;set pres ps#
+			if pres!=(NULL)
+				if pres#:presprite.preframe!=(NULL)
+				end
+				if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
+					sv pointer;set pointer pres#:presprite.preframes
+					sd end;set end pres#:presprite.size
+					add end pointer
+					while pointer!=end
+					end
+					call free(pres#:presprite.preframes)
+				end
+				call free(pres)
 			end
 			incst ps
 		end
@@ -73,13 +84,22 @@ function presprite_init(svu newpointer,sv ppresprites)
 	add newsize :
 	charx ok#1;set ok re_alloc(ppresprites,global.presprites_size,newsize)
 	if ok=(EXIT_SUCCESS)
+		add newpointer ppresprites#
 		if newsize>^global.presprites_size   ##example: preid 0 after a sprite preid 2
 			set global.presprites_size newsize
-		end
-		add newpointer ppresprites#
-		set newpointer# malloc(\presprite\)
-		if newpointer#!=(NULL)
+		elseif newpointer#!=(NULL) #already opened this sprite already
 			return (EXIT_SUCCESS)
+		end
+		sv ps;set ps malloc(\presprite\)
+		if ps!=(NULL)
+			set newpointer# ps
+			set ps#:presprite.preframe (NULL) #ainit/button
+
+			set ps#:presprite.preframes malloc((sprites_realloc_onepart))
+			if ps#:presprite.preframes!=(NULL) #can #ps#:presprite.preframes but will be trasfered to sprites, not another template call there
+				set ps#:presprite.size 0
+				return (EXIT_SUCCESS)
+			end
 		end
 	end
 	return (EXIT_FAILURE)

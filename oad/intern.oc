@@ -166,18 +166,18 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
 			set preid memdec(log,p) #[log,p) ui16
 			set log next
 
+			charx ok#1
 			set p memnl(log,#next)
 			if log=p
 				set log next
 				# empty: show/done
 				set p memnl(log,#next)
 				if log=p ##show ui16
-					charx ok#1
 					set ok presprite_init(preid,ppresprites)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
-				else #done
+				else #done, here for sprite, already opened or ignore it
 				end
 				set log next
 				if log=logsize
@@ -185,6 +185,11 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
 				end
 				set p memnl(log,#next)
 			else
+				set ok presprite_init(preid,ppresprites)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
+
 				#ainit
 				set log next
 
