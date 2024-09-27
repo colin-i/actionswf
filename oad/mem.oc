@@ -1,0 +1,32 @@
+
+format elfobj64
+
+importx "realloc" realloc
+
+override include_sec 1
+include "common.h" "common.h.oh"
+
+function re_alloc(sv pmem,valuexu size,valueu newsize) #big at lines
+	valueu currentmaxsize#1;set currentmaxsize size
+	divu currentmaxsize ((sprites_realloc_onepart))
+	mult currentmaxsize ((sprites_realloc_onepart))
+	add currentmaxsize ((sprites_realloc_onepart))
+	if newsize>^currentmaxsize
+		set currentmaxsize newsize
+		divu currentmaxsize ((sprites_realloc_onepart))
+		mult currentmaxsize ((sprites_realloc_onepart))
+		add currentmaxsize ((sprites_realloc_onepart))
+		sv newmem;set newmem realloc(pmem#,currentmaxsize)
+		if newmem=(NULL);return (EXIT_FAILURE);end
+		set pmem# newmem
+	end
+	if size<^newsize
+		add size pmem#
+		add newsize pmem#
+		while size!=newsize
+			set size# (NULL)
+			add size :
+		end
+	end
+	return (EXIT_SUCCESS)
+end

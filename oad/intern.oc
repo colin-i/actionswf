@@ -153,9 +153,9 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 	end
 end
 
-import "presprites_init" presprites_init
+import "presprite_init" presprite_init
 
-function loop(ss log,sd x,sd xx,sd logsize)
+function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		set global.xoffset 0
@@ -172,7 +172,11 @@ function loop(ss log,sd x,sd xx,sd logsize)
 				# empty: show/done
 				set p memnl(log,#next)
 				if log=p ##show ui16
-					call presprites_init(preid)
+					charx ok#1
+					set ok presprite_init(preid,ppresprites)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
 				else #done
 				end
 				set log next

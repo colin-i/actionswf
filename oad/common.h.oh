@@ -25,10 +25,10 @@ const mark_nothing=-1
 
 const sprites_realloc_onepart=10*:
 
-#function presprite() #presprites_size is intern
-#	valuexu preframe#1
-#	valuexu preframes#1
-#end
+function presprite() #presprites_size is intern
+	valuexu *preframe#1
+	valuexu *preframes#1
+end
 #function preframe()
 #	valuexu branch#1
 #	valuexu strings#1

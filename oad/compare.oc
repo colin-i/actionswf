@@ -55,12 +55,34 @@ function preoadata_free(sv presprites)
 		add global.presprites_size presprites
 		sv ps;set ps presprites
 		while ps!=global.presprites_size
+			if ps#!=(NULL)
+				call free(ps#)
+			end
+			incst ps
 		end
 		call free(presprites)
 	end
 end
 
-function presprites_init() #wordxu *preid) #sv *ppresprites
+import "re_alloc" re_alloc
+
+#                       wordxu preid
+function presprite_init(svu newpointer,sv ppresprites)
+	mult newpointer :
+	dataxu newsize#1;set newsize newpointer
+	add newsize :
+	charx ok#1;set ok re_alloc(ppresprites,global.presprites_size,newsize)
+	if ok=(EXIT_SUCCESS)
+		if newsize>^global.presprites_size   ##example: preid 0 after a sprite preid 2
+			set global.presprites_size newsize
+		end
+		add newpointer ppresprites#
+		set newpointer# malloc(\presprite\)
+		if newpointer#!=(NULL)
+			return (EXIT_SUCCESS)
+		end
+	end
+	return (EXIT_FAILURE)
 end
 
 entryraw global()

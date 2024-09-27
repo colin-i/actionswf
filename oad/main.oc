@@ -45,7 +45,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 					if exit=(EXIT_SUCCESS)
 						sv presprites;set exit preoadata_init(#presprites)
 						if exit=(EXIT_SUCCESS)
-							set exit loop(logcontent,xcontent,xxcontent,logsize)
+							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites)
 							if exit=(EXIT_SUCCESS)
 								set exit inter(swf_fullpath)
 							end

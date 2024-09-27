@@ -24,13 +24,23 @@ re:
 
 xlog=../include/xlog.
 
-subobjects=intern.o compare.o
+items=intern compare mem
+$(eval subobjects = )
+$(foreach var,$(items),$(eval subobjects += ${var}.o))
+$(eval sublogs = )
+$(foreach var,$(items),$(eval sublogs += ${var}.oc.log))
+$(eval subx = )
+$(foreach var,$(items),$(eval subx += ${var}.oc.x))
+$(eval subc = )
+$(foreach var,$(items),$(eval subc += ${var}.c))
+
+objects=main.o ${subobjects}
+${objects}: common.h
+common.h: oadbgdata.h ${xlog}h
 ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
-objects=main.o ${subobjects}
-${objects}: common.h oadbgdata.h
 ${libname}: main.o ${exte}
-	${OLINK} main.oc.log intern.oc.log
+	${OLINK} main.oc.log ${sublogs}
 	$(CC) ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
 # -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
 
@@ -44,22 +54,19 @@ ${libname}: main.o ${exte}
 	echo "orphan off" >> $@
 	cat $< >> $@
 %.h: %.oh
-	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
-	${OCOMP} $< ${OFLAGS}
+#	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
+	${OCOMP} $< ${OFLAGS} logfile 0
 	${OCONV} $<.x
 
 clean:
-	-rm -f common.oh.log common.oh.x common.oh common.h
-	-rm -f ${xlog}oh.log ${xlog}oh.x ${xlog}oh ${xlog}h
+	-rm -f common.oh              common.oh.x     common.h
+	-rm -f ${xlog}oh              ${xlog}oh.x     ${xlog}h
+	-rm -f oadbgdata.oh           oadbgdata.oh.x  oadbgdata.h
+	-rm -f ${objects} ${sublogs}  ${subx}         ${subc}
+	-rm -f            main.oc.log main.oc.x       main.c
+	-rm -f oadbgdatai.oh          oadbgdatai.oh.x oadbgdatai.h
 
-	-rm -f intern.o intern.oc.log intern.oc.x intern.c
-	-rm -f compare.o compare.oc.log compare.oc.x compare.c
-
-	-rm -f main.o main.oc.log main.oc.x main.c
 	-rm -f ${exte} ${libname}
-
-	-rm -f oadbgdatai.oh.log oadbgdatai.oh.x oadbgdatai.oh oadbgdatai.h
-	-rm -f oadbgdata.oh.log oadbgdata.oh.x oadbgdata.oh oadbgdata.h
 
 distclean: clean
 

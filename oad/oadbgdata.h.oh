@@ -11,11 +11,11 @@ end
 #	valuexu frames#1
 #end
 #function frame()
-#	valueu total#1
+#	valueu total#1    #big blank lines group
 #	valuexu lines#1
 #end
 #function line()
-#	valueu index#1
+#	valueu index#1    #same as lines total
 #	valuexu actions#1
 #end
 #function action()
