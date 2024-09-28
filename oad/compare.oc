@@ -50,13 +50,28 @@ function preoadata_init(sv ppresprites)
 	end
 	return (EXIT_FAILURE)
 end
-function preoadata_free(sv presprites)
+
+importx "puts" puts
+importx "printf" printf
+
+function preoadata_free(sv presprites,charx log)
 	if presprites!=(NULL)
+		wordxu preid#1
+		if log=(TRUE)
+			set preid 0 #0root 1-FFFF sprite/button
+			call puts("presprites:")
+		end
 		add global.presprites_size presprites
 		sv ps;set ps presprites
 		while ps!=global.presprites_size
 			sv pres;set pres ps#
 			if pres!=(NULL)
+				if log=(TRUE)
+					call printf("\t%hu\n",preid)
+					dataxu frames#1;set frames pres#:presprite.size
+					divu frames :
+					call printf("\t\tframes=%hu\n",frames)
+				end
 				if pres#:presprite.preframe!=(NULL)
 				end
 				if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
@@ -68,6 +83,9 @@ function preoadata_free(sv presprites)
 					call free(pres#:presprite.preframes)
 				end
 				call free(pres)
+			end
+			if log=(TRUE)
+				inc preid
 			end
 			incst ps
 		end
@@ -87,7 +105,7 @@ function presprite_init(svu newpointer,sv ppresprites)
 		add newpointer ppresprites#
 		if newsize>^global.presprites_size   ##example: preid 0 after a sprite preid 2
 			set global.presprites_size newsize
-		elseif newpointer#!=(NULL) #already opened this sprite already
+		elseif newpointer#!=(NULL) #already opened this sprite
 			return (EXIT_SUCCESS)
 		end
 		sv ps;set ps malloc(\presprite\)
@@ -96,7 +114,7 @@ function presprite_init(svu newpointer,sv ppresprites)
 			set ps#:presprite.preframe (NULL) #ainit/button
 
 			set ps#:presprite.preframes malloc((sprites_realloc_onepart))
-			if ps#:presprite.preframes!=(NULL) #can #ps#:presprite.preframes but will be trasfered to sprites, not another template call there
+			if ps#:presprite.preframes!=(NULL) #also can #ps#:presprite.preframes
 				set ps#:presprite.size 0
 				return (EXIT_SUCCESS)
 			end

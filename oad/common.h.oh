@@ -28,16 +28,16 @@ const sprites_realloc_onepart=10*:
 function presprite() #presprites_size is intern
 	valuexu preframe#1
 
-	valuexu preframes#1
 	dataxu  size#1     #same as parent, at button is extra, here are ui16 frames, copy sprites mechanism that is padded for debugger
+	valuexu preframes#1
 end
 #function preframe()
 #	valuexu branch#1
 #	valuexu strings#1
 #end
 #function branch()
-#	vdataxu x#1
 #	dataxu size#1
+#	vdataxu x#1
 
 #	valuexu subbranches#1
 

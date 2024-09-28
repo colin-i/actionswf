@@ -1,7 +1,7 @@
 
 function oadata()
-	valuexu sprites#1
 	dataxu sprites_size#1 ;#1(root)+ui16 *: ,for free
+	valuexu sprites#1
 
 	valuexu marks#1
 
@@ -13,8 +13,8 @@ end
 #	valuexu frames#1
 #end
 #function frame()
-#	valuexu lines#1
 #	valueu total#1    #big blank lines group
+#	valuexu lines#1
 #end
 #function line()
 #	valueu index#1    #same as lines total

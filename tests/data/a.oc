@@ -10,7 +10,7 @@ entry main(data srgc,sv argv)
 incst argv
 ss path;set path argv#
 sd oadata
-sd a;set a oadata_make(path,#oadata)
+sd a;set a oadata_make(path,#oadata,1)
 if a!=0;return a;end
 call oadata_free(oadata,1)
 set a oadata_ok(path)

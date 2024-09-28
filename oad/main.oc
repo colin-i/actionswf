@@ -18,7 +18,7 @@ import "preoadata_free" preoadata_free
 
 #functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
-functionx oadata_make(ss swf_fullpath,sv poadata)
+functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
@@ -50,7 +50,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata)
 								set exit inter(swf_fullpath)
 							end
 						end
-						call preoadata_free(presprites)
+						call preoadata_free(presprites,log)
 					end
 					if exit!=(EXIT_SUCCESS)
 						call oadata_free(poadata#,(FALSE)) #there are multiple mallocs in outinit
