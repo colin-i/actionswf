@@ -7,15 +7,15 @@ else
 conv_64=0
 endif
 
-SUBDIRS := src example
-# oad
+SUBDIRS := src example oad
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@ conv_64=${conv_64} $(MAKECMDGOALS)
 
 test:
-	cd tests && conv_64=${conv_64} /bin/bash ./as && conv_64=${conv_64} /bin/bash ./c 1 && cd ffdec && conv_64=${conv_64} /bin/bash ./as && echo tests ok
+	cd tests && conv_64=${conv_64} /bin/bash ./as && conv_64=${conv_64} /bin/bash ./c 1 && cd ffdec && conv_64=${conv_64} /bin/bash ./as && \
+	cd ../data && /bin/bash ./test && echo tests ok
 clean:
 	cd tests; /bin/bash ./c; cd ffdec; /bin/bash ./c; cd ../data; /bin/bash ./c
 install:

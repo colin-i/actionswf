@@ -1,2 +1,2 @@
 
-if [ -n "${1}" ]; then cd oad; make clean; cd ..; fi; make clean && git status
+make clean && git status

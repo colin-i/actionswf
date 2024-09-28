@@ -25,13 +25,13 @@ re:
 xlog=../include/xlog.
 
 items=intern compare mem
-$(eval subobjects = )
+#$(eval subobjects = )
 $(foreach var,$(items),$(eval subobjects += ${var}.o))
-$(eval sublogs = )
+#$(eval sublogs = )
 $(foreach var,$(items),$(eval sublogs += ${var}.oc.log))
-$(eval subx = )
+#$(eval subx = )
 $(foreach var,$(items),$(eval subx += ${var}.oc.x))
-$(eval subc = )
+#$(eval subc = )
 $(foreach var,$(items),$(eval subc += ${var}.c))
 
 objects=main.o ${subobjects}
@@ -74,8 +74,9 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} \
-		$(DESTDIR)$(prefix)/lib/${libname}
+	echo "not ready"
+#	install -D ${libname} \
+#		$(DESTDIR)$(prefix)/lib/${libname}
 
 install: all install-lib
 
