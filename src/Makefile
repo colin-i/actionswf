@@ -72,6 +72,9 @@ link:
 	fi
 #on 64 is mingw-w64-x86-64-dev
 
+#next phony will += , tested
+.PHONY: link
+
 else
 OFLAGS += underscore_pref 1
 #else ifeq (${conv_64},1)
@@ -156,7 +159,7 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
-.PHONY: all install install-lib clean distclean uninstall test
+.PHONY: all compile ounused def install install-lib clean distclean uninstall test
 
 .NOTPARALLEL:
 

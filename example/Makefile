@@ -103,7 +103,7 @@ uninstall:
 test:
 	diff ${sfile} expected.swf
 
-.PHONY: all install clean distclean uninstall test
+.PHONY: all build uns lib link exe install clean distclean uninstall test
 
 .NOTPARALLEL:
 
