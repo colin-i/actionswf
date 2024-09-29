@@ -20,13 +20,11 @@ function re_alloc(sv pmem,svu size,valueu newsize) #big at lines
 		if newmem=(NULL);return (EXIT_FAILURE);end
 		set pmem# newmem
 	end
-	if size<^newsize
-		add size pmem#
-		add newsize pmem#
-		while size!=newsize
-			set size# (NULL)
-			add size :
-		end
+	add size pmem#
+	add newsize pmem#
+	while size!=newsize
+		set size# (NULL)
+		add size :
 	end
 	return (EXIT_SUCCESS)
 end
