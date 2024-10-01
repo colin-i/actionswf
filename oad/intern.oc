@@ -155,7 +155,7 @@ end
 
 import "presprite_init" presprite_init
 
-function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
+function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		set global.xoffset 0
@@ -173,7 +173,7 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
 				# empty: show/done
 				set p memnl(log,#next)
 				if log=p ##show ui16
-					set ok presprite_init(preid,ppresprites,(from_show))
+					set ok presprite_init(preid,ppresprites,psprites,(from_show))
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
@@ -185,7 +185,7 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites)
 				end
 				set p memnl(log,#next)
 			else
-				set ok presprite_init(preid,ppresprites,(from_action))
+				set ok presprite_init(preid,ppresprites,psprites,(from_action))
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end

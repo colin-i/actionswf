@@ -42,11 +42,14 @@ function compare(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
-function preoadata_init(sv ppresprites)
+function preoadata_init(sv ppresprites,sv psprites)
 	set ppresprites# malloc((sprites_realloc_onepart))
 	if ppresprites#!=(NULL)
-		set global.presprites_size 0
-		return (EXIT_SUCCESS)
+		set psprites# malloc((sprites_realloc_onepart))
+		if psprites#!=(NULL)
+			set global.presprites_size 0
+			return (EXIT_SUCCESS)
+		end
 	end
 	return (EXIT_FAILURE)
 end
@@ -54,58 +57,65 @@ end
 importx "puts" puts
 importx "printf" printf
 
-function preoadata_free(sv presprites,charx log)
+function preoadata_free(sv presprites,sv sprites,charx log)
 	if presprites!=(NULL)
-		wordxu preid#1
-		if log=(TRUE)
-			set preid 0 #0root 1-FFFF sprite/button
-			call puts("presprites:")
-		end
-		add global.presprites_size presprites
-		sv ps;set ps presprites
-		while ps!=global.presprites_size
-			sv pres;set pres ps#
-			if pres!=(NULL)
-				if log=(TRUE)
-					call printf("\t%hu\n",preid)
-					dataxu frames#1;set frames pres#:presprite.size
-					divu frames :
-					call printf("\t\tframes=%hu\n",frames)
-				end
-				if pres#:presprite.preframe!=(NULL)
-				end
-				if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
-					sv pointer;set pointer pres#:presprite.preframes
-					sd end;set end pres#:presprite.size
-					add end pointer
-					while pointer!=end
-						if pointer#!=(NULL)
-						end
-						incst pointer
-					end
-					call free(pres#:presprite.preframes)
-				end
-				call free(pres)
-			end
+		if sprites!=(NULL)
+			wordxu preid#1
 			if log=(TRUE)
-				inc preid
+				set preid 0 #0root 1-FFFF sprite/button
+				call puts("presprites:")
 			end
-			incst ps
+			add global.presprites_size presprites
+			sv ps;set ps presprites
+			while ps!=global.presprites_size
+				sv pres;set pres ps#
+				if pres!=(NULL)
+					if log=(TRUE)
+						call printf("\t%hu\n",preid)
+						dataxu frames#1;set frames pres#:presprite.size
+						divu frames :
+						call printf("\t\tframes=%hu\n",frames)
+					end
+					if pres#:presprite.preframe!=(NULL)
+					end
+					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
+						sv pointer;set pointer pres#:presprite.preframes
+						sd end;set end pres#:presprite.size
+						add end pointer
+						while pointer!=end
+							if pointer#!=(NULL)
+							end
+							incst pointer
+						end
+						call free(pres#:presprite.preframes)
+					end
+					call free(pres)
+				end
+				if log=(TRUE)
+					inc preid
+				end
+				incst ps
+			end
+			call free(sprites)
+			call free(presprites)
 		end
-		call free(presprites)
 	end
 end
 
 import "re_alloc" re_alloc
 
 #                       wordxu preid
-function presprite_init(svu newpointer,sv ppresprites,charx type)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
 	charx ok#1
 	if global.presprites_size<^newsize   ##else example: preid 0 after a sprite preid 2
 		set ok re_alloc(ppresprites,global.presprites_size,newsize)
+		if ok!=(EXIT_SUCCESS)
+			return (EXIT_FAILURE)
+		end
+		set ok re_alloc(psprites,global.presprites_size,newsize) #and for sprites, but before sprite_done, with a preid
 		if ok!=(EXIT_SUCCESS)
 			return (EXIT_FAILURE)
 		end
