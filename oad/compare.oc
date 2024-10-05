@@ -67,6 +67,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 			end
 			add global.presprites_size presprites
 			sv ps;set ps presprites
+			sv s;set s sprites
 			while ps!=global.presprites_size
 				sv pres;set pres ps#
 				if pres!=(NULL)
@@ -88,6 +89,24 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 							incst pointer
 						end
 						call free(pres#:presprite.preframes)
+
+						sv sp;set sp s#
+						if sp!=(NULL) #and unfinished sprites
+							if sp#:sprite.frame!=(NULL)
+							end
+							if sp#:sprite.frames!=(NULL)
+								set pointer sp#:sprite.frames
+								set end sp#:sprite.size
+								add end pointer
+								while pointer!=end
+									if pointer#!=(NULL)
+									end
+									incst pointer
+								end
+								call free(sp#:sprite.frames)
+							end
+							call free(sp)
+						end
 					end
 					call free(pres)
 				end
@@ -95,6 +114,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 					inc preid
 				end
 				incst ps
+				incst s
 			end
 			call free(sprites)
 			call free(presprites)
@@ -122,6 +142,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 		set global.presprites_size newsize
 	end
 	sv ps;sv pf
+	sv s;sv f
 	add newpointer ppresprites#
 	if newpointer#!=(NULL) #already opened this sprite
 		if type=(from_show)
@@ -134,6 +155,16 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 				return (EXIT_FAILURE)
 			end
 			set ps#:presprite.size newsize
+
+			sub newpointer ppresprites#
+			add newpointer psprites#
+			set s newpointer# #is not done and moved, normally
+			set f s#:sprite.frames
+			set ok re_alloc(#s#:sprite.frames,s#:sprite.size,newsize)
+			if ok!=(EXIT_SUCCESS)
+				return (EXIT_FAILURE)
+			end
+			set s#:sprite.size newsize  ##set this size at move time? still extra code to reset ps size if not ok at s
 		end
 		return (EXIT_SUCCESS)
 	end
@@ -141,18 +172,37 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 	if ps!=(NULL)
 		set newpointer# ps
 		set ps#:presprite.preframe (NULL) #ainit/button
-
 		set ps#:presprite.preframes malloc((sprites_realloc_onepart))
 		set pf ps#:presprite.preframes
 		if pf!=(NULL)
 			set pf# (NULL)
 			set ps#:presprite.size :
-			if type=(from_show)
-				incst pf
-				set pf# (NULL)
-				add ps#:presprite.size :
+
+			#and for sprites
+			set s malloc(\sprite\)
+			if s!=(NULL)
+				sub newpointer ppresprites#
+				add newpointer psprites#
+				set newpointer# s
+				set s#:sprite.frame (NULL) #ainit/button
+				set s#:sprite.frames malloc((sprites_realloc_onepart))
+				set f s#:sprite.frames
+				if f!=(NULL)
+					set f# (NULL)
+					set s#:sprite.size :
+
+					if type=(from_show)
+						incst pf
+						set pf# (NULL)
+						add ps#:presprite.size :
+
+						incst f
+						set f# (NULL)
+						add s#:sprite.size :
+					end
+					return (EXIT_SUCCESS)
+				end
 			end
-			return (EXIT_SUCCESS)
 		end
 	end
 	return (EXIT_FAILURE)
