@@ -208,4 +208,30 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 	return (EXIT_FAILURE)
 end
 
+function presprite_done(sv sprites,wordxu preid,wordxu id,sv data)
+	sv pointer=:
+	mult pointer preid
+	if pointer<^global.presprites_size  ##can be a done with no action/show
+		add pointer sprites
+		if pointer#!=(NULL)     #same
+			sv destination=:
+			mult destination id
+			add destination :   #for size comparison
+			if destination>^data#:oadata.sprites_size
+				charx ok#1
+				set ok re_alloc(#data#:oadata.sprites,data#:oadata.sprites_size,destination)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
+				set data#:oadata.sprites_size destination
+			end
+			sub destination :
+			add destination data#:oadata.sprites
+			set destination# pointer#
+			set pointer# (NULL)
+		end
+	end
+	return (EXIT_SUCCESS)
+end
+
 entryraw global()

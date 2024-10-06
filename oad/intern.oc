@@ -154,8 +154,9 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 end
 
 import "presprite_init" presprite_init
+import "presprite_done" presprite_done
 
-function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites)
+function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		set global.xoffset 0
@@ -177,7 +178,13 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
-				else #done, here for sprite, already opened or ignore it
+				else #done, here for sprite, already opened or ignore it (no action/show)
+					wordxu id#1
+					set id memdec(log,p) #[log,p) ui16
+					set ok presprite_done(psprites#,preid,id,data)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
 				end
 				set log next
 				if log=logsize

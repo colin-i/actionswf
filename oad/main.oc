@@ -15,6 +15,7 @@ import "inter" inter
 import "oadata_init" oadata_init
 import "preoadata_init" preoadata_init
 import "preoadata_free" preoadata_free
+import "presprite_done" presprite_done
 
 #functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
@@ -47,8 +48,9 @@ functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 						sv sprites   ;#these will be filled before sprite done
 						set exit preoadata_init(#presprites,#sprites)
 						if exit=(EXIT_SUCCESS)
-							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites,#sprites)
+							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites,#sprites,poadata#)
 							if exit=(EXIT_SUCCESS)
+								call presprite_done(sprites,0,0,poadata#) #root has not a done(0 to 0) in .log
 								set exit inter(swf_fullpath)
 							end
 						end
@@ -124,7 +126,20 @@ functionx oadata_free(sv data,charx log)
 			sv s;set s sprites
 			sv end;set end data#:oadata.sprites_size
 			add end s
+			if log=(TRUE)
+				call puts("sprites:")
+			end
 			while s!=end
+				if s#!=(NULL)
+					if log=(TRUE)
+						sv id;set id s
+						sub id sprites
+						divu id :
+						call printf("\tid=%hu\n",id)
+					end
+					call free(s#)
+				end
+				incst s
 			end
 			call free(sprites)
 
@@ -133,7 +148,7 @@ functionx oadata_free(sv data,charx log)
 				if log=(TRUE)
 					call puts("mark struct:")
 					sd m;set m marks
-					datau i=0
+					dataxu i#1;set i 0
 					whiletrue
 						datax next#1;set next m#:mark.next
 						call printf("\t%u\n\t\t%d\n\t\t%d\n",i,m#:mark.prev,next)
