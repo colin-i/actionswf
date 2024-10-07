@@ -165,15 +165,18 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				return (EXIT_FAILURE)
 			end
 			set s#:sprite.size newsize  ##set this size at move time? still extra code to reset ps size if not ok at s
+		else
+			if ainit=(xlog_ainit_true) #ainit/button
+			end
 		end
 		return (EXIT_SUCCESS)
 	end
 	set ps malloc(\presprite\)
 	if ps!=(NULL)
 		set newpointer# ps
-		set ps#:presprite.preframe (NULL) #ainit/button
+		set ps#:presprite.preframe (NULL)
 		if type=(from_action)
-			if ainit=(xlog_ainit_true)
+			if ainit=(xlog_ainit_true) #ainit/button
 			end
 		end
 		set ps#:presprite.preframes malloc((sprites_realloc_onepart))
@@ -188,7 +191,11 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				sub newpointer ppresprites#
 				add newpointer psprites#
 				set newpointer# s
-				set s#:sprite.frame (NULL) #ainit/button
+				set s#:sprite.frame (NULL)
+				if type=(from_action)
+					if ainit=(xlog_ainit_true) #ainit/button
+					end
+				end
 				set s#:sprite.frames malloc((sprites_realloc_onepart))
 				set f s#:sprite.frames
 				if f!=(NULL)
