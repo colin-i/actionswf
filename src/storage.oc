@@ -347,12 +347,12 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		set pframes swf_sprite_frames_pointer(id)
 		set frames word_arg_to_stack(pframes)
 
-		#call is_ainit((TRUE)) this is not similiar with DoAction, has spriteid and only once per swf, and ffdec is forgetting the sprite id
+		#call is_ainit((xlog_ainit_true)) this is not similiar with DoAction, has spriteid and only once per swf, and ffdec is forgetting the sprite id
 		# and, at ruffle, can add in multiple frames, but are executed all at once before any frames, and "this" is level0 for all
 		#then, this at done
 
 		sd sz
-		call is_ainit((FALSE))
+		call is_ainit((xlog_ainit_false))
 		set sz done_action(id,frames)
 
 		if arg=(from_show) #example: two action() and one show here

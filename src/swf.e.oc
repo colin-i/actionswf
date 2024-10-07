@@ -426,12 +426,12 @@ base swf_new.bp;call ebase(swf_new.bp)
     call swf_mem_add(mem,size)
 
 	#if is, add DoInitAction in timeline
-	call is_ainit((TRUE))
+	call is_ainit((xlog_ainit_true))
 	import "done_action_one" done_action_one
 	call done_action_one(spriteid,id)
 	call free_sprite_id_actions(spriteid)
 
-	call is_ainit((FALSE))
+	call is_ainit((xlog_ainit_false))
 	call free_sprite_id(spriteid,id)
 
     return id

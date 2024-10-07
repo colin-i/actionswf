@@ -523,9 +523,9 @@ function struct_ids(sd proc,sd id)
 			sub pointer :
 			if pointer#!=(NULL)
 				call free(pointer#)
-				call is_ainit((FALSE)) #is first, at button is the only one
+				call is_ainit((xlog_ainit_false)) #is first, at button is the only one
 				call struct_ids_free(counter)
-				call is_ainit((TRUE))
+				call is_ainit((xlog_ainit_true))
 				call struct_ids_free(counter)
 			endif
 		endwhile
@@ -583,7 +583,7 @@ function struct_ids_action(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(FALSE)
+	if is_ainit.b=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)
@@ -594,7 +594,7 @@ function struct_ids_actionpool(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(FALSE)
+	if is_ainit.b=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)
@@ -605,7 +605,7 @@ function struct_ids_actionpool_filter(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(FALSE)
+	if is_ainit.b=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)

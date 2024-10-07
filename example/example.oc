@@ -25,6 +25,8 @@ setcall shape swf_shape_basic((shape_lat),(shape_lat),0xffeeFEff,0x11FF22ff)
 sd movie_preid
 setcall movie_preid swf_sprite_new()
 
+call action_init_sprite(movie_preid,"_root.tog=1")
+
 call swf_sprite_placeobject(movie_preid,shape,1)
 call swf_sprite_showframe(movie_preid)
 
@@ -50,6 +52,22 @@ setcall movie swf_sprite_done(movie_preid)
 
 call swf_exports_add(movie,"movie")
 call swf_exports_done()
+
+sd f;set f swf_font_basic("_sans")
+char ButtonData_a="Toggle"
+data ButtonData={0x11FF11ff,10,0x11FF1188, 0xaa1122ff,10,0xaa112288, 0x1122FFff,10,0x1122FF88, 24,24}
+vstr *^ButtonData_a
+data ButtonData_c#1;set ButtonData_c f;data *=20
+data *vert_off=-5
+data *font_color=0xff
+vstr ButtonData_d#1;set ButtonData_d "
+if(_root.tog==1){
+	_root.tog=0;_root._movie.stop()
+}else{
+	_root.tog=1;_root._movie.play()
+}"
+sd b;set b swf_button(150,50,#ButtonData)
+call swf_placeobject(b,0)
 
 call action("
 var x_coef=1;

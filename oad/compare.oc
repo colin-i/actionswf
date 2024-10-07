@@ -125,7 +125,7 @@ end
 import "re_alloc" re_alloc
 
 #                       wordxu preid
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -172,6 +172,10 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type)
 	if ps!=(NULL)
 		set newpointer# ps
 		set ps#:presprite.preframe (NULL) #ainit/button
+		if type=(from_action)
+			if ainit=(xlog_ainit_true)
+			end
+		end
 		set ps#:presprite.preframes malloc((sprites_realloc_onepart))
 		set pf ps#:presprite.preframes
 		if pf!=(NULL)

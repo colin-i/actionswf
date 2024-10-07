@@ -192,13 +192,14 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 				set p memnl(log,#next)
 			else
-				set ok presprite_init(preid,ppresprites,psprites,(from_action))
+				#ainit
+				charx ainit#1;set ainit memdec(log,p) #[log,p) 0/1
+				set log next
+
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
-
-				#ainit
-				set log next
 
 				#linesnr
 				set p memnl(log,#next)
