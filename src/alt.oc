@@ -71,7 +71,7 @@ function alt_action_base(sd orig_action,sd preid,sd has_frames)
 		whiletrue
 			if has_frames=(TRUE)
 				sd ai;set ai ainit()
-				if ai=(FALSE)
+				if ai=(xlog_ainit_false)
 					sw p
 					#if preid!=0
 					set p swf_sprite_frames_pointer(preid)
