@@ -9,15 +9,15 @@ function oadata()
 	valuexu functions#1
 end
 function sprite()
-	valuexu frame#1
+	valuexu aframe#1
 
 	dataxu size#1    #same as presprite. for free
 	valuexu frames#1
 end
-#function frame()
-#	valueu total#1    #big blank lines group
-#	valuexu lines#1
-#end
+function frame()
+	valueu *total#1    #big blank lines group
+	valuexu *lines#1
+end
 #function line()
 #	valueu index#1    #same as lines total
 #	valuexu actions#1

@@ -119,6 +119,8 @@ end
 importx "puts" puts
 importx "printf" printf
 
+import "sprite_free" sprite_free
+
 functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
 		sv sprites;set sprites data#:oadata.sprites
@@ -130,14 +132,10 @@ functionx oadata_free(sv data,charx log)
 				call puts("sprites:")
 			end
 			while s!=end
-				if s#!=(NULL)
-					if log=(TRUE)
-						sv id;set id s
-						sub id sprites
-						divu id :
-						call printf("\tid=%hu\n",id)
-					end
-					call free(s#)
+				if log=(FALSE)
+					call sprite_free(s,(NULL))
+				else
+					call sprite_free(s,sprites)
 				end
 				incst s
 			end

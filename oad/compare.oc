@@ -42,6 +42,33 @@ function compare(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
+function sprite_free(sv s,sv start)
+	sv sp;set sp s#
+	if sp!=(NULL)
+		if start!=(NULL)
+			sub s start
+			divu s :
+			call printf("\tid=%hu\n",s)
+		end
+		if sp#:sprite.aframe!=(NULL)
+			call free(sp#:sprite.aframe)
+		end
+		if sp#:sprite.frames!=(NULL)
+			sv pointer;sd end
+			set pointer sp#:sprite.frames
+			set end sp#:sprite.size
+			add end pointer
+			while pointer!=end
+				if pointer#!=(NULL)
+				end
+				incst pointer
+			end
+			call free(sp#:sprite.frames)
+		end
+		call free(sp)
+	end
+end
+
 function preoadata_init(sv ppresprites,sv psprites)
 	set ppresprites# malloc((sprites_realloc_onepart))
 	if ppresprites#!=(NULL)
@@ -77,7 +104,8 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						divu frames :
 						call printf("\t\tframes=%hu\n",frames)
 					end
-					if pres#:presprite.preframe!=(NULL)
+					if pres#:presprite.apreframe!=(NULL)
+						call free(pres#:presprite.apreframe)
 					end
 					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
 						sv pointer;set pointer pres#:presprite.preframes
@@ -90,23 +118,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						end
 						call free(pres#:presprite.preframes)
 
-						sv sp;set sp s#
-						if sp!=(NULL) #and unfinished sprites
-							if sp#:sprite.frame!=(NULL)
-							end
-							if sp#:sprite.frames!=(NULL)
-								set pointer sp#:sprite.frames
-								set end sp#:sprite.size
-								add end pointer
-								while pointer!=end
-									if pointer#!=(NULL)
-									end
-									incst pointer
-								end
-								call free(sp#:sprite.frames)
-							end
-							call free(sp)
-						end
+						call sprite_free(s,(NULL)) #and unfinished sprites, here is after an error
 					end
 					call free(pres)
 				end
@@ -166,7 +178,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 			end
 			set s#:sprite.size newsize  ##set this size at move time? still extra code to reset ps size if not ok at s
 		else
-			if ainit=(xlog_ainit_true) #ainit/button
+			if ainit=(xlog_ainit_true) #ainit/button , here is multiple action call, not after oalt
 			end
 		end
 		return (EXIT_SUCCESS)
@@ -174,9 +186,10 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 	set ps malloc(\presprite\)
 	if ps!=(NULL)
 		set newpointer# ps
-		set ps#:presprite.preframe (NULL)
+		set ps#:presprite.apreframe (NULL)
 		if type=(from_action)
 			if ainit=(xlog_ainit_true) #ainit/button
+				set ps#:presprite.apreframe malloc((\preframe\))
 			end
 		end
 		set ps#:presprite.preframes malloc((sprites_realloc_onepart))
@@ -191,9 +204,10 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				sub newpointer ppresprites#
 				add newpointer psprites#
 				set newpointer# s
-				set s#:sprite.frame (NULL)
+				set s#:sprite.aframe (NULL)
 				if type=(from_action)
 					if ainit=(xlog_ainit_true) #ainit/button
+						set s#:sprite.aframe malloc((\frame\))
 					end
 				end
 				set s#:sprite.frames malloc((sprites_realloc_onepart))
