@@ -1,3 +1,9 @@
+actionswf (1-102) bionic; urgency=medium
+
+  * same(with fix)
+
+ -- bc <bc@bc-desktop>  Sun, 13 Oct 2024 15:02:00 +0300
+
 actionswf (1-101) bionic; urgency=medium
 
   * button xlog_ainit_true
