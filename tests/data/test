@@ -1,5 +1,5 @@
 
-set -o pipefail && ./a | tee data.txt || exit 1
+set -o pipefail && /bin/bash ./a | tee data.txt || exit 1
 diff ../.expected/data.txt data.txt
 if [ $? = 0 ]; then
 	rm data.txt

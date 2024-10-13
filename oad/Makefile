@@ -47,7 +47,8 @@ ${libname}: main.o ${exte}
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
-	$(CC) -c -w ${compilerflags} $*.c
+	$(CC) -c -w -fPIC ${compilerflags} $*.c
+#-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
 %.oh: %.h.oh
 	echo "format elfobj64" > $@
