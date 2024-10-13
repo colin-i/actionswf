@@ -42,7 +42,7 @@ doaction () {
 	to=${1}
 	shift
 	if [ ${#@} = 0 ]; then
-		return 1
+		return #is empty
 	fi
 	for var in "${@}"; do
 		f=`echo ${var} | grep -o "frame_.*/"`   #/ is important to stop the search
@@ -50,7 +50,6 @@ doaction () {
 		f=${to}_${f:6}
 		move ${var} ../${out}/${f}
 	done
-	return 0
 }
 new_tag () {
 	s=${p}
