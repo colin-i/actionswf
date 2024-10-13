@@ -332,7 +332,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		sd p_poolid;setcall p_poolid actionpoolid();set p_poolid# id
 		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
 
-		call struct_ids_action_set(id,(FALSE)) #see at part_done call struct_ids_action_set(id,(TRUE))
+		call struct_ids_action_set(id,(xlog_ainit_false)) #see at part_done call struct_ids_action_set(id,(TRUE))
 		import "pool_read" pool_read
 		callg pool_read(id,0)
 
@@ -409,7 +409,7 @@ endfunction
 function new_sprite_id()
 	sd id
 	setcall id def_mem()
-	call struct_ids_action_set(id,(FALSE)) #at button and normal sprite
+	call struct_ids_action_set(id,(xlog_ainit_true)) #at button and normal sprite
 	return id
 endfunction
 

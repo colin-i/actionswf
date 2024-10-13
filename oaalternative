@@ -80,24 +80,24 @@ while read p; do
 			else
 			#done
 				if [ -n "${isdebug}" ]; then echo finalId = ${p}; fi
-				if [ "${ainits[${s}]}" = 1 ]; then #this sprite has a DoInitAction tag
-					if [ ${ainits_counter} != 1 ]; then
-						ainits_file="_${ainits_counter}.as"
-					else
-						ainits_file=".as"
-					fi
-					f=`find -name DoInitAction${ainits_file}`
-					move  ${f} ../${out}/${s}
-					ainits_counter=$((ainits_counter+1))
-				fi
-				doaction ${s} `find -name DoAction.as | grep "DefineSprite_${p}_movie"` || {
-					f=`find -name "BUTTONCONDACTION on(release).as" | grep "DefineButton2_${p}"` # | xargs -I {} echo "\"{}\""`; doaction ${s} "${f}" #double escape the quotes
+				if [ "${ainits[${s}]}" = 1 ]; then #button or DoInitAction sprite
+					f=`find -name "BUTTONCONDACTION on(release).as" | grep "DefineButton2_${p}"`
 					if [ -n "${f}" ]; then #is a button
 						d=../${out}/${s}
 						move "${f}" ${d}
 						sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
-					fi #else is empty
-				}
+					else #sprite init
+						if [ ${ainits_counter} != 1 ]; then
+							ainits_file="_${ainits_counter}.as"
+						else
+							ainits_file=".as"
+						fi
+						f=`find -name DoInitAction${ainits_file}`
+						move  ${f} ../${out}/${s}
+						ainits_counter=$((ainits_counter+1))
+					fi
+				fi
+				doaction ${s} `find -name DoAction.as | grep "DefineSprite_${p}_movie"`  #else is empty
 			fi
 			s=
 		else

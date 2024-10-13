@@ -444,10 +444,10 @@ base swf_new.bp;call ebase(swf_new.bp)
     sd id
     setcall id new_sprite_id()
 	import "pool_read" pool_read
-	call pool_read(id,0)
-	import "struct_ids_action_set" struct_ids_action_set
-	call struct_ids_action_set(id,(TRUE))
 	call pool_read(id,-1)
+	import "struct_ids_action_set" struct_ids_action_set
+	call struct_ids_action_set(id,(xlog_ainit_false))
+	call pool_read(id,0)
     call swf_mem((mem_exp_change),id)
     sd reserve;#set later
     call swf_mem_add(#reserve,2)

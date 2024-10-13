@@ -84,6 +84,8 @@ end
 importx "puts" puts
 importx "printf" printf
 
+import "preframe_free" preframe_free
+
 function preoadata_free(sv presprites,sv sprites,charx log)
 	if presprites!=(NULL)
 		if sprites!=(NULL)
@@ -105,7 +107,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						call printf("\t\tframes=%hu\n",frames)
 					end
 					if pres#:presprite.apreframe!=(NULL)
-						call free(pres#:presprite.apreframe)
+						call preframe_free(pres#:presprite.apreframe)
 					end
 					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
 						sv pointer;set pointer pres#:presprite.preframes
@@ -135,6 +137,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 end
 
 import "re_alloc" re_alloc
+import "preframe_init" preframe_init
 
 #                       wordxu preid
 function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit)
@@ -187,9 +190,13 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 	if ps!=(NULL)
 		set newpointer# ps
 		set ps#:presprite.apreframe (NULL)
+		set ps#:presprite.preframes (NULL)
 		if type=(from_action)
 			if ainit=(xlog_ainit_true) #ainit/button
-				set ps#:presprite.apreframe malloc((\preframe\))
+				set ps#:presprite.apreframe preframe_init()
+				if ps#:presprite.apreframe=(NULL)
+					return (EXIT_FAILURE)
+				end
 			end
 		end
 		set ps#:presprite.preframes malloc((sprites_realloc_onepart))
@@ -205,9 +212,13 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				add newpointer psprites#
 				set newpointer# s
 				set s#:sprite.aframe (NULL)
+				set s#:sprite.frames (NULL)
 				if type=(from_action)
 					if ainit=(xlog_ainit_true) #ainit/button
 						set s#:sprite.aframe malloc((\frame\))
+						if s#:sprite.aframe=(NULL)
+							return (EXIT_FAILURE)
+						end
 					end
 				end
 				set s#:sprite.frames malloc((sprites_realloc_onepart))

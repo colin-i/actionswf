@@ -24,7 +24,7 @@ re:
 
 xlog=../include/xlog.
 
-items=intern compare mem
+items=intern compare frame
 #$(eval subobjects = )
 $(foreach var,$(items),$(eval subobjects += ${var}.o))
 #$(eval sublogs = )

@@ -523,9 +523,9 @@ function struct_ids(sd proc,sd id)
 			sub pointer :
 			if pointer#!=(NULL)
 				call free(pointer#)
-				call is_ainit((xlog_ainit_false)) #is first, at button is the only one
+				call is_ainit((xlog_ainit_false)) #at root is the only one
 				call struct_ids_free(counter)
-				call is_ainit((xlog_ainit_true))
+				call is_ainit((xlog_ainit_true))  #at button is the only one
 				call struct_ids_free(counter)
 			endif
 		endwhile

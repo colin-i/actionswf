@@ -28,3 +28,39 @@ function re_alloc(sv pmem,svu size,valueu newsize) #big at lines
 	end
 	return (EXIT_SUCCESS)
 end
+
+importx "malloc" malloc
+importx "free" free
+
+function preframe_init()
+	sv pf;set pf malloc((\preframe\))
+	if pf!=(NULL)
+		valueu bra#1
+		set bra malloc((\branch\))
+		if bra!=(NULL)
+			sv strings
+			set strings malloc((sprites_realloc_onepart))
+			if strings!=(NULL)
+				set pf#:preframe.abranch bra
+				set pf#:preframe.strings strings
+				set pf#:preframe.size 0
+				return pf
+			end
+			call free(bra)
+		end
+		call free(pf)
+	end
+	return (NULL)
+end
+function preframe_free(sv pf)
+	call free(pf#:preframe.abranch)
+	sv strings;set strings pf#:preframe.strings
+	sv s;set s strings
+	sv end;set end pf#:preframe.size
+	mult end :
+	add end s
+	while s!=end
+	end
+	call free(strings)
+	call free(pf)
+end
