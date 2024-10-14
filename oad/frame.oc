@@ -57,10 +57,33 @@ function preframe_free(sv pf)
 	sv strings;set strings pf#:preframe.strings
 	sv s;set s strings
 	sv end;set end pf#:preframe.size
-	mult end :
 	add end s
 	while s!=end
 	end
 	call free(strings)
 	call free(pf)
+end
+
+function frame_init()
+	sv f;set f malloc((\frame\))
+	if f!=(NULL)
+		sv lines;set lines malloc((sprites_realloc_onepart))
+		if lines!=(NULL)
+			set f#:frame.lines lines
+			set f#:frame.total 0
+			return f
+		end
+		call free(f)
+	end
+	return (NULL)
+end
+function frame_free(sv f)
+	sv line;set line f#:frame.lines
+	valueu end#1;set end f#:frame.total
+	mult end :
+	add end line
+	while line!=end
+	end
+	call free(line)
+	call free(f)
 end

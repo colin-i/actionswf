@@ -15,8 +15,8 @@ function sprite()
 	valuexu frames#1
 end
 function frame()
-	valueu *total#1    #big blank lines group
-	valuexu *lines#1
+	valueu total#1    #if outside is command like, break 100 from only 50 will fast tell if is an error. and with this occasion, for free
+	valuexu lines#1
 end
 #function line()
 #	valueu index#1    #same as lines total

@@ -42,6 +42,8 @@ function compare(ss swf_fullpath)
 	return (EXIT_FAILURE)
 end
 
+import "frame_free" frame_free
+
 function sprite_free(sv s,sv start)
 	sv sp;set sp s#
 	if sp!=(NULL)
@@ -51,7 +53,7 @@ function sprite_free(sv s,sv start)
 			call printf("\tid=%hu\n",s)
 		end
 		if sp#:sprite.aframe!=(NULL)
-			call free(sp#:sprite.aframe)
+			call frame_free(sp#:sprite.aframe)
 		end
 		if sp#:sprite.frames!=(NULL)
 			sv pointer;sd end
@@ -138,6 +140,7 @@ end
 
 import "re_alloc" re_alloc
 import "preframe_init" preframe_init
+import "frame_init" frame_init
 
 #                       wordxu preid
 function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit)
@@ -215,7 +218,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				set s#:sprite.frames (NULL)
 				if type=(from_action)
 					if ainit=(xlog_ainit_true) #ainit/button
-						set s#:sprite.aframe malloc((\frame\))
+						set s#:sprite.aframe frame_init()
 						if s#:sprite.aframe=(NULL)
 							return (EXIT_FAILURE)
 						end
