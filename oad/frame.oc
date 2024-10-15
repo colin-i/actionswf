@@ -81,12 +81,17 @@ function frame_init(valueu total)
 	end
 	return (NULL)
 end
-function frame_free(sv f,valueu pointer_is_log)
+function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	sv lines;set lines f#:frame.lines
 	sv pointer;set pointer lines
 	valueu end#1;set end f#:frame.total
 	if pointer_is_log!=(NULL)
-		call printf("\t\tlines=%lu\n",end)
+		if ainit=(xlog_ainit_true)
+			call printf("\t\tframe")
+		else
+			call printf("\t\tinit")
+		end
+		call printf("\n\t\t\tlines=%lu\n",end)
 	end
 	mult end (\line\)
 	add end pointer

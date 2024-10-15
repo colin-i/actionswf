@@ -53,7 +53,7 @@ function sprite_free(sv s,sv start) #log is start != null
 			call printf("\tid=%hu\n",s)
 		end
 		if sp#:sprite.aframe!=(NULL)
-			call frame_free(sp#:sprite.aframe,start)
+			call frame_free(sp#:sprite.aframe,start,(xlog_ainit_true))
 		end
 		if sp#:sprite.frames!=(NULL)
 			sv pointer;sd end
@@ -62,6 +62,7 @@ function sprite_free(sv s,sv start) #log is start != null
 			add end pointer
 			while pointer!=end
 				if pointer#!=(NULL)
+					call frame_free(pointer#,start,(xlog_ainit_false))
 				end
 				incst pointer
 			end
@@ -238,6 +239,8 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 						incst f
 						set f# (NULL)
 						add s#:sprite.size :
+					elseif ainit=(xlog_ainit_false)  #here is the case when first frame has action (a popular case)
+						set f# frame_init(linestotal)
 					end
 					return (EXIT_SUCCESS)
 				end

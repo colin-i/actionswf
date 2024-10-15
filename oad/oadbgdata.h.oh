@@ -11,7 +11,7 @@ end
 function sprite()
 	valuexu aframe#1
 
-	dataxu size#1    #same as presprite. for free
+	dataxu size#1    #same as presprite. for free, and when adding at last frame
 	valuexu frames#1
 end
 function frame()
