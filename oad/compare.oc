@@ -44,7 +44,7 @@ end
 
 import "frame_free" frame_free
 
-function sprite_free(sv s,sv start)
+function sprite_free(sv s,sv start) #log is start != null
 	sv sp;set sp s#
 	if sp!=(NULL)
 		if start!=(NULL)
@@ -53,7 +53,7 @@ function sprite_free(sv s,sv start)
 			call printf("\tid=%hu\n",s)
 		end
 		if sp#:sprite.aframe!=(NULL)
-			call frame_free(sp#:sprite.aframe)
+			call frame_free(sp#:sprite.aframe,start)
 		end
 		if sp#:sprite.frames!=(NULL)
 			sv pointer;sd end
@@ -143,7 +143,7 @@ import "preframe_init" preframe_init
 import "frame_init" frame_init
 
 #                       wordxu preid
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -218,7 +218,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				set s#:sprite.frames (NULL)
 				if type=(from_action)
 					if ainit=(xlog_ainit_true) #ainit/button
-						set s#:sprite.aframe frame_init()
+						set s#:sprite.aframe frame_init(linestotal)
 						if s#:sprite.aframe=(NULL)
 							return (EXIT_FAILURE)
 						end

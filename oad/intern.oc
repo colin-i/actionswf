@@ -198,10 +198,10 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 
 				#linesnr
 				set p memnl(log,#next)
-				value linesnr#1;set linesnr memdec(log,p)
+				valueu linesnr#1;set linesnr memdec(log,p)
 				set log next
 
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit)#,linesnr
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end

@@ -64,26 +64,35 @@ function preframe_free(sv pf)
 	call free(pf)
 end
 
-function frame_init()
+importx "printf" printf
+
+function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
 	if f!=(NULL)
-		sv lines;set lines malloc((sprites_realloc_onepart))
+		valueu size#1;set size (\line\)
+		mult size (\line\)
+		sv lines;set lines malloc(size)
 		if lines!=(NULL)
 			set f#:frame.lines lines
-			set f#:frame.total 0
+			set f#:frame.total total
 			return f
 		end
 		call free(f)
 	end
 	return (NULL)
 end
-function frame_free(sv f)
-	sv line;set line f#:frame.lines
+function frame_free(sv f,valueu pointer_is_log)
+	sv lines;set lines f#:frame.lines
+	sv pointer;set pointer lines
 	valueu end#1;set end f#:frame.total
-	mult end :
-	add end line
-	while line!=end
+	if pointer_is_log!=(NULL)
+		call printf("\t\tlines=%lu\n",end)
 	end
-	call free(line)
+	mult end (\line\)
+	add end pointer
+	while pointer!=end
+		add pointer (\line\)
+	end
+	call free(lines)
 	call free(f)
 end
