@@ -108,3 +108,12 @@ function frame_print_top(charx ainit)
 		call printf("\t\tinit\n")
 	end
 end
+
+function nframe_init(sv pf,valueu total)
+	set pf# preframe_init()
+	if pf#!=(NULL)
+		valueu f#1;set f frame_init(total)
+		return f
+	end
+	return (NULL)
+end
