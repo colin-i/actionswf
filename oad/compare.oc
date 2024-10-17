@@ -110,7 +110,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						call printf("\t\tframes=%hu\n",frames)
 					end
 					if pres#:presprite.apreframe!=(NULL)
-						call preframe_free(pres#:presprite.apreframe)
+						call preframe_free(pres#:presprite.apreframe,log,(xlog_ainit_true))
 					end
 					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
 						sv pointer;set pointer pres#:presprite.preframes
@@ -118,6 +118,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						add end pointer
 						while pointer!=end
 							if pointer#!=(NULL)
+								call preframe_free(pointer#,log,(xlog_ainit_false))
 							end
 							incst pointer
 						end
@@ -240,7 +241,14 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 						set f# (NULL)
 						add s#:sprite.size :
 					elseif ainit=(xlog_ainit_false)  #here is the case when first frame has action (a popular case)
-						set f# frame_init(linestotal)
+						set pf# preframe_init()
+						if pf#!=(NULL)
+							set f# frame_init(linestotal)
+							if f#!=(NULL)
+								return (EXIT_SUCCESS)
+							end
+						end
+						return (EXIT_FAILURE)
 					end
 					return (EXIT_SUCCESS)
 				end

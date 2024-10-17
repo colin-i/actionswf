@@ -52,7 +52,10 @@ function preframe_init()
 	end
 	return (NULL)
 end
-function preframe_free(sv pf)
+function preframe_free(sv pf,charx log,charx ainit)
+	if log=(TRUE)
+		call frame_print_top(ainit)
+	end
 	call free(pf#:preframe.abranch)
 	sv strings;set strings pf#:preframe.strings
 	sv s;set s strings
@@ -86,12 +89,8 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	sv pointer;set pointer lines
 	valueu end#1;set end f#:frame.total
 	if pointer_is_log!=(NULL)
-		if ainit=(xlog_ainit_true)
-			call printf("\t\tframe")
-		else
-			call printf("\t\tinit")
-		end
-		call printf("\n\t\t\tlines=%lu\n",end)
+		call frame_print_top(ainit)
+		call printf("\t\t\tlines=%lu\n",end)
 	end
 	mult end (\line\)
 	add end pointer
@@ -100,4 +99,12 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	end
 	call free(lines)
 	call free(f)
+end
+
+function frame_print_top(charx ainit)
+	if ainit=(xlog_ainit_false)
+		call printf("\t\tframe\n")
+	else
+		call printf("\t\tinit\n")
+	end
 end
