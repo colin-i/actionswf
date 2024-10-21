@@ -39,13 +39,13 @@ function preframe()
 	valuexu strings#1
 end
 function branch()
-	dataxu *size#1
-	vdataxu *x#1
+#	dataxu *size#1
+#	vdataxu *x#1
 
-	valuexu *subbranch#1
+#	valuexu *subbranch#1
 
-	dataxu *offset#1
-	valuexu *action#1
+#	dataxu *offset#1
+	valuexu *action#1   #for mark, after compare
 end
 #function string()
 #	vstrxu text#1
