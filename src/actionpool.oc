@@ -103,7 +103,7 @@ function pool_entry()
 	import "debug_xlog_pool" debug_xlog_pool
 	callg debug_xlog_pool()
 end
-function pool_reentry()
+function pool_reentry(sd offset)
 	sd id;set id actionpoolid_get()
 	sd b;set b struct_ids_actionpool_filter((ids_get),id)
 	sd mem;sd size
@@ -113,8 +113,8 @@ function pool_reentry()
 		inc mem#
 		add mem cursor
 		if mem#s=(constpool_unique)
-			import "x_log_val_if" x_log_val_if
-			callg x_log_val_if((xlog_unique),0)
+			import "x_log_string" x_log_string
+			callg x_log_string((xlog_unique),offset)
 			return (not_an_id)
 		end
 		return (any_id)
@@ -240,7 +240,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 			if pool_data.write!=(FALSE)
 				call pool_entry()
 			elseif pool_data.read!=(FALSE)
-				set testid pool_reentry()
+				set testid pool_reentry(value)
 				if testid=(not_an_id)
 					return (not_an_id)
 				end
@@ -271,7 +271,8 @@ function actionpool_getvalue_ex(ss value,sd force)
 							call pool_realentry(nr)
 							call debug_xlog_pool()
 						else
-							callg x_log_val_if((xlog_id),(xlog_id_size),nr) #read and rest of xx flags
+							import "x_log_id" x_log_id
+							callg x_log_id((xlog_id),nr) #read and rest of xx flags
 						end
 						return nr
 					endif
@@ -283,7 +284,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 			if pool_data.write!=(FALSE)
 				call pool_entry()
 			elseif pool_data.read!=(FALSE)
-				set testid pool_reentry()
+				set testid pool_reentry(value)
 				if testid=(not_an_id)
 					return (not_an_id)
 				end

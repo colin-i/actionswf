@@ -280,14 +280,17 @@ function x_log_val(sd type,sd size,sd val)
 		callg f_write(x_data.flog,#val,size)
 	end
 end
-function x_log_val_if(sd type,sd size,sd val)
+function x_log_id(sd type,sd val)
 	if x_data.flog!=(NULL)
-		callg x_log_val(type,size,val)
+		callg x_log_val(type,(xlog_id_size),val)
 	end
 end
 function x_log_const(sd offset)
+	callg x_log_string((xlog_new),offset)
+end
+function x_log_string(sd type,sd offset)
 	if x_data.flog!=(NULL) #flag_pool_read is already tested
 		sub offset x_pointer.base
-		callg x_log_val((xlog_new),(xlog_new_size),offset)
+		callg x_log_val(type,(xlog_new_size),offset)
 	end
 end

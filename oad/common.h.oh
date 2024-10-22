@@ -37,6 +37,8 @@ function preframe()
 
 	dataxu size#1  ;#Count=ui16 * :
 	valuexu strings#1
+	dataxu usize#1  ;#Count=ui16 * :
+	valuexu ustrings#1
 end
 function branch()
 #	dataxu *size#1
@@ -49,8 +51,11 @@ function branch()
 end
 #function string()
 #	vstrxu text#1
-
 #	valuexu branches#1
+#end
+#function ustring()
+#	vstrxu text#1
+#	valueu branch#1
 #end
 
 const from_action=0

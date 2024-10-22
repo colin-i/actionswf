@@ -131,8 +131,7 @@ function actionrow(ss log,sd end,sv px,sv pxx)
 		elseif log#=(xlog_string) #string
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
-			if xxcontent#=(xlog_unique)
-			elseif xxcontent#=(xlog_new)
+			if xxcontent#!=(xlog_id) # xlog_new xlog_unique , unique also here because .x is not storing unique strings in branch
 				add pxx# (xlog_new_size)
 			else #xlog_id
 				add pxx# (xlog_id_size)
