@@ -57,6 +57,7 @@ function preframe_free(sv pf,charx log,charx ainit)
 		call frame_print_top(ainit)
 	end
 	call free(pf#:preframe.abranch)
+
 	sv strings;set strings pf#:preframe.strings
 	sv s;set s strings
 	sv end;set end pf#:preframe.size
@@ -64,6 +65,7 @@ function preframe_free(sv pf,charx log,charx ainit)
 	while s!=end
 	end
 	call free(strings)
+
 	call free(pf)
 end
 
