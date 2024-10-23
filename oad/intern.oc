@@ -111,7 +111,7 @@ function newbranch(sv px,sv pxx)
 	add px# branchsize
 	add pxx# (xlog_code_size)
 end
-function actionrow(ss log,sd end,sv px,sv pxx)
+function actionrow(ss log,sd end,sv px,sv pxx,sv *prefr)
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
 		charx chr#1
@@ -211,6 +211,8 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					dec linesnr
 				end
 
+				import "get_preframe" get_preframe
+				sv pf;set pf get_preframe(ppresprites#,preid,ainit)
 				#[actions]
 				whiletrue
 					if log=logsize
@@ -219,7 +221,7 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
 						inc log
-						call actionrow(log,p,#x,#xx)
+						call actionrow(log,p,#x,#xx,pf)
 					else
 						break #[log,p) will continue at preid
 					end

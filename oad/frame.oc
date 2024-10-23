@@ -135,3 +135,18 @@ function nframe_init(sv pf,valueu total)
 	end
 	return (NULL)
 end
+
+function get_preframe(sv presprites,wordxu preid,charx ainit)
+	sv ps=:
+	mult ps preid
+	add ps presprites
+	set ps ps#
+	if ainit=(xlog_ainit_false)
+		sv pf
+		set pf ps#:presprite.preframes
+		add pf ps#:presprite.size
+		decst pf
+		return pf#
+	end
+	return ps#:presprite.apreframe
+end
