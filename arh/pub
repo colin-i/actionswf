@@ -28,3 +28,6 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 #"a=function(){}+1"
 #"new Array()"
 #"a"
+
+#part isn't
+#a=a[3[2]]

@@ -9,8 +9,8 @@ import "mem_free" mem_free
 function x_data()
 	value f=NULL
 	datax size#1   #there was a debate on this
-	#size here is on small mem xcode. but there are 2 sizes(at xx and at xstart) that are on large xcode. multiple expands on same word size?
-	#anyway, for example var a=a[0]; is 0x40 in x, 0x12 in swf, and will error there because actionrecordheader is uint16 maximum
+	#size here is on small mem xcode. but there are 2 sizes(at xx and at xstart) that are on large xcode. doaction is ui32
+	#anyway, totalvalues is ui16*4. expands? 32...left 32...right, right 0x8000*4=0x20000,left at i386 0x8000/4 parts, sum 0x40...., still a quarter of ui32
 	value mem=NULL
 	value flog=NULL
 	if f!=(NULL)
