@@ -171,7 +171,7 @@ function debug_x_pointers(valuex start,valuex size)
 		sub size start
 		if x_init.flag=(debug_x_pad)
 			set mark f_tell(x_data.f) #long
-			add mark :
+			add mark (xlog_strings_size)
 			add mark size    ##overflow is same
 
 			sd pad=0xf
@@ -214,13 +214,13 @@ function debug_x(sd mem,sd nr)
 		valuex current#1
 		set current f_tell(x_data.f)
 		sub current debug_x_pointers.xmark
-		sub debug_x_pointers.xmark (DWORD)
+		sub debug_x_pointers.xmark (xlog_xcode_size)
 
 		call fseek(x_data.f,debug_x_pointers.mark,(SEEK_SET))
 		call fwrite(debug_x_pointers.start,debug_x_pointers.size,1,x_data.f)
 
 		call fseek(x_data.f,debug_x_pointers.xmark,(SEEK_SET))
-		call fwrite(#current,(DWORD),1,x_data.f)
+		call fwrite(#current,(xlog_xcode_size),1,x_data.f)
 
 		call fseek(x_data.f,0,(SEEK_END)) #for next writes
 	end
