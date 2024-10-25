@@ -3,7 +3,7 @@ const xlog_type_size=1 #BYTE
 const xlog_code_size=4 #DWORD
 const xlog_unique=0
 const xlog_new=1
-const xlog_new_size=8 #QWORD
+const xlog_new_size=: ;#DWORD/QWORD
 const xlog_id=2
 const xlog_id_size=2 #WORD
 
@@ -20,3 +20,6 @@ const xlog_innerbranchend=0x7C;#|
 #note: oaalternative is using ainit
 const xlog_ainit_false=0
 const xlog_ainit_true=1
+
+const xlog_strings_size=:
+const xlog_xcode_size=4   #DWORD

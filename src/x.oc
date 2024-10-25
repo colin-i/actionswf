@@ -91,11 +91,11 @@ function actionx()
 			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
 		sd size
-		set size pointer#v         ;#size of escaped block that was at parse + pad if debug_x_pad flag
-		incst pointer              ##here at parse was the escaped mem
-		set x_pointer.base pointer ##for x_pointer function
-		add pointer size           ##and add DWORD since liboadata read size without parse
-		add pointer (DWORD)        ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		set size pointer#v            ;#size of escaped block that was at parse + pad if debug_x_pad flag . xlog_strings_size
+		incst pointer                 ##here at parse was the escaped mem
+		set x_pointer.base pointer    ##for x_pointer function
+		add pointer size              ##and add DWORD since liboadata read size without parse
+		add pointer (xlog_xcode_size) ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
 		if x_data.flog!=(NULL)
 			set x_log.base pointer
 		end
@@ -179,9 +179,9 @@ function debug_x_pointers(valuex start,valuex size)
 			inc pad
 			and pad 0xf
 			sd all;set all size; add all pad
-			call f_write(x_data.f,#all,:)
+			call f_write(x_data.f,#all,(xlog_strings_size))
 		else
-			call f_write(x_data.f,#size,:)
+			call f_write(x_data.f,#size,(xlog_strings_size))
 		end
 		set mark f_tell(x_data.f)
 		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
@@ -193,7 +193,7 @@ function debug_x_pointers(valuex start,valuex size)
 		end
 		#and need to write x size to fast grab at liboadata branches without x parse
 		valuex xmark#1
-		call f_write(x_data.f,#zero,(DWORD)) #write something dummy here, size is DWORD like like x_data.size
+		call f_write(x_data.f,#zero,(xlog_xcode_size)) #write something dummy here, size is DWORD like like x_data.size
 		set xmark f_tell(x_data.f)
 	end
 end

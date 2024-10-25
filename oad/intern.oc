@@ -12,7 +12,7 @@ importx "fread" fread
 importx "fclose" fclose
 
 #multithread unsafe
-dataxu xoffset#1
+#dataxu xoffset#1
 #
 
 function fcontent(sd path,sv psize)
@@ -103,15 +103,18 @@ function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
 	return a
 end
 
-function newbranch(sv px,sv pxx)
+function newbranch(sv *px,sv pxx)
 	sd xx;set xx pxx#
 	sd branchsize;set branchsize xx#
-	sub branchsize global.xoffset
-	add global.xoffset branchsize
-	add px# branchsize
+#	sub branchsize global.xoffset
+#	add global.xoffset branchsize
+#	add px# branchsize
 	add pxx# (xlog_code_size)
 end
-function actionrow(ss log,sd end,sv px,sv pxx,sv *prefr)
+
+import "string_add" string_add
+
+function actionrow(ss log,sd end,sv px,sv pxx,sv prefr)
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
 		charx chr#1
@@ -132,6 +135,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,sv *prefr)
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
 			if xxcontent#!=(xlog_id) # xlog_new xlog_unique , unique also here because .x is not storing unique strings in branch
+				call string_add(prefr,pxx#)
 				add pxx# (xlog_new_size)
 			else #xlog_id
 				add pxx# (xlog_id_size)
@@ -155,10 +159,9 @@ end
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 
-function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
+function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
-		set global.xoffset 0
 		sd next
 		ss p;set p memnl(log,#next)
 		whiletrue
@@ -191,6 +194,17 @@ function loop(ss log,sd x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 				set p memnl(log,#next)
 			else
+				#this will not stay here like now, now is here for testing
+				valueu strings_size#1
+				set strings_size x#
+				add x (xlog_strings_size)
+				add x strings_size
+				dataxu xcode_size#1
+				set xcode_size x#
+				add x (xlog_xcode_size)
+				add x xcode_size
+				#set global.xoffset 0
+
 				#ainit
 				charx ainit#1;set ainit memdec(log,p) #[log,p) 0/1
 				set log next
