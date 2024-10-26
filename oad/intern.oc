@@ -114,7 +114,7 @@ end
 
 import "string_add" string_add
 
-function actionrow(ss log,sd end,sv px,sv pxx,sv prefr)
+function actionrow(ss log,sd end,sv px,sv pxx,sv prefr,valueu strings_base)
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
 		charx chr#1
@@ -135,7 +135,10 @@ function actionrow(ss log,sd end,sv px,sv pxx,sv prefr)
 			ss xxcontent;set xxcontent pxx#
 			add pxx# (xlog_type_size)
 			if xxcontent#!=(xlog_id) # xlog_new xlog_unique , unique also here because .x is not storing unique strings in branch
-				call string_add(prefr,pxx#)
+				charx ok#1;set ok string_add(prefr,pxx#,strings_base,xxcontent#)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 				add pxx# (xlog_new_size)
 			else #xlog_id
 				add pxx# (xlog_id_size)
@@ -154,6 +157,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,sv prefr)
 			set log memhex_parse_withinc(log,#number)
 		end
 	end
+	return (EXIT_SUCCESS)
 end
 
 import "presprite_init" presprite_init
@@ -197,6 +201,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				valueu strings_size#1
 				set strings_size x#
 				add x (xlog_strings_size)
+				valueu strings_base#1;set strings_base x
 				add x strings_size
 				dataxu xcode_size#1
 				set xcode_size x#
@@ -235,7 +240,10 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
 						inc log
-						call actionrow(log,p,#xcode,#xx,pf)
+						set ok actionrow(log,p,#xcode,#xx,pf,strings_base)
+						if ok!=(EXIT_SUCCESS)
+							return (EXIT_FAILURE)
+						end
 					else
 						break #[log,p) will continue at preid
 					end
