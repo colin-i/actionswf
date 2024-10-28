@@ -6,15 +6,11 @@ importx "realloc" realloc
 override include_sec 1
 include "common.h" "common.h.oh"
 
-function re_alloc(sv pmem,dataxu size,dataxu newsize) #only dataxu external sizes
+function re_alloc(sv pmem,dataxu size) #only dataxu external sizes, and +1 increments
 	dataxu currentmaxsize#1;set currentmaxsize size
 	divu currentmaxsize ((sprites_realloc_onepart))
 	mult currentmaxsize ((sprites_realloc_onepart))
-	add currentmaxsize ((sprites_realloc_onepart))
-	if newsize>^currentmaxsize
-		set currentmaxsize newsize
-		divu currentmaxsize ((sprites_realloc_onepart))
-		mult currentmaxsize ((sprites_realloc_onepart))
+	if size=currentmaxsize   ##is not on the edge
 		add currentmaxsize ((sprites_realloc_onepart))
 		sv newmem;set newmem realloc(pmem#,currentmaxsize)
 		if newmem!=(NULL)
@@ -26,7 +22,7 @@ function re_alloc(sv pmem,dataxu size,dataxu newsize) #only dataxu external size
 	return (EXIT_SUCCESS)
 end
 function re_calloc(sv pmem,svu size,valueu newsize)
-	charx ok#1;set ok re_alloc(pmem,size,newsize)
+	charx ok#1;set ok re_alloc(pmem,size)
 	if ok=(EXIT_SUCCESS)
 		add size pmem#
 		add newsize pmem#
@@ -86,6 +82,8 @@ function preframe_free(sv pf,charx log,charx ainit)
 	sv end;set end pf#:preframe.size
 	add end s
 	while s!=end
+		call free(s#)
+		incst s
 	end
 	call free(strings)
 
@@ -95,6 +93,8 @@ function preframe_free(sv pf,charx log,charx ainit)
 	set end pf#:preframe.usize
 	add end s
 	while s!=end
+		call free(s#)
+		incst s
 	end
 	call free(ustrings)
 

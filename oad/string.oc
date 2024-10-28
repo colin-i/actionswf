@@ -6,7 +6,9 @@ include "common.h" "common.h.oh"
 
 import "re_alloc" re_alloc
 
-#                             # is xlog_new_size
+importx "malloc" malloc
+
+#                            # is xlog_new_size
 function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 	add strings_base p_string_off#
 	sv pto;sd psize
@@ -17,15 +19,21 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 		set pto #pf#:preframe.ustrings
 		set psize #pf#:preframe.usize
 	end
-	sd newsize=:
-	add newsize psize#
 	charx ok#1
-	set ok re_alloc(pto,psize#,newsize)
+	set ok re_alloc(pto,psize#)
 	if ok=(EXIT_SUCCESS)
-#		sd str;set str malloc((\string\))
-#		if str!=(NULL)
-#			add psize# :
-#		end
+		valueu str#1
+		if type=(xlog_new)
+			set str malloc((\string\))
+		else
+			set str malloc((\ustring\))
+		end
+		if str!=(NULL)
+			sv dest;set dest pto#
+			add dest psize#
+			set dest# str
+			add psize# :
+		end
 	end
 	return ok
 end

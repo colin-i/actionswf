@@ -49,14 +49,14 @@ function branch()
 #	dataxu *offset#1
 	valuexu *action#1   #for mark, after compare
 end
-#function string()
-#	vstrxu text#1
-#	valuexu branches#1
-#end
-#function ustring()
-#	vstrxu text#1
-#	valueu branch#1
-#end
+function string()
+	vstrxu *text#1
+	valuexu *branches#1
+end
+function ustring()
+	vstrxu *text#1
+	valueu *branch#1
+end
 
 const from_action=0
 const from_show=1
