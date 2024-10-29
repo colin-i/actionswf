@@ -117,9 +117,12 @@ functionx oadata_ok(ss swf_fullpath)
 end
 
 importx "puts" puts
-importx "printf" printf
 
 import "sprite_free" sprite_free
+
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+import "print" print
 
 functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
@@ -149,7 +152,13 @@ functionx oadata_free(sv data,charx log)
 					dataxu i#1;set i 0
 					whiletrue
 						datax next#1;set next m#:mark.next
-						call printf("\t%u\n\t\t%d\n\t\t%d\n",i,m#:mark.prev,next)
+						call print_indent()
+						call print("%u",i)
+						call print_indent()
+						call print("%d",m#:mark.prev)
+						call print("%d",next)
+						call print_unindent()
+						call print_unindent()
 						if next=(mark_nothing)
 							break
 						end

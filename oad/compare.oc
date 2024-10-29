@@ -44,13 +44,19 @@ end
 
 import "frame_free" frame_free
 
+import "print" print
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+
 function sprite_free(sv s,sv start) #log is start != null
 	sv sp;set sp s#
 	if sp!=(NULL)
 		if start!=(NULL)
 			sub s start
 			divu s :
-			call printf("\tid=%hu\n",s)
+			call print_indent()
+			call print("id=%hu",s)
+			call print_indent()
 		end
 		if sp#:sprite.aframe!=(NULL)
 			call frame_free(sp#:sprite.aframe,start,(xlog_ainit_true))
@@ -69,6 +75,10 @@ function sprite_free(sv s,sv start) #log is start != null
 			call free(sp#:sprite.frames)
 		end
 		call free(sp)
+		if start!=(NULL)
+			call print_unindent()
+			call print_unindent()
+		end
 	end
 end
 
@@ -85,7 +95,6 @@ function preoadata_init(sv ppresprites,sv psprites)
 end
 
 importx "puts" puts
-importx "printf" printf
 
 import "preframe_free" preframe_free
 
@@ -105,10 +114,12 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 				sv pres;set pres ps#
 				if pres!=(NULL)
 					if log=(TRUE)
-						call printf("\t%hu\n",preid)
+						call print_indent()
+						call print("%hu",preid)
 						dataxu frames#1;set frames pres#:presprite.size
 						divu frames :
-						call printf("\t\tframes=%hu\n",frames)
+						call print_indent()
+						call print("frames=%hu",frames)
 					end
 					if pres#:presprite.apreframe!=(NULL)
 						call preframe_free(pres#:presprite.apreframe,log,(xlog_ainit_true))
@@ -128,6 +139,9 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						call sprite_free(s,(NULL)) #and unfinished sprites, here is after an error
 					end
 					call free(pres)
+					if log=(TRUE)
+						call print_unindent();call print_unindent()
+					end
 				end
 				if log=(TRUE)
 					inc preid

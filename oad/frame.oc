@@ -101,7 +101,9 @@ function preframe_free(sv pf,charx log,charx ainit)
 	call free(pf)
 end
 
-importx "printf" printf
+import "print" print
+import "print_indent" print_indent
+import "print_unindent" print_unindent
 
 function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
@@ -124,7 +126,9 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	valueu end#1;set end f#:frame.total
 	if pointer_is_log!=(NULL)
 		call frame_print_top(ainit)
-		call printf("\t\t\tlines=%lu\n",end)
+		call print_indent()
+		call print("lines=%lu",end)
+		call print_unindent()
 	end
 	mult end (\line\)
 	add end pointer
@@ -137,9 +141,9 @@ end
 
 function frame_print_top(charx ainit)
 	if ainit=(xlog_ainit_false)
-		call printf("\t\tframe\n")
+		call print("frame")
 	else
-		call printf("\t\tinit\n")
+		call print("init")
 	end
 end
 

@@ -8,6 +8,10 @@ import "re_alloc" re_alloc
 
 importx "malloc" malloc
 
+#multithread unsafe
+char indents=0
+#
+
 #                            # is xlog_new_size
 function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 	add strings_base p_string_off#
@@ -33,7 +37,31 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 			add dest psize#
 			set dest# str
 			add psize# :
+
+#			add strings_base p_string_off#
+#			set str#:string.text strings_base
 		end
 	end
 	return ok
 end
+
+importx "printf" printf
+
+function print_indent()
+	inc global.indents
+end
+function print_unindent()
+	dec global.indents
+end
+function print(ss format,valueu value)
+	charx i#1
+	set i global.indents
+	while i>0
+		call printf("\t")
+		dec i
+	end
+	call printf(format,value)
+	call printf("\n")
+end
+
+entryraw global()
