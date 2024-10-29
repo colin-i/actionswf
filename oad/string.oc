@@ -7,6 +7,7 @@ include "common.h" "common.h.oh"
 import "re_alloc" re_alloc
 
 importx "malloc" malloc
+importx "printf" printf
 
 #multithread unsafe
 char indents=0
@@ -14,7 +15,6 @@ char indents=0
 
 #                            # is xlog_new_size
 function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
-	add strings_base p_string_off#
 	sv pto;sd psize
 	if type=(xlog_new)
 		set pto #pf#:preframe.strings
@@ -38,14 +38,21 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 			set dest# str
 			add psize# :
 
-#			add strings_base p_string_off#
-#			set str#:string.text strings_base
+			add strings_base p_string_off#
+			set str#:string.text strings_base
 		end
 	end
 	return ok
 end
 
-importx "printf" printf
+function indent()
+	charx i#1
+	set i global.indents
+	while i>0
+		call printf("\t")
+		dec i
+	end
+end
 
 function print_indent()
 	inc global.indents
@@ -54,13 +61,19 @@ function print_unindent()
 	dec global.indents
 end
 function print(ss format,valueu value)
-	charx i#1
-	set i global.indents
-	while i>0
-		call printf("\t")
-		dec i
-	end
+	call indent()
 	call printf(format,value)
+	call print_inline_done()
+end
+function print_inline_start(ss str)
+	call indent()
+	call printf(str)
+end
+function print_inline(ss format,valueu value)
+	call printf(" ")
+	call printf(format,value)
+end
+function print_inline_done()
 	call printf("\n")
 end
 

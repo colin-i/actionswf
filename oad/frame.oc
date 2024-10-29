@@ -44,6 +44,13 @@ end
 importx "malloc" malloc
 importx "free" free
 
+import "print_inline_start" print_inline_start
+import "print_inline" print_inline
+import "print_inline_done" print_inline_done
+import "print" print
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
@@ -74,36 +81,52 @@ end
 function preframe_free(sv pf,charx log,charx ainit)
 	if log=(TRUE)
 		call frame_print_top(ainit)
+		call print_inline_start("ustrings:")
 	end
 	call free(pf#:preframe.abranch)
-
-	sv strings;set strings pf#:preframe.strings
-	sv s;set s strings
-	sv end;set end pf#:preframe.size
-	add end s
-	while s!=end
-		call free(s#)
-		incst s
-	end
-	call free(strings)
+	valueu str#1
 
 	#is a different free than strings, will have one branch vs multiple
 	sv ustrings;set ustrings pf#:preframe.ustrings
-	set s ustrings
-	set end pf#:preframe.usize
+	sv s;set s ustrings
+	sv end;set end pf#:preframe.usize
 	add end s
 	while s!=end
-		call free(s#)
+		set str s#
+		if log=(TRUE)
+			call print_inline("%s",str#:ustring.text)
+		end
+		call free(str)
 		incst s
 	end
 	call free(ustrings)
 
+	if log=(TRUE)
+		call print_inline_done()
+		call print_inline_start("strings:")
+	end
+
+	sv strings;set strings pf#:preframe.strings
+	set s strings
+	set end pf#:preframe.size
+	add end s
+	while s!=end
+		set str s#
+		if log=(TRUE)
+			call print_inline("%s",str#:string.text)
+		end
+		call free(str)
+		incst s
+	end
+	call free(strings)
+
+	if log=(TRUE)
+		call print_inline_done()
+		call print_unindent()
+	end
+
 	call free(pf)
 end
-
-import "print" print
-import "print_indent" print_indent
-import "print_unindent" print_unindent
 
 function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
@@ -126,7 +149,6 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	valueu end#1;set end f#:frame.total
 	if pointer_is_log!=(NULL)
 		call frame_print_top(ainit)
-		call print_indent()
 		call print("lines=%lu",end)
 		call print_unindent()
 	end
@@ -145,6 +167,7 @@ function frame_print_top(charx ainit)
 	else
 		call print("init")
 	end
+	call print_indent()
 end
 
 function nframe_init(sv pf,valueu total)
