@@ -51,7 +51,7 @@ function branch()
 end
 function string()
 	vstrxu text#1
-	valuexu *branches#1
+	valuexu branches#1
 end
 function ustring()
 	vstrxu text#1

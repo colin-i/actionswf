@@ -115,6 +115,7 @@ function preframe_free(sv pf,charx log,charx ainit)
 		if log=(TRUE)
 			call print_inline("%s",str#:string.text)
 		end
+		call free(str#:string.branches)
 		call free(str)
 		incst s
 	end
