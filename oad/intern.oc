@@ -194,7 +194,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 				set log next
 				if log=logsize
-					return (EXIT_SUCCESS)
+					return (EXIT_SUCCESS) #exit 2
 				end
 				set p memnl(log,#next)
 			else
@@ -230,12 +230,12 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					dec linesnr
 				end
 
-				import "get_preframe" get_preframe
-				sv pf;set pf get_preframe(ppresprites#,preid,ainit)
+				import "get_nframe" get_nframe
+				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 				#[actions]
 				whiletrue
 					if log=logsize
-						return (EXIT_SUCCESS) #no [more] actions and nothing else
+						return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
 					end
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
@@ -252,7 +252,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 			end
 		end
 	end
-	return (EXIT_SUCCESS)
+	return (EXIT_SUCCESS) #exit 1
 end
 
 importx "strlen" strlen

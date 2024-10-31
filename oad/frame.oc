@@ -180,17 +180,30 @@ function nframe_init(sv pf,valueu total)
 	return (NULL)
 end
 
-function get_preframe(sv presprites,wordxu preid,charx ainit)
+function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	sv ps=:
 	mult ps preid
+	sv s;set s ps
+
 	add ps presprites
 	set ps ps#
+
+	add s sprites
+	set s s#
+
 	if ainit=(xlog_ainit_false)
 		sv pf
 		set pf ps#:presprite.preframes
 		add pf ps#:presprite.size
 		decst pf
-		return pf#
+		set ppf# pf#
+
+		sv f
+		set f s#:sprite.frames
+		add f s#:sprite.size
+		decst f
+		return f#
 	end
-	return ps#:presprite.apreframe
+	set ppf# ps#:presprite.apreframe
+	return s#:sprite.aframe
 end
