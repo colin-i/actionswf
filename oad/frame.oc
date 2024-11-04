@@ -207,3 +207,32 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	set ppf# ps#:presprite.apreframe
 	return s#:sprite.aframe
 end
+
+function frame_actions(valueu fr,valueu lines,sv p_totallines)
+	valueu current#1;set current p_totallines#
+	add p_totallines# lines
+
+	valueu p_lines=\line\
+	mult p_lines current
+	add p_lines fr#:frame.lines
+	mult lines \line\
+	add lines p_lines
+	while p_lines!=lines
+		set p_lines#:line.index current
+		add p_lines (\line\)
+	end
+end
+function frame_expand(valueu fr,valueu lines,sv p_totallines)
+	add lines fr#:frame.total
+	valueu alloc#1;set alloc \line\
+	mult alloc lines
+	valueu re#1
+	set re realloc(fr#:frame.lines,alloc)
+	if re!=(NULL)
+		set fr#:frame.lines re
+		set p_totallines# fr#:frame.total
+		set fr#:frame.total lines
+		return (EXIT_SUCCESS)
+	end
+	return (EXIT_FAILURE)
+end

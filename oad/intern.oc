@@ -113,8 +113,10 @@ function newbranch(sv px,sv pxx)
 end
 
 import "string_add" string_add
+import "frame_actions" frame_actions
 
-function actionrow(ss log,sd end,sv px,sv pxx,sv prefr,valueu strings_base)
+function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valuexu p_lines)
+	ss start;set start log
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
 		charx chr#1
@@ -127,6 +129,8 @@ function actionrow(ss log,sd end,sv px,sv pxx,sv prefr,valueu strings_base)
 		end
 		inc log
 	end
+	valueu number_of_lines#1;set number_of_lines memdec(start,log)
+	call frame_actions(fr,number_of_lines,p_lines)
 	while log!=end
 		dataxu number#1  #u16,u32,u16
 		if log#=(xlog_act) #action
@@ -219,7 +223,8 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				valueu linesnr#1;set linesnr memdec(log,p)
 				set log next
 
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
+				valueu lines#1
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,#lines)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -240,7 +245,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
 						inc log
-						set ok actionrow(log,p,#xcode,#xx,pf,strings_base)
+						set ok actionrow(log,p,#xcode,#xx,pf,f,strings_base,#lines)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
