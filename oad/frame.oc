@@ -45,6 +45,7 @@ importx "malloc" malloc
 importx "free" free
 
 import "print_inline_start" print_inline_start
+import "print_inline_start_value" print_inline_start_value
 import "print_inline" print_inline
 import "print_inline_done" print_inline_done
 import "print" print
@@ -133,7 +134,7 @@ function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
 	if f!=(NULL)
 		valueu size#1;set size (\line\)
-		mult size (\line\)
+		mult size total
 		sv lines;set lines malloc(size)
 		if lines!=(NULL)
 			set f#:frame.lines lines
@@ -145,18 +146,33 @@ function frame_init(valueu total)
 	return (NULL)
 end
 function frame_free(sv f,valueu pointer_is_log,charx ainit)
-	sv lines;set lines f#:frame.lines
-	sv pointer;set pointer lines
 	valueu end#1;set end f#:frame.total
+	valueu ix#1;valueu n#1
 	if pointer_is_log!=(NULL)
 		call frame_print_top(ainit)
-		call print("lines=%lu",end)
-		call print_unindent()
+		call print_inline_start_value("lines=%lu",end)
+		set ix 0;set n 0
 	end
 	mult end (\line\)
+	sv lines;set lines f#:frame.lines
+	sv pointer;set pointer lines
 	add end pointer
 	while pointer!=end
+		if pointer_is_log!=(NULL)
+			valueu i#1;set i pointer#:line.index
+			if i!=ix
+				call print_inline("%u",n)
+				set ix i;set n 1
+			else
+				inc n
+			end
+		end
 		add pointer (\line\)
+	end
+	if pointer_is_log!=(NULL)
+		call print_inline("%u",n)
+		call print_inline_done()
+		call print_unindent()
 	end
 	call free(lines)
 	call free(f)
@@ -235,4 +251,9 @@ function frame_expand(valueu fr,valueu lines,sv p_totallines)
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
+end
+function frame_expected(valueu fr,valueu lines,valueu totallines)
+	if lines!=totallines
+		set fr#:frame.total lines
+	end #there is nothing at those last lines, also, was allocated there, ignoring
 end
