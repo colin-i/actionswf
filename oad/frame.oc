@@ -138,7 +138,7 @@ function frame_init(valueu total)
 		sv lines;set lines malloc(size)
 		if lines!=(NULL)
 			set f#:frame.lines lines
-			set f#:frame.total total
+			#this is at end because can be truncated on last blank lines: set f#:frame.total total
 			return f
 		end
 		call free(f)
@@ -247,13 +247,13 @@ function frame_expand(valueu fr,valueu lines,sv p_totallines)
 	if re!=(NULL)
 		set fr#:frame.lines re
 		set p_totallines# fr#:frame.total
-		set fr#:frame.total lines
+		#this is at end because can be truncated on last blank lines: set fr#:frame.total lines
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
 end
-function frame_expected(valueu fr,valueu lines,valueu totallines)
-	if lines!=totallines
-		set fr#:frame.total lines
-	end #there is nothing at those last lines, also, was allocated there, ignoring
+function frame_expected(valueu fr,valueu lines)
+	#if lines!=totallines
+	set fr#:frame.total lines
+	#end #there is nothing at those last lines, also, was allocated there, ignoring
 end
