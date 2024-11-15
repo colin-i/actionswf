@@ -20,12 +20,12 @@ function frame()
 end
 function line()
 	valueu index#1    #same as lines total
-	valuexu *actions#1
+	valuexu actions#1
 end
-#function action()
-#	valuexu next#1
-#	datax mark#1
-#end
+function action()
+	valuexu *next#1
+	datax *mark#1
+end
 function mark()
 	datax prev#1
 	datax next#1

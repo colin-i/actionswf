@@ -138,6 +138,7 @@ function frame_init(valueu total)
 		sv lines;set lines malloc(size)
 		if lines!=(NULL)
 			set f#:frame.lines lines
+			set f#:frame.total 0
 			#this is at end because can be truncated on last blank lines: set f#:frame.total total
 			return f
 		end
@@ -166,6 +167,9 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 			else
 				inc n
 			end
+		end
+		if pointer#:line.actions!=(NULL)
+			call free(pointer#:line.actions)
 		end
 		add pointer (\line\)
 	end
@@ -224,21 +228,41 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
-function frame_actions(valueu fr,valueu lines,sv p_totallines)
-	valueu current#1;set current p_totallines#
-	add p_totallines# lines
+function frame_actions(valueu fr,valueu lines,ss log,valueu end) #,sv p_totallines
+	valueu current#1;set current fr#:frame.total
 
 	valueu p_lines=\line\
 	mult p_lines current
 	add p_lines fr#:frame.lines
-	mult lines \line\
-	add lines p_lines
-	while p_lines!=lines
-		set p_lines#:line.index current
-		add p_lines (\line\)
+
+	#test how many actions to alloc
+	valueu nr_of_actions#1;set nr_of_actions 0 #not needing to null end because has "next". action struct has a long and an int
+	while log!=end
+		if log#=(xlog_act)
+			inc nr_of_actions
+		end
+		inc log
 	end
+	set p_lines#:line.index current  ##there is no 0 lines per row
+	mult nr_of_actions \action\
+	set p_lines#:line.actions malloc(nr_of_actions)
+	if p_lines#:line.actions!=(NULL)
+		add fr#:frame.total lines
+
+		mult lines \line\
+		add lines p_lines
+		add p_lines \line\
+
+		while p_lines!=lines
+			set p_lines#:line.index current
+			set p_lines#:line.actions (NULL)
+			add p_lines (\line\)
+		end
+		return (EXIT_SUCCESS)
+	end
+	return (EXIT_FAILURE)
 end
-function frame_expand(valueu fr,valueu lines,sv p_totallines)
+function frame_expand(valueu fr,valueu lines) #,sv p_totallines)
 	add lines fr#:frame.total
 	valueu alloc#1;set alloc \line\
 	mult alloc lines
@@ -246,14 +270,14 @@ function frame_expand(valueu fr,valueu lines,sv p_totallines)
 	set re realloc(fr#:frame.lines,alloc)
 	if re!=(NULL)
 		set fr#:frame.lines re
-		set p_totallines# fr#:frame.total
+		#set p_totallines# fr#:frame.total
 		#this is at end because can be truncated on last blank lines: set fr#:frame.total lines
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
 end
-function frame_expected(valueu fr,valueu lines)
-	#if lines!=totallines
-	set fr#:frame.total lines
-	#end #there is nothing at those last lines, also, was allocated there, ignoring
-end
+#function frame_expected(valueu fr,valueu lines)
+#	#if lines!=totallines
+#	set fr#:frame.total lines
+#	#end #there is nothing at those last lines, also, was allocated there, ignoring
+#end

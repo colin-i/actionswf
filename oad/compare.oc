@@ -161,7 +161,7 @@ import "nframe_init" nframe_init
 import "frame_expand" frame_expand
 
 #                       wordxu preid
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal,sv p_linestotal)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal) #,sv p_linestotal)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -209,9 +209,9 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 					if f#=(NULL)
 						return (EXIT_FAILURE)
 					end
-					set p_linestotal# 0
+					#set p_linestotal# 0
 				else #is multiple action call
-					set ok frame_expand(f#,linestotal,p_linestotal)
+					set ok frame_expand(f#,linestotal) #,p_linestotal)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
@@ -264,7 +264,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 								return (EXIT_FAILURE)
 							end
 						end
-						set p_linestotal# 0
+						#set p_linestotal# 0
 					end
 					return (EXIT_SUCCESS)
 				end
