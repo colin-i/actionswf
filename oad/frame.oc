@@ -146,24 +146,30 @@ function frame_init(valueu total)
 	end
 	return (NULL)
 end
+
+import "print_inline2" print_inline2
+
 function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	valueu end#1;set end f#:frame.total
 	valueu ix#1;valueu n#1
+	sv lines;set lines f#:frame.lines
+	valueu nr_actions#1
 	if pointer_is_log!=(NULL)
 		call frame_print_top(ainit)
 		call print_inline_start_value("lines=%lu",end)
 		set ix 0;set n 0
+		set nr_actions lines#:line.total
 	end
 	mult end (\line\)
-	sv lines;set lines f#:frame.lines
 	sv pointer;set pointer lines
 	add end pointer
 	while pointer!=end
 		if pointer_is_log!=(NULL)
 			valueu i#1;set i pointer#:line.index
 			if i!=ix
-				call print_inline("%u",n)
+				call print_inline2("%u,%u",n,nr_actions)
 				set ix i;set n 1
+				set nr_actions pointer#:line.total
 			else
 				inc n
 			end
@@ -174,7 +180,7 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 		add pointer (\line\)
 	end
 	if pointer_is_log!=(NULL)
-		call print_inline("%u",n)
+		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print_unindent()
 	end
@@ -228,7 +234,7 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
-function frame_actions(valueu fr,valueu lines,ss log,valueu end) #,sv p_totallines
+function frame_actions(valueu fr,valueu lines,ss log,valueu end) #,charx blog)
 	valueu current#1;set current fr#:frame.total
 
 	valueu p_lines=\line\
@@ -244,6 +250,9 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end) #,sv p_totallin
 		inc log
 	end
 	set p_lines#:line.index current  ##there is no 0 lines per row
+	#if blog=(TRUE)
+	set p_lines#:line.total nr_of_actions
+	#end
 	mult nr_of_actions \action\
 	set p_lines#:line.actions malloc(nr_of_actions)
 	if p_lines#:line.actions!=(NULL)

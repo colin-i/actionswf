@@ -115,7 +115,7 @@ end
 import "string_add" string_add
 import "frame_actions" frame_actions
 
-function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base) #,valuexu p_lines)
+function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base) #,charx blog)
 	ss start;set start log
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
@@ -131,7 +131,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	end
 	valueu number_of_lines#1;set number_of_lines memdec(start,log)
 	charx ok#1
-	set ok frame_actions(fr,number_of_lines,log,end) #,p_lines
+	set ok frame_actions(fr,number_of_lines,log,end) #,blog)
 	if ok=(EXIT_SUCCESS)
 		while log!=end
 			dataxu number#1  #u16,u32,u16
@@ -172,7 +172,7 @@ import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 #import "frame_expected" frame_expected
 
-function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
+function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #,charx blog)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		sd next
@@ -229,7 +229,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				set log next
 
 				#valueu lines#1
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr) #,#lines)
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -251,7 +251,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
 						inc log
-						set ok actionrow(log,p,#xcode,#xx,pf,f,strings_base) #,#lines)
+						set ok actionrow(log,p,#xcode,#xx,pf,f,strings_base) #,blog)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
