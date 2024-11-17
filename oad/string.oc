@@ -75,6 +75,11 @@ function print(ss format,valueu value)
 	call printf(format,value)
 	call print_inline_done()
 end
+function prints(ss format)
+	call indent()
+	call printf(format)
+	call print_inline_done()
+end
 function print_inline_start(ss str)
 	call indent()
 	call printf(str)

@@ -51,15 +51,19 @@ import "print_unindent" print_unindent
 function sprite_free(sv s,sv start) #log is start != null
 	sv sp;set sp s#
 	if sp!=(NULL)
+		datax frame_index#1
 		if start!=(NULL)
 			sub s start
 			divu s :
 			call print_indent()
 			call print("id=%hu",s)
 			call print_indent()
+			set frame_index 1
+		else
+			set frame_index (no_index)
 		end
 		if sp#:sprite.aframe!=(NULL)
-			call frame_free(sp#:sprite.aframe,start,(xlog_ainit_true))
+			call frame_free(sp#:sprite.aframe,(xlog_ainit_true),frame_index)
 		end
 		if sp#:sprite.frames!=(NULL)
 			sv pointer;sd end
@@ -68,14 +72,17 @@ function sprite_free(sv s,sv start) #log is start != null
 			add end pointer
 			while pointer!=end
 				if pointer#!=(NULL)
-					call frame_free(pointer#,start,(xlog_ainit_false))
+					call frame_free(pointer#,(xlog_ainit_false),frame_index)
 				end
 				incst pointer
+				if frame_index!=(no_index)
+					inc frame_index
+				end
 			end
 			call free(sp#:sprite.frames)
 		end
 		call free(sp)
-		if start!=(NULL)
+		if frame_index!=(no_index)
 			call print_unindent()
 			call print_unindent()
 		end
@@ -113,26 +120,36 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 			while ps!=pend
 				sv pres;set pres ps#
 				if pres!=(NULL)
+					datax frame_index#1;dataxu frames#1
 					if log=(TRUE)
 						call print_indent()
 						call print("%hu",preid)
-						dataxu frames#1;set frames pres#:presprite.size
-						divu frames :
 						call print_indent()
-						call print("frames=%hu",frames)
+						set frame_index 1
+						set frames pres#:presprite.size
+						divu frames :
+					else
+						set frame_index (no_index)
 					end
 					if pres#:presprite.apreframe!=(NULL)
-						call preframe_free(pres#:presprite.apreframe,log,(xlog_ainit_true))
+						call preframe_free(pres#:presprite.apreframe,(xlog_ainit_true),frame_index)
 					end
 					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
+						if log=(TRUE)
+							dec frames
+							call print("frames=%hu",frames)
+						end
 						sv pointer;set pointer pres#:presprite.preframes
 						valueu end#1;set end pres#:presprite.size
 						add end pointer
 						while pointer!=end
 							if pointer#!=(NULL)
-								call preframe_free(pointer#,log,(xlog_ainit_false))
+								call preframe_free(pointer#,(xlog_ainit_false),frame_index)
 							end
 							incst pointer
+							if log=(TRUE)
+								inc frame_index
+							end
 						end
 						call free(pres#:presprite.preframes)
 

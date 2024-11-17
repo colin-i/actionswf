@@ -79,14 +79,20 @@ function preframe_init()
 	end
 	return (NULL)
 end
-function preframe_free(sv pf,charx log,charx ainit)
-	if log=(TRUE)
-		call frame_print_top(ainit)
-		call print_inline_start("ustrings:")
-	end
-	call free(pf#:preframe.abranch)
-	valueu str#1
 
+import "branch_free" branch_free
+
+function preframe_free(sv pf,charx ainit,datax log_index)
+	charx log#1
+	if log_index!=(no_index)
+		call frame_print_top(ainit,log_index)
+
+		call print_inline_start("ustrings:")
+		set log (TRUE)
+	else
+		set log (FALSE)
+	end
+	valueu str#1
 	#is a different free than strings, will have one branch vs multiple
 	sv ustrings;set ustrings pf#:preframe.ustrings
 	sv s;set s ustrings
@@ -101,12 +107,11 @@ function preframe_free(sv pf,charx log,charx ainit)
 		incst s
 	end
 	call free(ustrings)
-
 	if log=(TRUE)
 		call print_inline_done()
+
 		call print_inline_start("strings:")
 	end
-
 	sv strings;set strings pf#:preframe.strings
 	set s strings
 	set end pf#:preframe.size
@@ -121,9 +126,12 @@ function preframe_free(sv pf,charx log,charx ainit)
 		incst s
 	end
 	call free(strings)
-
 	if log=(TRUE)
 		call print_inline_done()
+	end
+
+	call branch_free(pf#:preframe.abranch,log)
+	if log=(TRUE)
 		call print_unindent()
 	end
 
@@ -149,13 +157,13 @@ end
 
 import "print_inline2" print_inline2
 
-function frame_free(sv f,valueu pointer_is_log,charx ainit)
+function frame_free(sv f,charx ainit,datax log_index)
 	valueu end#1;set end f#:frame.total
 	valueu ix#1;valueu n#1
 	sv lines;set lines f#:frame.lines
 	valueu nr_actions#1
-	if pointer_is_log!=(NULL)
-		call frame_print_top(ainit)
+	if log_index!=(no_index)
+		call frame_print_top(ainit,log_index)
 		call print_inline_start_value("lines=%lu",end)
 		set ix 0;set n 0
 		set nr_actions lines#:line.total
@@ -164,7 +172,7 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	sv pointer;set pointer lines
 	add end pointer
 	while pointer!=end
-		if pointer_is_log!=(NULL)
+		if log_index!=(no_index)
 			valueu i#1;set i pointer#:line.index
 			if i!=ix
 				call print_inline2("%u,%u",n,nr_actions)
@@ -179,7 +187,7 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 		end
 		add pointer (\line\)
 	end
-	if pointer_is_log!=(NULL)
+	if log_index!=(no_index)
 		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print_unindent()
@@ -188,11 +196,12 @@ function frame_free(sv f,valueu pointer_is_log,charx ainit)
 	call free(f)
 end
 
-function frame_print_top(charx ainit)
+import "prints" prints
+function frame_print_top(charx ainit,datax log_index)
 	if ainit=(xlog_ainit_false)
-		call print("frame")
+		call print("frame %u",log_index)
 	else
-		call print("init")
+		call prints("init")
 	end
 	call print_indent()
 end

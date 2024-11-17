@@ -107,6 +107,9 @@ function newbranch(sv px,sv pxx)
 	sd xx;set xx pxx#
 	sd branchsize;set branchsize xx#
 	sub branchsize global.xoffset
+
+	#do something with the branchsize
+
 	add global.xoffset branchsize
 	add px# branchsize
 	add pxx# (xlog_code_size)
@@ -170,7 +173,8 @@ end
 
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
-#import "frame_expected" frame_expected
+import "get_nframe" get_nframe
+import "branch_done" branch_done
 
 function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #,charx blog)
 	add logsize log
@@ -240,12 +244,11 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #
 					dec linesnr
 				end
 
-				import "get_nframe" get_nframe
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 				#[actions]
 				whiletrue
 					if log=logsize
-						#call frame_expected(f,lines)
+						call branch_done(pf,xcode_size,global.xoffset)
 						return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
 					end
 					set p memnl(log,#next)
@@ -256,7 +259,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #
 							return (EXIT_FAILURE)
 						end
 					else
-						#call frame_expected(f,lines)
+						call branch_done(pf,xcode_size,global.xoffset)
 						break #[log,p) will continue at preid
 					end
 					set log next   ##was a row with actions
