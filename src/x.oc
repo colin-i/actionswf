@@ -174,11 +174,28 @@ function debug_x_pointers(valuex start,valuex size)
 			add mark (xlog_strings_size)
 			add mark size    ##overflow is same
 
-			sd pad=0xf
-			xor pad mark
-			inc pad
-			and pad 0xf
-			sd all;set all size; add all pad
+			sd pad;sd all
+			#this in case pad is straight: 0xf 0x1f, but best pad for 1920x1080 is xxd -c 48 -g 4 . 48 is 0x30, 0x3f will be too much
+			#set pad 0xf
+			#xor pad mark
+			#inc pad
+			#and pad 0xf
+
+			sd aux
+			set aux mark
+			divu aux 0x30
+			mult aux 0x30
+			if aux!=mark
+				sd aux2
+				set aux2 mark
+				sub aux2 aux
+				set pad 0x30
+				sub pad aux2
+			else
+				set pad 0
+			end
+
+			set all size; add all pad
 			call f_write(x_data.f,#all,(xlog_strings_size))
 		else
 			call f_write(x_data.f,#size,(xlog_strings_size))
@@ -187,7 +204,7 @@ function debug_x_pointers(valuex start,valuex size)
 		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
 		if x_init.flag=(debug_x_pad)
 			if pad!=0
-				char zero={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}
+				char zero={0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #47 pad is maximum
 				call f_write(x_data.f,#zero,pad)
 			end
 		end

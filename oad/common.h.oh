@@ -43,7 +43,7 @@ function preframe()
 end
 function branch()
 	dataxu size#1
-#	vdataxu *x#1
+	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
 
 #	dataxu *offset#1
 #	valuexu *action#1   #for mark, after compare
