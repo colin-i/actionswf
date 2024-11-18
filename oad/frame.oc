@@ -55,25 +55,25 @@ import "print_unindent" print_unindent
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
-		valueu bra#1
-		set bra malloc((\branch\))
-		if bra!=(NULL)
+		sv ustrings
+		set ustrings malloc((sprites_realloc_onepart))
+		if ustrings!=(NULL)
 			sv strings
 			set strings malloc((sprites_realloc_onepart))
 			if strings!=(NULL)
-				sv ustrings
-				set ustrings malloc((sprites_realloc_onepart))
-				if ustrings!=(NULL)
-					set pf#:preframe.abranch bra
-					set pf#:preframe.strings strings
-					set pf#:preframe.size 0
+				valueu bra#1
+				set bra malloc((\branch\))
+				if bra!=(NULL)
 					set pf#:preframe.ustrings ustrings
 					set pf#:preframe.usize 0
+					set pf#:preframe.strings strings
+					set pf#:preframe.size 0
+					set pf#:preframe.abranch bra
 					return pf
 				end
 				call free(strings)
 			end
-			call free(bra)
+			call free(ustrings)
 		end
 		call free(pf)
 	end
