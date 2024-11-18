@@ -2,7 +2,7 @@
 if [ -n "${1}" ]; then g="gdb --args"; fi
 
 model=
-if [ ${conv_64} = 1 ]; then model=-m32; fi
+if [ "${conv_64}" = 1 ]; then model=-m32; fi
 
 f=../../example/example.swf
 

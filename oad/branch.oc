@@ -53,9 +53,6 @@ function branch_free(sv br,valueu start,charx log) #this will be recursive
 		call print_indent()
 		ss code;set code br#:branch.x
 
-		charx a#1;charx b#1
-		set a 0;set b 0
-
 		valueu pad_sz#1;set pad_sz code
 		sub pad_sz start
 		dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
@@ -67,8 +64,14 @@ function branch_free(sv br,valueu start,charx log) #this will be recursive
 			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
 		call branch_code(#pad_minus_one,pad_sz,0,0,"..")
 
-		vstr form="%02X"
-		call branch_code(code,sz,pad_sz,0,form)
+		charx a#1
+		set a 0x3
+		and a pad_sz
+		if a=0
+			set a 4
+		end
+		div pad_sz 4
+		call branch_code(code,sz,a,pad_sz,"%02X")
 
 		call print_inline_done()
 
