@@ -20,7 +20,7 @@ import "print_unindent" print_unindent
 import "print_inline_start_value" print_inline_start_value
 import "print_inline_done" print_inline_done
 
-function branch_code(ss code,valueu end,charx a,charx b,ss form)
+function branch_code(ssu code,valueu end,charx a,charx b,ss form)
 	add end code
 	while code!=end
 	#best view command is same as in src/x.oc debug_x_pad
