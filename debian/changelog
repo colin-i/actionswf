@@ -1,3 +1,9 @@
+actionswf (1-105) bionic; urgency=medium
+
+  * changing x pad and sync it with oad
+
+ -- bc <bc@bc-desktop>  Mon, 18 Nov 2024 09:18:52 +0200
+
 actionswf (1-104) bionic; urgency=medium
 
   * 32bit xx pointer
