@@ -1,3 +1,9 @@
+actionswf (1-108) bionic; urgency=medium
+
+  * i386 oadata test
+
+ -- bc <bc@bc-desktop>  Mon, 18 Nov 2024 10:46:51 +0200
+
 actionswf (1-107) bionic; urgency=medium
 
   * same (fix branch.oc)
