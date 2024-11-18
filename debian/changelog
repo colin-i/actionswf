@@ -1,3 +1,15 @@
+actionswf (1-107) bionic; urgency=medium
+
+  * same (fix branch.oc)
+
+ -- bc <bc@bc-desktop>  Mon, 18 Nov 2024 10:08:53 +0200
+
+actionswf (1-106) bionic; urgency=medium
+
+  * same, fix test
+
+ -- bc <bc@bc-desktop>  Mon, 18 Nov 2024 09:44:11 +0200
+
 actionswf (1-105) bionic; urgency=medium
 
   * changing x pad and sync it with oad
