@@ -15,7 +15,7 @@ $(SUBDIRS):
 
 test:
 	cd tests && conv_64=${conv_64} /bin/bash ./as && conv_64=${conv_64} /bin/bash ./c 1 && cd ffdec && conv_64=${conv_64} /bin/bash ./as && \
-	cd ../data && /bin/bash ./test x && echo tests ok
+	cd ../data && conv_64=${conv_64} /bin/bash ./test x && echo tests ok
 clean:
 	cd tests; /bin/bash ./c; cd ffdec; /bin/bash ./c; cd ../data; /bin/bash ./c
 install:

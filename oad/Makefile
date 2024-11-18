@@ -11,6 +11,11 @@ endif
 ifndef linkerflags
 linkerflags=-O3 -s
 endif
+ifeq (${conv_64},1) #to cross compile
+	model=-m32
+else
+	model=
+endif
 
 OFLAGS=x_file 2
 
@@ -41,13 +46,13 @@ ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log ${sublogs}
-	$(CC) ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
+	$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
 # -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
-	$(CC) -c -w -fPIC ${compilerflags} $*.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} $*.c
 #-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
 %.oh: %.h.oh
