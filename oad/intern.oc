@@ -315,14 +315,16 @@ function oadata_init(sv poadata)
 		set a#:oadata.sprites malloc((sprites_realloc_onepart))
 		if a#:oadata.sprites!=(NULL)
 			set a#:oadata.sprites_size 0
-			set a#:oadata.marks malloc(\mark\)
-			sd m;set m a#:oadata.marks
-			if m!=(NULL)
-				set m#:mark.prev (mark_nothing)
-				set m#:mark.next (mark_nothing)
-				set a#:oadata.functions malloc((sprites_realloc_onepart))
-				if a#:oadata.functions!=(NULL)
-					set a#:oadata.functions_size 0
+
+			set a#:oadata.functions malloc((sprites_realloc_onepart))
+			if a#:oadata.functions!=(NULL)
+				set a#:oadata.functions_size 0
+
+				set a#:oadata.marks malloc(\mark\)
+				sd m;set m a#:oadata.marks
+				if m!=(NULL)
+					set m#:mark.prev (mark_nothing)
+					set m#:mark.next (mark_nothing)
 					return (EXIT_SUCCESS)
 				end
 			end

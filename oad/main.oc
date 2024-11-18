@@ -144,38 +144,33 @@ functionx oadata_free(sv data,charx log)
 			end
 			call free(sprites)
 
-			sv marks;set marks data#:oadata.marks
-			if marks!=(NULL)
-				if log=(TRUE)
-					call puts("mark struct:")
-					sd m;set m marks
-					dataxu i#1;set i 0
-					whiletrue
-						datax next#1;set next m#:mark.next
-						call print_indent()
-						call print("%u",i)
-						call print_indent()
-						call print("%d",m#:mark.prev)
-						call print("%d",next)
-						call print_unindent()
-						call print_unindent()
-						if next=(mark_nothing)
-							break
-						end
-						#add m \mark\
-						#inc i
-					end
-				end
-				call free(marks)
+			sv functions;set functions data#:oadata.functions
+			if functions!=(NULL)
+				call free(functions)
 
-				sv functions;set functions data#:oadata.functions
-				if functions!=(NULL)
-					set s functions
-					set end data#:oadata.functions_size
-					add end s
-					while s!=end
+				sv marks;set marks data#:oadata.marks
+				if marks!=(NULL)
+					if log=(TRUE)
+						call puts("mark struct:")
+						sd m;set m marks
+						dataxu i#1;set i 0
+						whiletrue
+							datax next#1;set next m#:mark.next
+							call print_indent()
+							call print("%u",i)
+							call print_indent()
+							call print("%d",m#:mark.prev)
+							call print("%d",next)
+							call print_unindent()
+							call print_unindent()
+							if next=(mark_nothing)
+								break
+							end
+							#add m \mark\
+							#inc i
+						end
 					end
-					call free(functions)
+					call free(marks)
 				end
 			end
 		end

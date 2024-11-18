@@ -30,21 +30,22 @@ const sprites_realloc_onepart=10*:
 function presprite() #presprites_size is intern
 	valuexu apreframe#1
 
-	dataxu  size#1     #same as parent, at button is extra, here are ui16 frames, copy sprites mechanism that is padded for debugger
 	valuexu preframes#1
+	dataxu  size#1     #same as parent, at button is extra, here are ui16 frames, copy sprites mechanism that is padded for debugger
 end
 function preframe()
-	dataxu size#1  ;#Count=ui16 * :
-	valuexu strings#1
-	dataxu usize#1  ;#Count=ui16 * :
 	valuexu ustrings#1
+	dataxu usize#1  ;#Count=ui16 * :
+
+	valuexu strings#1
+	dataxu size#1  ;#Count=ui16 * :
 
 	valuexu abranch#1
 	valueu logstart#1  #branch start, to calculate ... only at log
 end
 function branch()
-	dataxu size#1
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
+	dataxu size#1
 
 #	dataxu *offset#1
 #	valuexu *action#1   #for mark, after compare
