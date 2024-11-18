@@ -34,12 +34,13 @@ function presprite() #presprites_size is intern
 	valuexu preframes#1
 end
 function preframe()
-	valuexu abranch#1
-
 	dataxu size#1  ;#Count=ui16 * :
 	valuexu strings#1
 	dataxu usize#1  ;#Count=ui16 * :
 	valuexu ustrings#1
+
+	valuexu abranch#1
+	valueu logstart#1  #branch start, to calculate ... only at log
 end
 function branch()
 	dataxu size#1

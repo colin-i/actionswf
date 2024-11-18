@@ -7,6 +7,7 @@ if [ -z "${1}" ]; then
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
 	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
 else
+xxd_args=" -c 48 -g 4 "
 smart_diff () {
 	diff ${1} ${2}
 	if [ $? = 0 ]; then
@@ -22,8 +23,8 @@ smart_diff () {
 	if [ ${a} = ${b} ]; then
 		echo size equal ${a}
 		if [ -n "`which xxd`" ]; then
-			xxd ${1} > 1
-			xxd ${2} > 2
+			xxd${xxd_args}${1} > 1
+			xxd${xxd_args}${2} > 2
 			diff 1 2
 			rm 1 2
 		fi
@@ -39,8 +40,8 @@ smart_ask () {
 			swfdump -D .expected/a.swf${1} > 1
 			swfdump -D a.swf${2} > 2
 		else
-			xxd .expected/a.swf${1} > 1
-			xxd a.swf${2} > 2
+			xxd${xxd_args}.expected/a.swf${1} > 1
+			xxd${xxd_args}a.swf${2} > 2
 		fi
 		diff 1 2
 		rm 1 2

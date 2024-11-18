@@ -183,13 +183,13 @@ function debug_x_pointers(valuex start,valuex size)
 
 			sd aux
 			set aux mark
-			divu aux 0x30
-			mult aux 0x30
+			divu aux (xlog_pad_default)
+			mult aux (xlog_pad_default)
 			if aux!=mark
 				sd aux2
 				set aux2 mark
 				sub aux2 aux
-				set pad 0x30
+				set pad (xlog_pad_default)
 				sub pad aux2
 			else
 				set pad 0

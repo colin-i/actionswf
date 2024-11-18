@@ -23,3 +23,5 @@ const xlog_ainit_true=1
 
 const xlog_strings_size=:
 const xlog_xcode_size=4   #DWORD
+
+const xlog_pad_default=0x30

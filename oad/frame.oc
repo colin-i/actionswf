@@ -130,7 +130,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 		call print_inline_done()
 	end
 
-	call branch_free(pf#:preframe.abranch,log)
+	call branch_free(pf#:preframe.abranch,pf#:preframe.logstart,log)
 	if log=(TRUE)
 		call print_unindent()
 	end

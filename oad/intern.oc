@@ -176,7 +176,7 @@ import "presprite_done" presprite_done
 import "get_nframe" get_nframe
 import "branch_done" branch_done
 
-function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #,charx blog)
+function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx blog)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		sd next
@@ -218,10 +218,6 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #
 				add x strings_size
 				dataxu xcode_size#1
 				set xcode_size x#
-				add x (xlog_xcode_size)
-				valueu xcode#1;set xcode x
-				add x xcode_size
-				set global.xoffset 0
 
 				#ainit
 				charx ainit#1;set ainit memdec(log,p) #[log,p) 0/1
@@ -245,6 +241,15 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data) #
 				end
 
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
+
+				if blog=(TRUE)
+					set pf#:preframe.logstart x
+				end
+				add x (xlog_xcode_size)
+				valueu xcode#1;set xcode x
+				add x xcode_size
+				set global.xoffset 0
+
 				#[actions]
 				whiletrue
 					if log=logsize
