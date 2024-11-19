@@ -1,6 +1,11 @@
 
-e=
-if [ "${conv_64}" = 1 ]; then e=32; fi
+if [ -z "${CC}" ]; then
+	if [ "${conv_64}" = 1 ]; then
+		e=32
+	fi
+else
+	e=32
+fi
 
 set -o pipefail && /bin/bash ./a | tee data.txt || exit 1
 diff ../.expected/data${e}.txt data.txt
