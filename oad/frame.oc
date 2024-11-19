@@ -7,17 +7,20 @@ override include_sec 1
 include "common.h" "common.h.oh"
 
 function re_alloc(sv pmem,dataxu size) #only dataxu external sizes, and +1 increments
-	dataxu currentmaxsize#1;set currentmaxsize size
-	divu currentmaxsize ((sprites_realloc_onepart))
-	mult currentmaxsize ((sprites_realloc_onepart))
-	if size=currentmaxsize   ##is not on the edge
-		add currentmaxsize ((sprites_realloc_onepart))
-		sv newmem;set newmem realloc(pmem#,currentmaxsize)
-		if newmem!=(NULL)
-			set pmem# newmem
-			return (EXIT_SUCCESS)
-		end
-		return (EXIT_FAILURE)
+	if size!=0
+		dataxu currentmaxsize#1;set currentmaxsize size
+		divu currentmaxsize ((sprites_realloc_onepart))
+		mult currentmaxsize ((sprites_realloc_onepart))
+		if size=currentmaxsize
+			add currentmaxsize ((sprites_realloc_onepart))
+			sv newmem;set newmem realloc(pmem#,currentmaxsize)
+			if newmem!=(NULL)
+				set pmem# newmem
+				return (EXIT_SUCCESS)
+			end
+			return (EXIT_FAILURE)
+		end # else is not on the edge
+	#else can be at presprite_init x2, string_add presprite_done function
 	end
 	return (EXIT_SUCCESS)
 end
