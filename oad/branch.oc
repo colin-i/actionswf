@@ -51,33 +51,35 @@ function branch_free(sv br,valueu start,charx log) #this will be recursive
 		dataxu sz#1;set sz br#:branch.size
 		call print("branch: size=%u code:",sz)
 		call print_indent()
-		ss code;set code br#:branch.x
+		if sz!=0  # same as at preframe_init, for log + mem violation
+			ss code;set code br#:branch.x
 
-		valueu pad_sz#1;set pad_sz code
-		sub pad_sz start
-		dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
-		div strip_pad_sz (xlog_pad_default)
-		mult strip_pad_sz (xlog_pad_default)
-		sub pad_sz strip_pad_sz
-		char pad_minus_one="..............................................."^
-			#for branches with holes(like a function def there) a full 48 row is required
-			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
-		call branch_code(#pad_minus_one,pad_sz,0,0,"..")
+			valueu pad_sz#1;set pad_sz code
+			sub pad_sz start
+			dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
+			div strip_pad_sz (xlog_pad_default)
+			mult strip_pad_sz (xlog_pad_default)
+			sub pad_sz strip_pad_sz
+			char pad_minus_one="..............................................."^
+				#for branches with holes(like a function def there) a full 48 row is required
+				#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
+			call branch_code(#pad_minus_one,pad_sz,0,0,"..")
 
-		charx a#1
-		set a 0x3
-		and a pad_sz
-		div pad_sz 4
-		if a=0
-			if pad_sz!=0
-				set a 4
+			charx a#1
+			set a 0x3
+			and a pad_sz
+			div pad_sz 4
+			if a=0
+				if pad_sz!=0
+					set a 4
+				end
 			end
+			call branch_code(code,sz,a,pad_sz,"%02X")
+
+			call print_inline_done()
+
+			#subbranch
 		end
-		call branch_code(code,sz,a,pad_sz,"%02X")
-
-		call print_inline_done()
-
-		#subbranch
 	end
 	call free(br)
 	if log=(TRUE)

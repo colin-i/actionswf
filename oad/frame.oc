@@ -71,6 +71,7 @@ function preframe_init()
 					set pf#:preframe.usize 0
 					set pf#:preframe.strings strings
 					set pf#:preframe.size 0
+					set bra#:branch.size 0   #mainly for malloc errors and log mem violation
 					set pf#:preframe.abranch bra
 					return pf
 				end

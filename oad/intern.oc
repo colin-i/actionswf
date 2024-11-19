@@ -123,6 +123,7 @@ function function(valueu data)
 	charx ok#1;set ok re_alloc(data#:oadata.functions,data#:oadata.functions_size)
 	if ok=(EXIT_SUCCESS)
 		add data#:oadata.functions_size :
+		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
 end
@@ -172,8 +173,11 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 				inc log
 			else
 			#if log#=(xlog_function)
+				set ok function(data)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 				set log memhex_parse_withinc(log,#number)
-				call function(data)
 			end
 		end
 		return (EXIT_SUCCESS)
