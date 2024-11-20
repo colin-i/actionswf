@@ -49,7 +49,6 @@ importx "free" free
 
 import "print_inline_start" print_inline_start
 import "print_inline_start_value" print_inline_start_value
-import "print_inline" print_inline
 import "print_inline_done" print_inline_done
 import "print" print
 import "print_indent" print_indent
@@ -85,11 +84,13 @@ function preframe_init()
 end
 
 import "branch_free" branch_free
+import "string_log" string_log
 
 function preframe_free(sv pf,charx ainit,datax log_index)
-	charx log#1
+	charx log#1;valueu stroff#1
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
+		set stroff pf#:preframe.logstrstart
 
 		call print_inline_start("ustrings:")
 		set log (TRUE)
@@ -105,7 +106,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 	while s!=end
 		set str s#
 		if log=(TRUE)
-			call print_inline("%s",str#:ustring.text)
+			call string_log(str#:ustring.text,stroff)
 		end
 		call free(str)
 		incst s
@@ -123,7 +124,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 	while s!=end
 		set str s#
 		if log=(TRUE)
-			call print_inline("%s",str#:string.text)
+			call string_log(str#:string.text,stroff)
 		end
 		call free(str#:string.branches)
 		call free(str)

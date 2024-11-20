@@ -146,6 +146,11 @@ functionx oadata_free(sv data,charx log)
 
 			sv functions;set functions data#:oadata.functions
 			if functions!=(NULL)
+				if log=(TRUE)
+					set s data#:oadata.functions_size
+					div s :
+					call print("functions: %u",s)
+				end
 				call free(functions)
 
 				sv marks;set marks data#:oadata.marks

@@ -258,6 +258,8 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 
 				if blog=(TRUE)
 					set pf#:preframe.logstart x
+					set pf#:preframe.logstrstart strings_base
+					dec pf#:preframe.logstrstart  ##here is to differentiate str 0 from NULL (will be str 1)
 				end
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x

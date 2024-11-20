@@ -42,6 +42,7 @@ function preframe()
 
 	valuexu abranch#1
 	valueu logstart#1  #branch start, to calculate ... only at log
+	valueu logstrstart#1  #strings start, since at log is printing strings and code, to see the connection
 end
 function branch()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
