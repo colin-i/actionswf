@@ -41,8 +41,12 @@ function preframe()
 	dataxu size#1  ;#Count=ui16 * :
 
 	valuexu abranch#1
+
+	#log only
 	valueu logstart#1  #branch start, to calculate ... only at log
-	valueu logstrstart#1  #strings start, since at log is printing strings and code, to see the connection
+	valuexu logstrstart#1  #strings start, since at log is printing strings and code, to see the connection
+	valueu logstrstart_size#1  #can be multiple actions
+	valueu logstrstart_index#1  #at preframe_free to know where it is
 end
 function branch()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy

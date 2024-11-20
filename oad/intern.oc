@@ -207,7 +207,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				# empty: show/done
 				set p memnl(log,#next)
 				if log=p ##show ui16
-					set ok presprite_init(preid,ppresprites,psprites,(from_show))
+					set ok presprite_init(preid,ppresprites,psprites,(from_show),blog)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
@@ -243,7 +243,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				set log next
 
 				#valueu lines#1
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,blog)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -258,8 +258,15 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 
 				if blog=(TRUE)
 					set pf#:preframe.logstart x
-					set pf#:preframe.logstrstart strings_base
-					dec pf#:preframe.logstrstart  ##here is to differentiate str 0 from NULL (will be str 1)
+					set ok re_alloc(pf#:preframe.logstrstart,pf#:preframe.logstrstart_size)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
+					valuexu sbase#1;set sbase pf#:preframe.logstrstart
+					add sbase pf#:preframe.logstrstart_size
+					set sbase# strings_base
+					dec sbase#               ##here is to differentiate str 0 from NULL (will be str 1)
+					incst pf#:preframe.logstrstart_size
 				end
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x

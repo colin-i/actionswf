@@ -25,7 +25,8 @@ setcall shape swf_shape_basic((shape_lat),(shape_lat),0xffeeFEff,0x11FF22ff)
 sd movie_preid
 setcall movie_preid swf_sprite_new()
 
-call action_init_sprite(movie_preid,"_root.tog=1")
+call action_init_sprite(movie_preid,"_root.tog=0")
+call action_init_sprite(movie_preid,"_root.tog++") #to demonstrate multiple init at oad
 
 call swf_sprite_placeobject(movie_preid,shape,1)
 call swf_sprite_showframe(movie_preid)

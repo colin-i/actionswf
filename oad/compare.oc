@@ -178,7 +178,7 @@ import "nframe_init" nframe_init
 import "frame_expand" frame_expand
 
 #                       wordxu preid
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal) #,sv p_linestotal)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal,charx log)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -222,18 +222,22 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				add pf newsize
 				add f newsize
 				if pf#=(NULL) #is after a show
-					set f# nframe_init(pf,linestotal)
+					set f# nframe_init(pf,linestotal,log)
 					if f#=(NULL)
 						return (EXIT_FAILURE)
 					end
 					#set p_linestotal# 0
 				else #is multiple action call
-					set ok frame_expand(f#,linestotal) #,p_linestotal)
+					set ok frame_expand(f#,linestotal)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
 				end
-			#else #if ainit=(xlog_ainit_true) #ainit/button , here is multiple action call, not after oalt
+			else #if ainit=(xlog_ainit_true) #ainit/button , here is multiple action call. not after oalt
+				set ok frame_expand(s#:sprite.aframe,linestotal)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 			end
 		end
 		return (EXIT_SUCCESS)
@@ -271,12 +275,12 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 						add s#:sprite.size :
 					else #from_action
 						if ainit=(xlog_ainit_false)  #here is the case when first frame has action (a popular case)
-							set f# nframe_init(pf,linestotal)
+							set f# nframe_init(pf,linestotal,log)
 							if f#=(NULL)
 								return (EXIT_FAILURE)
 							end
 						else #ainit true
-							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal)
+							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal,log)
 							if s#:sprite.aframe=(NULL)
 								return (EXIT_FAILURE)
 							end
