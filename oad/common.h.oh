@@ -44,9 +44,6 @@ function preframe()
 
 	#log only
 	valueu logstart#1  #branch start, to calculate ... only at log
-	valuexu logstrstart#1  #strings start, since at log is printing strings and code, to see the connection
-	valueu logstrstart_size#1  #can be multiple actions
-	valueu logstrstart_index#1  #at preframe_free to know where it is
 end
 function branch()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
@@ -57,13 +54,15 @@ function branch()
 
 #	valuexu *subbranch#1
 end
-function string()
-	vstrxu text#1
-	valuexu branches#1
-end
 function ustring()
-	vstrxu text#1
+	valueu base#1
+	valueu off#1
 	valueu *branch#1
+end
+function string()
+	valueu base#1
+	valueu off#1
+	valuexu branches#1
 end
 
 const from_action=0

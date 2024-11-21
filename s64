@@ -1,0 +1,4 @@
+
+make clean && cd example && ./mrdi && \
+cd ../oad && ./md && \
+cd ../tests/data && ./test

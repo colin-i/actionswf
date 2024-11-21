@@ -153,7 +153,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 			elseif log#=(xlog_string) #string
 				ss xxcontent;set xxcontent pxx#
 				add pxx# (xlog_type_size)
-				if xxcontent#!=(xlog_id) # xlog_new xlog_unique , unique also here because .x is not storing unique strings in branch
+				if xxcontent#!=(xlog_id) # xlog_new xlog_unique , not parsing .x, ok straight in .xx
 					set ok string_add(prefr,pxx#,strings_base,xxcontent#)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
@@ -207,7 +207,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				# empty: show/done
 				set p memnl(log,#next)
 				if log=p ##show ui16
-					set ok presprite_init(preid,ppresprites,psprites,(from_show),blog)
+					set ok presprite_init(preid,ppresprites,psprites,(from_show))
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
@@ -243,7 +243,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				set log next
 
 				#valueu lines#1
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,blog)
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -258,15 +258,15 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 
 				if blog=(TRUE)
 					set pf#:preframe.logstart x
-					set ok re_alloc(pf#:preframe.logstrstart,pf#:preframe.logstrstart_size)
-					if ok!=(EXIT_SUCCESS)
-						return (EXIT_FAILURE)
-					end
-					valuexu sbase#1;set sbase pf#:preframe.logstrstart
-					add sbase pf#:preframe.logstrstart_size
-					set sbase# strings_base
-					dec sbase#               ##here is to differentiate str 0 from NULL (will be str 1)
-					incst pf#:preframe.logstrstart_size
+					#set ok re_alloc(pf#:preframe.logstrstart,pf#:preframe.logstrstart_size)
+					#if ok!=(EXIT_SUCCESS)
+					#	return (EXIT_FAILURE)
+					#end
+					#valuexu sbase#1;set sbase pf#:preframe.logstrstart
+					#add sbase pf#:preframe.logstrstart_size
+					#set sbase# strings_base
+					#dec sbase#               ##here is to differentiate str 0 from NULL (will be str 1)
+					#incst pf#:preframe.logstrstart_size
 				end
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x

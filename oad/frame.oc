@@ -54,7 +54,7 @@ import "print" print
 import "print_indent" print_indent
 import "print_unindent" print_unindent
 
-function preframe_init(charx log)
+function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
 		sv ustrings
@@ -66,23 +66,13 @@ function preframe_init(charx log)
 				valueu bra#1
 				set bra malloc((\branch\))
 				if bra!=(NULL)
-					whiletrue
-						if log=(TRUE)
-							set pf#:preframe.logstrstart malloc((sprites_realloc_onepart))
-							if pf#:preframe.logstrstart=(NULL)
-								break
-							end
-							set pf#:preframe.logstrstart_size 0
-							set pf#:preframe.logstrstart_index 0
-						end
-						set pf#:preframe.ustrings ustrings
-						set pf#:preframe.usize 0
-						set pf#:preframe.strings strings
-						set pf#:preframe.size 0
-						set bra#:branch.size 0   #mainly for malloc errors and log mem violation
-						set pf#:preframe.abranch bra
-						return pf
-					end
+					set pf#:preframe.ustrings ustrings
+					set pf#:preframe.usize 0
+					set pf#:preframe.strings strings
+					set pf#:preframe.size 0
+					set bra#:branch.size 0   #mainly for malloc errors and log mem violation
+					set pf#:preframe.abranch bra
+					return pf
 				end
 				call free(strings)
 			end
@@ -97,13 +87,14 @@ import "branch_free" branch_free
 import "string_log" string_log
 
 function preframe_free(sv pf,charx ainit,datax log_index)
-	charx log#1;valuexu stroff#1
+	charx log#1
+	#valuexu stroff#1
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
-		set stroff pf#:preframe.logstrstart
-		add stroff pf#:preframe.logstrstart_index
-		set stroff stroff#
-		incst pf#:preframe.logstrstart_index
+		#set stroff pf#:preframe.logstrstart
+		#add stroff pf#:preframe.logstrstart_index
+		#set stroff stroff#
+		#incst pf#:preframe.logstrstart_index
 
 		call print_inline_start("ustrings:")
 		set log (TRUE)
@@ -119,7 +110,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 	while s!=end
 		set str s#
 		if log=(TRUE)
-			call string_log(str#:ustring.text,stroff)
+			call string_log(str#:ustring.base,str#:ustring.off)
 		end
 		call free(str)
 		incst s
@@ -137,7 +128,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 	while s!=end
 		set str s#
 		if log=(TRUE)
-			call string_log(str#:string.text,stroff)
+			call string_log(str#:string.base,str#:string.off)
 		end
 		call free(str#:string.branches)
 		call free(str)
@@ -150,7 +141,6 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 
 	call branch_free(pf#:preframe.abranch,pf#:preframe.logstart,log)
 	if log=(TRUE)
-		call free(pf#:preframe.logstrstart)
 		call print_unindent()
 	end
 
@@ -225,8 +215,8 @@ function frame_print_top(charx ainit,datax log_index)
 	call print_indent()
 end
 
-function nframe_init(sv pf,valueu total,charx log)
-	set pf# preframe_init(log)
+function nframe_init(sv pf,valueu total)
+	set pf# preframe_init()
 	if pf#!=(NULL)
 		valueu f#1;set f frame_init(total)
 		return f
