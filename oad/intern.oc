@@ -144,7 +144,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	end
 	valueu number_of_lines#1;set number_of_lines memdec(start,log)
 	charx ok#1
-	set ok frame_actions(fr,number_of_lines,log,end) #,blog)
+	set ok frame_actions(fr,number_of_lines,log,end)
 	if ok=(EXIT_SUCCESS)
 		while log!=end
 			dataxu number#1  #u16,u32,u16
@@ -190,7 +190,7 @@ import "presprite_done" presprite_done
 import "get_nframe" get_nframe
 import "branch_done" branch_done
 
-function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx blog)
+function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 	add logsize log
 	if log!=logsize  ##else no action sprites/shows
 		sd next
@@ -242,8 +242,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				valueu linesnr#1;set linesnr memdec(log,p)
 				set log next
 
-				#valueu lines#1
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,x)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -256,18 +255,6 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 
-				if blog=(TRUE)
-					set pf#:preframe.logstart x
-					#set ok re_alloc(pf#:preframe.logstrstart,pf#:preframe.logstrstart_size)
-					#if ok!=(EXIT_SUCCESS)
-					#	return (EXIT_FAILURE)
-					#end
-					#valuexu sbase#1;set sbase pf#:preframe.logstrstart
-					#add sbase pf#:preframe.logstrstart_size
-					#set sbase# strings_base
-					#dec sbase#               ##here is to differentiate str 0 from NULL (will be str 1)
-					#incst pf#:preframe.logstrstart_size
-				end
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x
 				add x xcode_size
@@ -276,8 +263,11 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 				#[actions]
 				whiletrue
 					if log=logsize
-						call branch_done(pf,xcode_size,global.xoffset,xcode)
-						return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
+						set ok branch_done(pf,xcode_size,global.xoffset,xcode)
+						if ok=(EXIT_SUCCESS)
+							return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
+						end
+						return (EXIT_FAILURE)
 					end
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
@@ -287,7 +277,10 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,ch
 							return (EXIT_FAILURE)
 						end
 					else
-						call branch_done(pf,xcode_size,global.xoffset,xcode)
+						set ok branch_done(pf,xcode_size,global.xoffset,xcode)
+						if ok!=(EXIT_SUCCESS)
+							return (EXIT_FAILURE)
+						end
 						break #[log,p) will continue at preid
 					end
 					set log next   ##was a row with actions

@@ -92,7 +92,10 @@ function print_inline_start_value(ss format,valueu value)
 	call indent()
 	call printf(format,value)
 end
-#function print_inline(ss format,valueu value);call printf(" ");call printf(format,value);end
+function print_inline(ss format,valueu value)
+	call printf(" ")
+	call printf(format,value)
+end
 function print_inline2(ss format,valueu value,valueu v2)
 	call printf(" ")
 	call printf(format,value,v2)

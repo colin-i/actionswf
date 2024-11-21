@@ -46,13 +46,17 @@ function preframe()
 	valueu logstart#1  #branch start, to calculate ... only at log
 end
 function branch()
-	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
-	dataxu size#1
+	valueu cuts#1
+	valueu size#1  #here a return undefined DoAction has 8 and a branchcut has 12(16 if aligned), there are no 3 size(tag+end) DoAction from actionswf lib
 
 #	dataxu *offset#1
 #	valuexu *action#1   #for mark, after compare
 
 #	valuexu *subbranch#1
+end
+function branchcut()
+	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
+	dataxu size#1 #same x size doctrine
 end
 function ustring()
 	valueu base#1
