@@ -54,7 +54,7 @@ import "print" print
 import "print_indent" print_indent
 import "print_unindent" print_unindent
 
-function preframe_init(valueu logstart)
+function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
 		sv ustrings
@@ -75,7 +75,6 @@ function preframe_init(valueu logstart)
 						set bra#:branch.cuts cuts
 						set bra#:branch.size 0
 						set pf#:preframe.abranch bra
-						set pf#:preframe.logstart logstart
 						return pf
 					end
 					call free(bra)
@@ -93,7 +92,7 @@ import "branch_log" branch_log
 import "string_log" string_log
 import "branch_free" branch_free
 
-function preframe_free(sv pf,charx ainit,datax log_index)
+function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1
 	#valuexu stroff#1
 	if log_index!=(no_index)
@@ -145,7 +144,7 @@ function preframe_free(sv pf,charx ainit,datax log_index)
 	if log=(TRUE)
 		call print_inline_done()
 
-		call branch_log(pf#:preframe.abranch,pf#:preframe.logstart)
+		call branch_log(pf#:preframe.abranch,logstart)
 		call print_unindent()
 	end
 	call branch_free(pf#:preframe.abranch)
@@ -221,8 +220,8 @@ function frame_print_top(charx ainit,datax log_index)
 	call print_indent()
 end
 
-function nframe_init(sv pf,valueu total,valueu logstart)
-	set pf# preframe_init(logstart)
+function nframe_init(sv pf,valueu total)
+	set pf# preframe_init()
 	if pf#!=(NULL)
 		valueu f#1;set f frame_init(total)
 		return f

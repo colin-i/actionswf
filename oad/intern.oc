@@ -225,14 +225,6 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 				set p memnl(log,#next)
 			else
-				valueu strings_size#1
-				set strings_size x#
-				add x (xlog_strings_size)
-				valueu strings_base#1;set strings_base x
-				add x strings_size
-				dataxu xcode_size#1
-				set xcode_size x#
-
 				#ainit
 				charx ainit#1;set ainit memdec(log,p) #[log,p) 0/1
 				set log next
@@ -242,7 +234,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				valueu linesnr#1;set linesnr memdec(log,p)
 				set log next
 
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,x)
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -255,6 +247,13 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 
+				valueu strings_size#1
+				set strings_size x#
+				add x (xlog_strings_size)
+				valueu strings_base#1;set strings_base x
+				add x strings_size
+				dataxu xcode_size#1
+				set xcode_size x#
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x
 				add x xcode_size

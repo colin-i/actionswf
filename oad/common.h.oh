@@ -41,9 +41,6 @@ function preframe()
 	dataxu size#1  ;#Count=ui16 * :
 
 	valuexu abranch#1
-
-	#log only
-	valueu logstart#1  #branch start, to calculate ... only at log
 end
 function branch()
 	valueu cuts#1

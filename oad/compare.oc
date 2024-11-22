@@ -105,7 +105,7 @@ importx "puts" puts
 
 import "preframe_free" preframe_free
 
-function preoadata_free(sv presprites,sv sprites,charx log)
+function preoadata_free(sv presprites,sv sprites,charx log,valueu xstart)
 	if presprites!=(NULL)
 		if sprites!=(NULL)
 			wordxu preid#1
@@ -132,7 +132,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						set frame_index (no_index)
 					end
 					if pres#:presprite.apreframe!=(NULL)
-						call preframe_free(pres#:presprite.apreframe,(xlog_ainit_true),frame_index)
+						call preframe_free(pres#:presprite.apreframe,(xlog_ainit_true),frame_index,xstart)
 					end
 					if pres#:presprite.preframes!=(NULL) #not making a template free because preframe is different than frame
 						if log=(TRUE)
@@ -144,7 +144,7 @@ function preoadata_free(sv presprites,sv sprites,charx log)
 						add end pointer
 						while pointer!=end
 							if pointer#!=(NULL)
-								call preframe_free(pointer#,(xlog_ainit_false),frame_index)
+								call preframe_free(pointer#,(xlog_ainit_false),frame_index,xstart)
 							end
 							incst pointer
 							if log=(TRUE)
@@ -178,7 +178,7 @@ import "nframe_init" nframe_init
 import "frame_expand" frame_expand
 
 #                       wordxu preid                                         at action only from here
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal,valueu logstart)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -222,7 +222,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				add pf newsize
 				add f newsize
 				if pf#=(NULL) #is after a show
-					set f# nframe_init(pf,linestotal,logstart)
+					set f# nframe_init(pf,linestotal)
 					if f#=(NULL)
 						return (EXIT_FAILURE)
 					end
@@ -275,12 +275,12 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 						add s#:sprite.size :
 					else #from_action
 						if ainit=(xlog_ainit_false)  #here is the case when first frame has action (a popular case)
-							set f# nframe_init(pf,linestotal,logstart)
+							set f# nframe_init(pf,linestotal)
 							if f#=(NULL)
 								return (EXIT_FAILURE)
 							end
 						else #ainit true
-							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal,logstart)
+							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal)
 							if s#:sprite.aframe=(NULL)
 								return (EXIT_FAILURE)
 							end
