@@ -443,7 +443,7 @@ function debug_xlog_ex(sd codepointer,sd type)
 end
 function debug_xlog(sd codepointer) #/
 # forin{[ for;;[ if/loop{[ ?[ func{[   [else :[   loop}[ if}[
-#not all &jump will start a new branch: if else/...&resolvingIfEnd...
+#not all &jump will start a new branch, example continue and break
 	callg debug_xlog_ex(codepointer,(xlog_branch))
 end
 function debug_xlog_stepout(sd codepointer) #|

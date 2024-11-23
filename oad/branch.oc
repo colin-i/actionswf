@@ -31,7 +31,9 @@ import "print_unindent" print_unindent
 import "print_inline_start_value" print_inline_start_value
 import "print_inline_done" print_inline_done
 
-function branch_code(ssu code,valueu end,charx a,charx b,ss form)
+function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
+	charx a#1;charx b#1
+	set a _a#;set b _b#
 	add end code
 	while code!=end
 	#best view command is same as in src/x.oc debug_x_pad
@@ -56,6 +58,7 @@ function branch_code(ssu code,valueu end,charx a,charx b,ss form)
 		end
 		inc code
 	end
+	set _a# a;set _b# b
 end
 
 import "print_inline_start" print_inline_start
@@ -72,15 +75,12 @@ function branch_log(sv br,valueu start)
 			add sz cuts#:branchcut.size
 			add cuts \branchcut\
 		end
-		call print_inline("size=%u code:",sz)
+		call print_inline("size=0x%X code:",sz)
 		call print_inline_done()
 
 		call print_indent()
-
 		set cuts br#:branch.cuts
-		charx a#1;#charx b#1
-		#set a 0;set b 0
-		#while cuts!=end
+		while cuts!=end
 			ss code;set code cuts#:branchcut.x
 			set sz cuts#:branchcut.size
 
@@ -90,26 +90,18 @@ function branch_log(sv br,valueu start)
 			div strip_pad_sz (xlog_pad_default)
 			mult strip_pad_sz (xlog_pad_default)
 			sub pad_sz strip_pad_sz
-			char pad_minus_one="..............................................."^
+			charx pad_minus_one#47
 				#for branches with holes(like a function def there) a full 48 row is required
 				#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
-			call branch_code(#pad_minus_one,pad_sz,0,0,"..")
 
-			set a 0x3
-			and a pad_sz
-			div pad_sz 4
-			if a=0
-				if pad_sz!=0
-					set a 4
-				end
-			end
-			call branch_code(code,sz,a,pad_sz,"%02X")
+			charx a#1;charx b#1
+			set a 0;set b 0
+			call branch_code(#pad_minus_one,pad_sz,#a,#b,"..")
+			call branch_code(code,sz,#a,#b,"%02X")
+			call print_inline_done()
 
-		#	add cuts \branchcut\
-		#end
-
-		call print_inline_done()
-
+			add cuts \branchcut\
+		end
 		call print_unindent()
 	else
 		call print_inline_done() #here is no size, no cuts added, an error through first cut, through that point strings are added and when the cut sign is, only then
