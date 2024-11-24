@@ -75,6 +75,7 @@ function preframe_init()
 						set bra#:branch.cuts cuts
 						set bra#:branch.size 0
 						set pf#:preframe.abranch bra
+						set pf#:preframe.size 0
 						return pf
 					end
 					call free(bra)
@@ -143,6 +144,8 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	call free(strings)
 	if log=(TRUE)
 		call print_inline_done()
+
+		call print("size=0x%X",pf#:preframe.size)
 
 		call branch_log(pf#:preframe.abranch,logstart)
 		call print_unindent()

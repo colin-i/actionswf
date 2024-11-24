@@ -74,7 +74,7 @@ end
 function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
 	inc start
 	ss a;set a start
-	whiletrue
+	whiletrue #the action row is ending in new line
 		charx c#1;set c a#
 		if c<(ZeroChar);break;end
 		if c<=(NineChar)
@@ -150,7 +150,16 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 			dataxu number#1  #u16,u32,u16
 			if log#=(xlog_act) #action
 				set log memhex_parse_withinc(log,#number)
+				if number=0 # code < 0x80
+					add prefr#:preframe.size (actionrecordheader_tag_size)
+				else
+					add prefr#:preframe.size (actionrecordheader_size)
+					add prefr#:preframe.size number
+				end
 			elseif log#=(xlog_string) #string
+				inc log ## 0 for Constant8, 1 for Constant16
+				#sub (ZeroChar)
+
 				ss xxcontent;set xxcontent pxx#
 				add pxx# (xlog_type_size)
 				if xxcontent#!=(xlog_id) # xlog_new xlog_unique , not parsing .x, ok straight in .xx
@@ -158,7 +167,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
-					add pxx# (xlog_new_size)
+					add pxx# (xlog_unique_new_size)
 				else #xlog_id
 					add pxx# (xlog_id_size)
 				end

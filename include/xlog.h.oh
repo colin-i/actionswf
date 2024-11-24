@@ -3,7 +3,7 @@ const xlog_type_size=1 #BYTE
 const xlog_code_size=4 #DWORD
 const xlog_unique=0
 const xlog_new=1
-const xlog_new_size=: ;#DWORD/QWORD
+const xlog_unique_new_size=: ;#DWORD/QWORD
 const xlog_id=2
 const xlog_id_size=2 #WORD
 
@@ -25,3 +25,10 @@ const xlog_strings_size=:
 const xlog_xcode_size=4   #DWORD
 
 const xlog_pad_default=0x30
+
+const actionrecordheader_tag_size=1
+const actionrecordheader_length_size=2
+const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size
+
+const xlog_const8=0
+const xlog_const16=1

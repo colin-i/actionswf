@@ -95,13 +95,13 @@ import "f_write" f_write
 import "memalloc" memalloc
 import "mem_block_add" mem_block_add
 
-function pool_entry()
+function pool_entry(sd nr)
 	sd id;set id actionpoolid_get()
 	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
 	char a=constpool_unique
 	call mem_block_add(pb,#a,1)
 	import "debug_xlog_pool" debug_xlog_pool
-	callg debug_xlog_pool()
+	callg debug_xlog_pool(nr)
 end
 function pool_reentry(sd offset)
 	sd id;set id actionpoolid_get()
@@ -238,7 +238,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 		sd testid
 		if force=(FALSE)
 			if pool_data.write!=(FALSE)
-				call pool_entry()
+				call pool_entry(0)
 			elseif pool_data.read!=(FALSE)
 				set testid pool_reentry(value)
 				if testid=(not_an_id)
@@ -269,7 +269,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 						sub nr count
 						if pool_data.write!=(FALSE)
 							call pool_realentry(nr)
-							call debug_xlog_pool()
+							call debug_xlog_pool(nr)
 						else
 							import "x_log_id" x_log_id
 							callg x_log_id((xlog_id),nr) #read and rest of xx flags
@@ -282,7 +282,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 				dec count
 			endwhile
 			if pool_data.write!=(FALSE)
-				call pool_entry()
+				call pool_entry(nr)
 			elseif pool_data.read!=(FALSE)
 				set testid pool_reentry(value)
 				if testid=(not_an_id)

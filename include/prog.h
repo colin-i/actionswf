@@ -128,11 +128,7 @@ const actionjump_contentsize=2
 const smallbackjump=-actionjump_contentsize
 
 const action_debug_comma=1
-const action_debug_recordlength=(action_debug_comma)+1 # ,2 from actionjump, if ,10 ...  must change
-
-const actionrecordheader_tag_size=1
-const actionrecordheader_length_size=2
-const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size
+const action_debug_recordlength=(action_debug_comma)+1 # ,2 only at actionjump, if ,10 ...  must change
 
 const ret_cont_break_nothing=0
 const ret_cont_break_something=1

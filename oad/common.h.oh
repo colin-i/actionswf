@@ -40,9 +40,9 @@ function preframe()
 	valuexu strings#1
 	dataxu ssize#1  ;#Count=ui16 * :
 
-	valuexu abranch#1
+	dataxu size#1  #DoAction has ui32 but overall also is a ui32
 
-#	dataxu size#1  #DoAction has ui32 but overall also is a ui32
+	valuexu abranch#1
 end
 function branch()
 	valueu cuts#1
