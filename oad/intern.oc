@@ -157,8 +157,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 					add prefr#:preframe.size number
 				end
 			elseif log#=(xlog_string) #string
-				inc log ## 0 for Constant8, 1 for Constant16
-				#sub (ZeroChar)
+				inc log ## 0x30 for Constant8, 0x31 for Constant16
 
 				ss xxcontent;set xxcontent pxx#
 				add pxx# (xlog_type_size)

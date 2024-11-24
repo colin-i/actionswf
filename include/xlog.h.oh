@@ -30,5 +30,5 @@ const actionrecordheader_tag_size=1
 const actionrecordheader_length_size=2
 const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size
 
-const xlog_const8=0
-const xlog_const16=1
+const xlog_const8_log=0x30
+const xlog_const16_log=0x31

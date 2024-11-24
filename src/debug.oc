@@ -457,10 +457,10 @@ function debug_xlog_pool(sd nr) #pool_flag is already tested
 	if log_init.prexx=(prexx_flags)
 		if nr<256  #at oad when is reading the log, it has constant8/constant16, after pool substitutions in the second swf, it is another lookup with string/c8/c16, must recalculate
 		#at write to xx, new can compare ssize and id has the word nr < or >= 256
-			wordu a=xlog_const8  #Constant8 lookup has 1 byte
+			wordu a=xlog_const8_log-_0  #Constant8 lookup has 1 byte
 			call debug_phase_code_add_long(#a,(xlog_string))
 		else #const16
-			wordu b=xlog_const16  #Constant16 lookup has 2 bytes
+			wordu b=xlog_const16_log-_0  #Constant16 lookup has 2 bytes
 			callg debug_phase_code_add_long(#b,(xlog_string))
 		end
 	end
