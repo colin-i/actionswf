@@ -19,10 +19,10 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type)
 	sv pto;sd psize
 	if type=(xlog_new)
 		set pto #pf#:preframe.strings
-		set psize #pf#:preframe.size
+		set psize #pf#:preframe.ssize
 	else #xlog_unique
 		set pto #pf#:preframe.ustrings
-		set psize #pf#:preframe.usize
+		set psize #pf#:preframe.ussize
 	end
 	charx ok#1
 	set ok re_alloc(pto,psize#)

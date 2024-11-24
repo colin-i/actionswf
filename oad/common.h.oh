@@ -35,12 +35,14 @@ function presprite() #presprites_size is intern
 end
 function preframe()
 	valuexu ustrings#1
-	dataxu usize#1  ;#Count=ui16 * :
+	dataxu ussize#1  ;#Count=ui16 * :
 
 	valuexu strings#1
-	dataxu size#1  ;#Count=ui16 * :
+	dataxu ssize#1  ;#Count=ui16 * :
 
 	valuexu abranch#1
+
+#	dataxu size#1  #DoAction has ui32 but overall also is a ui32
 end
 function branch()
 	valueu cuts#1

@@ -69,9 +69,9 @@ function preframe_init()
 					sv cuts;set cuts malloc(1) #symbolic, null malloc can be null return
 					if cuts!=(NULL)
 						set pf#:preframe.ustrings ustrings
-						set pf#:preframe.usize 0
+						set pf#:preframe.ussize 0
 						set pf#:preframe.strings strings
-						set pf#:preframe.size 0
+						set pf#:preframe.ssize 0
 						set bra#:branch.cuts cuts
 						set bra#:branch.size 0
 						set pf#:preframe.abranch bra
@@ -111,7 +111,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	#is a different free than strings, will have one branch vs multiple
 	sv ustrings;set ustrings pf#:preframe.ustrings
 	sv s;set s ustrings
-	sv end;set end pf#:preframe.usize
+	sv end;set end pf#:preframe.ussize
 	add end s
 	while s!=end
 		set str s#
@@ -129,7 +129,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	end
 	sv strings;set strings pf#:preframe.strings
 	set s strings
-	set end pf#:preframe.size
+	set end pf#:preframe.ssize
 	add end s
 	while s!=end
 		set str s#
