@@ -76,6 +76,7 @@ function preframe_init()
 						set bra#:branch.size 0
 						set pf#:preframe.abranch bra
 						set pf#:preframe.size 0
+						set pf#:preframe.recalculation 0
 						return pf
 					end
 					call free(bra)
@@ -92,6 +93,7 @@ end
 import "branch_log" branch_log
 import "string_log" string_log
 import "branch_free" branch_free
+import "print2" print2
 
 function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1
@@ -145,7 +147,9 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	if log=(TRUE)
 		call print_inline_done()
 
-		call print("size=0x%X",pf#:preframe.size)
+		dataxu finalsize#1;set finalsize pf#:preframe.size
+		add finalsize pf#:preframe.recalculation
+		call print2("size=0x%X, finalsize=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
 
 		call branch_log(pf#:preframe.abranch,logstart)
 		call print_unindent()

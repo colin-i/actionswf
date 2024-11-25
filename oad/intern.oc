@@ -161,7 +161,8 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 					add prefr#:preframe.size (actionrecordheader_size)
 					add prefr#:preframe.size number
 					if recalculation!=0
-						add prefr#:preframe.size recalculation
+						#it is not important. only for log. add prefr#:preframe.size recalculation
+						add prefr#:preframe.recalculation recalculation
 						set recalculation 0
 					end
 				end
@@ -196,7 +197,8 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 					return (EXIT_FAILURE)
 				end
 				set log memhex_parse_withinc(log,#number)
-				add prefr#:preframe.size (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
+				#add prefr#:preframe.size #only at log is important
+				add prefr#:preframe.recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 				#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 			end
 		end
