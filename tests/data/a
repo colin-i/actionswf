@@ -8,8 +8,9 @@ if [ -z "${CC}" ]; then
 	fi
 fi
 
-f=../../example/example.swf
-
+if [ -z "${f}" ]; then
+	f=../../example/example.swf
+fi
 o a.oc x_file 1 && \
 otoc a.oc.x && \
 ${CC} ${model} -w -g a.c -L../../oad -loadbgdata && \

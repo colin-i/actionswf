@@ -115,8 +115,6 @@ function newbranch(sv px,sv pxx)
 	add pxx# (xlog_code_size)
 end
 
-import "string_add" string_add
-import "frame_actions" frame_actions
 import "re_alloc" re_alloc
 
 function function(valueu data)
@@ -128,16 +126,20 @@ function function(valueu data)
 	return (EXIT_FAILURE)
 end
 
+import "frame_actions" frame_actions
+import "string_add" string_add
+import "string_id" string_id
+
 function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data)
 	ss start;set start log
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
 		charx chr#1
 		set chr log#
-		if log<(ZeroChar)
+		if chr<(ZeroChar)
 			break
 		end
-		if log>(NineChar)
+		if chr>(NineChar)
 			break
 		end
 		inc log
@@ -146,6 +148,9 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	charx ok#1
 	set ok frame_actions(fr,number_of_lines,log,end)
 	if ok=(EXIT_SUCCESS)
+		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
+			#not outside actionrow? 'a','a' on multiple rows is still on same row
+		set recalculation 0
 		while log!=end
 			dataxu number#1  #u16,u32,u16
 			if log#=(xlog_act) #action
@@ -155,6 +160,10 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 				else
 					add prefr#:preframe.size (actionrecordheader_size)
 					add prefr#:preframe.size number
+					if recalculation!=0
+						add prefr#:preframe.size recalculation
+						set recalculation 0
+					end
 				end
 			elseif log#=(xlog_string) #string
 				inc log ## xlog_const8_log or xlog_const16_log
@@ -162,12 +171,13 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 				ss xxcontent;set xxcontent pxx#
 				add pxx# (xlog_type_size)
 				if xxcontent#!=(xlog_id) # xlog_new xlog_unique , not parsing .x, ok straight in .xx
-					set ok string_add(prefr,pxx#,strings_base,xxcontent#)
+					set ok string_add(prefr,pxx#,strings_base,xxcontent#,log#,#recalculation)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
 					add pxx# (xlog_unique_new_size)
 				else #xlog_id
+					call string_id(pxx#,log#,#recalculation)
 					add pxx# (xlog_id_size)
 				end
 				inc log
@@ -186,6 +196,8 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 					return (EXIT_FAILURE)
 				end
 				set log memhex_parse_withinc(log,#number)
+				add prefr#:preframe.size (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
+				#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 			end
 		end
 		return (EXIT_SUCCESS)

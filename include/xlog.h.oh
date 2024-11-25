@@ -32,3 +32,6 @@ const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_len
 
 const xlog_const8_log=0x30
 const xlog_const16_log=0x31
+
+const actionpush_type=1     #BYTE
+const actionpush_integer=4  #DWORD
