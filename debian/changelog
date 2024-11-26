@@ -1,3 +1,9 @@
+actionswf (1-109) bionic; urgency=medium
+
+  * log real size
+
+ -- bc <bc@bc-desktop>  Tue, 26 Nov 2024 15:11:56 +0200
+
 actionswf (1-108) bionic; urgency=medium
 
   * i386 oadata test
