@@ -149,7 +149,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 
 		dataxu finalsize#1;set finalsize pf#:preframe.size
 		add finalsize pf#:preframe.recalculation
-		call print2("size=0x%X, finalsize=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
+		call print2("size=0x%X, final size=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
 
 		call branch_log(pf#:preframe.abranch,logstart)
 		call print_unindent()
