@@ -187,6 +187,9 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 			elseif log#=(xlog_branch) #branch start
 				call newbranch(px,pxx)
 				inc log
+			elseif log#=(xlog_innerbranch)
+				call newbranch(px,pxx)
+				inc log
 			elseif log#=(xlog_innerbranchend) #innerbranch end
 				call newbranch(px,pxx)
 				inc log

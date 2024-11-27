@@ -15,7 +15,8 @@ const xlog_branch=0x2F        ;#/
 const xlog_function=0x40       #@
 #A-F
 const xlog_string=0x5E        ;#^
-const xlog_innerbranchend=0x7C;#|
+const xlog_innerbranch=0x7B    #{
+const xlog_innerbranchend=0x7D #}
 
 #note: oaalternative is using ainit
 const xlog_ainit_false=0

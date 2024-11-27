@@ -445,12 +445,16 @@ function debug_xlog_ex(sd codepointer,sd type)
 	end
 end
 function debug_xlog(sd codepointer) #/
-# forin{[ for;;[ if/loop{[ ?[ func{[   [else :[   loop}[ if}[
+# forin{[ if/loop{[  [else :[  loop}[ if}[ else}[
 #not all &jump will start a new branch, example continue and break
 	callg debug_xlog_ex(codepointer,(xlog_branch))
 end
-function debug_xlog_stepout(sd codepointer) #|
-# for;;[ func}[
+function debug_xlog_stepin(sd codepointer) #{
+#for;;[ ?[ func{[
+	callg debug_xlog_ex(codepointer,(xlog_innerbranch))
+end
+function debug_xlog_stepout(sd codepointer) #}
+# for;;[ func}[ :}[
 	callg debug_xlog_ex(codepointer,(xlog_innerbranchend))
 end
 function debug_xlog_pool(sd nr) #pool_flag is already tested

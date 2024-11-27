@@ -247,6 +247,7 @@ import "brace_blocks_add_write_offset" brace_blocks_add_write_offset
 import "brace_blocks_remove_write" brace_blocks_remove_write
 import "brace_blocks_remove_write_ex" brace_blocks_remove_write_ex
 import "debug_xlog" debug_xlog
+import "debug_xlog_stepin" debug_xlog_stepin
 import "debug_xlog_stepout" debug_xlog_stepout
 
 #position
@@ -295,7 +296,9 @@ function action__code_row_ex(sd codepointer)
 			add codepointer (DWORD)
 		else
 			call brace_blocks_remove_write((FALSE))
-			call debug_xlog(codepointer) #simple if}[
+			call debug_xlog(codepointer) #simple if}[ but can also be the last if from elseif
+			valueu is_else_next_mark#1
+			set is_else_next_mark codepointer
 		endelse
 		return codepointer
 	endif
@@ -305,7 +308,17 @@ function action__code_row_ex(sd codepointer)
 		return codepointer
 	end
 	if attrib=(block_else_end)
+		charx test#1
+		if codepointer=is_else_next_mark
+			set test (FALSE)
+		else
+			set test (TRUE)
+		end
 		setcall codepointer action_code_conditions_end(codepointer)
+		if test=(TRUE) #only at else, at elseif was done in another way
+			call debug_xlog(codepointer) #can be a return inside else. then next code is not 100% from this branch
+			#and we are not branching at return/continue/break, will be a logical error to write dead code after that
+		end
 		return codepointer
 	endif
 	if attrib=(whileblock_end)
@@ -483,7 +496,7 @@ function action_code_write_conditions(sd codepointer)
 		call add_while_top_off((while_marker))
 		#
 		if codepointer#!=(inter_for)
-			call debug_xlog(codepointer) #after jump
+			call debug_xlog_stepin(codepointer) #after jump here is having right part of the for
 			setcall codepointer action_code_pack(codepointer)
 			import "write_forward_offset" write_forward_offset
 			sub sizeOff (WORD)
@@ -833,7 +846,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			else
 				call write_ifjump_withNot(0)
 			end
-			call debug_xlog(codepointer) #after jump
+			call debug_xlog_stepin(codepointer) #after jump, is stepping in ?: and will return and continue the branch
 			setcall codepointer action_code_right_util(codepointer)
 			call action_code_else_add()
 			call debug_xlog(codepointer) #at start of second part and after.stepout, but if before was a return? this is a new branch
@@ -841,6 +854,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
 			call brace_blocks_remove_write((FALSE))
+			call debug_xlog_stepout(codepointer) #and continue after :]|
 			return codepointer
 		endelseif
 		setcall codepointer action_code_right_number(codepointer)
@@ -938,7 +952,7 @@ function action_definefunction(sd codepointer)
 	setcall codepointer action_deffunction(codepointer,#debug_related)
 
 	#this on same row with dummy at .log
-	call debug_xlog(codepointer) #after define function tag
+	call debug_xlog_stepin(codepointer) #after define function tag
 	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
 	call debug_phase_code(codepointer)
 
