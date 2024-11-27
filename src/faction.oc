@@ -5,7 +5,7 @@ include "../include/prog.h"
 import "action_debug" action_debug
 import "action_data" action_data
 import "action_code_values" action_code_values
-import "action_code_values_index" action_code_values_index
+import "action_code_values_action" action_code_values_action
 import "escape_action" escape_action
 import "action_debug_free" action_debug_free
 import "debug_phase_parse_end" debug_phase_parse_end
@@ -28,8 +28,7 @@ function action_base(ss ac)
 	if p_values=(NULL);call error("Don't call the action now.");endif
 	#
 	sd nr
-	setcall nr action_code_values_index()
-	set nr# 0
+	setcall nr action_code_values_action()
 	call action_data()
 
 	import "actionx" actionx

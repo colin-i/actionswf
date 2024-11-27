@@ -40,6 +40,13 @@ function action_code_get()
     return pointer
 endfunction
 
+function action_code_values_action()
+	set action_code_values_index.nr 0
+	valuexu is_else_next_mark#1
+	set is_else_next_mark (NULL)
+	return #action_code_values_index.nr
+end
+
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
 
@@ -297,8 +304,7 @@ function action__code_row_ex(sd codepointer)
 		else
 			call brace_blocks_remove_write((FALSE))
 			call debug_xlog(codepointer) #simple if}[ but can also be the last if from elseif
-			valueu is_else_next_mark#1
-			set is_else_next_mark codepointer
+			set action_code_values_action.is_else_next_mark codepointer
 		endelse
 		return codepointer
 	endif
@@ -309,7 +315,7 @@ function action__code_row_ex(sd codepointer)
 	end
 	if attrib=(block_else_end)
 		charx test#1
-		if codepointer=is_else_next_mark
+		if codepointer=action_code_values_action.is_else_next_mark
 			set test (FALSE)
 		else
 			set test (TRUE)
