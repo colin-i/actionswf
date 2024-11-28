@@ -184,6 +184,8 @@ end
 
 import "print_inline2" print_inline2
 import "prints" prints
+import "memnl" memnl
+import "indent" indent
 
 importx "stdout" stdout
 importx "fwrite" fwrite
@@ -223,7 +225,20 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
 		sv so^stdout
-		call fwrite(f#:frame.text,f#:frame.size,1,so#)
+
+		ss a#1;set a f#:frame.text;ss b
+		valueu c#1;set c f#:frame.size
+		valueu d#1
+		add c a
+		while a!=c
+			set d memnl(a,#b) #more in the function, \r\n example
+			sub d a
+			call indent()
+			call fwrite(a,d,1,so#)
+			call print_inline_done()
+			set a b
+		end
+
 		call prints("<<<")
 		call print_unindent()
 	end

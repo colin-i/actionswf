@@ -211,9 +211,9 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 end
 
 function text_after_nlines(ss inlog,valueu linesnr)
-	ss p;ss next
+	ss next
 	while linesnr>^0
-		set p memnl(inlog,#next)
+		call memnl(inlog,#next)
 		set inlog next
 		dec linesnr
 	end
