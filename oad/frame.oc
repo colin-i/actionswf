@@ -271,6 +271,14 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
+function frame_text_add(valueu *fr,svu *_text,valueu lines)
+	while lines>^0
+		dec lines
+	end
+	#frame_text_allocpart
+	return (EXIT_SUCCESS)
+end
+
 function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
 	charx ok#1;set ok frame_text_add(fr,_text,lines)
 	if ok=(EXIT_SUCCESS)
@@ -324,11 +332,4 @@ function frame_expand(valueu fr,valueu lines) #,sv p_totallines)
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
-end
-
-function frame_text_add(valueu *fr,svu *_text,valueu lines)
-	while lines>^0
-		dec lines
-	end
-	#frame_text_allocpart
 end
