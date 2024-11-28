@@ -210,6 +210,16 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	return (EXIT_FAILURE)
 end
 
+function text_after_nlines(ss inlog,valueu linesnr)
+	ss p;ss next
+	while linesnr>^0
+		set p memnl(inlog,#next)
+		set inlog next
+		dec linesnr
+	end
+	return inlog
+end
+
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 import "get_nframe" get_nframe
@@ -265,11 +275,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 
 				valueu text#1;set text log
-				while linesnr>^0
-					set p memnl(log,#next)
-					set log next
-					dec linesnr
-				end
+				set log text_after_nlines(log,linesnr)
 
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 

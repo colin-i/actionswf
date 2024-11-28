@@ -183,6 +183,10 @@ function frame_init(valueu total)
 end
 
 import "print_inline2" print_inline2
+import "prints" prints
+
+importx "stdout" stdout
+importx "fwrite" fwrite
 
 function frame_free(sv f,charx ainit,datax log_index)
 	valueu end#1;set end f#:frame.total
@@ -217,6 +221,10 @@ function frame_free(sv f,charx ainit,datax log_index)
 	if log_index!=(no_index)
 		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
+		call print("text: size=%lu <<<",f#:frame.size)
+		sv so^stdout
+		call fwrite(f#:frame.text,f#:frame.size,1,so#)
+		call prints("<<<")
 		call print_unindent()
 	end
 	call free(lines)
@@ -224,7 +232,6 @@ function frame_free(sv f,charx ainit,datax log_index)
 	call free(f)
 end
 
-import "prints" prints
 function frame_print_top(charx ainit,datax log_index)
 	if ainit=(xlog_ainit_false)
 		call print("frame %u",log_index)
@@ -271,11 +278,39 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
-function frame_text_add(valueu *fr,svu *_text,valueu lines)
-	while lines>^0
-		dec lines
+const frame_text_allocpart_=frame_text_allocpart-1
+const _frame_text_allocpart_=~frame_text_allocpart_
+import "text_after_nlines" text_after_nlines
+
+importx "memcpy" memcpy
+
+function frame_text_add(valueu fr,svu _text,valueu lines)
+	valueu starttext#1;set starttext _text#
+	valueu endtext#1;set endtext text_after_nlines(starttext,lines)
+	set _text# endtext
+	sub endtext starttext
+
+	valueu test#1;set test (_frame_text_allocpart_)
+	and test fr#:frame.size
+	valueu test3#1;set test3 fr#:frame.size
+	add test3 endtext
+	valueu test2#1;set test2 (_frame_text_allocpart_)
+	and test2 test3
+	valueu mem#1
+	if test!=test2
+		add test2 (frame_text_allocpart)
+		#only drawback: if on edge will still go one more part
+		set mem realloc(fr#:frame.text,test2)
+		if mem=(NULL)
+			return (EXIT_FAILURE)
+		end
+		set fr#:frame.text mem
+	else
+		set mem fr#:frame.text
 	end
-	#frame_text_allocpart
+	add mem fr#:frame.size
+	call memcpy(mem,starttext,endtext)
+	add fr#:frame.size endtext
 	return (EXIT_SUCCESS)
 end
 
