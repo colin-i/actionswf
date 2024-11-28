@@ -159,6 +159,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	call free(pf)
 end
 
+const frame_text_allocpart=0x100
 function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
 	if f!=(NULL)
@@ -166,10 +167,15 @@ function frame_init(valueu total)
 		mult size total
 		sv lines;set lines malloc(size)
 		if lines!=(NULL)
-			set f#:frame.lines lines
-			set f#:frame.total 0
-			#this is at end because can be truncated on last blank lines: set f#:frame.total total
-			return f
+			sv text;set text malloc((frame_text_allocpart))
+			if text!=(NULL)
+				set f#:frame.lines lines
+				set f#:frame.total 0
+				set f#:frame.text text
+				set f#:frame.size 0
+				return f
+			end
+			call free(lines)
 		end
 		call free(f)
 	end
@@ -214,6 +220,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call print_unindent()
 	end
 	call free(lines)
+	call free(f#:frame.text)
 	call free(f)
 end
 
@@ -264,40 +271,43 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
-function frame_actions(valueu fr,valueu lines,ss log,valueu end) #,charx blog)
-	valueu current#1;set current fr#:frame.total
+function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
+	charx ok#1;set ok frame_text_add(fr,_text,lines)
+	if ok=(EXIT_SUCCESS)
+		valueu current#1;set current fr#:frame.total
 
-	valueu p_lines=\line\
-	mult p_lines current
-	add p_lines fr#:frame.lines
+		valueu p_lines=\line\
+		mult p_lines current
+		add p_lines fr#:frame.lines
 
-	#test how many actions to alloc
-	valueu nr_of_actions#1;set nr_of_actions 0 #not needing to null end because has "next". action struct has a long and an int
-	while log!=end
-		if log#=(xlog_act)
-			inc nr_of_actions
+		#test how many actions to alloc
+		valueu nr_of_actions#1;set nr_of_actions 0 #not needing to null end because has "next". action struct has a long and an int
+		while log!=end
+			if log#=(xlog_act)
+				inc nr_of_actions
+			end
+			inc log
 		end
-		inc log
-	end
-	set p_lines#:line.index current  ##there is no 0 lines per row
-	#if blog=(TRUE)
-	set p_lines#:line.total nr_of_actions
-	#end
-	mult nr_of_actions \action\
-	set p_lines#:line.actions malloc(nr_of_actions)
-	if p_lines#:line.actions!=(NULL)
-		add fr#:frame.total lines
+		set p_lines#:line.index current  ##there is no 0 lines per row
+		#if blog=(TRUE)
+		set p_lines#:line.total nr_of_actions
+		#end
+		mult nr_of_actions \action\
+		set p_lines#:line.actions malloc(nr_of_actions)  #space was reserved at start knowing log total lines
+		if p_lines#:line.actions!=(NULL)
+			add fr#:frame.total lines
 
-		mult lines \line\
-		add lines p_lines
-		add p_lines \line\
+			mult lines \line\
+			add lines p_lines
+			add p_lines \line\
 
-		while p_lines!=lines
-			set p_lines#:line.index current
-			set p_lines#:line.actions (NULL)
-			add p_lines (\line\)
+			while p_lines!=lines
+				set p_lines#:line.index current
+				set p_lines#:line.actions (NULL)
+				add p_lines (\line\)
+			end
+			return (EXIT_SUCCESS)
 		end
-		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
 end
@@ -315,8 +325,10 @@ function frame_expand(valueu fr,valueu lines) #,sv p_totallines)
 	end
 	return (EXIT_FAILURE)
 end
-#function frame_expected(valueu fr,valueu lines)
-#	#if lines!=totallines
-#	set fr#:frame.total lines
-#	#end #there is nothing at those last lines, also, was allocated there, ignoring
-#end
+
+function frame_text_add(valueu *fr,svu *_text,valueu lines)
+	while lines>^0
+		dec lines
+	end
+	#frame_text_allocpart
+end

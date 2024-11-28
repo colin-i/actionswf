@@ -130,7 +130,7 @@ import "frame_actions" frame_actions
 import "string_add" string_add
 import "string_id" string_id
 
-function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data)
+function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start log
 	inc log    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
@@ -146,7 +146,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	end
 	valueu number_of_lines#1;set number_of_lines memdec(start,log)
 	charx ok#1
-	set ok frame_actions(fr,number_of_lines,log,end)
+	set ok frame_actions(fr,number_of_lines,log,end,_text)
 	if ok=(EXIT_SUCCESS)
 		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
 			#not outside actionrow? 'a','a' on multiple rows is still on same row
@@ -264,6 +264,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					return (EXIT_FAILURE)
 				end
 
+				valueu text#1;set text log
 				while linesnr>^0
 					set p memnl(log,#next)
 					set log next
@@ -296,7 +297,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 					set p memnl(log,#next)
 					if log#=(xlog_actions)
 						inc log
-						set ok actionrow(log,p,#xcode,#xx,pf,f,strings_base,data)
+						set ok actionrow(log,p,#xcode,#xx,pf,f,strings_base,data,#text)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
