@@ -232,11 +232,11 @@ function frame_free(sv f,charx ainit,datax log_index)
 		add c a
 		while a!=c
 			set d memnl(a,#b) #more in the function, \r\n example
-			sub d a
-			if d!=0  #why to write a whitespaces row?
+			if d!=a  #why to write a whitespaces row?
+				sub d a
 				call indent()
+				call fwrite(a,d,1,so#)
 			end
-			call fwrite(a,d,1,so#)
 			call print_inline_done()
 			set a b
 		end
