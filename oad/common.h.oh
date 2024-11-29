@@ -43,7 +43,7 @@ function preframe()
 	dataxu size#1  #DoAction has ui32 but overall also is a ui32
 	value recalculation#1 #can be in ui32, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
 
-	valuexu abranch#1
+	valueu abranch#1
 end
 function branch()
 	valueu cuts#1

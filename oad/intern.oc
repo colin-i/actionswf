@@ -35,7 +35,38 @@ function fcontent(sd path,sv psize)
 	return (NULL)
 end
 
-function memnl(ss log,sv pnext)
+#at these memnl the last row is ending in nl from src
+function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an example with cr: ffdec action output is \r\n
+	set pnext# 1
+	if log#!=(NewLine) #empty row / last row
+		whiletrue
+			if log#=(NewLine)
+				add pnext# log
+				dec log
+				if log#!=(CReturn)
+					inc log
+				end
+				break
+			end
+			if log#=(CReturn)
+				add pnext# log
+				ss next;set next pnext#
+				if next#=(NewLine)
+					add pnext# 1
+					if _cr!=(NULL)
+						add _cr# 1
+					end
+				end
+				break
+			end
+			inc log
+		end
+	else
+		add pnext# log
+	end
+	return log
+end
+function memnl(ss log,sv pnext) #here is moving only on nl from src
 	set pnext# 1
 	if log#!=(NewLine) #emptyrow
 		inc log
@@ -43,10 +74,6 @@ function memnl(ss log,sv pnext)
 			inc log
 		end
 		add pnext# log
-		dec log
-		if log#!=(CReturn)  #an example: ffdec action output is \r\n
-			inc log
-		end
 	else
 		add pnext# log
 	end
@@ -210,10 +237,10 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 	return (EXIT_FAILURE)
 end
 
-function text_after_nlines(ss inlog,valueu linesnr)
+function text_after_nlines(ss inlog,valueu linesnr,valueu crs)
 	ss next
 	while linesnr>^0
-		call memnl(inlog,#next)
+		call memnlcr(inlog,#next,crs)
 		set inlog next
 		dec linesnr
 	end
@@ -275,7 +302,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				end
 
 				valueu text#1;set text log
-				set log text_after_nlines(log,linesnr)
+				set log text_after_nlines(log,linesnr,(NULL))
 
 				sv pf;sv f;set f get_nframe(ppresprites#,psprites#,preid,ainit,#pf) #and from sprites since total lines sum, but will be needed at more, anyway
 

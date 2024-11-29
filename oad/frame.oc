@@ -224,7 +224,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
-		sv so^stdout
+		sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
 
 		ss a#1;set a f#:frame.text;ss b
 		valueu c#1;set c f#:frame.size
@@ -233,7 +233,9 @@ function frame_free(sv f,charx ainit,datax log_index)
 		while a!=c
 			set d memnl(a,#b) #more in the function, \r\n example
 			sub d a
-			call indent()
+			if d!=0  #why to write a whitespaces row?
+				call indent()
+			end
 			call fwrite(a,d,1,so#)
 			call print_inline_done()
 			set a b
@@ -293,25 +295,29 @@ function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
 	return s#:sprite.aframe
 end
 
-const frame_text_allocpart_=frame_text_allocpart-1
+#with () for c
+const frame_text_allocpart_=(frame_text_allocpart-1)
 const _frame_text_allocpart_=~frame_text_allocpart_
 import "text_after_nlines" text_after_nlines
+import "memnlcr" memnlcr
 
 importx "memcpy" memcpy
 
 function frame_text_add(valueu fr,svu _text,valueu lines)
 	valueu starttext#1;set starttext _text#
-	valueu endtext#1;set endtext text_after_nlines(starttext,lines)
-	set _text# endtext
-	sub endtext starttext
+	valueu number_of_crnl#1;set number_of_crnl 0
+	valueu endtext#1;set endtext text_after_nlines(starttext,lines,#number_of_crnl)
+	valueu size#1;set size endtext
+	sub size starttext
+	sub size number_of_crnl
 
 	valueu test#1;set test (_frame_text_allocpart_)
 	and test fr#:frame.size
 	valueu test3#1;set test3 fr#:frame.size
-	add test3 endtext
+	add test3 size
 	valueu test2#1;set test2 (_frame_text_allocpart_)
 	and test2 test3
-	valueu mem#1
+	ss mem
 	if test!=test2
 		add test2 (frame_text_allocpart)
 		#only drawback: if on edge will still go one more part
@@ -323,9 +329,22 @@ function frame_text_add(valueu fr,svu _text,valueu lines)
 	else
 		set mem fr#:frame.text
 	end
+
+	#out text will be with nl
 	add mem fr#:frame.size
-	call memcpy(mem,starttext,endtext)
-	add fr#:frame.size endtext
+	ss next;valueu p#1
+	while starttext!=endtext
+		set p memnlcr(starttext,#next,(NULL))
+		sub p starttext
+		call memcpy(mem,starttext,p)
+		add mem p
+		set mem# (NewLine)
+		inc mem
+		set starttext next
+	end
+
+	set _text# endtext
+	add fr#:frame.size size
 	return (EXIT_SUCCESS)
 end
 
