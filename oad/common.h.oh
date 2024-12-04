@@ -44,6 +44,7 @@ function preframe()
 	value recalculation#1 #can be in ui32, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
 
 	valueu abranch#1
+	valueu branchpointer#1  #starting from abranch and descending
 end
 function branch()
 	valueu cuts#1

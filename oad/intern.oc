@@ -317,6 +317,7 @@ function loop(ss log,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data)
 				valueu xcode#1;set xcode x
 				add x xcode_size
 				set global.xoffset 0
+				set pf#:preframe.branchpointer pf#:preframe.abranch
 
 				#[actions]
 				whiletrue
