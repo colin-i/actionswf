@@ -183,13 +183,15 @@ function debug_x_pointers(valuex start,valuex size)
 
 			sd aux
 			set aux mark
-			divu aux (xlog_pad_default)
-			mult aux (xlog_pad_default)
+			import "xlog_pad_get" xlog_pad_get #this is a functionx, but no args, then, no aligns at pass_call for this
+			sd pad_value#1;set pad_value xlog_pad_get()
+			divu aux pad_value
+			mult aux pad_value
 			if aux!=mark
 				sd aux2
 				set aux2 mark
 				sub aux2 aux
-				set pad (xlog_pad_default)
+				set pad pad_value
 				sub pad aux2
 			else
 				set pad 0

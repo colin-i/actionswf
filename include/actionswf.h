@@ -160,6 +160,7 @@ void swf_exports_done();
 
 void action(char* ac);
 void actionf(char* buffer,char* format,...);
+void actiond(char* ac);
 
 //action at sprite
 
@@ -175,6 +176,8 @@ void actionf_init_sprite(int sprite,char* buffer,char* format,...);
 char erbool_get();
 void erbool_reset();
 void freereset();
+unsigned char xlog_pad_get();
+void xlog_pad_set(unsigned char new_pad);
 
 
 

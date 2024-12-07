@@ -22,3 +22,11 @@ functionx freereset()
 	import "swf_mem" swf_mem
 	call swf_mem((mem_exp_free))
 endfunction
+
+functionx xlog_pad_get()
+	char pad=xlog_pad_default
+	return pad
+endfunction
+functionx xlog_pad_set(sd new_pad)
+	set xlog_pad_get.pad new_pad
+endfunction

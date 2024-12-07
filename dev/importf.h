@@ -67,8 +67,10 @@ importX "action_init_sprite" action_init_sprite
 importX "actionf_sprite" actionf_sprite
 importX "actionf_init_sprite" actionf_init_sprite
 
-#tool
+#tool -  there are some ..x with no args but anyway we are using otoc OR the c header file OR preferring for importers to not make weak symbols in .o
 
 importx "erbool_get" erbool_get
 importx "erbool_reset" erbool_reset
 importx "freereset" freereset
+importx "xlog_pad_get" xlog_pad_get
+importx "xlog_pad_set" xlog_pad_set

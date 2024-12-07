@@ -87,7 +87,7 @@ function branch_log(sv br,valueu start)
 			valueu pad_sz#1;set pad_sz code
 			sub pad_sz start
 			dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
-			div strip_pad_sz (xlog_pad_default)
+			divu strip_pad_sz (xlog_pad_default)
 			mult strip_pad_sz (xlog_pad_default)
 			sub pad_sz strip_pad_sz
 			charx pad_minus_one#47
