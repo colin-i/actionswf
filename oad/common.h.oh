@@ -52,7 +52,7 @@ function branch()
 	valueu size#1  #here a return undefined DoAction has 8 and a branchcut has 12(16 if aligned), there are no 3 size(tag+end) DoAction from actionswf lib
 
 	valuexu innerbranches#1 #for define functions and for 3rd part
-	dataxu isize#1  #same as oadata functions plus for 3rd part is same: 4 plus 4div8
+	dataxu isize#1  #same as oadata functions plus for 3rd that is bigger, a jump,push,define at least
 
 	valueu subbranch#1
 
