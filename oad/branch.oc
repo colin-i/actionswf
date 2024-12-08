@@ -7,7 +7,7 @@ include "common.h" "common.h.oh"
 importx "realloc" realloc
 function branch_done(sv pf,dataxu size,dataxu offset,valueu code)
 	sub size offset
-	sv br;set br pf#:preframe.abranch
+	sv br;set br pf#:preframe.branchpointer
 
 	valueu sz#1;set sz br#:branch.size
 	add sz \branchcut\
@@ -109,7 +109,13 @@ function branch_log(sv br,valueu start)
 end
 
 importx "free" free
-function branch_free(sv br)
+function branch_free(valueu br,valueu logstart)
+	if logstart!=(NULL)
+		call branch_log(br,logstart)
+	end
 	call free(br#:branch.cuts)
+	#if br#:branch.subbranch!=(NULL)
+	#	call branch_free(br#:branch.subbranch,logstart)
+	#end
 	call free(br)
 end
