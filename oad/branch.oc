@@ -114,8 +114,8 @@ function branch_free(valueu br,valueu logstart)
 		call branch_log(br,logstart)
 	end
 	call free(br#:branch.cuts)
-	#if br#:branch.subbranch!=(NULL)
-	#	call branch_free(br#:branch.subbranch,logstart)
-	#end
+	if br#:branch.subbranch!=(NULL)
+#		call branch_free(br#:branch.subbranch,logstart)
+	end
 	call free(br)
 end

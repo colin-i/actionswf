@@ -52,10 +52,9 @@ function branch()
 	valueu cuts#1
 	valueu size#1  #here a return undefined DoAction has 8 and a branchcut has 12(16 if aligned), there are no 3 size(tag+end) DoAction from actionswf lib
 
-#	dataxu *offset#1
-#	valuexu *action#1   #for mark, after compare
+	valueu subbranch#1
 
-#	valuexu *subbranch#1
+#	valuexu *action#1   #for mark, after compare
 end
 function branchcut()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
