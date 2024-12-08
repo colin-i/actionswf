@@ -4,6 +4,25 @@ format elfobj64
 override include_sec 1
 include "common.h" "common.h.oh"
 
+importx "malloc" malloc
+#branch pointer
+function branch_init(valueu pf)
+	valueu bra#1
+	set bra malloc((\branch\))
+	if bra!=(NULL)
+		sv cuts;set cuts malloc(1) #symbolic, null malloc can be null return
+		if cuts!=(NULL)
+			set bra#:branch.cuts cuts
+			set bra#:branch.size 0
+			set bra#:branch.subbranch (NULL)
+			set pf#:preframe.branchpointer bra
+			return bra
+		end
+		call free(bra)
+	end
+	return (NULL)
+end
+
 importx "realloc" realloc
 function branch_done(sv pf,dataxu size,dataxu offset,valueu code)
 	sub size offset
@@ -115,7 +134,7 @@ function branch_free(valueu br,valueu logstart)
 	end
 	call free(br#:branch.cuts)
 	if br#:branch.subbranch!=(NULL)
-#		call branch_free(br#:branch.subbranch,logstart)
+		call branch_free(br#:branch.subbranch,logstart)
 	end
 	call free(br)
 end

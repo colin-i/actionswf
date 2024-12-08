@@ -156,7 +156,7 @@ end
 import "frame_actions" frame_actions
 import "string_add" string_add
 import "string_id" string_id
-import "subbranch_init" subbranch_init
+import "branch_init" branch_init
 
 function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start log
@@ -213,8 +213,9 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 			elseif log#=(xlog_jump)
 				set log memhex_parse_withinc(log,#number)
 			elseif log#=(xlog_branch) #branch start
-				set ok subbranch_init(prefr#:preframe.branchpointer)
-				if ok!=(EXIT_SUCCESS)
+				valueu branch_prec#1;set branch_prec prefr#:preframe.branchpointer
+				set branch_prec#:branch.subbranch branch_init(prefr)
+				if branch_prec#:branch.subbranch=(NULL)
 					return (EXIT_FAILURE)
 				end
 				call newbranch(px,pxx)

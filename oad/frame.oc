@@ -47,13 +47,7 @@ end
 importx "malloc" malloc
 importx "free" free
 
-import "print_inline_start" print_inline_start
-import "print_inline_start_value" print_inline_start_value
-import "print_inline_done" print_inline_done
-import "print" print
-import "print_indent" print_indent
-import "print_unindent" print_unindent
-
+import "branch_init" branch_init
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
@@ -63,26 +57,15 @@ function preframe_init()
 			sv strings
 			set strings malloc((sprites_realloc_onepart))
 			if strings!=(NULL)
-				valueu bra#1
-				set bra malloc((\branch\))
-				if bra!=(NULL)
-					sv cuts;set cuts malloc(1) #symbolic, null malloc can be null return
-					if cuts!=(NULL)
-						set pf#:preframe.ustrings ustrings
-						set pf#:preframe.ussize 0
-						set pf#:preframe.strings strings
-						set pf#:preframe.ssize 0
-						set pf#:preframe.size 0
-						set pf#:preframe.recalculation 0
-
-						set bra#:branch.cuts cuts
-						set bra#:branch.size 0
-						set bra#:branch.subbranch (NULL)
-						set pf#:preframe.abranch bra
-						set pf#:preframe.branchpointer bra
-						return pf
-					end
-					call free(bra)
+				set pf#:preframe.abranch branch_init(pf)
+				if pf#:preframe.abranch!=(NULL)
+					set pf#:preframe.ustrings ustrings
+					set pf#:preframe.ussize 0
+					set pf#:preframe.strings strings
+					set pf#:preframe.ssize 0
+					set pf#:preframe.size 0
+					set pf#:preframe.recalculation 0
+					return pf
 				end
 				call free(strings)
 			end
@@ -95,7 +78,14 @@ end
 
 import "string_log" string_log
 import "branch_free" branch_free
+
+import "print_inline_start" print_inline_start
+import "print_inline_start_value" print_inline_start_value
+import "print_inline_done" print_inline_done
+import "print" print
 import "print2" print2
+import "print_indent" print_indent
+import "print_unindent" print_unindent
 
 function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1

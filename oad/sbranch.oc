@@ -1,9 +1,0 @@
-
-format elfobj64
-
-override include_sec 1
-include "common.h" "common.h.oh"
-
-function subbranch_init(valueu *branch_prec)
-	return (EXIT_SUCCESS)
-end
