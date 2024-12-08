@@ -28,5 +28,9 @@ functionx xlog_pad_get()
 	return pad
 endfunction
 functionx xlog_pad_set(sd new_pad)
-	set xlog_pad_get.pad new_pad
+	if new_pad!=0
+		set xlog_pad_get.pad new_pad
+	else #it is div mult and at 1 is equal at 0 is bad
+		set xlog_pad_get.pad 1
+	end
 endfunction
