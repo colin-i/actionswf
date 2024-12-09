@@ -439,7 +439,7 @@ endfunction
 import "brace_blocks_add_write_current" brace_blocks_add_write_current
 
 import "add_dummy_jump" add_dummy_jump
-import "resolve_dummy_jump" resolve_dummy_jump
+import "resolve_back_jump" resolve_back_jump
 
 #next/same
 function action_code_write_conditions(sd codepointer)
@@ -629,18 +629,18 @@ function action_code_continue()
 	sd start;set start cond_blocks_at_index(0)
 	sd c_blocks;set c_blocks cond_blocks_noerror()
 	while start!=c_blocks
-        sub c_blocks (DWORD)
-        if c_blocks#=(top_flag)
-            #the loop type and to the offset to jump from here
-            sub c_blocks (2*DWORD)
-            sd off_to_jump;set off_to_jump c_blocks#
-            #
-            call add_dummy_jump()
-            call resolve_dummy_jump(off_to_jump)
-            ret
-        endif
+		sub c_blocks (DWORD)
+		if c_blocks#=(top_flag)
+			#the loop type and to the offset to jump from here
+			sub c_blocks (2*DWORD)
+			sd off_to_jump;set off_to_jump c_blocks#
+			#
+			call add_dummy_jump()
+			call resolve_back_jump(off_to_jump)
+			ret
+		endif
 	endwhile
-    call error("Continue without a loop error")
+	call error("Continue without a loop error")
 endfunction
 
 function action_code_else_add()

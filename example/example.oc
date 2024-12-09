@@ -78,7 +78,15 @@ function test(){
 	_movie._x=100;
 	_movie._y=100;
 }
-test()
+var this_is_just_a_test=0;
+while(true){
+	if(this_is_just_a_test==0){
+		this_is_just_a_test=1;
+		continue;
+	}
+	test();
+	break;
+}
 ")
 
 call swf_showframe()

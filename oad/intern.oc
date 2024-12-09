@@ -231,8 +231,7 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 			elseif log#=(xlog_innerbranchend) #innerbranch end
 				call newbranch(px,pxx)
 				inc log
-			else
-			#if log#=(xlog_function)
+			elseif log#=(xlog_function)
 				set ok function(data)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
@@ -241,6 +240,8 @@ function actionrow(ss log,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu stri
 				#add prefr#:preframe.size #only at log is important
 				add prefr#:preframe.recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 				#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
+			else #xlog_jumpback at loop end , continue
+				set log memhex_parse_withinc(log,#number)
 			end
 		end
 		return (EXIT_SUCCESS)
