@@ -125,6 +125,10 @@ function print_inline2(ss format,valueu value,valueu v2)
 	call printf(" ")
 	call printf(format,value,v2)
 end
+function prints_inline(ss format)
+	call printf(" ")
+	call printf(format)
+end
 function print_inline_done()
 	call printf("\n")
 end

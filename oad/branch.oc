@@ -58,6 +58,7 @@ import "print_indent" print_indent
 import "print_unindent" print_unindent
 import "print_inline_start_value" print_inline_start_value
 import "print_inline_done" print_inline_done
+import "print_inline" print_inline
 
 function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 	charx a#1;charx b#1
@@ -76,8 +77,7 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 			call printf(form,code#)
 			inc a
 		elseif b<12
-			call printf(" ")
-			call printf(form,code#)
+			call print_inline(form,code#)
 			set a 1;inc b
 		else
 			call print_inline_done()
@@ -90,50 +90,53 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 end
 
 import "print_inline_start" print_inline_start
-import "print_inline" print_inline
+import "prints_inline" prints_inline
 
 function branch_log(sv br,valueu start)
 	call print_inline_start("branch:")
 	valueu end#1;set end br#:branch.size
-	if end!=0
-		valueu cuts#1;set cuts br#:branch.cuts
-		dataxu sz#1;set sz 0
-		add end cuts
-		while cuts!=end
-			add sz cuts#:branchcut.size
-			add cuts \branchcut\
-		end
-		call print_inline("size=0x%X code:",sz)
+
+	valueu cuts#1;set cuts br#:branch.cuts
+	dataxu sz#1;set sz 0
+	add end cuts
+	while cuts!=end
+		add sz cuts#:branchcut.size
+		add cuts \branchcut\
+	end
+	call print_inline("size=0x%X",sz)
+	set sz br#:branch.isize
+	if sz!=0 #most of the cases, only root has functions
+		div sz :
+		call print_inline("inners=%u",sz)
+	end
+	call prints_inline("code:")
+	call print_inline_done()
+
+	call print_indent()
+	set cuts br#:branch.cuts
+	while cuts!=end
+		ss code;set code cuts#:branchcut.x
+		set sz cuts#:branchcut.size
+
+		valueu pad_sz#1;set pad_sz code
+		sub pad_sz start
+		dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
+		divu strip_pad_sz (xlog_pad_default)
+		mult strip_pad_sz (xlog_pad_default)
+		sub pad_sz strip_pad_sz
+		charx pad_minus_one#47
+			#for branches with holes(like a function def there) a full 48 row is required
+			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
+
+		charx a#1;charx b#1
+		set a 0;set b 0
+		call branch_code(#pad_minus_one,pad_sz,#a,#b,"..")
+		call branch_code(code,sz,#a,#b,"%02X")
 		call print_inline_done()
 
-		call print_indent()
-		set cuts br#:branch.cuts
-		while cuts!=end
-			ss code;set code cuts#:branchcut.x
-			set sz cuts#:branchcut.size
-
-			valueu pad_sz#1;set pad_sz code
-			sub pad_sz start
-			dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
-			divu strip_pad_sz (xlog_pad_default)
-			mult strip_pad_sz (xlog_pad_default)
-			sub pad_sz strip_pad_sz
-			charx pad_minus_one#47
-				#for branches with holes(like a function def there) a full 48 row is required
-				#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
-
-			charx a#1;charx b#1
-			set a 0;set b 0
-			call branch_code(#pad_minus_one,pad_sz,#a,#b,"..")
-			call branch_code(code,sz,#a,#b,"%02X")
-			call print_inline_done()
-
-			add cuts \branchcut\
-		end
-		call print_unindent()
-	else
-		call print_inline_done() #here is no size, no cuts added, an error through first cut, through that point strings are added and when the cut sign is, only then
+		add cuts \branchcut\
 	end
+	call print_unindent()
 end
 
 importx "free" free
