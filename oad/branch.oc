@@ -145,7 +145,16 @@ function branch_free(valueu br,valueu logstart)
 		call branch_log(br,logstart)
 	end
 	call free(br#:branch.cuts)
+
+	svu pointer#1;set pointer br#:branch.innerbranches
+	valueu end#1;set end pointer
+	add end br#:branch.isize
+	while pointer!=end
+		call branch_free(pointer#,logstart)
+		add pointer :
+	end
 	call free(br#:branch.innerbranches)
+
 	if br#:branch.subbranch!=(NULL)
 		call branch_free(br#:branch.subbranch,logstart)
 	end
