@@ -1,0 +1,61 @@
+
+format elfobj64
+
+override include_sec 1
+include "common.h" "common.h.oh"
+
+#multithread unsafe
+#dataxu index#1
+valueu mem#1
+valueu size#1
+valueu allsize#1
+#
+
+#function tree_indent()
+#	inc global.index
+#end
+#function tree_reset()
+#	set global.index 0
+#end
+
+function tree_init()
+	set global.mem 0
+	set global.size 0
+	set global.allsize 0
+end
+importx "free" free
+function tree_free()
+	if global.mem!=0
+		call free(global.mem)
+	end
+end
+#!
+function tree_resize(valueu sz)
+	add sz global.size
+	if sz>^global.allsize
+		add sz 0x10
+		and sz 0xf
+		valueu m#1;set m realloc(global.mem,sz)
+		if m=(NULL)
+			ret
+		end
+		set global.allsize sz
+		set global.mem m
+	end
+end
+
+function tprint(ss format,valueu value)
+#	call tindent()  #will tree_resize(numberofindents) first
+
+	valueu sz#1;set sz snprintf(0,0,format,value)
+	call tree_resize(sz)
+
+	valueu p#1;set p global.mem
+	add p global.size
+	call sprintf(p,format,value)
+	add global.size sz
+
+#	call tprint_inline_done()
+end
+!
+entryraw global()
