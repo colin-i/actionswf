@@ -22,10 +22,14 @@ function tree_frame_init(valueu pf)
 	set pf#:preframe.log_index 0
 end
 importx "free" free
-#import "prints" prints
+import "prints" prints
 function tree_frame_free(valueu pf)
 	if pf#:preframe.log_mem!=(NULL)
-#		call prints(pf#:preframe.log_mem)
+		dataxu sz#1;set sz pf#:preframe.log_size
+		call tree_entry(pf,0)  #must null end the string first
+		if sz!=pf#:preframe.log_size
+			call prints(pf#:preframe.log_mem)
+		end
 		call free(pf#:preframe.log_mem)
 	end
 end
