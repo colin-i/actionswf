@@ -13,7 +13,12 @@ importx "fclose" fclose
 
 #multithread unsafe
 dataxu xoffset#1
+charx blog#1
 #
+
+function global_blog()
+	return global.blog
+end
 
 function fcontent(sd path,sv psize)
 	sd f;set f fopen(path,"rb")
@@ -160,7 +165,7 @@ import "branch_init" branch_init
 import "ibranch_add" ibranch_add
 import "tree_entry" tree_entry
 
-function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,charx blog)
+function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start inlog
 	inc inlog    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
@@ -181,7 +186,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
 			#not outside actionrow? 'a','a' on multiple rows is still on same row
 		sd _recalculation
-		if blog=(TRUE)
+		if global.blog=(TRUE)
 			set recalculation 0
 			set _recalculation #recalculation
 		else
@@ -196,7 +201,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				else
 					add prefr#:preframe.size (actionrecordheader_size)
 					add prefr#:preframe.size number
-					if blog=(TRUE)
+					if global.blog=(TRUE)
 						if recalculation!=0
 							add prefr#:preframe.recalculation recalculation
 							set recalculation 0
@@ -228,7 +233,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					return (EXIT_FAILURE)
 				end
 				call newbranch(px,pxx)
-				if blog=(TRUE)
+				if global.blog=(TRUE)
 					call tree_entry(prefr,inlog#)
 				end
 				inc inlog
@@ -238,13 +243,13 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					return (EXIT_FAILURE)
 				end
 				call newbranch(px,pxx)
-				if blog=(TRUE)
+				if global.blog=(TRUE)
 					call tree_entry(prefr,inlog#)
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranchend) #innerbranch end
 				call newbranch(px,pxx)
-				if blog=(TRUE)
+				if global.blog=(TRUE)
 					call tree_entry(prefr,inlog#)
 				end
 				inc inlog
@@ -254,7 +259,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					return (EXIT_FAILURE)
 				end
 				set inlog memhex_parse_withinc(inlog,#number)
-				if blog=(TRUE)
+				if global.blog=(TRUE)
 					add prefr#:preframe.recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 				end
@@ -282,9 +287,10 @@ import "presprite_done" presprite_done
 import "get_nframe" get_nframe
 import "branch_done" branch_done
 
-function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx blog)
+function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx log)
 	add logsize inlog
 	if inlog!=logsize  ##else no action sprites/shows
+		set global.blog log
 		sd next
 		ss p;set p memnl(inlog,#next)
 		whiletrue
@@ -360,7 +366,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 					set p memnl(inlog,#next)
 					if inlog#=(xlog_actions)
 						inc inlog
-						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text,blog)
+						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end

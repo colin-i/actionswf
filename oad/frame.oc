@@ -49,6 +49,8 @@ importx "free" free
 
 import "branch_init" branch_init
 import "tree_frame_init" tree_frame_init
+import "global_blog" global_blog
+
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
@@ -65,8 +67,11 @@ function preframe_init()
 					set pf#:preframe.strings strings
 					set pf#:preframe.ssize 0
 					set pf#:preframe.size 0
-					set pf#:preframe.recalculation 0
-					call tree_frame_init(pf)
+					charx blog#1;set blog global_blog()
+					if blog=(TRUE)
+						set pf#:preframe.recalculation 0
+						call tree_frame_init(pf)
+					end
 					return pf
 				end
 				call free(strings)
