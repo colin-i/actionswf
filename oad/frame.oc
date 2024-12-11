@@ -155,7 +155,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	call free(pf)
 end
 
-const frame_text_allocpart=0x100
+const frame_text_allocpart=pad_default
 function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
 	if f!=(NULL)

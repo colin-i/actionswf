@@ -81,3 +81,5 @@ end
 
 const from_action=0
 const from_show=1
+
+const pad_default=0x100

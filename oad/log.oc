@@ -29,8 +29,8 @@ function tree_frame_free(valueu pf)
 		call free(pf#:preframe.log_mem)
 	end
 end
-const tree_pad=0x4
-const tree_pad_=0x4-1
+const tree_pad=pad_default
+const tree_pad_=(tree_pad-1)
 const _tree_pad_=~tree_pad_
 importx "realloc" realloc
 function tree_resize(valueu pf,valueu sz)
