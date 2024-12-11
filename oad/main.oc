@@ -17,7 +17,7 @@ import "preoadata_init" preoadata_init
 import "preoadata_free" preoadata_free
 import "presprite_done" presprite_done
 import "tree_init" tree_init
-import "tree_free" tree_free
+import "tree_exit" tree_exit
 
 #functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
@@ -50,15 +50,21 @@ functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 						sv sprites   ;#these will be filled before sprite done
 						set exit preoadata_init(#presprites,#sprites)
 						if exit=(EXIT_SUCCESS)
-							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites,#sprites,poadata#)
+							if log=(TRUE)
+								call tree_init()
+							end
+							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites,#sprites,poadata#,log)
 							if exit=(EXIT_SUCCESS)
 								call presprite_done(sprites,0,0,poadata#) #root has not a done(0 to 0) in .log
 								set exit inter(swf_fullpath)
+								if log=(TRUE)
+									if exit=(EXIT_SUCCESS)
+										set exit tree_exit()
+									end
+								end
 							end
 						end
-						call tree_init()
 						call preoadata_free(presprites,sprites,log,xcontent)
-						call tree_free()
 					end
 					if exit!=(EXIT_SUCCESS)
 						call oadata_free(poadata#,(FALSE)) #there are multiple mallocs in outinit

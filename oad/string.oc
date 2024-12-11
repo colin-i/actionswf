@@ -18,7 +18,7 @@ char indents=0
 const ui8max_=256
 
 #                            # is xlog_new_size
-function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,charx inlogtype,sd _recalculation)
+function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,sd _recalculation,charx inlogtype)
 	charx ok#1
 	valueu str#1;sv dest
 	if type=(xlog_new)
@@ -37,11 +37,13 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,charx i
 				set str#:string.base strings_base  ##in two steps for log.
 				set str#:string.off p_string_off#
 
-				if inlogtype=(xlog_const16_log) #index can be lower in final
-					dataxu items#1;set items pf#:preframe.ssize
-					divu items :
-					if items<^(ui8max_)
-						dec _recalculation#
+				if _recalculation!=(NULL)
+					if inlogtype=(xlog_const16_log) #index can be lower in final
+						dataxu items#1;set items pf#:preframe.ssize
+						divu items :
+						if items<^(ui8max_)
+							dec _recalculation#
+						end
 					end
 				end
 
@@ -61,10 +63,12 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,charx i
 				set str#:ustring.base strings_base  ##in two steps for log.
 				set str#:ustring.off p_string_off#
 
-				add strings_base p_string_off#
-				add _recalculation# strlen(strings_base)
-				if inlogtype=(xlog_const16_log) #
-					dec _recalculation#
+				if _recalculation!=(NULL)
+					add strings_base p_string_off#
+					add _recalculation# strlen(strings_base)
+					if inlogtype=(xlog_const16_log) #
+						dec _recalculation#
+					end
 				end
 
 				set dest pf#:preframe.ustrings
@@ -139,12 +143,15 @@ function string_log(valueu base,valueu off)
 	call print_inline2("%s=%lX",base,off) #will recognize the branch (visual) when having the string -> branch link and the branch offset
 end
 
-function string_id(swu xxcontent,charx inlogtype,sd _recalculation)
-	if inlogtype=(xlog_const16_log) #same
-		if xxcontent#<^(ui8max_)
-			dec _recalculation#
+function string_id(sd _recalculation,swu xxcontent,charx inlogtype)
+	if _recalculation!=(NULL)
+		if inlogtype=(xlog_const16_log) #same
+			if xxcontent#<^(ui8max_)
+				dec _recalculation#
+			end
 		end
 	end
+	#here to do at string branches
 end
 
 entryraw global()

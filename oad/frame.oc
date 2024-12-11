@@ -48,6 +48,7 @@ importx "malloc" malloc
 importx "free" free
 
 import "branch_init" branch_init
+import "tree_frame_init" tree_frame_init
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
@@ -65,6 +66,7 @@ function preframe_init()
 					set pf#:preframe.ssize 0
 					set pf#:preframe.size 0
 					set pf#:preframe.recalculation 0
+					call tree_frame_init(pf)
 					return pf
 				end
 				call free(strings)
@@ -78,6 +80,7 @@ end
 
 import "string_log" string_log
 import "branch_free" branch_free
+import "tree_frame_free" tree_frame_free
 
 import "print_inline_start" print_inline_start
 import "print_inline_start_value" print_inline_start_value
@@ -144,6 +147,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		call print2("size=0x%X, final size=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
 		call branch_free(pf#:preframe.abranch,logstart)
 		call print_unindent()
+		call tree_frame_free(pf)
 	else
 		call branch_free(pf#:preframe.abranch,(NULL))
 	end

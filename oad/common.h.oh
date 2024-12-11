@@ -46,6 +46,12 @@ function preframe()
 	valueu abranch#1
 
 	valueu branchpointer#1  #starting from abranch and descending
+
+	#log only
+	valueu log_mem#1
+	valueu log_size#1
+	valueu log_allsize#1
+	dataxu log_index#1
 end
 function branch()
 	valueu cuts#1
