@@ -1,4 +1,7 @@
 
+#there are some ..x with no args but anyway we are using otoc OR the c header file.
+#still, why importx? to respect the os calling convention and Xfile_import_extern from ocompiler-dev
+
 #swf
 
 #id
@@ -74,5 +77,3 @@ importx "erbool_reset" erbool_reset
 importx "freereset" freereset
 importx "xlog_pad_get" xlog_pad_get
 importx "xlog_pad_set" xlog_pad_set
-
-#there are some ..x with no args but anyway we are using otoc OR the c header file. and why importx? for Xfile_import_extern extravagance
