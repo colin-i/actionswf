@@ -75,4 +75,4 @@ importx "freereset" freereset
 importx "xlog_pad_get" xlog_pad_get
 importx "xlog_pad_set" xlog_pad_set
 
-#where there are some ..x with no args but anyway we are using otoc OR the c header file. and why importx? for Xfile_import_extern extravagance
+#there are some ..x with no args but anyway we are using otoc OR the c header file. and why importx? for Xfile_import_extern extravagance
