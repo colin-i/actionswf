@@ -19,15 +19,13 @@ function tree_frame_init(valueu pf)
 	set pf#:preframe.log_mem (NULL)
 	set pf#:preframe.log_size 0
 	set pf#:preframe.log_allsize 0
-	set pf#:preframe.log_index 0
-	set pf#:preframe.log_index_last 0
 end
 importx "free" free
 import "prints" prints
 function tree_frame_free(valueu pf)
 	if pf#:preframe.log_mem!=(NULL)
 		dataxu sz#1;set sz pf#:preframe.log_size
-		call tree_entry(pf,0)  #must null end the string first
+		call tree_entry_ex(pf,0)  #must null end the string first
 		if sz!=pf#:preframe.log_size
 			call prints(pf#:preframe.log_mem)
 		end
@@ -54,7 +52,7 @@ function tree_resize(valueu pf,valueu sz)
 	return (EXIT_SUCCESS)
 end
 
-function tree_entry(valueu pf,charx type)
+function tree_entry_ex(valueu pf,charx type)
 	charx ok#1;set ok tree_resize(pf,1)
 	if ok=(EXIT_SUCCESS)
 		ss p;set p pf#:preframe.log_mem
@@ -62,6 +60,17 @@ function tree_entry(valueu pf,charx type)
 		set p# type
 		inc pf#:preframe.log_size
 	end
+end
+function tree_entry(valueu pf,charx type)
+	if pf#:preframe.log_size!=0
+		ss mem;set mem pf#:preframe.log_mem
+		add mem pf#:preframe.log_size
+		dec mem
+		if mem#=(xlog_innerbranchend)
+			#\n and indent
+		end
+	end
+	call tree_entry_ex(pf,type)
 end
 
 entryraw global()

@@ -51,8 +51,6 @@ function preframe()
 	valueu log_mem#1
 	valueu log_size#1
 	valueu log_allsize#1
-	dataxu log_index#1
-	dataxu log_index_last#1
 end
 function branch()
 	valueu cuts#1
