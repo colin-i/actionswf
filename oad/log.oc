@@ -20,6 +20,7 @@ function tree_frame_init(valueu pf)
 	set pf#:preframe.log_size 0
 	set pf#:preframe.log_allsize 0
 	set pf#:preframe.log_index 0
+	set pf#:preframe.log_index_last 0
 end
 importx "free" free
 import "prints" prints
