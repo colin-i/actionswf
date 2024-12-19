@@ -61,16 +61,16 @@ function tree_entry_ex(valueu pf,charx type)
 		inc pf#:preframe.log_size
 	end
 end
-function tree_entry(valueu pf,charx type)
-	if pf#:preframe.log_size!=0
-		ss mem;set mem pf#:preframe.log_mem
-		add mem pf#:preframe.log_size
-		dec mem
-		if mem#=(xlog_innerbranchend)
-			#\n and indent
-		end
-	end
-	call tree_entry_ex(pf,type)
+function tree_entry_start(valueu pf)
+	#is first row?
+	#has indent?
+	#	else rawmemrchr for ' '
+	#store position after write
+	call tree_entry_ex(pf,(xlog_innerbranch))
+end
+function tree_entry_end(valueu pf)
+	# if } between, loop rawmemrchr for {
+	call tree_entry_ex(pf,(xlog_innerbranchend))
 end
 
 entryraw global()

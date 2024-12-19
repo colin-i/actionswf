@@ -163,7 +163,9 @@ import "string_add" string_add
 import "string_id" string_id
 import "branch_init" branch_init
 import "ibranch_add" ibranch_add
-import "tree_entry" tree_entry
+import "tree_entry_ex" tree_entry_ex
+import "tree_entry_start" tree_entry_start
+import "tree_entry_end" tree_entry_end
 
 function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start inlog
@@ -234,7 +236,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				call newbranch(px,pxx)
 				if global.blog=(TRUE)
-					call tree_entry(prefr,inlog#)
+					call tree_entry_ex(prefr,(xlog_branch))
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranch)
@@ -244,13 +246,13 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				call newbranch(px,pxx)
 				if global.blog=(TRUE)
-					call tree_entry(prefr,inlog#)
+					call tree_entry_start(prefr)
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranchend) #innerbranch end
 				call newbranch(px,pxx)
 				if global.blog=(TRUE)
-					call tree_entry(prefr,inlog#)
+					call tree_entry_end(prefr)
 				end
 				inc inlog
 			elseif inlog#=(xlog_function)
