@@ -74,9 +74,15 @@ call action("
 var x_coef=1;
 var y_coef=1;
 function test(){
-	attachMovie('movie','_movie',1);
-	_movie._x=100;
-	_movie._y=100;
+	function test2(){
+		attachMovie('movie','_movie',1);
+		_movie._x=100;
+		_movie._y=100;
+	}
+	test2();
+}
+function test3(){
+	test();
 }
 var this_is_just_a_test=0;
 while(true){
@@ -84,7 +90,7 @@ while(true){
 		this_is_just_a_test=1;
 		continue;
 	}
-	test();
+	test3();
 	break;
 }
 ")

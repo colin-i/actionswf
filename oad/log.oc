@@ -19,6 +19,9 @@ function tree_frame_init(valueu pf)
 	set pf#:preframe.log_mem (NULL)
 	set pf#:preframe.log_size 0
 	set pf#:preframe.log_allsize 0
+	#
+	set pf#:preframe.log_marker 0
+	set pf#:preframe.log_indents 0
 end
 importx "free" free
 import "prints" prints
@@ -62,15 +65,27 @@ function tree_entry_ex(valueu pf,charx type)
 	end
 end
 function tree_entry_start(valueu pf)
-	#is first row?
-	#has indent?
-	#	else rawmemrchr for ' '
-	#store position after write
-	call tree_entry_ex(pf,(xlog_innerbranch))
+	whiletrue
+		if pf#:preframe.log_marker!=0         #not first row
+			if pf#:preframe.log_indents!=0  #not at root
+				# rawmemrchr for ' ' for indent size
+				call tree_entry_ex(pf,(NewLine))
+				#indent
+				call tree_entry_ex(pf,(xlog_innerbranch))
+				break
+			end
+		end
+		call tree_entry_ex(pf,(NewLine))
+		call tree_entry_ex(pf,(xlog_innerbranch))
+		break
+	end
+	set pf#:preframe.log_marker pf#:preframe.size
+	inc pf#:preframe.log_indents
 end
 function tree_entry_end(valueu pf)
-	# if } between, loop rawmemrchr for {
+	# from pf#:preframe.log_marker, if } between, loop rawmemrchr for {
 	call tree_entry_ex(pf,(xlog_innerbranchend))
+	dec pf#:preframe.log_indents
 end
 
 entryraw global()
