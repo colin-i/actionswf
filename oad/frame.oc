@@ -184,12 +184,8 @@ function frame_init(valueu total)
 end
 
 import "print_inline2" print_inline2
+import "print_text" print_text
 import "prints" prints
-import "memnl" memnl
-import "indent" indent
-
-importx "stdout" stdout
-importx "fwrite" fwrite
 
 function frame_free(sv f,charx ainit,datax log_index)
 	valueu end#1;set end f#:frame.total
@@ -225,24 +221,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
-
-		call print_indent()
-		sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
-		ss a#1;set a f#:frame.text;ss b
-		valueu c#1;set c f#:frame.size
-		valueu d#1
-		add c a
-		while a!=c
-			set d memnl(a,#b) #more in the function, \r\n example
-			if d!=a  #why to write a whitespaces row?
-				sub d a
-				call indent()
-				call fwrite(a,d,1,so#)
-			end
-			call print_inline_done()
-			set a b
-		end
-
+		call print_text(f#:frame.text,f#:frame.size)
 		call prints("<<<")
 		call print_unindent()
 		call print_unindent()

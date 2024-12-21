@@ -137,6 +137,28 @@ function print_inline_done()
 	call printf("\n")
 end
 
+import "memnl" memnl
+
+importx "stdout" stdout
+importx "fwrite" fwrite
+function print_text(ss a,valueu c)
+	call print_indent()
+	sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
+	ss b
+	valueu d#1
+	add c a
+	while a!=c
+		set d memnl(a,#b) #more in the function, \r\n example
+		if d!=a  #why to write a whitespaces row?
+			sub d a
+			call indent()
+			call fwrite(a,d,1,so#)
+		end
+		call print_inline_done()
+		set a b
+	end
+end
+
 function string_log(valueu base,valueu off)
 	add base off
 	inc off ##to log like in .x where 0 is NULL and 1 is offset 0
