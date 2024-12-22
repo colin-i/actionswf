@@ -151,8 +151,8 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		add finalsize pf#:preframe.recalculation
 		call print2("size=0x%X, final size=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
 		call branch_free(pf#:preframe.abranch,logstart)
-		call print_unindent()
 		call tree_frame_free(pf)
+		call print_unindent()
 	else
 		call branch_free(pf#:preframe.abranch,(NULL))
 	end
@@ -221,6 +221,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call print_inline2("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
+		call print_indent()
 		call print_text(f#:frame.text,f#:frame.size)
 		call prints("<<<")
 		call print_unindent()
