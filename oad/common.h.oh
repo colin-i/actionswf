@@ -12,6 +12,7 @@ const SEEK_END=2
 
 const NewLine=0xa
 const CReturn=0xd
+const Space=0x20
 const ZeroChar=0x30
 const NineChar=0x39
 const A=0x41

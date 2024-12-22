@@ -15,5 +15,4 @@ o a.oc x_file 1 && \
 otoc a.oc.x && \
 ${CC} ${model} -w -g a.c -L../../oad -loadbgdata && \
 LD_LIBRARY_PATH=../../oad ${g} ./a.out ${f} || { echo a.out error; exit 1; }
-echo ok
 rm ${f}.data

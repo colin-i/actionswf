@@ -61,7 +61,10 @@ function tree_entry_ex(valueu pf,charx type)
 end
 
 function tree_indents(valueu pf)
-	if pf#:preframe.log_indents!=0  #not at root, add indents
+	dataxu i#1;set i pf#:preframe.log_indents
+	while i!=0  #not at root, add indents
+		call tree_entry_ex(pf,(Space))
+		dec i
 	end
 end
 function tree_entry_start(valueu pf)
