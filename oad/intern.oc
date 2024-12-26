@@ -321,7 +321,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				end
 				set inlog next
 				if inlog=logsize
-					return (EXIT_SUCCESS) #exit 2
+					return (EXIT_SUCCESS) #exit after show/done. exit 2
 				end
 				set p memnl(inlog,#next)
 			else

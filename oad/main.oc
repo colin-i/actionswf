@@ -55,11 +55,13 @@ functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 							end
 							set exit loop(logcontent,xcontent,xxcontent,logsize,#presprites,#sprites,poadata#,log)
 							if exit=(EXIT_SUCCESS)
-								call presprite_done(sprites,0,0,poadata#) #root has not a done(0 to 0) in .log
-								set exit inter(swf_fullpath)
 								if log=(TRUE)
+									set exit tree_exit()
+								end
+								if exit=(EXIT_SUCCESS)
+									set exit presprite_done(sprites,0,0,poadata#) #root has not a done(0 to 0) in .log
 									if exit=(EXIT_SUCCESS)
-										set exit tree_exit()
+										set exit inter(swf_fullpath)
 									end
 								end
 							end
