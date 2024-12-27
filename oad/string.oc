@@ -8,6 +8,7 @@ import "re_alloc" re_alloc
 
 importx "malloc" malloc
 importx "printf" printf
+importx "putchar" putchar
 importx "free" free
 importx "strlen" strlen
 
@@ -87,7 +88,7 @@ function indent()
 	charx i#1
 	set i global.indents
 	while i>0
-		call printf("\t")
+		call putchar((Tab))
 		dec i
 	end
 end
@@ -122,19 +123,19 @@ function print_inline_start_value(ss format,valueu value)
 	call printf(format,value)
 end
 function print_inline(ss format,valueu value)
-	call printf(" ")
+	call putchar((Space))
 	call printf(format,value)
 end
 function print_inline2(ss format,valueu value,valueu v2)
-	call printf(" ")
+	call putchar((Space))
 	call printf(format,value,v2)
 end
 function prints_inline(ss format)
-	call printf(" ")
+	call putchar((Space))
 	call printf(format)
 end
 function print_inline_done()
-	call printf("\n")
+	call putchar((NewLine))
 end
 
 import "memnl" memnl

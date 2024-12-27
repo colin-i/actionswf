@@ -80,4 +80,19 @@ function tree_entry_end(valueu pf)
 	call tree_entry_ex(pf,(xlog_innerbranchend))
 end
 
+importx "putchar" putchar
+
+import "indent" indent
+import "print_inline_done" print_inline_done
+
+function tree_entrylive(dataxu indents,charx type)
+	call indent()
+	while indents>^0
+		call putchar((Space))
+		dec indents
+	end
+	call putchar(type)
+	call print_inline_done()
+end
+
 entryraw global()

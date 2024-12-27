@@ -139,8 +139,14 @@ function branch_log(sv br,valueu start)
 	call print_unindent()
 end
 
+import "tree_entrylive" tree_entrylive
+
 importx "free" free
+
 function branch_free(valueu br,valueu logstart)
+	call branch_free_ex(br,logstart,0)
+end
+function branch_free_ex(valueu br,valueu logstart,dataxu indents)
 	if logstart!=(NULL)
 		call branch_log(br,logstart)
 	end
@@ -150,13 +156,26 @@ function branch_free(valueu br,valueu logstart)
 	valueu end#1;set end pointer
 	add end br#:branch.isize
 	while pointer!=end
-		call branch_free(pointer#,logstart)
+		if logstart!=(NULL)
+			call tree_entrylive(indents,(xlog_innerbranch))
+			inc indents
+			call branch_free_ex(pointer#,logstart,indents)
+			dec indents
+			call tree_entrylive(indents,(xlog_innerbranchend))
+		else
+			call branch_free(pointer#,logstart)
+		end
 		add pointer :
 	end
 	call free(br#:branch.innerbranches)
 
 	if br#:branch.subbranch!=(NULL)
-		call branch_free(br#:branch.subbranch,logstart)
+		if logstart!=(NULL)
+			call tree_entrylive(indents,(xlog_branch))
+			call branch_free_ex(br#:branch.subbranch,logstart,indents)
+		else
+			call branch_free(br#:branch.subbranch,logstart)
+		end
 	end
 	call free(br)
 end
