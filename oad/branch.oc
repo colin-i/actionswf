@@ -143,10 +143,7 @@ import "tree_entrylive" tree_entrylive
 
 importx "free" free
 
-function branch_free(valueu br,valueu logstart)
-	call branch_free_ex(br,logstart,0)
-end
-function branch_free_ex(valueu br,valueu logstart,dataxu indents)
+function branch_free(valueu br,valueu logstart,dataxu indents)
 	if logstart!=(NULL)
 		call branch_log(br,logstart)
 	end
@@ -159,11 +156,11 @@ function branch_free_ex(valueu br,valueu logstart,dataxu indents)
 		if logstart!=(NULL)
 			call tree_entrylive(indents,(xlog_innerbranch))
 			inc indents
-			call branch_free_ex(pointer#,logstart,indents)
+		end
+		call branch_free(pointer#,logstart,indents)
+		if logstart!=(NULL)
 			dec indents
 			call tree_entrylive(indents,(xlog_innerbranchend))
-		else
-			call branch_free(pointer#,logstart)
 		end
 		add pointer :
 	end
@@ -172,10 +169,8 @@ function branch_free_ex(valueu br,valueu logstart,dataxu indents)
 	if br#:branch.subbranch!=(NULL)
 		if logstart!=(NULL)
 			call tree_entrylive(indents,(xlog_branch))
-			call branch_free_ex(br#:branch.subbranch,logstart,indents)
-		else
-			call branch_free(br#:branch.subbranch,logstart)
 		end
+		call branch_free(br#:branch.subbranch,logstart,indents)
 	end
 	call free(br)
 end

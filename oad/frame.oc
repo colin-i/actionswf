@@ -84,7 +84,7 @@ function preframe_init()
 end
 
 import "string_log" string_log
-import "branch_free_ex" branch_free_ex
+import "branch_free" branch_free
 import "tree_frame_free" tree_frame_free
 
 import "print_inline_start" print_inline_start
@@ -150,11 +150,11 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		dataxu finalsize#1;set finalsize pf#:preframe.size
 		add finalsize pf#:preframe.recalculation
 		call print2("size=0x%X, final size=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
-		call branch_free_ex(pf#:preframe.abranch,logstart,0)
+		call branch_free(pf#:preframe.abranch,logstart,0)
 		call tree_frame_free(pf)
 		call print_unindent()
 	else
-		call branch_free_ex(pf#:preframe.abranch,(NULL))
+		call branch_free(pf#:preframe.abranch,(NULL))
 	end
 
 	call free(pf)
