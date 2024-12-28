@@ -109,11 +109,11 @@ function prints(ss format)
 	call printf(format)
 	call print_inline_done()
 end
-function print_inline_start(ss str)
+function prints_inline_start(ss str)
 	call indent()
 	call printf(str)
 end
-function print_inline_start_value(ss format,valueu value)
+function print_inline_start(ss format,valueu value)
 	call indent()
 	call printf(format,value)
 end

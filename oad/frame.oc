@@ -88,8 +88,8 @@ import "string_log" string_log
 import "branch_free" branch_free
 import "tree_frame_free" tree_frame_free
 
+import "prints_inline_start" prints_inline_start
 import "print_inline_start" print_inline_start
-import "print_inline_start_value" print_inline_start_value
 import "print_inline_done" print_inline_done
 import "print" print
 import "print_indent" print_indent
@@ -108,7 +108,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		#set stroff stroff#
 		#incst pf#:preframe.logstrstart_index
 
-		call print_inline_start("ustrings:")
+		call prints_inline_start("ustrings:")
 		set log (TRUE)
 	else
 		set log (FALSE)
@@ -131,7 +131,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	if log=(TRUE)
 		call print_inline_done()
 
-		call print_inline_start("strings:")
+		call prints_inline_start("strings:")
 	end
 	sv strings;set strings pf#:preframe.strings
 	set s strings
@@ -201,7 +201,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 	valueu nr_actions#1
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
-		call print_inline_start_value("lines=%lu",end)
+		call print_inline_start("lines=%lu",end)
 		set ix 0;set n 0
 		set nr_actions lines#:line.total
 	end
