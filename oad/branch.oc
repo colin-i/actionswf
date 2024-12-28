@@ -123,7 +123,7 @@ function branch_log(sv br,valueu start)
 		set sz cuts#:branchcut.size
 
 		charx pad#1;set pad oadata_logpad_get()
-		charx pad_minus_one#xlog_pad_default-1
+		charx pad_minus_one#256-1 #was xlog_pad_default
 			#for branches with holes(like a function def there) a full 48 row is required
 			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
 
