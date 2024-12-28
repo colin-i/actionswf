@@ -14,11 +14,15 @@ function ibranch_add(valueu pf)
 	if ok=(EXIT_SUCCESS)
 		svu pointer#1;set pointer bra#:branch.innerbranches
 		add pointer bra#:branch.isize
-		set pointer# branch_init(pf)
+		set pointer# branch_init(pf,bra)
 		if pointer#!=(NULL)
 			add bra#:branch.isize :
 			return (EXIT_SUCCESS)
 		end
 	end
 	return (EXIT_FAILURE)
+end
+function ibranch_done(valueu pf)
+	valueu bra#1;set bra pf#:preframe.branchpointer
+	set pf#:preframe.branchpointer bra#:branch.suprabranch
 end

@@ -60,7 +60,7 @@ function preframe_init()
 			sv strings
 			set strings malloc((sprites_realloc_onepart))
 			if strings!=(NULL)
-				set pf#:preframe.abranch branch_init(pf)
+				set pf#:preframe.abranch branch_init(pf) #,suprabranch is not important since this is on root level and } can't happen
 				if pf#:preframe.abranch!=(NULL)
 					set pf#:preframe.ustrings ustrings
 					set pf#:preframe.ussize 0

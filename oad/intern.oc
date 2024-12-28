@@ -163,6 +163,7 @@ import "string_add" string_add
 import "string_id" string_id
 import "branch_init" branch_init
 import "ibranch_add" ibranch_add
+import "ibranch_done" ibranch_done
 import "tree_entry_ex" tree_entry_ex
 import "tree_entry_start" tree_entry_start
 import "tree_entry_end" tree_entry_end
@@ -230,7 +231,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set inlog memhex_parse_withinc(inlog,#number)
 			elseif inlog#=(xlog_branch) #branch start
 				valueu branch_prec#1;set branch_prec prefr#:preframe.branchpointer
-				set branch_prec#:branch.subbranch branch_init(prefr)
+				set branch_prec#:branch.subbranch branch_init(prefr,branch_prec)
 				if branch_prec#:branch.subbranch=(NULL)
 					return (EXIT_FAILURE)
 				end
@@ -250,6 +251,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranchend) #innerbranch end
+				call ibranch_done(prefr)
 				call newbranch(px,pxx)
 				if global.blog=(TRUE)
 					call tree_entry_end(prefr)

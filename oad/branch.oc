@@ -6,7 +6,7 @@ include "common.h" "common.h.oh"
 
 importx "malloc" malloc
 #branch pointer
-function branch_init(valueu pf)
+function branch_init(valueu pf,valueu pbra)
 	valueu bra#1
 	set bra malloc((\branch\))
 	if bra!=(NULL)
@@ -20,6 +20,8 @@ function branch_init(valueu pf)
 
 				set bra#:branch.innerbranches inners
 				set bra#:branch.isize 0
+
+				set bra#:branch.suprabranch pbra
 				set bra#:branch.subbranch (NULL)
 
 				set pf#:preframe.branchpointer bra
