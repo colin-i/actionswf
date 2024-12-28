@@ -6,7 +6,7 @@ override include_sec 1
 include "../../oad/oadbgdatai.h" "../../oad/oadbgdatai.h.oh"
 
 entry main(data srgc,sv argv)
-
+call oadata_logpad_set(0x30)
 incst argv
 ss path;set path argv#
 sd oadata

@@ -19,7 +19,11 @@ import "presprite_done" presprite_done
 import "tree_init" tree_init
 import "tree_exit" tree_exit
 
-#functions are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
+#multithread unsafe
+char logpad=xlog_pad_default
+#
+
+#functions(except oadata_logpad) are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
 functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 	set poadata# (NULL)
@@ -194,3 +198,16 @@ functionx oadata_free(sv data,charx log)
 		call free(data)
 	end
 end
+
+functionx oadata_logpad_get()
+	return global.logpad
+end
+functionx oadata_logpad_set(charx a)
+	if a!=0
+		set global.logpad a
+	else
+		set global.logpad 1
+	end
+end
+
+entryraw global()

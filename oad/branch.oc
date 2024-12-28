@@ -94,6 +94,8 @@ end
 import "print_inline_start" print_inline_start
 import "prints_inline" prints_inline
 
+import "oadata_logpad_get" oadata_logpad_get #importx without args
+
 function branch_log(sv br,valueu start)
 	call print_inline_start("branch:")
 	valueu end#1;set end br#:branch.size
@@ -120,15 +122,17 @@ function branch_log(sv br,valueu start)
 		ss code;set code cuts#:branchcut.x
 		set sz cuts#:branchcut.size
 
+		charx pad#1;set pad oadata_logpad_get()
+		charx pad_minus_one#xlog_pad_default-1
+			#for branches with holes(like a function def there) a full 48 row is required
+			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
+
 		valueu pad_sz#1;set pad_sz code
 		sub pad_sz start
 		dataxu strip_pad_sz#1;set strip_pad_sz pad_sz
-		divu strip_pad_sz (xlog_pad_default)
-		mult strip_pad_sz (xlog_pad_default)
+		divu strip_pad_sz pad
+		mult strip_pad_sz pad
 		sub pad_sz strip_pad_sz
-		charx pad_minus_one#47
-			#for branches with holes(like a function def there) a full 48 row is required
-			#here is the initial pad, that can be full row - 4 bytes. but if not padded can be - 1 byte, then, 47
 
 		charx a#1;charx b#1
 		set a 0;set b 0
