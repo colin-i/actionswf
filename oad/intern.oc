@@ -206,7 +206,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					add prefr#:preframe.size number
 					if global.blog=(TRUE)
 						if recalculation!=0
-							add prefr#:preframe.recalculation recalculation
+							add prefr#:preframe.log_recalculation recalculation
 							set recalculation 0
 						end
 					end
@@ -264,7 +264,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				set inlog memhex_parse_withinc(inlog,#number)
 				if global.blog=(TRUE)
-					add prefr#:preframe.recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
+					add prefr#:preframe.log_recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 				end
 			else #xlog_jumpback at loop end , continue
@@ -357,6 +357,10 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				valueu xcode#1;set xcode x
 				add x xcode_size
 				set global.xoffset 0
+
+				if log=(TRUE)
+					add pf#:preframe.log_xsize xcode_size
+				end
 
 				#[actions]
 				whiletrue

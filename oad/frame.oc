@@ -69,8 +69,9 @@ function preframe_init()
 					set pf#:preframe.size 0
 					charx blog#1;set blog global_blog()
 					if blog=(TRUE)
-						set pf#:preframe.recalculation 0
+						set pf#:preframe.log_recalculation 0
 						call tree_frame_init(pf)
+						set pf#:preframe.log_xsize 0
 					end
 					return pf
 				end
@@ -91,9 +92,11 @@ import "print_inline_start" print_inline_start
 import "print_inline_start_value" print_inline_start_value
 import "print_inline_done" print_inline_done
 import "print" print
-import "print2" print2
 import "print_indent" print_indent
 import "print_unindent" print_unindent
+import "indent" indent
+
+importx "printf" printf
 
 function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1
@@ -148,8 +151,12 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		call print_inline_done()
 
 		dataxu finalsize#1;set finalsize pf#:preframe.size
-		add finalsize pf#:preframe.recalculation
-		call print2("size=0x%X, final size=0x%X",pf#:preframe.size,finalsize) #these sizes are without pool and end tag
+		add finalsize pf#:preframe.log_recalculation
+
+		call indent()
+		call printf("asize=0x%X, fasize=0x%X, size=0x%lX",pf#:preframe.size,finalsize,pf#:preframe.log_xsize) #final action size. asize and fasize are without pool and end tag
+		call print_inline_done()
+
 		call branch_free(pf#:preframe.abranch,logstart,0)
 		call tree_frame_free(pf)
 		call print_unindent()
@@ -183,7 +190,7 @@ function frame_init(valueu total)
 	return (NULL)
 end
 
-import "print_inline2" print_inline2
+import "print2_inline" print2_inline
 import "print_text" print_text
 import "prints" prints
 
@@ -205,7 +212,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		if log_index!=(no_index)
 			valueu i#1;set i pointer#:line.index
 			if i!=ix
-				call print_inline2("%u,%u",n,nr_actions)
+				call print2_inline("%u,%u",n,nr_actions)
 				set ix i;set n 1
 				set nr_actions pointer#:line.total
 			else
@@ -218,7 +225,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 		add pointer (\line\)
 	end
 	if log_index!=(no_index)
-		call print_inline2("%u,%u",n,nr_actions)
+		call print2_inline("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
 		call print_indent()
