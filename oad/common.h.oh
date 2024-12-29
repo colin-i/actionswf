@@ -57,6 +57,8 @@ function preframe()
 	dataxu log_indents#1  #same as functions
 	#
 	valueu log_xsize#1   ;#example: a[a[a]]=a[a[a]] is 40 size vs 192 xsize
+	#
+	dataxu log_branchid#1 #for strings log
 end
 function branch()
 	valueu cuts#1
@@ -69,6 +71,8 @@ function branch()
 	valueu subbranch#1
 
 #	valuexu *action#1   #for mark, after compare
+
+	dataxu log_id#1  #for strings log
 end
 function branchcut()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy

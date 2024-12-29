@@ -5,6 +5,9 @@ override include_sec 1
 include "common.h" "common.h.oh"
 
 importx "malloc" malloc
+
+import "global_blog" global_blog
+
 #branch pointer
 function branch_init(valueu pf,valueu pbra)
 	valueu bra#1
@@ -25,6 +28,12 @@ function branch_init(valueu pf,valueu pbra)
 				set bra#:branch.subbranch (NULL)
 
 				set pf#:preframe.branchpointer bra
+
+				charx blog#1;set blog global_blog()
+				if blog=(TRUE)
+					set bra#:branch.log_id pf#:preframe.log_branchid
+					inc bra#:branch.log_id
+				end
 				return bra
 			end
 			call free(inners)

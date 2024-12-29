@@ -56,7 +56,7 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,sd _rec
 				return (EXIT_SUCCESS)
 			end
 		end
-	else
+	else #xlog_unique
 		set ok re_alloc(#pf#:preframe.ustrings,pf#:preframe.ussize)
 		if ok=(EXIT_SUCCESS)
 			set str malloc((\ustring\))
