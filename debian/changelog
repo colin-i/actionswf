@@ -1,3 +1,9 @@
+actionswf (1-115) bionic; urgency=medium
+
+  * changeable xlog pad
+
+ -- bc <bc@bc-desktop>  Sun, 29 Dec 2024 11:14:05 +0200
+
 actionswf (1-114) bionic; urgency=medium
 
   * backjump at src/oad
