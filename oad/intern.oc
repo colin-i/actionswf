@@ -135,16 +135,17 @@ function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
 	return a
 end
 
-function newbranch(sv px,sv pxx)
+import "branch_add" branch_add
+
+function newbranch(sv px,sv pxx,valueu prefr)
 	sd xx;set xx pxx#
-	sd branchsize;set branchsize xx#
-	sub branchsize global.xoffset
-
-	#do something with the branchsize
-
-	add global.xoffset branchsize
-	add px# branchsize
+	dataxu branchoffset#1;set branchoffset xx#
+	charx ok#1;set ok branch_add(prefr,branchoffset,global.xoffset,px#)
+	sub branchoffset global.xoffset
+	add px# branchoffset
+	add global.xoffset branchoffset
 	add pxx# (xlog_code_size)
+	return ok
 end
 
 import "re_alloc" re_alloc
@@ -230,29 +231,38 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 			elseif inlog#=(xlog_jump)
 				set inlog memhex_parse_withinc(inlog,#number)
 			elseif inlog#=(xlog_branch) #branch start
+				set ok newbranch(px,pxx,prefr)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 				valueu branch_prec#1;set branch_prec prefr#:preframe.branchpointer
 				set branch_prec#:branch.subbranch branch_init(prefr,branch_prec)
 				if branch_prec#:branch.subbranch=(NULL)
 					return (EXIT_FAILURE)
 				end
-				call newbranch(px,pxx)
 				if global.blog=(TRUE)
 					call tree_entry_ex(prefr,(xlog_branch))
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranch)
+				set ok newbranch(px,pxx,prefr)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 				set ok ibranch_add(prefr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
-				call newbranch(px,pxx)
 				if global.blog=(TRUE)
 					call tree_entry_start(prefr)
 				end
 				inc inlog
 			elseif inlog#=(xlog_innerbranchend) #innerbranch end
+				set ok newbranch(px,pxx,prefr)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 				call ibranch_done(prefr)
-				call newbranch(px,pxx)
 				if global.blog=(TRUE)
 					call tree_entry_end(prefr)
 				end
@@ -289,7 +299,6 @@ end
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 import "get_nframe" get_nframe
-import "branch_done" branch_done
 
 function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx log)
 	add logsize inlog
@@ -365,7 +374,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				#[actions]
 				whiletrue
 					if inlog=logsize
-						set ok branch_done(pf,xcode_size,global.xoffset,xcode)
+						set ok branch_add(pf,xcode_size,global.xoffset,xcode)
 						if ok=(EXIT_SUCCESS)
 							return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
 						end
@@ -379,7 +388,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 							return (EXIT_FAILURE)
 						end
 					else
-						set ok branch_done(pf,xcode_size,global.xoffset,xcode)
+						set ok branch_add(pf,xcode_size,global.xoffset,xcode)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
