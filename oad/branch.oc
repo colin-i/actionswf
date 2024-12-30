@@ -31,8 +31,8 @@ function branch_init(valueu pf,valueu pbra)
 
 				charx blog#1;set blog global_blog()
 				if blog=(TRUE)
+					inc pf#:preframe.log_branchid
 					set bra#:branch.log_id pf#:preframe.log_branchid
-					inc bra#:branch.log_id
 				end
 				return bra
 			end
@@ -116,6 +116,7 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 end
 
 import "oadata_logpad_get" oadata_logpad_get #importx without args
+import "print2_inline" print2_inline
 
 function branch_log(sv br,valueu start)
 	call prints_inline_start("branch:")
@@ -128,9 +129,9 @@ function branch_log(sv br,valueu start)
 		add sz cuts#:branchcut.size
 		add cuts \branchcut\
 	end
-	call print_inline("size=0x%X",sz)
+	call print2_inline("id=%u, size=0x%X",br#:branch.log_id,sz)
 	set sz br#:branch.isize
-	if sz!=0 #most of the cases, only root has functions
+	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
 		call print_inline("inners=%u",sz)
 	end
