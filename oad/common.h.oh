@@ -81,7 +81,7 @@ end
 function ustring()
 	valueu base#1
 	valueu off#1
-	valueu *branch#1
+	valueu ubranch#1
 end
 function string()
 	valueu base#1

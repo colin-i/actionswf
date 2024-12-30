@@ -63,6 +63,7 @@ function string_add(sv pf,sv p_string_off,valueu strings_base,charx type,sd _rec
 			if str!=(NULL)
 				set str#:ustring.base strings_base  ##in two steps for log.
 				set str#:ustring.off p_string_off#
+				set str#:ustring.ubranch pf#:preframe.branchpointer
 
 				if _recalculation!=(NULL)
 					add strings_base p_string_off#

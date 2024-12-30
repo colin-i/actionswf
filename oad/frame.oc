@@ -124,6 +124,8 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		set str s#
 		if log=(TRUE)
 			call string_log(str#:ustring.base,str#:ustring.off)
+			valueu bra#1;set bra str#:ustring.ubranch
+			call printf(",%u",bra#:branch.log_id)
 		end
 		call free(str)
 		incst s
