@@ -60,7 +60,13 @@ function preframe_init()
 			sv strings
 			set strings malloc((sprites_realloc_onepart))
 			if strings!=(NULL)
-				set pf#:preframe.branchid -1  #will inc to 0
+				charx blog#1;set blog global_blog()
+				if blog=(TRUE)
+					set pf#:preframe.log_recalculation 0
+					call tree_frame_init(pf)
+					set pf#:preframe.log_xsize 0
+					set pf#:preframe.log_branchid -1  #will inc to 0
+				end
 				set pf#:preframe.abranch branch_init(pf) #,suprabranch is not important since this is on root level and } can't happen
 				if pf#:preframe.abranch!=(NULL)
 					set pf#:preframe.ustrings ustrings
@@ -68,12 +74,6 @@ function preframe_init()
 					set pf#:preframe.strings strings
 					set pf#:preframe.ssize 0
 					set pf#:preframe.size 0
-					charx blog#1;set blog global_blog()
-					if blog=(TRUE)
-						set pf#:preframe.log_recalculation 0
-						call tree_frame_init(pf)
-						set pf#:preframe.log_xsize 0
-					end
 					return pf
 				end
 				call free(strings)
@@ -127,7 +127,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		if log=(TRUE)
 			call string_log(str#:ustring.base,str#:ustring.off)
 			valueu bra#1;set bra str#:ustring.ubranch
-			call printf(",%u",bra#:branch.id)
+			call printf(",%u",bra#:branch.log_id)
 		end
 		call free(str)
 		incst s

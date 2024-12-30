@@ -182,9 +182,10 @@ function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
 	mult strs id
 	add strs prefr#:preframe.strings
 	#str strs#
-	#last bra
-	# set bra str#:string.branches
-	# bra#:branch.id = id ? ret
+	#set bra str#:string.branches
+	#add bra str#:string.size
+	#sub bra :
+	#if bra=branchpointer ? ret
 	#else add
 end
 

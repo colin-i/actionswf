@@ -48,8 +48,6 @@ function preframe()
 
 	valueu branchpointer#1  #starting from abranch and descending
 
-	dataxu branchid#1 #for strings one time branches add. and log
-
 	#log only
 	value log_recalculation#1 #can be in ui32, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
 	#
@@ -59,6 +57,8 @@ function preframe()
 	dataxu log_indents#1  #same as functions
 	#
 	valueu log_xsize#1   ;#example: a[a[a]]=a[a[a]] is 40 size vs 192 xsize
+	#
+	dataxu log_branchid#1 #for strings log
 end
 function branch()
 	valueu cuts#1
@@ -70,9 +70,9 @@ function branch()
 	valueu suprabranch#1
 	valueu subbranch#1
 
-	dataxu id#1  #for strings one time branches add. and log
-
 #	valuexu *action#1   #for mark, after compare
+
+	dataxu log_id#1  #for strings log
 end
 function branchcut()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
