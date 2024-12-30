@@ -155,7 +155,7 @@ function print_text(ss a,valueu c)
 	end
 end
 
-function print_hex(ss front,valueu value)
+function print_hex(ss front,dataxu value)
 	call printf("%s=0x%X",front,value)
 end
 function print_lhex(ss front,valueu value)
