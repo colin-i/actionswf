@@ -155,15 +155,18 @@ function print_text(ss a,valueu c)
 	end
 end
 
-function print_hex(ss front,valueu value) #can also be uint
-	call printf("%s=0x%lX",front,value) #3 times it comes %X
+function print_hex(ss front,valueu value)
+	call printf("%s=0x%X",front,value)
+end
+function print_lhex(ss front,valueu value)
+	call printf("%s=0x%lX",front,value)
 end
 
 function string_log(valueu base,valueu off)
 	add base off
 	inc off ##to log like in .x where 0 is NULL and 1 is offset 0
 	call putchar((Space))
-	call print_hex(base,off)  #will recognize the branch (visual) when having the string -> branch link and the branch offset
+	call print_lhex(base,off)  #will recognize the branch (visual) when having the string -> branch link and the branch offset
 end
 
 function string_id(sd _recalculation,swu xxcontent,charx inlogtype)

@@ -130,7 +130,7 @@ function branch_log(sv br,valueu start)
 		add cuts \branchcut\
 	end
 	call print_inline("id=%u",br#:branch.log_id)
-	call print_hex(", size",sz) #sz is %X
+	call print_hex(", size",sz)
 	set sz br#:branch.isize
 	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
