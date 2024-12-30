@@ -95,6 +95,7 @@ import "print_inline_done" print_inline_done
 import "print" print
 import "print_indent" print_indent
 import "print_unindent" print_unindent
+import "print_hex" print_hex
 import "indent" indent
 
 importx "printf" printf
@@ -157,7 +158,9 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		add finalsize pf#:preframe.log_recalculation
 
 		call indent()
-		call printf("asize=0x%X, fasize=0x%X, size=0x%lX",pf#:preframe.size,finalsize,pf#:preframe.log_xsize) #final action size. asize and fasize are without pool and end tag
+		call print_hex("asize",pf#:preframe.size) # is %X                is without pool and end tag
+		call print_hex(", fasize",finalsize) # is %X .final action size. is without pool and end tag
+		call print_hex(", size",pf#:preframe.log_xsize)
 		call print_inline_done()
 
 		call branch_free(pf#:preframe.abranch,logstart,0)

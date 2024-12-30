@@ -116,7 +116,7 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 end
 
 import "oadata_logpad_get" oadata_logpad_get #importx without args
-import "print2_inline" print2_inline
+import "print_hex" print_hex
 
 function branch_log(sv br,valueu start)
 	call prints_inline_start("branch:")
@@ -129,7 +129,8 @@ function branch_log(sv br,valueu start)
 		add sz cuts#:branchcut.size
 		add cuts \branchcut\
 	end
-	call print2_inline("id=%u, size=0x%X",br#:branch.log_id,sz)
+	call print_inline("id=%u",br#:branch.log_id)
+	call print_hex(", size",sz) #sz is %X
 	set sz br#:branch.isize
 	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
