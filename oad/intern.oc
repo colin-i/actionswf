@@ -224,7 +224,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					end
 					add pxx# (xlog_unique_new_size)
 				else #xlog_id
-					call string_id(_recalculation,pxx#,inlog#)
+					call string_id(prefr,pxx#,_recalculation,inlog#)
 					add pxx# (xlog_id_size)
 				end
 				inc inlog

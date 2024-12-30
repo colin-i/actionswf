@@ -169,15 +169,23 @@ function string_log(valueu base,valueu off)
 	call print_lhex(base,off)  #will recognize the branch (visual) when having the string -> branch link and the branch offset
 end
 
-function string_id(sd _recalculation,swu xxcontent,charx inlogtype)
+function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
+	wordxu id#1;set id xxcontent#
 	if _recalculation!=(NULL)
 		if inlogtype=(xlog_const16_log) #same
-			if xxcontent#<^(ui8max_)
+			if id<^(ui8max_)
 				dec _recalculation#
 			end
 		end
 	end
-	#here to do at string branches
+	sv strs=:
+	mult strs id
+	add strs prefr#:preframe.strings
+	#str strs#
+	#last bra
+	# set bra str#:string.branches
+	# bra#:branch.id = id ? ret
+	#else add
 end
 
 entryraw global()
