@@ -87,6 +87,7 @@ function string()
 	valueu base#1
 	valueu off#1
 	valuexu branches#1
+	dataxu size#1 #same as number of branches
 end
 
 const from_action=0

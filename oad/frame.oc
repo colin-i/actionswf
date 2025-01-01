@@ -43,6 +43,16 @@ function re_calloc_size(sv pmem,sdu psize,dataxu newsize)
 	end
 	return ok
 end
+function re_alloc_add(sv pmem,sdu size,valueu value)
+	charx ok#1;set ok re_alloc(pmem,size#)
+	if ok=(EXIT_SUCCESS)
+		sv mem;set mem pmem#
+		add mem size#
+		set mem# value
+		add size# :
+	end
+	return ok
+end
 
 importx "malloc" malloc
 importx "free" free

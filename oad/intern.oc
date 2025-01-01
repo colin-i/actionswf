@@ -154,6 +154,7 @@ function function(valueu data)
 	charx ok#1;set ok re_alloc(#data#:oadata.functions,data#:oadata.functions_size)
 	if ok=(EXIT_SUCCESS)
 		add data#:oadata.functions_size :
+		#here a re_alloc_add maybe
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)
@@ -224,7 +225,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					end
 					add pxx# (xlog_unique_new_size)
 				else #xlog_id
-					call string_id(prefr,pxx#,_recalculation,inlog#)
+					set ok string_id(prefr,pxx#,_recalculation,inlog#)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
 					add pxx# (xlog_id_size)
 				end
 				inc inlog
