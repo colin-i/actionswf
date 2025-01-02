@@ -187,14 +187,12 @@ function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
 	set str str#
 	valueu current_branch#1;set current_branch prefr#:preframe.branchpointer
 	valuexu pointer#1;set pointer str#:string.size
-	if pointer!=0
-		valueu start#1;set start str#:string.branches
-		add pointer start
-		while start!=pointer
-			sub pointer :
-			if pointer#=current_branch
-				return (EXIT_SUCCESS) #is on same branch, same cut if first match, else on another cut
-			end
+	valueu start#1;set start str#:string.branches
+	add pointer start
+	while start!=pointer
+		sub pointer :
+		if pointer#=current_branch
+			return (EXIT_SUCCESS) #is on same branch, same cut if first match, else on another cut
 		end
 	end
 	charx ok#1
