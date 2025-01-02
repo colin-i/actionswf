@@ -14,6 +14,7 @@ const Tab=0x9
 const NewLine=0xa
 const CReturn=0xd
 const Space=0x20
+const Comma=0x2c
 const ZeroChar=0x30
 const NineChar=0x39
 const A=0x41

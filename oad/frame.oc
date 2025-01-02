@@ -110,6 +110,7 @@ import "print_lhex" print_lhex
 import "indent" indent
 
 importx "printf" printf
+importx "putchar" putchar
 
 function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1
@@ -156,6 +157,15 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		set str s#
 		if log=(TRUE)
 			call string_log(str#:string.base,str#:string.off)
+			sv brs;set brs str#:string.branches
+			valueu brsend#1;set brsend brs
+			add brsend str#:string.size
+			while brs!=brsend
+				call putchar((Comma))
+				valueu br#1;set br brs#
+				call printf("%u",br#:branch.log_id)
+				add brs :
+			end
 		end
 		call free(str#:string.branches)
 		call free(str)

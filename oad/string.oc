@@ -186,9 +186,9 @@ function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
 	add str prefr#:preframe.strings
 	set str str#
 	valueu current_branch#1;set current_branch prefr#:preframe.branchpointer
-	valuexu pointer#1;set pointer str#:string.size
 	valueu start#1;set start str#:string.branches
-	add pointer start
+	valuexu pointer#1;set pointer start
+	add pointer str#:string.size
 	while start!=pointer
 		sub pointer :
 		if pointer#=current_branch
