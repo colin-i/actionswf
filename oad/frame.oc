@@ -138,7 +138,8 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		if log=(TRUE)
 			call string_log(str#:ustring.base,str#:ustring.off)
 			valueu bra#1;set bra str#:ustring.ubranch
-			call printf(",%u",bra#:branch.log_id)
+			call putchar((Comma))
+			call printf("%u",bra#:branch.log_id)
 		end
 		call free(str)
 		incst s
@@ -161,8 +162,8 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 			valueu brsend#1;set brsend brs
 			add brsend str#:string.size
 			while brs!=brsend
-				call putchar((Comma))
 				valueu br#1;set br brs#
+				call putchar((Comma))
 				call printf("%u",br#:branch.log_id)
 				add brs :
 			end

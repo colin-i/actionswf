@@ -95,6 +95,13 @@ function indent()
 	end
 end
 
+importx "fputs" fputs
+importx "stdout" stdout
+
+function printt(ss str)
+	sv so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer
+	call fputs(str,so#)
+end
 function print_indent()
 	inc global.indents
 end
@@ -108,12 +115,12 @@ function print(ss format,valueu value)
 end
 function prints(ss format)
 	call indent()
-	call printf(format)
+	call printt(format)
 	call print_inline_done()
 end
 function prints_inline_start(ss str)
 	call indent()
-	call printf(str)
+	call printt(str)
 end
 function print_inline_start(ss format,valueu value)
 	call indent()
@@ -129,7 +136,7 @@ function print2_inline(ss format,valueu value,valueu v2)
 end
 function prints_inline(ss format)
 	call putchar((Space))
-	call printf(format)
+	call printt(format)
 end
 function print_inline_done()
 	call putchar((NewLine))
@@ -137,7 +144,6 @@ end
 
 import "memnl" memnl
 
-importx "stdout" stdout
 importx "fwrite" fwrite
 function print_text(ss a,valueu c)
 	sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this

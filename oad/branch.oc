@@ -72,6 +72,7 @@ import "prints_inline_start" prints_inline_start
 import "print_inline_done" print_inline_done
 import "print_inline" print_inline
 import "prints_inline" prints_inline
+import "printt" printt
 
 function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 	ssu start;set start code
@@ -95,7 +96,7 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 			if start!=(NULL)
 				call printf(form,code#)
 			else
-				call printf(form)
+				call printt(form)
 			end
 			inc a
 		elseif b<12
