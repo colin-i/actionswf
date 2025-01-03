@@ -70,7 +70,7 @@ import "print_unindent" print_unindent
 import "print_inline_start" print_inline_start
 import "prints_inline_start" prints_inline_start
 import "print_inline_done" print_inline_done
-import "print_inline" print_inline
+import "print_iinline" print_iinline
 import "prints_inline" prints_inline
 import "printt" printt
 
@@ -101,7 +101,7 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 			inc a
 		elseif b<12
 			if start!=(NULL)
-				call print_inline(form,code#)
+				call print_iinline(form,code#)
 			else
 				call prints_inline(form)
 			end
@@ -130,12 +130,12 @@ function branch_log(sv br,valueu start)
 		add sz cuts#:branchcut.size
 		add cuts \branchcut\
 	end
-	call print_inline("id=%u",br#:branch.log_id)
+	call print_iinline("id=%u",br#:branch.log_id)
 	call print_hex(", size",sz)
 	set sz br#:branch.isize
 	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
-		call print_inline("inners=%u",sz)
+		call print_iinline("inners=%u",sz)
 	end
 	call prints_inline("code:")
 	call print_inline_done()

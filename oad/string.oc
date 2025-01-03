@@ -126,13 +126,9 @@ function print_inline_start(ss format,valueu value)
 	call indent()
 	call printf(format,value)
 end
-function print_inline(ss format,valueu value)
+function print_iinline(ss format,dataxu value)
 	call putchar((Space))
 	call printf(format,value)
-end
-function print2_inline(ss format,valueu value,valueu v2)
-	call putchar((Space))
-	call printf(format,value,v2)
 end
 function prints_inline(ss format)
 	call putchar((Space))

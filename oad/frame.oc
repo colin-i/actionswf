@@ -218,7 +218,6 @@ function frame_init(valueu total)
 	return (NULL)
 end
 
-import "print2_inline" print2_inline
 import "print_text" print_text
 import "prints" prints
 
@@ -240,7 +239,8 @@ function frame_free(sv f,charx ainit,datax log_index)
 		if log_index!=(no_index)
 			valueu i#1;set i pointer#:line.index
 			if i!=ix
-				call print2_inline("%u,%u",n,nr_actions)
+				call putchar((Space))
+				call printf("%u,%u",n,nr_actions)
 				set ix i;set n 1
 				set nr_actions pointer#:line.total
 			else
@@ -253,7 +253,8 @@ function frame_free(sv f,charx ainit,datax log_index)
 		add pointer (\line\)
 	end
 	if log_index!=(no_index)
-		call print2_inline("%u,%u",n,nr_actions)
+		call putchar((Space))
+		call printf("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
 		call print_indent()
