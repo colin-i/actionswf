@@ -103,7 +103,7 @@ function memdec(ss start,value end)
 	return val
 end
 #end
-function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
+function memhex_parse_withinc(ssu start,swu out) #arecordheader,function,if,jump are 15/16 bits at max
 	inc start
 	ss a;set a start
 	whiletrue #the action row is ending in new line
@@ -117,10 +117,10 @@ function memhex_parse_withinc(ss start,sd out) #will max be a jump in DoAction
 	set out# 0
 	if a!=start   ##there are many ,, with no size
 		ss b;set b a
-		dataxu n#1;set n 1
+		wordxu n#1;set n 1
 		while start!=b
 			dec b
-			dataxu nr#1
+			wordxu nr#1
 			set nr b#
 			if nr<=(NineChar)
 				sub nr (ZeroChar)
@@ -169,6 +169,7 @@ import "ibranch_done" ibranch_done
 import "tree_entry_ex" tree_entry_ex
 import "tree_entry_start" tree_entry_start
 import "tree_entry_end" tree_entry_end
+import "branch_resolve" branch_resolve
 
 function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start inlog
@@ -198,9 +199,9 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 			set _recalculation (NULL)
 		end
 		while inlog!=end
-			dataxu number#1  #u16,u32,u16
+			wordxu number#1  #4 places
 			if inlog#=(xlog_act) #action
-				set inlog memhex_parse_withinc(inlog,#number)
+				set inlog memhex_parse_withinc(inlog,#number) #Length If code >= 0x80, UI16
 				if number=0 # code < 0x80
 					add prefr#:preframe.size (actionrecordheader_tag_size)
 				else
@@ -233,7 +234,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				inc inlog
 			elseif inlog#=(xlog_jump)
-				set inlog memhex_parse_withinc(inlog,#number)
+				set inlog memhex_parse_withinc(inlog,#number)   #ActionIf BranchOffset SI16(here 15 bits)  ActionJump BranchOffset SI16(here 15 bits)
+				call branch_resolve(prefr,number)
 			elseif inlog#=(xlog_branch) #branch start
 				set ok newbranch(px,pxx,prefr)
 				if ok!=(EXIT_SUCCESS)
@@ -276,13 +278,13 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
-				set inlog memhex_parse_withinc(inlog,#number)
+				set inlog memhex_parse_withinc(inlog,#number) #codeSize UI16
 				if global.blog=(TRUE)
 					add prefr#:preframe.log_recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 				end
-			else #xlog_jumpback at loop end , continue
-				set inlog memhex_parse_withinc(inlog,#number)
+			else #xlog_jumpback at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
+				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
 			end
 		end
 		return (EXIT_SUCCESS)

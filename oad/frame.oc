@@ -105,6 +105,7 @@ import "print_inline_done" print_inline_done
 import "print" print
 import "print_indent" print_indent
 import "print_unindent" print_unindent
+import "print_hex_start" print_hex_start
 import "print_hex" print_hex
 import "print_lhex" print_lhex
 import "indent" indent
@@ -180,9 +181,9 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 		add finalsize pf#:preframe.log_recalculation
 
 		call indent()
-		call print_hex("asize",pf#:preframe.size) #              is without pool and end tag
-		call print_hex(", fasize",finalsize) #final action size. is without pool and end tag
-		call print_lhex(", size",pf#:preframe.log_xsize)
+		call print_hex_start("asize",pf#:preframe.size) #              is without pool and end tag
+		call print_hex("fasize",finalsize) #final action size. is without pool and end tag
+		call print_lhex("size",pf#:preframe.log_xsize)
 		call print_inline_done()
 
 		call branch_free(pf#:preframe.abranch,logstart,0)

@@ -50,7 +50,7 @@ function preframe()
 	valueu branchpointer#1  #starting from abranch and descending
 
 	#log only
-	value log_recalculation#1 #can be in ui32, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
+	value log_recalculation#1 #can be on 32 bits, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
 	#
 	valueu log_mem#1
 	valueu log_size#1
@@ -71,7 +71,9 @@ function branch()
 	valueu suprabranch#1
 	valueu subbranch#1
 
-#	valuexu *action#1   #for mark, after compare
+	dataxu offset#1      #at jumpback calculations, and at jumpforward and count the prev branch, and at cuts
+#	valuexu action#1     #for mark, after compare
+#	valuexu action_unresolved#1  #is last suprabranch action
 
 	dataxu log_id#1  #for strings log
 end

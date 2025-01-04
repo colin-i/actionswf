@@ -26,3 +26,16 @@ function ibranch_done(valueu pf)
 	valueu bra#1;set bra pf#:preframe.branchpointer
 	set pf#:preframe.branchpointer bra#:branch.suprabranch
 end
+
+function branch_resolve(valueu pf,wordxu number)
+	dataxu offset#1;set offset pf#:preframe.size
+	sub offset number
+	valueu prev#1;set prev pf#:preframe.branchpointer
+	whiletrue
+		if prev#:branch.offset=offset  ##is /,,&offset/
+			#link prev#:branch.action_unresolved
+			break
+		end
+		set prev prev#:branch.suprabranch
+	end
+end
