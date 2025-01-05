@@ -75,15 +75,15 @@ function preframe_init()
 					set pf#:preframe.log_recalculation 0
 					call tree_frame_init(pf)
 					set pf#:preframe.log_xsize 0
-					set pf#:preframe.log_branchid -1  #will inc to 0
+					set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
 				end
+				set pf#:preframe.size 0  #used at branch_init
 				set pf#:preframe.abranch branch_init(pf) #,suprabranch is not important since this is on root level and } can't happen
 				if pf#:preframe.abranch!=(NULL)
 					set pf#:preframe.ustrings ustrings
 					set pf#:preframe.ussize 0
 					set pf#:preframe.strings strings
 					set pf#:preframe.ssize 0
-					set pf#:preframe.size 0
 					return pf
 				end
 				call free(strings)
