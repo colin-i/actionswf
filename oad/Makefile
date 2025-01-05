@@ -12,9 +12,11 @@ ifndef linkerflags
 linkerflags=-O3 -s
 endif
 ifeq (${conv_64},1) #to cross compile
-	model=-m32
-else
-	model=
+	ifneq ($(CC),arm-linux-gnueabihf-gcc)
+		model=-m32
+	endif
+#else
+#	model=
 endif
 
 OFLAGS=x_file 2
