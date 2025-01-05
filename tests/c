@@ -48,7 +48,7 @@ smart_ask () {
 		echo y \?; read -n1 -t $((60*60*24)) ans
 	fi
 	if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
-	base64 a.swf${2} > .expected/a.swf${1}.txt
+	base64 a.swf${2} > .expected/a.swf${1}.txt #this is ok with ln
 }
 	base64 -d .expected/a.swf.txt > .expected/a.swf || { echo not ok; exit 1; }
 	smart_diff .expected/a.swf a.swf
