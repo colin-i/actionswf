@@ -283,8 +283,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					add prefr#:preframe.log_recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 				end
-			else #xlog_jumpback at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
+			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
+			else #xlog_vbar is for branch loop start mark and then will leave the branch for a subbranch
+				inc inlog
 			end
 		end
 		return (EXIT_SUCCESS)

@@ -545,15 +545,17 @@ function write_ifjump_withNot(sd c2)
 	#write the jump offset
 	call write_ifjump_addTo_braceBlocks()
 endfunction
+import "debug_xlog_loop" debug_xlog_loop
 function add_while_top_off(sd typeOfLoop)
-    call brace_blocks_add_write_current()
-    sd block
-    setcall block cond_blocks()
-    set block# typeOfLoop
-    call brace_blocks_counter_inc()
+	call debug_xlog_loop()
+	call brace_blocks_add_write_current()
+	sd block
+	setcall block cond_blocks()
+	set block# typeOfLoop
+	call brace_blocks_counter_inc()
 	set block cond_blocks() #also for the error check was: add block (DWORD)
-    set block# (top_flag)
-    call brace_blocks_counter_inc()
+	set block# (top_flag)
+	call brace_blocks_counter_inc()
 endfunction
 const forIn_ifBreak_size=3+1+1+3+2
 function action_code_break()

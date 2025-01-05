@@ -74,6 +74,7 @@ function branch()
 	dataxu offset#1      #at jumpback calculations, and at jumpforward and count the prev branch, and at cuts
 #	valuexu action#1     #for mark, after compare
 #	valuexu action_unresolved#1  #is last suprabranch action
+#	dataxu offset_loop#1 # if the branch has a loop start, else use no_loop=0xffFFffFF
 
 	dataxu log_id#1  #for strings log
 end
