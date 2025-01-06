@@ -368,14 +368,14 @@ function frame_text_add(valueu fr,svu _text,valueu lines)
 	return (EXIT_SUCCESS)
 end
 
-function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
+function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _actions)
 	charx ok#1;set ok frame_text_add(fr,_text,lines)
 	if ok=(EXIT_SUCCESS)
 		valueu current#1;set current fr#:frame.total
 
 		valueu p_lines=\line\
 		mult p_lines current
-		add p_lines fr#:frame.lines
+		add p_lines fr#:frame.lines ##space for lines was reserved at start knowing log total lines
 
 		#test how many actions to alloc
 		dataxu nr_of_actions#1;set nr_of_actions 0
@@ -395,7 +395,6 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
 		valueu pointer#1
 		set pointer \line\
 		add pointer p_lines
-
 		while pointer!=lines   ##link empty lines
 			set pointer#:line.index current
 			set pointer#:line.actions (NULL)
@@ -403,19 +402,21 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
 		end
 
 		if nr_of_actions!=0                                   #can be 0, at ./example is are many cases
-			set end \action\
-			mult end nr_of_actions
-			set p_lines#:line.actions malloc(end) #space was reserved at start knowing log total lines
+			valueu stop#1
+			set stop \action\
+			mult stop nr_of_actions
+			set p_lines#:line.actions malloc(stop)
 			if p_lines#:line.actions!=(NULL)
 				#default action values
 				set pointer p_lines#:line.actions
-				add end pointer
-				while pointer!=end
+				add stop pointer
+				while pointer!=stop
 					set pointer#:action.next (NULL)   #last one is null
 					set pointer#:action.nextif (NULL) #other way at ActionIf
 					set pointer#:action.amark -1      #other way at branch start
 					add pointer \action\
 				end
+				set _actions# p_lines#:line.actions
 				return (EXIT_SUCCESS)
 			end
 		else #prev rows can also be tricks: while(true) break many times

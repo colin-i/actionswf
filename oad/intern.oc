@@ -188,7 +188,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 	end
 	valueu number_of_lines#1;set number_of_lines memdec(start,inlog)
 	charx ok#1
-	set ok frame_actions(fr,number_of_lines,inlog,end,_text)
+	valueu actions_start_on_this_line#1
+	set ok frame_actions(fr,number_of_lines,inlog,end,_text,#actions_start_on_this_line)
 	if ok=(EXIT_SUCCESS)
 		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
 			#not outside actionrow? 'a','a' on multiple rows is still on same row
@@ -199,6 +200,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		else
 			set _recalculation (NULL)
 		end
+		valueu actions#1;set actions actions_start_on_this_line
 		while inlog!=end
 			wordxu number#1  #4 places
 			valueu branch_item#1
@@ -216,6 +218,12 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						end
 					end
 				end
+				if actions!=actions_start_on_this_line ##first link is with another line
+					valueu link#1;set link actions
+					sub link \action\
+					set link#:action.next actions
+				end
+				add actions \action\
 			elseif inlog#=(xlog_string) #string
 				inc inlog ## xlog_const8_log or xlog_const16_log
 
