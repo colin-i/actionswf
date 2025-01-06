@@ -141,6 +141,9 @@ function branch_log(sv br,valueu start)
 		call print_iinline("inners=%u",sz)
 	end
 	call print_hex("aoffset",br#:branch.offset)
+	if br#:branch.offset_loop!=(no_loop)
+		call print_hex("aoffset_loop",br#:branch.offset_loop)
+	end
 	call prints_inline("code:")
 	call print_inline_done()
 
