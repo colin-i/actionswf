@@ -27,13 +27,25 @@ function ibranch_done(valueu pf)
 	set pf#:preframe.branchpointer bra#:branch.suprabranch
 end
 
-function branch_resolve(valueu pf,wordxu number)
+function jumpforward_resolve(valueu pf,wordxu number)
 	dataxu offset#1;set offset pf#:preframe.size
 	sub offset number
 	valueu prev#1;set prev pf#:preframe.branchpointer
 	whiletrue
 		if prev#:branch.offset=offset  ##is /,,&offset/
-			#link prev#:branch.action_unresolved
+			#link prev#:branch.action_unresolved to next action
+			break
+		end
+		set prev prev#:branch.suprabranch
+	end
+end
+function jumpbackward_resolve(valueu pf,wordxu number)
+	dataxu offset#1;set offset pf#:preframe.size
+	sub offset number
+	valueu prev#1;set prev pf#:preframe.branchpointer
+	whiletrue
+		if prev#:branch.offset_loop=offset ##can be ,,|,,$
+			#link prev action to loop start action
 			break
 		end
 		set prev prev#:branch.suprabranch

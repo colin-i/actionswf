@@ -28,6 +28,7 @@ function branch_init(valueu pf,valueu pbra)
 				set bra#:branch.subbranch (NULL)
 
 				set bra#:branch.offset pf#:preframe.size
+				set bra#:branch.offset_loop (no_loop)
 
 				set pf#:preframe.branchpointer bra
 

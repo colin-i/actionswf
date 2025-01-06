@@ -71,10 +71,12 @@ function branch()
 	valueu suprabranch#1
 	valueu subbranch#1
 
-	dataxu offset#1      #at jumpback calculations, and at jumpforward and count the prev branch, and at cuts
-#	valuexu action#1     #for mark, after compare
-#	valuexu action_unresolved#1  #is last suprabranch action
-#	dataxu offset_loop#1 # if the branch has a loop start, else use no_loop=0xffFFffFF
+	dataxu offset#1       #at jumpforward, and at log
+	dataxu offset_loop#1  #if the branch has a loop start, else use no_loop
+#	valuexu action#1      #branch start action, for mark, after compare
+#	valuexu action_if#1   #is last suprabranch action (if is not root) to resolve jumpforward (ActionIf) if will be the case
+#	valuexu action_loop#1 #if is an offset_loop, next will be the action_loop that can be linked (there are exceptions like ret_cont_break cases)
+#	valuexu action_cut#1  #to resolve cuts, can be the same with action_loop when whiletrue and then the cuts
 
 	dataxu log_id#1  #for strings log
 end
@@ -98,3 +100,5 @@ const from_action=0
 const from_show=1
 
 const pad_default=0x100
+
+const no_loop=0xffFFffFF

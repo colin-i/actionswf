@@ -169,7 +169,8 @@ import "ibranch_done" ibranch_done
 import "tree_entry_ex" tree_entry_ex
 import "tree_entry_start" tree_entry_start
 import "tree_entry_end" tree_entry_end
-import "branch_resolve" branch_resolve
+import "jumpforward_resolve" jumpforward_resolve
+import "jumpbackward_resolve" jumpbackward_resolve
 
 function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
 	ss start;set start inlog
@@ -200,6 +201,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		end
 		while inlog!=end
 			wordxu number#1  #4 places
+			valueu branch_item#1
 			if inlog#=(xlog_act) #action
 				set inlog memhex_parse_withinc(inlog,#number) #Length If code >= 0x80, UI16
 				if number=0 # code < 0x80
@@ -235,15 +237,15 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				inc inlog
 			elseif inlog#=(xlog_jump)
 				set inlog memhex_parse_withinc(inlog,#number)   #ActionIf BranchOffset SI16(here 15 bits)  ActionJump BranchOffset SI16(here 15 bits)
-				call branch_resolve(prefr,number)
+				call jumpforward_resolve(prefr,number)
 			elseif inlog#=(xlog_branch) #branch start
 				set ok newbranch(px,pxx,prefr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
-				valueu branch_prec#1;set branch_prec prefr#:preframe.branchpointer
-				set branch_prec#:branch.subbranch branch_init(prefr,branch_prec)
-				if branch_prec#:branch.subbranch=(NULL)
+				set branch_item prefr#:preframe.branchpointer
+				set branch_item#:branch.subbranch branch_init(prefr,branch_item)
+				if branch_item#:branch.subbranch=(NULL)
 					return (EXIT_FAILURE)
 				end
 				if global.blog=(TRUE)
@@ -285,7 +287,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
+				call jumpbackward_resolve(prefr,number)
 			else #xlog_vbar is for branch loop start mark and then will leave the branch for a subbranch
+				set branch_item prefr#:preframe.branchpointer
+				set branch_item#:branch.offset_loop prefr#:preframe.size
 				inc inlog
 			end
 		end
