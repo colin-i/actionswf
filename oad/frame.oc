@@ -378,7 +378,7 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
 		add p_lines fr#:frame.lines
 
 		#test how many actions to alloc
-		valueu nr_of_actions#1;set nr_of_actions 0 #not needing to null end because has "next". action struct has a long and an int
+		dataxu nr_of_actions#1;set nr_of_actions 0
 		while log!=end
 			if log#=(xlog_act)
 				inc nr_of_actions
@@ -386,23 +386,40 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text)
 			inc log
 		end
 		set p_lines#:line.index current  ##there is no 0 lines per row
-		#if blog=(TRUE)
 		set p_lines#:line.total nr_of_actions
-		#end
-		mult nr_of_actions \action\
-		set p_lines#:line.actions malloc(nr_of_actions)  #space was reserved at start knowing log total lines
-		if p_lines#:line.actions!=(NULL)
-			add fr#:frame.total lines
 
-			mult lines \line\
-			add lines p_lines
-			add p_lines \line\
+		add fr#:frame.total lines
 
-			while p_lines!=lines
-				set p_lines#:line.index current
-				set p_lines#:line.actions (NULL)
-				add p_lines (\line\)
+		mult lines \line\
+		add lines p_lines
+		valueu pointer#1
+		set pointer \line\
+		add pointer p_lines
+
+		while pointer!=lines   ##link empty lines
+			set pointer#:line.index current
+			set pointer#:line.actions (NULL)
+			add pointer \line\
+		end
+
+		if nr_of_actions!=0                                   #can be 0, at ./example is are many cases
+			set end \action\
+			mult end nr_of_actions
+			set p_lines#:line.actions malloc(end) #space was reserved at start knowing log total lines
+			if p_lines#:line.actions!=(NULL)
+				#default action values
+				set pointer p_lines#:line.actions
+				add end pointer
+				while pointer!=end
+					set pointer#:action.next (NULL)   #last one is null
+					set pointer#:action.nextif (NULL) #other way at ActionIf
+					set pointer#:action.amark -1      #other way at branch start
+					add pointer \action\
+				end
+				return (EXIT_SUCCESS)
 			end
+		else #prev rows can also be tricks: while(true) break many times
+			set p_lines#:line.actions (NULL)
 			return (EXIT_SUCCESS)
 		end
 	end
