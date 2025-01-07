@@ -30,6 +30,9 @@ function line()
 	valuexu actions#1
 	dataxu total#1   #nr of actions, can also be 0
 end
+const action_next_default=0   #NULL
+const action_nextif_default=0 #NULL
+const action_mark_default=-1
 function action()
 	valuexu next#1   #at log e if default
 	valuexu nextif#1 #at log i if not default

@@ -200,19 +200,28 @@ const frame_text_allocpart=pad_default
 function frame_init(valueu total)
 	sv f;set f malloc((\frame\))
 	if f!=(NULL)
-		valueu size#1;set size (\line\)
-		mult size total
-		sv lines;set lines malloc(size)
-		if lines!=(NULL)
-			sv text;set text malloc((frame_text_allocpart))
-			if text!=(NULL)
+		sv text;set text malloc((frame_text_allocpart))
+		if text!=(NULL)
+			sv lines
+			charx bool#1;set bool (TRUE)
+			if total!=0
+				valueu size#1;set size (\line\)
+				mult size total
+				set lines malloc(size)
+				if lines=(NULL)
+					set bool (FALSE)
+				end
+			else
+				set lines (NULL)
+			end
+			if bool=(TRUE)
 				set f#:frame.lines lines
 				set f#:frame.total 0
 				set f#:frame.text text
 				set f#:frame.size 0
 				return f
 			end
-			call free(lines)
+			call free(text)
 		end
 		call free(f)
 	end
@@ -222,40 +231,77 @@ end
 import "print_text" print_text
 import "prints" prints
 
+function frame_print_action(valueu v,valueu against,charx c,charx a)
+	if v!=against
+		if a=(FALSE)
+			ret
+		end
+	elseif a=(TRUE)
+		ret
+	end
+	call putchar(c)
+end
+function frame_print(valueu n,dataxu nr_actions,valueu actions)
+	call putchar((Space))
+	call printf("%u,%u",n,nr_actions)
+	valueu end#1
+	set end \action\
+	mult end nr_actions
+	add end actions
+	while actions!=end
+		# i+e can be, only m is alone
+		call frame_print_action(actions#:action.amark,(action_mark_default),(Ml),(TRUE)) #this goes full 64 bits on both o/c
+		call frame_print_action(actions#:action.nextif,(action_nextif_default),(Il),(TRUE))
+		call frame_print_action(actions#:action.next,(action_next_default),(El),(FALSE))
+		add actions \action\
+	end
+end
 function frame_free(sv f,charx ainit,datax log_index)
-	valueu end#1;set end f#:frame.total
-	valueu ix#1;valueu n#1
+	valueu n#1;dataxu nr_actions#1
 	sv lines;set lines f#:frame.lines
-	valueu nr_actions#1
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
-		call print_inline_start("lines=%lu",end)
-		set ix 0;set n 0
-		set nr_actions lines#:line.total
+		call print_inline_start("lines=%lu",f#:frame.total)
+		if lines!=(NULL)
+			set n 0
+			set nr_actions lines#:line.total
+		end
 	end
-	mult end (\line\)
-	sv pointer;set pointer lines
-	add end pointer
-	while pointer!=end
-		if log_index!=(no_index)
+	if lines!=(NULL)
+		valueu ix#1;valueu actions#1
+		set ix 0
+		set actions lines#:line.actions
+		valueu end#1;set end \line\
+		mult end f#:frame.total
+		sv pointer;set pointer lines
+		add end pointer
+		while pointer!=end
 			valueu i#1;set i pointer#:line.index
 			if i!=ix
-				call putchar((Space))
-				call printf("%u,%u",n,nr_actions)
-				set ix i;set n 1
-				set nr_actions pointer#:line.total
-			else
+				if log_index!=(no_index)
+					call frame_print(n,nr_actions,actions)
+					set n 1
+					set nr_actions pointer#:line.total
+				end
+				if actions!=(NULL)
+					call free(actions)
+				end
+				set ix i
+				set actions pointer#:line.actions
+			elseif log_index!=(no_index)
 				inc n
 			end
+			add pointer \line\
 		end
-		if pointer#:line.actions!=(NULL)
-			call free(pointer#:line.actions)
+		if log_index!=(no_index)
+			call frame_print(n,nr_actions,actions)
 		end
-		add pointer (\line\)
+		if actions!=(NULL)
+			call free(actions)
+		end
+		call free(lines)
 	end
 	if log_index!=(no_index)
-		call putchar((Space))
-		call printf("%u,%u",n,nr_actions)
 		call print_inline_done()
 		call print("text: size=%lu <<<",f#:frame.size)
 		call print_indent()
@@ -264,7 +310,6 @@ function frame_free(sv f,charx ainit,datax log_index)
 		call prints("<<<")
 		call print_unindent()
 	end
-	call free(lines)
 	call free(f#:frame.text)
 	call free(f)
 end
@@ -376,6 +421,7 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 		valueu p_lines=\line\
 		mult p_lines current
 		add p_lines fr#:frame.lines ##space for lines was reserved at start knowing log total lines
+		#here there is at least a row with actions, so frame.lines is not NULL
 
 		#test how many actions to alloc
 		dataxu nr_of_actions#1;set nr_of_actions 0
@@ -411,9 +457,9 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 				set pointer p_lines#:line.actions
 				add stop pointer
 				while pointer!=stop
-					set pointer#:action.next (NULL)   #last one is null
-					set pointer#:action.nextif (NULL) #other way at ActionIf
-					set pointer#:action.amark -1      #other way at branch start
+					set pointer#:action.next (action_next_default)     #last one is null
+					set pointer#:action.nextif (action_nextif_default) #other way at ActionIf
+					set pointer#:action.amark (action_mark_default)    #other way at branch start
 					add pointer \action\
 				end
 				set _actions# p_lines#:line.actions
@@ -428,15 +474,17 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 end
 function frame_expand(valueu fr,valueu lines) #,sv p_totallines)
 	add lines fr#:frame.total
-	valueu alloc#1;set alloc \line\
-	mult alloc lines
-	valueu re#1
-	set re realloc(fr#:frame.lines,alloc)
-	if re!=(NULL)
+	if lines!=0
+		valueu alloc#1;set alloc \line\
+		mult alloc lines
+		valueu re#1
+		set re realloc(fr#:frame.lines,alloc)
+		if re=(NULL)
+			return (EXIT_FAILURE)
+		end
 		set fr#:frame.lines re
 		#set p_totallines# fr#:frame.total
 		#this is at end because can be truncated on last blank lines: set fr#:frame.total lines
-		return (EXIT_SUCCESS)
 	end
-	return (EXIT_FAILURE)
+	return (EXIT_SUCCESS)
 end

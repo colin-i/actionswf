@@ -19,6 +19,9 @@ const ZeroChar=0x30
 const NineChar=0x39
 const A=0x41
 const F=0x46
+const El=0x65
+const Il=0x69
+const Ml=0x6d
 
 override include_sec 1
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
