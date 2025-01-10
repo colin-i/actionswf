@@ -475,6 +475,7 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 						sub acts \action\
 						add acts p_lines#:line.actions
 						set acts#:action.next pointer
+						break
 					end
 				end
 
