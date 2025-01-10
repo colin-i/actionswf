@@ -24,7 +24,7 @@ OFLAGS=x_file 2
 libname=liboadbgdata.so
 exte=libexte.a
 
-all: ${libname} oadbgdatai.h
+all: ${libname} oadbgdata.h
 re:
 	$(MAKE) clean
 	$(MAKE) all
@@ -43,7 +43,7 @@ $(foreach var,$(items),$(eval subc += ${var}.c))
 
 objects=main.o ${subobjects}
 ${objects}: common.h
-common.h: oadbgdata.h ${xlog}h
+common.h: oadbgdatas.h ${xlog}h
 ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 ${libname}: main.o ${exte}
@@ -60,6 +60,7 @@ ${libname}: main.o ${exte}
 %.oh: %.h.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@
+	echo "override include_sec 1" >> $@
 	cat $< >> $@
 %.h: %.oh
 #	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
@@ -69,10 +70,10 @@ ${libname}: main.o ${exte}
 clean:
 	-rm -f common.oh              common.oh.x     common.h
 	-rm -f ${xlog}oh              ${xlog}oh.x     ${xlog}h
-	-rm -f oadbgdata.oh           oadbgdata.oh.x  oadbgdata.h
+	-rm -f oadbgdatas.oh          oadbgdatas.oh.x oadbgdatas.h
 	-rm -f ${objects} ${sublogs}  ${subx}         ${subc}
 	-rm -f            main.oc.log main.oc.x       main.c
-	-rm -f oadbgdatai.oh          oadbgdatai.oh.x oadbgdatai.h
+	-rm -f oadbgdata.oh           oadbgdata.oh.x  oadbgdata.h
 
 	-rm -f ${exte} ${libname}
 

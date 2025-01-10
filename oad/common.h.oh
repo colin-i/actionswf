@@ -21,9 +21,9 @@ const El=0x65
 const Il=0x69
 const Ml=0x6d
 
-override include_sec 1
+#override include_sec 1
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
-include "oadbgdata.h" "oadbgdata.h.oh"
+include "oadbgdatas.h" "oadbgdatas.h.oh"
 
 const mark_nothing=-1
 const no_index=-1
