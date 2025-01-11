@@ -84,6 +84,7 @@ function preframe_init()
 					set pf#:preframe.ussize 0
 					set pf#:preframe.strings strings
 					set pf#:preframe.ssize 0
+					set pf#:preframe.action_last (NULL)
 					return pf
 				end
 				call free(strings)
@@ -465,19 +466,20 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 				end
 				set _actions# pointer
 
+				#now with preframe.action_last
 				#link first from here with prev
 				#if current!=0 #if is not first action in frame
-				while lines_start!=p_lines
-					sub p_lines \line\  #if prev are tricks, will never find a prev
-					if p_lines#:line.actions!=(NULL)
-						valueu acts#1;set acts \action\
-						mult acts p_lines#:line.total ##total is uint
-						sub acts \action\
-						add acts p_lines#:line.actions
-						set acts#:action.next pointer
-						break
-					end
-				end
+				#while lines_start!=p_lines
+				#	sub p_lines \line\  #if prev are tricks, will never find a prev
+				#	if p_lines#:line.actions!=(NULL)
+				#		valueu acts#1;set acts \action\
+				#		mult acts p_lines#:line.total ##total is uint
+				#		sub acts \action\
+				#		add acts p_lines#:line.actions
+				#		set acts#:action.next pointer
+				#		break
+				#	end
+				#end
 
 				return (EXIT_SUCCESS)
 			end

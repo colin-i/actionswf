@@ -46,6 +46,8 @@ function jumpbackward_resolve(valueu pf,wordxu number)
 	whiletrue
 		if prev#:branch.offset_loop=offset ##can be ,,|,,$
 			#link prev action to loop start action
+			valueu last#1;set last pf#:preframe.action_last
+			set last#:action.next prev#:branch.action_loop
 			break
 		end
 		set prev prev#:branch.suprabranch

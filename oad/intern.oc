@@ -172,7 +172,7 @@ import "tree_entry_end" tree_entry_end
 import "jumpforward_resolve" jumpforward_resolve
 import "jumpbackward_resolve" jumpbackward_resolve
 
-function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text)
+function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,svu _pointer_to_action_loop)
 	ss start;set start inlog
 	inc inlog    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
@@ -188,8 +188,9 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 	end
 	valueu number_of_lines#1;set number_of_lines memdec(start,inlog)
 	charx ok#1
-	valueu actions_start_on_this_line#1
-	set ok frame_actions(fr,number_of_lines,inlog,end,_text,#actions_start_on_this_line)
+	valueu actions#1
+	#valueu actions_start_on_this_line#1
+	set ok frame_actions(fr,number_of_lines,inlog,end,_text,#actions) #_start_on_this_line
 	if ok=(EXIT_SUCCESS)
 		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
 			#not outside actionrow? 'a','a' on multiple rows is still on same row
@@ -200,7 +201,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		else
 			set _recalculation (NULL)
 		end
-		valueu actions#1;set actions actions_start_on_this_line
+		#set actions actions_start_on_this_line
 		while inlog!=end
 			wordxu number#1  #4 places
 			valueu branch_item#1
@@ -218,11 +219,23 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						end
 					end
 				end
-				if actions!=actions_start_on_this_line ##first link is with another line
-					valueu link#1;set link actions
-					sub link \action\
-					set link#:action.next actions
+				#if actions!=actions_start_on_this_line ##first link is with another line
+				#	valueu link#1;set link actions
+				#	sub link \action\
+				#	set link#:action.next actions
+				#end
+				if _pointer_to_action_loop#!=(NULL)
+					svu p_a_l;set p_a_l _pointer_to_action_loop#
+					set p_a_l# actions
+					set _pointer_to_action_loop# (NULL)
 				end
+				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action
+					valueu act#1;set act prefr#:preframe.action_last
+					if act#:action.next=(NULL) #can be a jumpback
+						set act#:action.next actions
+					end
+				end
+				set prefr#:preframe.action_last actions
 				add actions \action\
 			elseif inlog#=(xlog_string) #string
 				inc inlog ## xlog_const8_log or xlog_const16_log
@@ -299,6 +312,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 			else #xlog_vbar is for branch loop start mark and then will leave the branch for a subbranch
 				set branch_item prefr#:preframe.branchpointer
 				set branch_item#:branch.offset_loop prefr#:preframe.size
+				set _pointer_to_action_loop# #branch_item#:branch.action_loop
 				inc inlog
 			end
 		end
@@ -387,6 +401,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				valueu xcode#1;set xcode x
 				add x xcode_size
 				set global.xoffset 0
+				svu pointer_to_action_loop=NULL
 
 				if log=(TRUE)
 					add pf#:preframe.log_xsize xcode_size
@@ -404,7 +419,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 					set p memnl(inlog,#next)
 					if inlog#=(xlog_actions)
 						inc inlog
-						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text)
+						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text,#pointer_to_action_loop)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
