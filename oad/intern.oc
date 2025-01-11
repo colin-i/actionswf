@@ -278,6 +278,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
+				set branch_item prefr#:preframe.branchpointer
+				set branch_item#:branch.action_cut prefr#:preframe.action_last
 				set ok ibranch_add(prefr)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
