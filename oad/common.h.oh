@@ -78,9 +78,11 @@ function branch()
 
 	dataxu offset#1       #at jumpforward, and at log
 	dataxu offset_loop#1  #if the branch has a loop start, else use no_loop
+#	dataxu offset_break#1 #only 1 is logical. here a 0 default is ok
 #	valueu action#1      #branch start action, for mark, after compare
 	valueu action_if#1   #is last suprabranch action (if is not root) to resolve jumpforward (ActionIf) if will be the case
 	valueu action_loop#1 #if is an offset_loop, next will be the action_loop that can be linked (there are exceptions like ret_cont_break cases)
+#	valueu action_break#1
 	valueu action_cut#1  #to resolve cuts, can be the same with action_loop when whiletrue and then the cuts
 
 	dataxu log_id#1  #for strings log

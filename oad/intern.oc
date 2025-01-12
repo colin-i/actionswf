@@ -226,6 +226,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					set p_a_l# actions
 					set _pointer_to_action_loop# (NULL)
 				end
+#				if _pointer_to_action#!=(NULL)
+#				end
 				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action, here is also for action_if
 					if prefr#:preframe.actions_if_size!=0
 						svu begin;set begin prefr#:preframe.actions_if
@@ -233,9 +235,13 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						add pointer prefr#:preframe.actions_if_size
 						while begin!=pointer
 							sub pointer :
+#							action.nextif
 						end
 						set prefr#:preframe.actions_if_size 0
 					end
+#					if prefr#:preframe.actions_break_size!=0
+#						action.next
+#					end
 					set act prefr#:preframe.action_last
 					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 						set act#:action.next actions
