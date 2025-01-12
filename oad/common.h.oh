@@ -49,7 +49,10 @@ function preframe()
 	valueu abranch#1
 
 	valueu branchpointer#1  #starting from abranch and descending
+
 	valueu action_last#1
+	valuexu actions_if#1 #is also between action calls
+	dataxu actions_if_size#1
 
 	#log only
 	value log_recalculation#1 #can be on 32 bits, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
@@ -79,9 +82,6 @@ function branch()
 	valueu action_if#1   #is last suprabranch action (if is not root) to resolve jumpforward (ActionIf) if will be the case
 	valueu action_loop#1 #if is an offset_loop, next will be the action_loop that can be linked (there are exceptions like ret_cont_break cases)
 	valueu action_cut#1  #to resolve cuts, can be the same with action_loop when whiletrue and then the cuts
-
-#	valuexu actions_if#1 #is also between action calls
-#	dataxu actions_if_size#1
 
 	dataxu log_id#1  #for strings log
 end

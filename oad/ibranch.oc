@@ -27,14 +27,16 @@ function ibranch_done(valueu pf)
 	set pf#:preframe.branchpointer bra#:branch.suprabranch
 end
 
+import "re_alloc_add" re_alloc_add
+
 function jumpforward_resolve(valueu pf,wordxu number)
 	dataxu offset#1;set offset pf#:preframe.size
 	sub offset number
 	valueu prev#1;set prev pf#:preframe.branchpointer
 	whiletrue
 		if prev#:branch.offset=offset  ##is /,,&offset/
-			#link prev#:branch.action_unresolved to next action
-			break
+			charx ok#1;set ok re_alloc_add(#pf:preframe.actions_if,#pf:preframe.actions_if_size,prev#:branch.action_if)
+			return ok
 		end
 		set prev prev#:branch.suprabranch
 	end

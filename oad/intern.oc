@@ -221,19 +221,21 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					end
 				end
 				#if actions!=actions_start_on_this_line ##first link is with another line
-				#	valueu link#1;set link actions
-				#	sub link \action\
-				#	set link#:action.next actions
-				#end
 				if _pointer_to_action_loop#!=(NULL) #can also be on first action, this if is not relevant for action_if (both cases can be)
 					svu p_a_l;set p_a_l _pointer_to_action_loop#
 					set p_a_l# actions
 					set _pointer_to_action_loop# (NULL)
 				end
 				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action, here is also for action_if
-					#while _actions_if_pointer#!=prefr#:preframe.actions_if
-					#	sub actions_if_pointer :
-					#end
+					if prefr#:preframe.actions_if_size!=0
+						svu begin;set begin prefr#:preframe.actions_if
+						svu pointer;set pointer begin
+						add pointer prefr#:preframe.actions_if_size
+						while begin!=pointer
+							sub pointer :
+						end
+						set prefr#:preframe.actions_if_size 0
+					end
 					set act prefr#:preframe.action_last
 					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 						set act#:action.next actions
@@ -262,7 +264,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				inc inlog
 			elseif inlog#=(xlog_jump)
 				set inlog memhex_parse_withinc(inlog,#number)   #ActionIf BranchOffset SI16(here 15 bits)  ActionJump BranchOffset SI16(here 15 bits)
-				call jumpforward_resolve(prefr,number)
+				set ok jumpforward_resolve(prefr,number)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 			elseif inlog#=(xlog_branch) #branch start
 				set ok newbranch(px,pxx,prefr)
 				if ok!=(EXIT_SUCCESS)
