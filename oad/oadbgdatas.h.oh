@@ -21,7 +21,7 @@ function sprite()
 	dataxu size#1    #same as presprite. for free, and when adding at last frame
 end
 function frame()
-	valuexu lines#1
+	valueu lines#1
 	valueu total#1  #if outside is command like, break 100 from only 50 will fast tell if is an error. and with this occasion, for free
 	vstrx text#1    #not null ended text
 	valueu size#1   #for fast
@@ -29,7 +29,7 @@ end
 function line()
 	valueu index#1    #same as lines total
 
-	valuexu actions#1
+	valueu actions#1
 	dataxu total#1   #nr of actions, can also be 0
 end
 const action_next_default=NULL

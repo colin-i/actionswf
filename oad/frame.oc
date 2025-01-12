@@ -253,7 +253,8 @@ function frame_print(valueu n,dataxu nr_actions,valueu actions)
 		# i+e can be, only m is alone
 		call frame_print_action(actions#:action.amark,(action_mark_default),(Ml),(TRUE)) #this goes full 64 bits on both o/c
 		call frame_print_action(actions#:action.nextif,(action_nextif_default),(Il),(TRUE))
-		call frame_print_action(actions#:action.next,(action_next_default),(El),(FALSE))
+		call frame_print_action(actions#:action.next,(action_next_default),(El),(FALSE))  #at loop end,if this there, still need to ask if actions!=NULL
+															#this is also good at cut ends
 		add actions \action\
 	end
 end

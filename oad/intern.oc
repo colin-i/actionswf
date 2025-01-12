@@ -205,6 +205,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		while inlog!=end
 			wordxu number#1  #4 places
 			valueu branch_item#1
+			valueu act#1
 			if inlog#=(xlog_act) #action
 				set inlog memhex_parse_withinc(inlog,#number) #Length If code >= 0x80, UI16
 				if number=0 # code < 0x80
@@ -230,7 +231,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					set _pointer_to_action_loop# (NULL)
 				end
 				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action
-					valueu act#1;set act prefr#:preframe.action_last
+					set act prefr#:preframe.action_last
 					if act#:action.next=(NULL) #can be a jumpback
 						set act#:action.next actions
 					end
@@ -294,6 +295,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					return (EXIT_FAILURE)
 				end
 				call ibranch_done(prefr)
+				set branch_item prefr#:preframe.branchpointer
+				set act branch_item#:branch.action_cut
+				set act#:action.next (NULL)  #in a normal case when the inner branch is not 0, was jump/definefunction linked to next
+				set prefr#:preframe.action_last act
 				if global.blog=(TRUE)
 					call tree_entry_end(prefr)
 				end
