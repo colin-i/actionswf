@@ -7,6 +7,7 @@ const xlog_unique_new_size=: ;#DWORD/QWORD
 const xlog_id=2
 const xlog_id_size=2 #WORD
 
+#const xlog_break=0x21        #!
 const xlog_jumpback=0x24      ;#$
 const xlog_jump=0x26          ;#&
 const xlog_actions=0x2A       ;#*
