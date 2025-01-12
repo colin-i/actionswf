@@ -225,14 +225,17 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				#	sub link \action\
 				#	set link#:action.next actions
 				#end
-				if _pointer_to_action_loop#!=(NULL)
+				if _pointer_to_action_loop#!=(NULL) #can also be on first action, this if is not relevant for action_if (both cases can be)
 					svu p_a_l;set p_a_l _pointer_to_action_loop#
 					set p_a_l# actions
 					set _pointer_to_action_loop# (NULL)
 				end
-				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action
+				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action, here is also for action_if
+					#while _actions_if_pointer#!=prefr#:preframe.actions_if
+					#	sub actions_if_pointer :
+					#end
 					set act prefr#:preframe.action_last
-					if act#:action.next=(NULL) #can be a jumpback
+					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 						set act#:action.next actions
 					end
 				end
@@ -270,6 +273,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if branch_item#:branch.subbranch=(NULL)
 					return (EXIT_FAILURE)
 				end
+				set branch_item#:branch.action_if prefr#:preframe.action_last ##can also be NULL if there are whiletrue break tricks
+				#										is not always required, example at simple if end
 				if global.blog=(TRUE)
 					call tree_entry_ex(prefr,(xlog_branch))
 				end
