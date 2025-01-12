@@ -239,7 +239,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						end
 						set prefr#:preframe.actions_if_size 0
 					end
-#					if prefr#:preframe.actions_break_size!=0
+#					if prefr#:preframe.actions_jump_size!=0
 #						action.next
 #					end
 					set act prefr#:preframe.action_last

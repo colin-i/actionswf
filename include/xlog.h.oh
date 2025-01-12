@@ -11,6 +11,7 @@ const xlog_id_size=2 #WORD
 const xlog_jumpback=0x24      ;#$
 const xlog_jump=0x26          ;#&
 const xlog_actions=0x2A       ;#*
+#const xlog_jumpif=0x2B       :#+
 const xlog_act=0x2C            #,
 const xlog_branch=0x2F        ;#/
 #0-9

@@ -51,7 +51,7 @@ function preframe()
 	valueu branchpointer#1  #starting from abranch and descending
 
 	valueu action_last#1
-	valuexu actions_if#1 #is also between action calls
+	valuexu actions_if#1 #is also between action calls, all jump forwards to End must go to blank_end 0xffFFffFF
 	dataxu actions_if_size#1
 
 	#log only
