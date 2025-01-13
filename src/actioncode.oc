@@ -506,7 +506,7 @@ function action_code_write_conditions(sd codepointer)
 			setcall codepointer action_code_pack(codepointer)
 			import "write_forward_offset" write_forward_offset
 			sub sizeOff (WORD)
-			call write_forward_offset(sizeOff)
+			call write_forward_offset(sizeOff,(TRUE))
 			call debug_xlog_stepout(codepointer) #next is 100% from prev branch
 		endif
 		add codepointer (DWORD)
@@ -861,7 +861,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			setcall codepointer action_code_right_util(codepointer)
 			import "actionpush" actionpush
 			call actionpush() # must release example 2:[jump 0]3 , next will correct jump 0
-			call brace_blocks_remove_write((FALSE))
+			call brace_blocks_remove_write((TRUE))
 			call debug_xlog_stepout(codepointer) #and continue after :]|
 			return codepointer
 		endelseif

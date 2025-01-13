@@ -1124,10 +1124,10 @@ function brace_blocks_add_write_offset(sd offset,sd flag)
     call brace_blocks_counter_inc()
 endfunction
 #
-function brace_blocks_remove_write(sd is_from_function)
+function brace_blocks_remove_write(sd skip_xlog)
 	sd offset
 	setcall offset brace_blocks_remove_write_offset()
-	call write_forward_offset_ex(offset,is_from_function)
+	callg write_forward_offset(offset,skip_xlog)
 endfunction
 function brace_blocks_remove_write_ex()
 	sd offset
@@ -1135,13 +1135,16 @@ function brace_blocks_remove_write_ex()
 	sd test=skip_flag
 	and test offset
 	if test=0
-		call write_forward_offset(offset)
+		callg write_forward_offset_jump(offset)
 	end
 endfunction
-function write_forward_offset(sd offset)
-	callg write_forward_offset_ex(offset,(FALSE))
+function write_forward_offset_jump(sd offset)
+	callg write_forward_offset_base(offset,(FALSE),(xlog_jump))
 end
-function write_forward_offset_ex(sd offset,sd is_from_function)
+function write_forward_offset(sd offset,sd skip_xlog)
+	callg write_forward_offset_base(offset,skip_xlog,(xlog_jumpif))
+end
+function write_forward_offset_base(sd offset,sd skip_xlog,sd xlog_j)
 	sd mem
 	sd size
 	sd memblock
@@ -1158,9 +1161,9 @@ function write_forward_offset_ex(sd offset,sd is_from_function)
 	#
 	import "stack_to_word_arg" stack_to_word_arg
 	call stack_to_word_arg(size,mem)
-	if is_from_function=(FALSE)
+	if skip_xlog=(FALSE)
 		import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
-		callg debug_phase_code_add_jump_if(mem)
+		callg debug_phase_code_add_jump_if(mem,xlog_j)
 	end
 endfunction
 #offset
@@ -1204,7 +1207,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 				#here is last jump (loopjump or a moved break)
 				break
 			end
-			call write_forward_offset(offset)
+			call write_forward_offset_jump(offset)
 			set offset blocks#
 		end
 		#here the while was ok, last jump isn't set
@@ -1223,7 +1226,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 
 	if offset!=(top_flag) #can be whiletrue with no breaks (a return in a branch)
 		#resolve the skipped offset
-		call write_forward_offset(offset)
+		call write_forward_offset_jump(offset)
 	end
 endfunction
 function add_dummy_jump()

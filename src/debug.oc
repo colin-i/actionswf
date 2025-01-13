@@ -346,9 +346,9 @@ end
 function debug_phase_code_add_long(ss arg2,sd delim)
 	callg debug_phase_code_add((TRUE),arg2,delim)
 end
-function debug_phase_code_add_jump_if(ss arg2)
+function debug_phase_code_add_jump_if(ss arg2,sd xlog_j)
 	if log_init.prexx=(prexx_flags)
-		callg debug_phase_code_add_long(arg2,(xlog_jump))
+		callg debug_phase_code_add_long(arg2,xlog_j)
 	end
 end
 function debug_phase_code_add_jumpback_if(ss arg2)

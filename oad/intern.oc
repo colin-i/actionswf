@@ -170,6 +170,7 @@ import "tree_entry_ex" tree_entry_ex
 import "tree_entry_start" tree_entry_start
 import "tree_entry_end" tree_entry_end
 import "jumpforward_resolve" jumpforward_resolve
+import "jumpforwardif_resolve" jumpforwardif_resolve
 import "jumpbackward_resolve" jumpbackward_resolve
 
 function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,svu _pointer_to_action_loop)
@@ -239,11 +240,12 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						end
 						set prefr#:preframe.actions_if_size 0
 					end
-#					if prefr#:preframe.actions_jump_size!=0
+#					if prefr#:preframe.actions_jump_size!=0  # inline ifelse and inter_for are resolved at innerbranch out, here only conditions_ends/breaks jumps
 #						action.next
 #					end
 					set act prefr#:preframe.action_last
 					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
+					#					or a return_end long -1
 						set act#:action.next actions
 					end
 				end
@@ -268,8 +270,14 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					add pxx# (xlog_id_size)
 				end
 				inc inlog
+			elseif inlog#=(xlog_jumpif)
+				set inlog memhex_parse_withinc(inlog,#number)   #ActionIf BranchOffset SI16(here 15 bits)
+				set ok jumpforwardif_resolve(prefr,number)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
 			elseif inlog#=(xlog_jump)
-				set inlog memhex_parse_withinc(inlog,#number)   #ActionIf BranchOffset SI16(here 15 bits)  ActionJump BranchOffset SI16(here 15 bits)
+				set inlog memhex_parse_withinc(inlog,#number)   #ActionJump BranchOffset SI16(here 15 bits)
 				set ok jumpforward_resolve(prefr,number)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)

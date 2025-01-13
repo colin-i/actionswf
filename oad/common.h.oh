@@ -51,8 +51,9 @@ function preframe()
 	valueu branchpointer#1  #starting from abranch and descending
 
 	valueu action_last#1
-	valuexu actions_if#1 ;#is also between action calls, all jump forwards to End must go to blank_end -1 long (can't put an action struct on last byte)
+	valuexu actions_if#1 ;#is also between action calls, if jump forwards to End must go to if_end -1 long (can't put an action struct on last byte)
 	dataxu actions_if_size#1
+#	valuexu actions_jump#1 #here is ok to have NULL next if to End
 
 	#log only
 	value log_recalculation#1 #can be on 32 bits, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
