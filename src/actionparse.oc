@@ -342,8 +342,8 @@ function else_verify(ss ac,sd else_index)
         return ac
     endif
     while pointer!=ac
-        call action_code_set((else_flag))
-        call brace_blocks_add_parse((else_flag))
+        call action_code_set((else_marker))
+        call brace_blocks_add_parse((else_marker))
         sd ind
         setcall p_ind brace_blocks_counter()
         set ind p_ind#
@@ -1058,9 +1058,9 @@ function brace_blocks_remove_parse_else()
     dec i
     setcall p_type cond_blocks_at_index(i)
     set type p_type#
-    if type=(else_flag)
+    if type=(else_marker)
         sd else_number=0
-        while type=(else_flag)
+        while type=(else_marker)
             inc else_number
             dec p_i#
             if i!=0
@@ -1114,14 +1114,14 @@ function brace_blocks_add_write_current()
     call brace_blocks_add_write_offset(0,(no_flag))
 endfunction
 function brace_blocks_add_write_offset(sd offset,sd flag)
-    sd block
-    setcall block cond_blocks()
-    sd memblock
-    setcall memblock brace_blocks_get_memblock()
-    setcall block# block_get_size(memblock)
-    add block# offset
+	sd block
+	setcall block cond_blocks()
+	sd memblock
+	setcall memblock brace_blocks_get_memblock()
+	setcall block# block_get_size(memblock)
+	add block# offset
 	or block# flag
-    call brace_blocks_counter_inc()
+	call brace_blocks_counter_inc()
 endfunction
 #
 function brace_blocks_remove_write(sd skip_xlog)
@@ -1138,6 +1138,14 @@ function brace_blocks_remove_write_ex()
 		callg write_forward_offset_jump(offset)
 	end
 endfunction
+function write_forward_offset_cond(sd offset,sd _ifs)
+	if _ifs#!=0
+		call write_forward_offset_base(offset,(FALSE),(xlog_jumpif))
+		dec _ifs#
+	else
+		callg write_forward_offset_jump(offset)
+	end
+end
 function write_forward_offset_jump(sd offset)
 	callg write_forward_offset_base(offset,(FALSE),(xlog_jump))
 end
@@ -1173,61 +1181,70 @@ function brace_blocks_remove_write_offset()
     set block cond_blocks_noerror()
     return block#
 endfunction
-function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
-	sd skip_jump=0
-	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
-		call add_dummy_jump()
-	elseif ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
-	#look to see top_flag and if is not forin, that has a different break than for3/while
-		sd start;set start cond_blocks_at_index(0)
-		sd blocks;set blocks cond_blocks_noerror()
-		while start!=blocks
+function check_whilefor(sd _skip_jump,sd _ifs)
+	sd start;set start cond_blocks_at_index(0)
+	sd blocks;set blocks cond_blocks_noerror()
+	while start!=blocks
+		sub blocks (DWORD)
+		if blocks#=(top_marker) #healty while/for
 			sub blocks (DWORD)
-			if blocks#=(top_flag) #healty while/for
-				sub blocks (DWORD)
-				if blocks#!=(forin_marker)
-					set skip_jump (actionrecordheader_size+actionjump_contentsize)
+			if blocks#!=(forin_marker)
+				if ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
+					set _skip_jump# (actionrecordheader_size+actionjump_contentsize)
 					#also need to remove from debug
-					call debug_phase_code_remove(skip_jump,(action_debug_recordlength))
-					break
+					call debug_phase_code_remove(_skip_jump#,(action_debug_recordlength))
+				end
+				if blocks#=(while_marker)
+					set _ifs# 1
+				else
+					set _ifs# 0
 				end
 			end
+			ret
 		end
+		inc _ifs#
 	end
-
+	callg error("x is broken")
+end
+function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
+	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
+		call add_dummy_jump()
+	end
+	sd skip_jump=0 ;#look to see top_marker and if is not forin, that has a different break than for3/while
+	sd ifs=0
+	call check_whilefor(#skip_jump,#ifs)
+	sd c
+	set c brace_blocks_counter()
+	sd blocks
 	set blocks cond_blocks_noerror()
-	call brace_blocks_counter_dec() #with errors check
+	dec c#
 	sub blocks (DWORD)
 	sd offset;set offset blocks#
-	if offset!=(top_flag) #can be whiletrue with no breaks (a return in a branch)
+	if offset!=(top_marker) #can be whiletrue with no breaks (a return in a branch)
 		whiletrue
-			call brace_blocks_counter_dec() #with errors check
+			dec c#
 			sub blocks (DWORD)
-			if blocks#=(top_flag)
+			if blocks#=(top_marker)
 				#here is last jump (loopjump or a moved break)
 				break
 			end
-			call write_forward_offset_jump(offset)
+			call write_forward_offset_cond(offset,#ifs)
 			set offset blocks#
 		end
 		#here the while was ok, last jump isn't set
 		#remove type,top offset
 	end
 
-	sd c
-	set c brace_blocks_counter()
 	sub c# 2
-
 	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
 		sub blocks (2*DWORD)
 		call resolve_back_jump(blocks#)  #jump back
 	elseif skip_jump!=0
 		ret
 	end
-
-	if offset!=(top_flag) #can be whiletrue with no breaks (a return in a branch)
+	if offset!=(top_marker) #can be whiletrue with no breaks (a return in a branch)
 		#resolve the skipped offset
-		call write_forward_offset_jump(offset)
+		callg write_forward_offset_cond(offset,#ifs)
 	end
 endfunction
 function add_dummy_jump()

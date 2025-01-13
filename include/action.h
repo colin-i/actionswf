@@ -35,17 +35,18 @@ const ifElse_start=0xfd0DD0d0         #RG
 const for=0xfe0EE0e0                  #1
 
 const no_flag=0                        #code only
-const top_flag=0x10<<24                #code only
-const skip_flag=0x20<<24               #code only
-const else_flag=0x40<<24               #1
 const consecutive_flag=0x80<<24        #parse only
+const skip_flag=0x80<<24               #code only
 const brace_blocks_function=0x7fFFffFF #code only
 
-const normal_marker=0x01010202        #parse only
-const if_marker=0x03030404            #I
-const while_marker=0x05050606         #1
-const function_marker=0x07070808      #F
-const forin_marker=0x09090a0a         #code only
+const normal_marker=0x41010202        #parse only
+const if_marker=0x43030404            #I
+const while_marker=0x45050606         #1
+const function_marker=0x47070808      #F
+const forin_marker=0x49090a0a         #code only
+const forwhiletrue_marker=0x4b0b0c0c  #code only
+const else_marker=0x4d0d0e0e          #1
+const top_marker=0x4f0f0e0e           #code only
 
 const ActionSubtract=0x0B      #OP
 const ActionMultiply=0x0C      #OP
