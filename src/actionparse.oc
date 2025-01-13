@@ -1213,12 +1213,13 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		#here the while was ok, last jump isn't set
 		#remove type,top offset
 	end
+
 	sd c
 	set c brace_blocks_counter()
-	sub blocks (2*DWORD)
 	sub c# 2
 
 	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
+		sub blocks (2*DWORD)
 		call resolve_back_jump(blocks#)  #jump back
 	elseif skip_jump!=0
 		ret
