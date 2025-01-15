@@ -70,6 +70,8 @@ function jumpbackward_resolve(valueu pf,wordxu number)
 			set last#:action.next prev#:branch.action_loop
 			break
 		end
+#		if prev#:branch.offset_auxloop=offset
+#		end
 		set prev prev#:branch.suprabranch
 	end
 end

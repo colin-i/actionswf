@@ -51,7 +51,7 @@ function preframe()
 	valueu branchpointer#1  #starting from abranch and descending
 
 	valueu action_last#1
-	valuexu actions_if#1 ;#is also between action calls, if jump forwards to End must go to if_end -1 long (can't put an action struct on last byte)
+	valuexu actions_if#1 ;#is also between action calls, if jump forwards to End must set if_flag
 	dataxu actions_if_size#1
 #	valuexu actions_jump#1 #here is ok to have NULL next if to End
 
@@ -78,11 +78,13 @@ function branch()
 	valueu subbranch#1
 
 	dataxu offset#1       #at jumpforward, and at log
-	dataxu offset_loop#1  #if the branch has a loop start, else use no_loop
+	dataxu offset_loop#1  #if the branch has a loop start, else use no_loop . and at forin_breaks
+#	dataxu offset_auxloop#1 #at forincloses_and_return
 #	dataxu offset_break#1 #only 1 is logical. here a 0 default is ok
 #	valueu action#1      #branch start action, for mark, after compare
 	valueu action_if#1   #is last suprabranch action (if is not root) to resolve jumpforward (ActionIf) if will be the case
 	valueu action_loop#1 #if is an offset_loop, next will be the action_loop that can be linked (there are exceptions like ret_cont_break cases)
+#	valueu action_auxloop#1
 #	valueu action_break#1
 	valueu action_cut#1  #to resolve cuts, can be the same with action_loop when whiletrue and then the cuts
 
