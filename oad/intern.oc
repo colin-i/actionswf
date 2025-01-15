@@ -340,11 +340,12 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
 				call jumpbackward_resolve(prefr,number)
-			else #xlog_vbar is for branch loop start mark and then will leave the branch for a subbranch
+			else # if xlog_loop is for branch loop start mark and then will leave the branch for a subbranch
 				set branch_item prefr#:preframe.branchpointer
 				set branch_item#:branch.offset_loop prefr#:preframe.size
 				set _pointer_to_action_loop# #branch_item#:branch.action_loop
 				inc inlog
+			#else #xlog_forin #for break (0) and return closings (1), first will backjump if,eq,to push , second will backifjump not,eq,to push
 			end
 		end
 		return (EXIT_SUCCESS)

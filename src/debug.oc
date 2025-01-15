@@ -477,6 +477,6 @@ end
 
 function debug_xlog_loop()
 	if log_init.prexx=(prexx_flags)
-		callg debug_phase_code_add_one((xlog_vbar))
+		callg debug_phase_code_add_one((xlog_loop))
 	end
 end
