@@ -11,7 +11,6 @@ const width=640
 const height=480
 const shape_lat=40
 
-
 ####################
 
 include "entry_arg.oc" "entry.oc"
@@ -102,10 +101,11 @@ while(true){
 	this_is_just_a_test++;
 	if(this_is_just_a_test==1){
 		continue;
-	}else if(this_is_just_a_test==3){
+	}else if(this_is_just_a_test==2){
+		test3();
+	}else{
 		break;
 	}
-	test3();
 }
 
 ")
