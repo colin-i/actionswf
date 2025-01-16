@@ -485,3 +485,8 @@ function debug_xlog_break()
 		callg debug_phase_code_add_one((xlog_break))
 	end
 end
+function debug_xlog_forin(wordxu type)
+	if log_init.prexx=(prexx_flags)
+		callg debug_phase_code_add_long(#type,(xlog_forin))
+	end
+end

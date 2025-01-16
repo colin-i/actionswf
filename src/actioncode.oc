@@ -568,6 +568,7 @@ function add_while_top_off(sd typeOfLoop)
 	call brace_blocks_counter_inc()
 endfunction
 import "debug_xlog_break" debug_xlog_break
+import "debug_xlog_forin" debug_xlog_forin
 const forIn_ifBreak_size=3+1+1+3+2
 function action_code_break()
 	sd c_block;setcall c_block prepare_space_for_break()
@@ -585,18 +586,22 @@ function action_code_break()
 	setcall memblock brace_blocks_get_memblock()
 	setcall c_block# block_get_size(memblock);sub c_block# (WORD)
 	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
-	if p_type#=(forin_marker);call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size));endif
+	if p_type#=(forin_marker)
+		call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size))
+		call debug_xlog_forin((xlog_forin_break-_0))
+	endif
 	#
 	call brace_blocks_counter_inc()
 endfunction
 function remove_forIn_stack()
-    call action_push((ap_Null))
-    call action_one((ActionEquals2))
-    call action_one((ActionNot))
-    call actionrecordheader((ActionIf),2)
-    #minus ActionNot
-    sd sz=-1-forIn_ifBreak_size
-    call swf_actionblock_add(#sz,2)
+	call action_push((ap_Null))
+	call action_one((ActionEquals2))
+	call action_one((ActionNot))
+	call actionrecordheader((ActionIf),2)
+	#minus ActionNot
+	sd sz=-1-forIn_ifBreak_size
+	call swf_actionblock_add(#sz,2)
+	callg debug_xlog_forin((xlog_forin_return-_0))
 endfunction
 function close_scope_forIn_statements()
     sd nr_of_forIn_statements;setcall nr_of_forIn_statements get_nr_of_forIn_statements()
