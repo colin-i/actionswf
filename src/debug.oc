@@ -480,3 +480,8 @@ function debug_xlog_loop()
 		callg debug_phase_code_add_one((xlog_loop))
 	end
 end
+function debug_xlog_break()
+	if log_init.prexx=(prexx_flags)
+		callg debug_phase_code_add_one((xlog_break))
+	end
+end

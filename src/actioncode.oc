@@ -567,6 +567,7 @@ function add_while_top_off(sd typeOfLoop)
 	set block# (top_marker)
 	call brace_blocks_counter_inc()
 endfunction
+import "debug_xlog_break" debug_xlog_break
 const forIn_ifBreak_size=3+1+1+3+2
 function action_code_break()
 	sd c_block;setcall c_block prepare_space_for_break()
@@ -578,6 +579,7 @@ function action_code_break()
 	else  # while_marker forwhiletrue_marker
 		call write_jump(0)
 	endelse
+	call debug_xlog_break()
 	#
 	sd memblock
 	setcall memblock brace_blocks_get_memblock()

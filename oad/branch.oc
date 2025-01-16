@@ -24,13 +24,14 @@ function branch_init(valueu pf,valueu pbra)
 				set bra#:branch.innerbranches inners
 				set bra#:branch.isize 0
 
+				set pf#:preframe.branchpointer bra
+
 				set bra#:branch.suprabranch pbra
 				set bra#:branch.subbranch (NULL)
 
 				set bra#:branch.offset pf#:preframe.size
 				set bra#:branch.offset_loop (no_loop)
-
-				set pf#:preframe.branchpointer bra
+				set bra#:branch.offset_break (no_loop)
 
 				charx blog#1;set blog global_blog()
 				if blog=(TRUE)

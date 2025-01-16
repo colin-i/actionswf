@@ -1181,6 +1181,8 @@ function brace_blocks_remove_write_offset()
     set block cond_blocks_noerror()
     return block#
 endfunction
+const action_debug_break=1
+const action_debug_recordlength=action_debug_comma+1+action_debug_break ;# ,2! only at actionjump, if ,10 ...  must change
 function check_whilefor(sd _skip_jump,sd _ifs)
 	sd start;set start cond_blocks_at_index(0)
 	sd blocks;set blocks cond_blocks_noerror()

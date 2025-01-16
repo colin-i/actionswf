@@ -12,7 +12,6 @@ const height=480
 const shape_lat=40
 
 
-
 ####################
 
 include "entry_arg.oc" "entry.oc"
@@ -100,12 +99,13 @@ function test3(){
 }
 var this_is_just_a_test=0;
 while(true){
-	if(this_is_just_a_test==0){
-		this_is_just_a_test=1;
+	this_is_just_a_test++;
+	if(this_is_just_a_test==1){
 		continue;
+	}else if(this_is_just_a_test==3){
+		break;
 	}
 	test3();
-	break;
 }
 
 ")

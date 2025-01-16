@@ -57,9 +57,10 @@ function jumpforward_resolve(valueu pf,wordxu number)
 			return (EXIT_SUCCESS)
 		end
 		#for break ends
-#		if prev#:branch.offset_break=offset ##both on first? like If? whiletrue break var a} but this is not logical
+		if prev#:branch.offset_break=offset ##both on first? like If? whiletrue break var a} but this is not logical
 #			action_break
-#		end
+			return (EXIT_SUCCESS)
+		end
 		set prev prev#:branch.suprabranch
 	end
 end
