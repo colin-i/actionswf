@@ -355,7 +355,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set branch_item#:branch.offset_break prefr#:preframe.size
 				set branch_item#:branch.action_break prefr#:preframe.action_last
 				inc inlog
-			else #xlog_forin 
+			else #xlog_forin
 				inc inlog
 				if inlog#=(xlog_forin_break) #backjump if,eq,to push
 				else # xlog_forin_return     #backifjump not,eq,to push
