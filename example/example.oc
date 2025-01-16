@@ -101,7 +101,8 @@ while(true){
 	this_is_just_a_test++;
 	if(this_is_just_a_test==1){
 		continue;
-	}else if(this_is_just_a_test==2){
+	}
+	if(this_is_just_a_test==2){
 		test3();
 	}else{
 		break;
