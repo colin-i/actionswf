@@ -14,7 +14,7 @@ function ibranch_add(valueu pf)
 	if ok=(EXIT_SUCCESS)
 		svu pointer#1;set pointer bra#:branch.innerbranches
 		add pointer bra#:branch.isize
-		set pointer# branch_init(pf,bra)
+		set pointer# branch_init(pf,bra) #no suprabranch, same as root
 		if pointer#!=(NULL)
 			add bra#:branch.isize :
 			return (EXIT_SUCCESS)
@@ -24,7 +24,7 @@ function ibranch_add(valueu pf)
 end
 function ibranch_done(valueu pf)
 	valueu bra#1;set bra pf#:preframe.branchpointer
-	set pf#:preframe.branchpointer bra#:branch.suprabranch
+	set pf#:preframe.branchpointer bra#:branch.topbranch
 end
 
 import "re_alloc_add" re_alloc_add
@@ -39,9 +39,10 @@ function jumpforwardif_resolve(valueu pf,wordxu number)
 			return ok
 		end
 		#for forin break ends
-#		if prev#:branch.offset_break=offset
+		if prev#:branch.offset_break=offset
 #			action_break
-#		end
+			return (EXIT_SUCCESS)
+		end
 		set prev prev#:branch.suprabranch
 	end
 end

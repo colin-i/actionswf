@@ -81,7 +81,7 @@ function preframe_init()
 						set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
 					end
 					set pf#:preframe.size 0  #used at branch_init
-					set pf#:preframe.abranch branch_init(pf) #,suprabranch is not important since this is on root level and } can't happen
+					set pf#:preframe.abranch branch_init(pf) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
 					if pf#:preframe.abranch!=(NULL)
 						set pf#:preframe.ustrings ustrings
 						set pf#:preframe.ussize 0

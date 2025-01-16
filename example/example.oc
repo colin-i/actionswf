@@ -82,7 +82,7 @@ function test(){
 }
 function test3(){
 	test();
-/*	var more_oad_tests=new Array(1,2);
+	var more_oad_tests=new Array(1,2);
 	for(var a in more_oad_tests){
 		trace(more_oad_tests[a]);
 		for(b in more_oad_tests){
@@ -94,7 +94,7 @@ function test3(){
 		if(a==1){
 			return 1;
 		}
-	}*/
+	}
 }
 var this_is_just_a_test=0;
 while(true){

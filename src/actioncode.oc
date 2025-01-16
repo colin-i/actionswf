@@ -475,8 +475,9 @@ function action_code_write_conditions(sd codepointer)
 			#write the jump offset
 			call write_ifjump_addTo_braceBlocks()
 			#
-			sd attr2;set attr2 codepointer#;add codepointer (DWORD)
+			call debug_xlog(codepointer) #stepped in for in. is earlier than forin construct end. is right after the ifjump
 			#
+			sd attr2;set attr2 codepointer#;add codepointer (DWORD)
 			if attr2=(ActionSetMember)
 				setcall codepointer action_member_loop_left(codepointer,(NULL))
 			else
@@ -486,7 +487,6 @@ function action_code_write_conditions(sd codepointer)
 			endelse
 			call action_push((ap_RegisterNumber),first_reg)
 			call action_one(attr2)
-			call debug_xlog(codepointer) #stepped in for in
 			return codepointer
 		endif
 		add codepointer (DWORD)

@@ -9,7 +9,7 @@ importx "malloc" malloc
 import "global_blog" global_blog
 
 #branch pointer
-function branch_init(valueu pf,valueu pbra)
+function branch_init(valueu pf,valueu ptbra,valueu pbra)
 	valueu bra#1
 	set bra malloc((\branch\))
 	if bra!=(NULL)
@@ -26,6 +26,7 @@ function branch_init(valueu pf,valueu pbra)
 
 				set pf#:preframe.branchpointer bra
 
+				set bra#:branch.topbranch ptbra
 				set bra#:branch.suprabranch pbra
 				set bra#:branch.subbranch (NULL)
 
