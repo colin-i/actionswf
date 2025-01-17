@@ -268,27 +268,29 @@ function action__code_row(sd codepointer)
 	set p# rcb
 	return codepointer
 endfunction
+import "debug_xlog_return" debug_xlog_return
 #position
 function action__code_row_ex(sd codepointer)
-    sd pointer
-    set pointer codepointer
-    setcall pointer action_code_write_conditions(codepointer)
-    if pointer!=codepointer
-        return pointer
-    endif
-    setcall pointer action_code_write_function(codepointer)
-    if pointer!=codepointer
-        return pointer
-    endif
-    sd attrib
-    set attrib codepointer#
+	sd pointer
+	set pointer codepointer
+	setcall pointer action_code_write_conditions(codepointer)
+	if pointer!=codepointer
+		return pointer
+	endif
+	setcall pointer action_code_write_function(codepointer)
+	if pointer!=codepointer
+		return pointer
+	endif
+	sd attrib
+	set attrib codepointer#
 	if attrib=(ActionReturn)
-        add codepointer (DWORD)
-        call close_scope_forIn_statements()
-        setcall codepointer action_code_right_util(codepointer)
-        call action_one((ActionReturn))
+		add codepointer (DWORD)
+		call close_scope_forIn_statements()
+		setcall codepointer action_code_right_util(codepointer)
+		call action_one((ActionReturn))
+		call debug_xlog_return()
 		set action__code_row.rcb (ret_cont_break_something)
-        return codepointer
+		return codepointer
 	endif
 	if attrib=(if_marker) #block_end
 		add codepointer (DWORD)
@@ -350,8 +352,8 @@ function action__code_row_ex(sd codepointer)
 	if attrib=(else_marker)
 		call error("ELSE is not linked at this point")
 	end
-    setcall codepointer action_code_pack(codepointer)
-    return codepointer
+	setcall codepointer action_code_pack(codepointer)
+	return codepointer
 endfunction
 function action_code_pack(sd codepointer)
 	sd attrib

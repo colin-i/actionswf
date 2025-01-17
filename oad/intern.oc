@@ -328,6 +328,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					call tree_entry_end(prefr)
 				end
 				inc inlog
+			elseif inlog#=(xlog_return)
+				set act prefr#:preframe.action_last
+				#set act#:action.return_flag (set)
+				inc inlog
 			elseif inlog#=(xlog_function)
 				set ok function(data)
 				if ok!=(EXIT_SUCCESS)
@@ -337,6 +341,9 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if global.blog=(TRUE)
 					add prefr#:preframe.log_recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
+
+					set branch_item prefr#:preframe.branchpointer
+					set branch_item#:branch.log_fn number
 				end
 			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)

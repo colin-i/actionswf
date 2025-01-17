@@ -38,6 +38,7 @@ function branch_init(valueu pf,valueu ptbra,valueu pbra)
 				if blog=(TRUE)
 					inc pf#:preframe.log_branchid
 					set bra#:branch.log_id pf#:preframe.log_branchid
+					set bra#:branch.log_fn 0
 				end
 				return bra
 			end
@@ -123,6 +124,7 @@ end
 
 import "oadata_logpad_get" oadata_logpad_get #importx without args
 import "print_hex" print_hex
+import "print_hhex" print_hhex
 
 function branch_log(sv br,valueu start)
 	call prints_inline_start("branch:")
@@ -148,6 +150,9 @@ function branch_log(sv br,valueu start)
 	end
 	if br#:branch.offset_break!=(no_loop)
 		call print_hex("aoffset_break",br#:branch.offset_break)
+	end
+	if br#:branch.log_fn!=0
+		call print_hhex("afsize",br#:branch.log_fn)
 	end
 	call prints_inline("code:")
 	call print_inline_done()
