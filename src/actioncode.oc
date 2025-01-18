@@ -542,7 +542,7 @@ function action_code_write_conditions(sd codepointer)
 		setcall codepointer action_code_right_util_ex(codepointer,#c2)
 		call write_ifjump_withNot(c2)
 	end
-	#why outside infinite? offset_loop at two whiletrue can stay on one branch, is extra coding versus a simple solution
+	#why outside infinite? offset_loop at two whiletrue cannot stay on one branch, is extra coding versus a simple solution
 	call debug_xlog(codepointer) #after jump
 	#before: .x is also not knowing about that . but now with .xx is not a .x parse
 
