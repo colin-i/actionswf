@@ -248,16 +248,14 @@ end
 import "print_text" print_text
 import "prints" prints
 
-function frame_print_action_nextif(valueu v,charx f)
-	if v!=(action_nextif_default)
-		call putchar((Il))
-	elseif f=(flag_set)
-#		call putchar((Fl))
+function frame_print_action(valueu a,valueu b,charx c)
+	if a!=b
+		call putchar(c)
 	end
 end
-function frame_print_action_next(valueu v,charx f)
-	if v=(action_next_default)
-		if f=(flag_notset)
+function frame_print_action_next(valueu a)
+	if a#:action.next=(action_next_default)
+		if a#:action.return_flag=(flag_notset)
 			call putchar((El)) #at loop end,if this there, still need to ask if actions!=NULL	#this is also good at cut ends
 		else
 			call putchar((Rl))
@@ -272,11 +270,12 @@ function frame_print(valueu n,dataxu nr_actions,valueu actions)
 	mult end nr_actions
 	add end actions
 	while actions!=end
-		if actions#:action.amark!=(action_mark_default) #call (int,imm32) #this goes full 64 bits on both o/c, there ulong,ulong
-			call putchar((Ml))
-		end # m can be with e/r, but can't be with i/f
-		call frame_print_action_nextif(actions#:action.nextif,actions#:action.if_flag) #these functions to have this function small? yes, and will be hard coded if not this way
-		call frame_print_action_next(actions#:action.next,actions#:action.return_flag) # i/f can be with e/r
+		# m can be with e/r, but can't be with i/f
+		#these functions to have this function small? yes, and will be hard coded if not this way
+		call frame_print_action(actions#:action.amark,(action_mark_default),(Ml)) #call (int,imm32) #this goes full 64 bits on both o/c, there ulong,ulong
+		call frame_print_action(actions#:action.nextif,(action_nextif_default),(Il))
+#		call frame_print_action(actions#:action.if_flag,(flag_notset),(Fl))
+		call frame_print_action_next(actions)
 		add actions \action\
 	end
 end
