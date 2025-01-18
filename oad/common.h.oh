@@ -91,8 +91,8 @@ function branch()
 
 	dataxu log_id#1  #for strings log
 	wordxu log_fn#1  #nostalgia
-	dataxu log_backjumps#1
-	dataxu log_fwdjumps#1
+	wordxu log_backjumps#1 #not dataxu? totalvalues is short
+	wordxu log_fwdjumps#1  #not dataxu? totalvalues is short
 end
 function branchcut()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy
