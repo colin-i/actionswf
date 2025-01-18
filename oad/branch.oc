@@ -40,6 +40,7 @@ function branch_init(valueu pf,valueu ptbra,valueu pbra)
 					set bra#:branch.log_id pf#:preframe.log_branchid
 					set bra#:branch.log_fn 0
 					set bra#:branch.log_backjumps 0
+					set bra#:branch.log_fwdjumps 0
 				end
 				return bra
 			end
@@ -157,6 +158,9 @@ function branch_log(sv br,valueu start)
 	end
 	if br#:branch.log_backjumps!=0
 		call print_iinline("bjump=%u",br#:branch.log_backjumps)
+	end
+	if br#:branch.log_fwdjumps!=0
+		call print_iinline("fjump=%u",br#:branch.log_fwdjumps)
 	end
 	call prints_inline("code:")
 	call print_inline_done()

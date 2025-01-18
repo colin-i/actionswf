@@ -73,24 +73,31 @@ function preframe_init()
 				sv ifs
 				set ifs malloc((sprites_realloc_onepart))
 				if ifs!=(NULL)
-					charx blog#1;set blog global_blog()
-					if blog=(TRUE)
-						set pf#:preframe.log_recalculation 0
-						call tree_frame_init(pf)
-						set pf#:preframe.log_xsize 0
-						set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
-					end
-					set pf#:preframe.size 0  #used at branch_init
-					set pf#:preframe.abranch branch_init(pf) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
-					if pf#:preframe.abranch!=(NULL)
-						set pf#:preframe.ustrings ustrings
-						set pf#:preframe.ussize 0
-						set pf#:preframe.strings strings
-						set pf#:preframe.ssize 0
-						set pf#:preframe.action_last (NULL)
-						set pf#:preframe.actions_if ifs
-						set pf#:preframe.actions_if_size 0
-						return pf
+					sv jumps
+					set jumps malloc((sprites_realloc_onepart))
+					if jumps!=(NULL)
+						charx blog#1;set blog global_blog()
+						if blog=(TRUE)
+							set pf#:preframe.log_recalculation 0
+							call tree_frame_init(pf)
+							set pf#:preframe.log_xsize 0
+							set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
+						end
+						set pf#:preframe.size 0  #used at branch_init
+						set pf#:preframe.abranch branch_init(pf) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
+						if pf#:preframe.abranch!=(NULL)
+							set pf#:preframe.ustrings ustrings
+							set pf#:preframe.ussize 0
+							set pf#:preframe.strings strings
+							set pf#:preframe.ssize 0
+							set pf#:preframe.action_last (NULL)
+							set pf#:preframe.actions_if ifs
+							set pf#:preframe.actions_if_size 0
+							set pf#:preframe.actions_jump jumps
+							set pf#:preframe.actions_jump_size 0
+							return pf
+						end
+						call free(jumps)
 					end
 					call free(ifs)
 				end
@@ -202,6 +209,7 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	end
 
 	call free(pf#:preframe.actions_if)
+	call free(pf#:preframe.actions_jump)
 	call free(pf)
 end
 

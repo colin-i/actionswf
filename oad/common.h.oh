@@ -53,7 +53,8 @@ function preframe()
 	valueu action_last#1
 	valuexu actions_if#1 ;#is also between action calls, if jump forwards to End must set if_flag
 	dataxu actions_if_size#1
-#	valuexu actions_jump#1 #here is ok to have NULL next if to End
+	valuexu actions_jump#1 #here is ok to have NULL next if to End
+	dataxu actions_jump_size#1
 
 	#log only
 	value log_recalculation#1 #can be on 32 bits, multiple actions with a big pool, or multiple actions constant16 to constant8 reductions. good at log
@@ -90,6 +91,7 @@ function branch()
 	dataxu log_id#1  #for strings log
 	wordxu log_fn#1  #nostalgia
 	dataxu log_backjumps#1
+	dataxu log_fwdjumps#1
 end
 function branchcut()
 	vdataxu x#1   #ints everywhere and pointers for strings, will not memcpy

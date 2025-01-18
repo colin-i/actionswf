@@ -172,6 +172,7 @@ import "tree_entry_end" tree_entry_end
 import "jumpforward_resolve" jumpforward_resolve
 import "jumpforwardif_resolve" jumpforwardif_resolve
 import "jumpbackward_resolve" jumpbackward_resolve
+import "jumpbackward_resolved" jumpbackward_resolved
 import "printe" printe
 
 function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,svu _pointer_to_action_loop)
@@ -231,9 +232,10 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 #				if _pointer_to_action#!=(NULL)
 #				end
 				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action, here is also for action_if
+					svu begin;svu pointer
 					if prefr#:preframe.actions_if_size!=0
-						svu begin;set begin prefr#:preframe.actions_if
-						svu pointer;set pointer begin
+						set begin prefr#:preframe.actions_if
+						set pointer begin
 						add pointer prefr#:preframe.actions_if_size
 						while begin!=pointer
 							sub pointer :
@@ -242,9 +244,27 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						end
 						set prefr#:preframe.actions_if_size 0
 					end
-#					if prefr#:preframe.actions_jump_size!=0  # inline ifelse and inter_for are resolved at innerbranch out, here only conditions_ends/breaks jumps
-#						action.next
-#					end
+					if prefr#:preframe.actions_jump_size!=0  # inline ifelse and inter_for are resolved at innerbranch out, here only conditions_ends/breaks jumps
+						set begin prefr#:preframe.actions_jump
+						set pointer begin
+						add pointer prefr#:preframe.actions_jump_size
+						if global.blog=(TRUE)
+							set branch_item prefr#:preframe.branchpointer
+							while begin!=pointer
+								sub pointer :
+								set act pointer#
+								set act#:action.next actions
+								inc branch_item#:branch.log_fwdjumps
+							end
+						else
+							while begin!=pointer
+								sub pointer :
+								set act pointer#
+								set act#:action.next actions
+							end
+						end
+						set prefr#:preframe.actions_jump_size 0
+					end
 					set act prefr#:preframe.action_last
 					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 					#					if return_flag = not_set . why not next=~NULL? is not cosmetic
@@ -333,7 +353,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				inc inlog
 			elseif inlog#=(xlog_return)
 				set act prefr#:preframe.action_last
-				#set act#:action.return_flag (set)
+#				set act#:action.return_flag (set)
 				inc inlog
 			elseif inlog#=(xlog_function)
 				set ok function(data)
@@ -367,9 +387,14 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				inc inlog
 			else #xlog_forin
 				inc inlog
-				if inlog#=(xlog_forin_break) #backjump if,eq,to push
-				else # xlog_forin_return     #backifjump not,eq,to push
+				set act actions
+				sub act 4*\action\
+				if inlog#=(xlog_forin_break) #back jump,if,eq,push
+					call jumpbackward_resolved(act,prefr#:preframe.action_last,global.blog,prefr#:preframe.branchpointer)
+				else # xlog_forin_return     #backif jump,not,eq,push
+					set act#:action.nextif prefr#:preframe.action_last
 				end
+				inc inlog
 			end
 		end
 		return (EXIT_SUCCESS)
