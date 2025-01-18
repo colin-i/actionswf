@@ -34,14 +34,15 @@ function jumpforwardif_resolve(valueu pf,wordxu number)
 	sub offset number
 	valueu prev#1;set prev pf#:preframe.branchpointer
 	whiletrue
+		charx ok#1
 		if prev#:branch.offset=offset  ##is /,,+offset/
-			charx ok#1;set ok re_alloc_add(#pf:preframe.actions_if,#pf:preframe.actions_if_size,prev#:branch.action_if)
+			set ok re_alloc_add(#pf:preframe.actions_if,#pf:preframe.actions_if_size,prev#:branch.action_if)
 			return ok
 		end
 		#for forin break ends
 		if prev#:branch.offset_break=offset
-#			action_break
-			return (EXIT_SUCCESS)
+			set ok re_alloc_add(#pf:preframe.actions_if,#pf:preframe.actions_if_size,prev#:branch.action_break)
+			return ok
 		end
 		set prev prev#:branch.suprabranch
 	end
@@ -65,7 +66,7 @@ function jumpforward_resolve(valueu pf,wordxu number)
 		set prev prev#:branch.suprabranch
 	end
 end
-function jumpbackward_resolve(valueu pf,wordxu number)
+function jumpbackward_resolve(valueu pf,wordxu number,charx log)
 	dataxu offset#1;set offset pf#:preframe.size
 	sub offset number
 	valueu prev#1;set prev pf#:preframe.branchpointer
@@ -74,6 +75,9 @@ function jumpbackward_resolve(valueu pf,wordxu number)
 			#link prev action to loop start action
 			valueu last#1;set last pf#:preframe.action_last
 			set last#:action.next prev#:branch.action_loop
+			if log=(TRUE)
+				inc prev#:branch.log_backjumps
+			end
 			break
 		end
 		set prev prev#:branch.suprabranch

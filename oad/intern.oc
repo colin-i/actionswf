@@ -237,7 +237,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						add pointer prefr#:preframe.actions_if_size
 						while begin!=pointer
 							sub pointer :
-#							action.nextif
+							set act pointer#
+							set act#:action.nextif actions
 						end
 						set prefr#:preframe.actions_if_size 0
 					end
@@ -289,11 +290,13 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					return (EXIT_FAILURE)
 				end
 				set branch_item prefr#:preframe.branchpointer
-				set branch_item#:branch.subbranch branch_init(prefr,branch_item#:branch.topbranch,branch_item)
-				if branch_item#:branch.subbranch=(NULL)
+				valueu branch_value#1
+				set branch_value branch_init(prefr,branch_item#:branch.topbranch,branch_item)
+				if branch_value=(NULL)
 					return (EXIT_FAILURE)
 				end
-				set branch_item#:branch.action_if prefr#:preframe.action_last ##can also be NULL if there are whiletrue break tricks
+				set branch_item#:branch.subbranch branch_value
+				set branch_value#:branch.action_if prefr#:preframe.action_last ##can also be NULL if there are whiletrue break tricks
 				#										is not always required, example at simple if end
 				if global.blog=(TRUE)
 					call tree_entry_ex(prefr,(xlog_branch))
@@ -347,7 +350,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
-				call jumpbackward_resolve(prefr,number)
+				call jumpbackward_resolve(prefr,number,global.blog)
 			elseif inlog#=(xlog_loop) # is for branch loop start mark and then will leave the branch for a subbranch
 				set branch_item prefr#:preframe.branchpointer
 				set branch_item#:branch.offset_loop prefr#:preframe.size

@@ -39,6 +39,7 @@ function branch_init(valueu pf,valueu ptbra,valueu pbra)
 					inc pf#:preframe.log_branchid
 					set bra#:branch.log_id pf#:preframe.log_branchid
 					set bra#:branch.log_fn 0
+					set bra#:branch.log_backjumps 0
 				end
 				return bra
 			end
@@ -153,6 +154,9 @@ function branch_log(sv br,valueu start)
 	end
 	if br#:branch.log_fn!=0
 		call print_hhex("afsize",br#:branch.log_fn)
+	end
+	if br#:branch.log_backjumps!=0
+		call print_iinline("bjump=%u",br#:branch.log_backjumps)
 	end
 	call prints_inline("code:")
 	call print_inline_done()
