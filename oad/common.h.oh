@@ -20,6 +20,7 @@ const F=0x46
 const El=0x65
 const Il=0x69
 const Ml=0x6d
+const Rl=0x72
 
 #override include_sec 1
 einclude "../include/xlog.h" "../include/xlog.h.oh" #e? xlog_id is else
