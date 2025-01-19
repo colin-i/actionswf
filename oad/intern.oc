@@ -43,7 +43,7 @@ end
 #at these memnl the last row is ending in nl from src
 function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an example with cr: ffdec action output is \r\n
 	set pnext# 1
-	if log#!=(NewLine) #empty row / last row
+	if log#!=(xlog_nl) #empty row / last row
 		whiletrue
 			if log#=(NewLine)
 				add pnext# log
@@ -73,9 +73,9 @@ function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an exampl
 end
 function memnl(ss log,sv pnext) #here is moving only on nl from src
 	set pnext# 1
-	if log#!=(NewLine) #emptyrow
+	if log#!=(xlog_nl) #emptyrow
 		inc log
-		while log#!=(NewLine)
+		while log#!=(xlog_nl)
 			inc log
 		end
 		add pnext# log

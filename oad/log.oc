@@ -25,7 +25,7 @@ importx "free" free
 import "print_text" print_text
 function tree_frame_free(valueu pf)
 	if pf#:preframe.log_mem!=(NULL)
-		call tree_entry_ex(pf,(NewLine))  #for memnl, if for prints will be '\0'
+		call tree_entry_ex(pf,(output_nl))  #for memnl, if for prints will be '\0'
 		call print_text(pf#:preframe.log_mem,pf#:preframe.log_size)
 		call free(pf#:preframe.log_mem)
 	end
@@ -68,13 +68,13 @@ function tree_indents(valueu pf)
 	end
 end
 function tree_entry_start(valueu pf)
-	call tree_entry_ex(pf,(NewLine))
+	call tree_entry_ex(pf,(output_nl))
 	call tree_indents(pf)
 	inc pf#:preframe.log_indents
 	call tree_entry_ex(pf,(xlog_innerbranch))
 end
 function tree_entry_end(valueu pf)
-	call tree_entry_ex(pf,(NewLine))
+	call tree_entry_ex(pf,(output_nl))
 	dec pf#:preframe.log_indents
 	call tree_indents(pf)
 	call tree_entry_ex(pf,(xlog_innerbranchend))

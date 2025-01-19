@@ -116,3 +116,5 @@ const from_show=1
 const pad_default=0x100
 
 const no_loop=0xffFFffFF
+
+const output_nl=xlog_nl #this must be the same with what is in memnl(), or change it

@@ -420,7 +420,7 @@ function frame_text_add(valueu fr,svu _text,valueu lines)
 		sub p starttext
 		call memcpy(mem,starttext,p)
 		add mem p
-		set mem# (NewLine)
+		set mem# (output_nl)
 		inc mem
 		set starttext next
 	end

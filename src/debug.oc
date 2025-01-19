@@ -3,8 +3,6 @@ format elfobj64
 
 include "../include/prog.h"
 
-const debug_nline=LineFeed
-
 function debug_mark()
 	valuex row#1
 	return #row
@@ -268,7 +266,7 @@ function debug_phase_code(sd codepointer)
 endfunction
 function debug_phase_code_flush_part(sd sz)
 	call f_write(debug_data.file,debug_data.mem,sz)
-	char a=debug_nline
+	char a=xlog_nl
 	callg f_write(debug_data.file,#a,1)
 end
 function debug_phase_code_flush()
@@ -308,7 +306,7 @@ end
 function debug_show(sd id)
 	if debug_data.file!=(NULL)
 		call debug_base_core(id)
-		char a={debug_nline,debug_nline}
+		char a={xlog_nl,xlog_nl}
 		call debug_write(#a,2)
 	end
 end
@@ -319,7 +317,7 @@ end
 function debug_spritedone(sd p,sd i)
 	if debug_data.file!=(NULL)
 		call debug_base_core(p)
-		char a=debug_nline
+		char a=xlog_nl
 		call debug_write(#a,1)
 		callg debug_base_core(i)
 	end
