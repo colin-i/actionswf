@@ -982,7 +982,7 @@ function action_definefunction(sd codepointer)
 
 	#this on same row with dummy at .log
 	call debug_xlog_stepin(codepointer) #after define function tag
-	#all previous codes must pe catched at this phase, this place for this function is tested, example: "function(){" on one row
+	#all previous codes must pe catched at this phase, this place for this function is tested, example: function(){\nvar a
 	call debug_phase_code(codepointer)
 
 	#a function marker for return and for..in case

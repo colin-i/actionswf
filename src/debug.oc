@@ -239,25 +239,28 @@ endfunction
 function debug_phase_code(sd codepointer)
 	if log_init.prexx=(prexx_flags)
 		sv a;setcall a debug_mark_get()
-		if codepointer>=^a#   #can also be smaller, or larger tested at function/condition blocks
-			if debug_data.size!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions
-				sv rows;set rows a
-				sv end;setcall end debug_end()
-				while codepointer>=^rows#   # > ? same as above
-					call debug_mark_add()
-					setcall rows debug_mark_get()
-					if rows>=end#   ;# > ? example when last row is b=1 }" then rows now will point at one row after last row
-						break
-					endif
-				endwhile
-				sub rows a
-				div rows :
-				#do not write now, can be break;} or Not Not If  and need to truncate that
-				datax size#1;set size debug_data.size
-				set debug_data.size 0
-				add debug_data.rows rows  ## add? is the case with break+ret and remove them and will be an empty row and that flush was skipped, below example
-				#example, add var q , at while break below example (at debug_phase_code_flush)
-			end
+		sv end;setcall end debug_end()
+		if a<=^end# #else can't point  ("function a(){}") , flush_end will catch }
+			if codepointer>=^a#   #can also be smaller, or larger tested at function/condition blocks
+				if debug_data.size!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions
+					sv rows;set rows a
+					while codepointer>=^rows#   # > ? same as above
+						call debug_mark_add()
+						setcall rows debug_mark_get()
+						if rows>=end#   ;# > ? example when last row is b=1 }" then rows now will point at one row after last row
+						# > also in ("function a(){}")
+							break
+						endif
+					endwhile
+					sub rows a
+					div rows :
+					#do not write now, can be break;} or Not Not If  and need to truncate that
+					datax size#1;set size debug_data.size
+					set debug_data.size 0
+					add debug_data.rows rows  ## add? is the case with break+ret and remove them and will be an empty row and that flush was skipped, below example
+					#example, add var q , at while break below example (at debug_phase_code_flush)
+				end
+			endif
 		endif
 	endif
 endfunction
@@ -275,6 +278,14 @@ function debug_phase_code_flush()
 			call f_write(file#,"\n",1)
 			set debug_data.rows 0
 		end
+	end
+end
+function debug_phase_code_flush_end()
+	call debug_phase_code_flush()
+	if debug_data.size!=0 #very rare case: function a(){}\n\n
+		call fseek(debug_data.file,-1,(SEEK_CUR))
+		call f_write(debug_data.file,debug_data.mem,debug_data.size)
+		call f_write(debug_data.file,"\n",1)
 	end
 end
 

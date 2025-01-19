@@ -7,14 +7,14 @@ include "common.h" "common.h.oh"
 import "re_alloc" re_alloc
 import "branch_init" branch_init
 
-function ibranch_add(valueu pf)
+function ibranch_add(valueu pf,svu _pointer_to_action)
 	valueu bra#1;set bra pf#:preframe.branchpointer
 	charx ok#1
 	set ok re_alloc(#bra#:branch.innerbranches,bra#:branch.isize)
 	if ok=(EXIT_SUCCESS)
 		svu pointer#1;set pointer bra#:branch.innerbranches
 		add pointer bra#:branch.isize
-		set pointer# branch_init(pf,bra) #no suprabranch, same as root
+		set pointer# branch_init(pf,_pointer_to_action,bra) #no suprabranch, same as root
 		if pointer#!=(NULL)
 			add bra#:branch.isize :
 			return (EXIT_SUCCESS)

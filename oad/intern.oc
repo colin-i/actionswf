@@ -175,7 +175,7 @@ import "jumpbackward_resolve" jumpbackward_resolve
 import "jumpbackward_resolved" jumpbackward_resolved
 import "printe" printe
 
-function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,svu _pointer_to_action_loop)
+function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu strings_base,valueu data,svu _text,svu _pointer_to_action_loop,svu _pointer_to_action)
 	ss start;set start inlog
 	inc inlog    ##first is a digit
 	whiletrue # break} is still with / (also resolves are there) but it is a row with \n end anyway
@@ -224,13 +224,17 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					end
 				end
 				#if actions!=actions_start_on_this_line ##first link is with another line
+				svu p_a
 				if _pointer_to_action_loop#!=(NULL) #can also be on first action, this if is not relevant for action_if (both cases can be)
-					svu p_a_l;set p_a_l _pointer_to_action_loop#
-					set p_a_l# actions
+					set p_a _pointer_to_action_loop#
+					set p_a# actions
 					set _pointer_to_action_loop# (NULL)
 				end
-#				if _pointer_to_action#!=(NULL)
-#				end
+				if _pointer_to_action#!=(NULL)
+					set p_a _pointer_to_action#
+					set p_a# actions
+					set _pointer_to_action# (NULL)
+				end
 				if prefr#:preframe.action_last!=(NULL) #cannot work on first frame action, here is also for action_if
 					svu begin;svu pointer
 					if prefr#:preframe.actions_if_size!=0
@@ -312,7 +316,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				set branch_item prefr#:preframe.branchpointer
 				valueu branch_value#1
-				set branch_value branch_init(prefr,branch_item#:branch.topbranch,branch_item)
+				set branch_value branch_init(prefr,_pointer_to_action,branch_item#:branch.topbranch,branch_item)
 				if branch_value=(NULL)
 					return (EXIT_FAILURE)
 				end
@@ -330,7 +334,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				set branch_item prefr#:preframe.branchpointer
 				set branch_item#:branch.action_cut prefr#:preframe.action_last
-				set ok ibranch_add(prefr)
+				set ok ibranch_add(prefr,_pointer_to_action)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -348,6 +352,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set act branch_item#:branch.action_cut
 				set act#:action.next (NULL)  #in a normal case when the inner branch is not 0, was jump/definefunction linked to next
 				set prefr#:preframe.action_last act
+				set _pointer_to_action# (NULL) #in case was 0 size with no actions, this branch already has this, last action was DefineFunction/ActionJump/ActionIf
 				if global.blog=(TRUE)
 					call tree_entry_end(prefr)
 				end
@@ -462,7 +467,8 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				valueu linesnr#1;set linesnr memdec(inlog,p)
 				set inlog next
 
-				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr)
+				svu pointer_to_action=NULL
+				set ok presprite_init(preid,ppresprites,psprites,(from_action),ainit,linesnr,#pointer_to_action)
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
@@ -501,7 +507,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 					set p memnl(inlog,#next)
 					if inlog#=(xlog_actions)
 						inc inlog
-						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text,#pointer_to_action_loop)
+						set ok actionrow(inlog,p,#xcode,#xx,pf,f,strings_base,data,#text,#pointer_to_action_loop,#pointer_to_action)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
