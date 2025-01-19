@@ -88,25 +88,23 @@ function jumpbackward_resolve(valueu pf,wordxu number,charx log)
 end
 
 function jumpforwards_frame_done(valueu prefr)
-	if prefr#:preframe.actions_if_size!=0
-	end
-	if prefr#:preframe.actions_jump_size!=0
+	if prefr!=(NULL)  #else if from_show / no aframe
+		if prefr#:preframe.actions_if_size!=0
+		end
+		if prefr#:preframe.actions_jump_size!=0
+		end
 	end
 end
 function jumpforwards_done(sv presprites,sv prespr) #id will be word*4
 	mult prespr :
 	add prespr presprites
 	set prespr prespr#
-	if prespr#:presprite.apreframe!=(NULL)
-		call jumpforwards_frame_done(prespr#:presprite.apreframe)
-	end
+	call jumpforwards_frame_done(prespr#:presprite.apreframe)
 	svu pointer;set pointer prespr#:presprite.preframes
 	valueu end#1;set end pointer
 	add end prespr#:presprite.size
 	while pointer!=end
-		if pointer#!=(NULL) #else if from_show
-			call jumpforwards_frame_done(pointer#)
-		end
+		call jumpforwards_frame_done(pointer#)
 		add pointer :
 	end
 end
