@@ -8,6 +8,8 @@ const xlog_id=2
 const xlog_id_size=2 #WORD
 
 const xlog_nl=0x0A
+const text_nl=xlog_nl
+const text_cr=0x0D
 
 const xlog_break=0x21         ;# !
 const xlog_forin=0x23          ##
@@ -19,6 +21,11 @@ const xlog_jumpif=0x2B        ;#+
 const xlog_act=0x2C            #,
 const xlog_branch=0x2F        ;#/
 #0-9
+const xlog_const8_log=0x30
+const xlog_const16_log=0x31
+const xlog_forin_break=0x30
+const xlog_forin_return=0x31
+#
 const xlog_function=0x40       #@
 #A-F
 const xlog_string=0x5E        ;#^
@@ -39,11 +46,5 @@ const actionrecordheader_tag_size=1
 const actionrecordheader_length_size=2
 const actionrecordheader_size=actionrecordheader_tag_size+actionrecordheader_length_size
 
-const xlog_const8_log=0x30
-const xlog_const16_log=0x31
-
 const actionpush_type=1     #BYTE
 const actionpush_integer=4  #DWORD
-
-const xlog_forin_break=0x30
-const xlog_forin_return=0x31

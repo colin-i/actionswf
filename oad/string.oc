@@ -100,7 +100,7 @@ importx "stdout" stdout
 importx "fputc" fputc
 
 function printn(sv s)
-	call fputc((NewLine),s)
+	call fputc((output_nl),s)
 end
 function printt(ss str)
 	sv so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer

@@ -213,7 +213,7 @@ function debug_action_init(ss ac)
 
 			#out rows\nac\n
 			sv file%p_debug_file
-			char f={Percent,l,u,LineFeed,Percent,s,LineFeed,Nullchar}
+			char f={Percent,l,u,xlog_nl,Percent,s,xlog_nl,Nullchar}
 			call f_printf((fprintf_min+2),file#,#f,row,start)
 
 			mult row :

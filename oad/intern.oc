@@ -45,18 +45,18 @@ function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an exampl
 	set pnext# 1
 	if log#!=(xlog_nl) #empty row / last row
 		whiletrue
-			if log#=(NewLine)
+			if log#=(text_nl)
 				add pnext# log
 				dec log
-				if log#!=(CReturn)
+				if log#!=(text_cr)
 					inc log
 				end
 				break
 			end
-			if log#=(CReturn)
+			if log#=(text_cr)
 				add pnext# log
 				ss next;set next pnext#
-				if next#=(NewLine)
+				if next#=(text_nl)
 					add pnext# 1
 					if _cr!=(NULL)
 						add _cr# 1

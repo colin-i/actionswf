@@ -13,12 +13,12 @@ import "spaces" spaces
 #0 yes  1 no
 function row_termination(sv p_ac,sv p_row)
 	ss ac;set ac p_ac#
-	if ac#=(LineFeed)
+	if ac#=(text_nl)
 		inc p_row#
 		return 0
 	endif
-	if ac#=(CarriageReturn)
-		inc ac;if ac#=(LineFeed);set p_ac# ac;endif
+	if ac#=(text_cr)
+		inc ac;if ac#=(text_nl);set p_ac# ac;endif
 		inc p_row#
 		return 0
 	endif
