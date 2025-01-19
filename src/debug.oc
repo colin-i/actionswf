@@ -3,6 +3,8 @@ format elfobj64
 
 include "../include/prog.h"
 
+const debug_nline=0xa
+
 function debug_mark()
 	valuex row#1
 	return #row
@@ -264,6 +266,11 @@ function debug_phase_code(sd codepointer)
 		endif
 	endif
 endfunction
+function debug_phase_code_flush_part(sd sz)
+	call f_write(debug_data.file,debug_data.mem,sz)
+	char a=debug_nline
+	callg f_write(debug_data.file,#a,1)
+end
 function debug_phase_code_flush()
 	if debug_data.rows!=0
 		if debug_phase_code.size!=0
@@ -274,18 +281,16 @@ function debug_phase_code_flush()
 			sv file%p_debug_file
 			char format=xlog_actions;char *="%lu"
 			call f_printf((fprintf_min+1),file#,#format,debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
-			call f_write(file#,debug_data.mem,debug_phase_code.size)
-			call f_write(file#,"\n",1)
+			call debug_phase_code_flush_part(debug_phase_code.size)
 			set debug_data.rows 0
 		end
 	end
 end
 function debug_phase_code_flush_end()
 	call debug_phase_code_flush()
-	if debug_data.size!=0 #very rare case: function a(){}\n\n
+	if debug_data.size!=0 #cases: function a(){}\n\n , function a(){}
 		call fseek(debug_data.file,-1,(SEEK_CUR))
-		call f_write(debug_data.file,debug_data.mem,debug_data.size)
-		call f_write(debug_data.file,"\n",1)
+		callg debug_phase_code_flush_part(debug_data.size) # if(1==1){}else{} is size 3
 	end
 end
 
@@ -303,7 +308,8 @@ end
 function debug_show(sd id)
 	if debug_data.file!=(NULL)
 		call debug_base_core(id)
-		call debug_write("\n\n",2)
+		char a={debug_nline,debug_nline}
+		call debug_write(#a,2)
 	end
 end
 function debug_write(ss s,sd d)
@@ -313,7 +319,8 @@ end
 function debug_spritedone(sd p,sd i)
 	if debug_data.file!=(NULL)
 		call debug_base_core(p)
-		call debug_write("\n",1)
+		char a=debug_nline
+		call debug_write(#a,1)
 		callg debug_base_core(i)
 	end
 end
