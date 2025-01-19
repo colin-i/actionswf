@@ -3,7 +3,7 @@ format elfobj64
 
 include "../include/prog.h"
 
-const debug_nline=0xa
+const debug_nline=LineFeed
 
 function debug_mark()
 	valuex row#1
