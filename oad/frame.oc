@@ -61,7 +61,7 @@ import "branch_init" branch_init
 import "tree_frame_init" tree_frame_init
 import "global_blog" global_blog
 
-function preframe_init(svu _pointer_to_action)
+function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
 		sv ustrings
@@ -84,7 +84,7 @@ function preframe_init(svu _pointer_to_action)
 							set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
 						end
 						set pf#:preframe.size 0  #used at branch_init
-						set pf#:preframe.abranch branch_init(pf,_pointer_to_action) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
+						set pf#:preframe.abranch branch_init(pf) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
 						if pf#:preframe.abranch!=(NULL)
 							set pf#:preframe.ustrings ustrings
 							set pf#:preframe.ussize 0
@@ -340,8 +340,8 @@ function frame_print_top(charx ainit,datax log_index)
 	call print_indent()
 end
 
-function nframe_init(sv pf,valueu total,svu _pointer_to_action)
-	set pf# preframe_init(_pointer_to_action)
+function nframe_init(sv pf,valueu total)
+	set pf# preframe_init()
 	if pf#!=(NULL)
 		valueu f#1;set f frame_init(total)
 		return f

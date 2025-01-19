@@ -9,7 +9,7 @@ importx "malloc" malloc
 import "global_blog" global_blog
 
 #branch pointer
-function branch_init(valueu pf,svu _pointer_to_action,valueu ptbra,valueu pbra)
+function branch_init(valueu pf,valueu ptbra,valueu pbra)
 	valueu bra#1
 	set bra malloc((\branch\))
 	if bra!=(NULL)
@@ -34,7 +34,7 @@ function branch_init(valueu pf,svu _pointer_to_action,valueu ptbra,valueu pbra)
 				set bra#:branch.offset_loop (no_loop)
 				set bra#:branch.offset_break (no_loop)
 
-				set _pointer_to_action# #bra#:branch.action_top ##not setting NULL because is testing branch.size not 0
+				set bra#:branch.action_top (NULL) ##normaly branch.size!=0 but that implies pointer_to_action and that will not work between action calls
 
 				charx blog#1;set blog global_blog()
 				if blog=(TRUE)

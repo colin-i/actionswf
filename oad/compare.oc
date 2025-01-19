@@ -178,7 +178,7 @@ import "nframe_init" nframe_init
 import "frame_expand" frame_expand
 
 #                       wordxu preid                                         at action only from here
-function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal,svu _pointer_to_action)
+function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal)
 	mult newpointer :
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
@@ -222,7 +222,7 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 				add pf newsize
 				add f newsize
 				if pf#=(NULL) #is after a show
-					set f# nframe_init(pf,linestotal,_pointer_to_action)
+					set f# nframe_init(pf,linestotal)
 					if f#=(NULL)
 						return (EXIT_FAILURE)
 					end
@@ -275,12 +275,12 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 						add s#:sprite.size :
 					else #from_action
 						if ainit=(xlog_ainit_false)  #here is the case when first frame has action (a popular case)
-							set f# nframe_init(pf,linestotal,_pointer_to_action)
+							set f# nframe_init(pf,linestotal)
 							if f#=(NULL)
 								return (EXIT_FAILURE)
 							end
 						else #ainit true
-							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal,_pointer_to_action)
+							set s#:sprite.aframe nframe_init(#ps#:presprite.apreframe,linestotal)
 							if s#:sprite.aframe=(NULL)
 								return (EXIT_FAILURE)
 							end
@@ -295,12 +295,15 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 	return (EXIT_FAILURE)
 end
 
-function presprite_done(sv sprites,wordxu preid,wordxu id,sv data)
+import "jumpforwards_done" jumpforwards_done
+
+function presprite_done(sv sprites,wordxu preid,wordxu id,sv data,sv presprites)
 	sv pointer=:
 	mult pointer preid
 	if pointer<^global.presprites_size  ##can be a done with no action/show
 		add pointer sprites
 		if pointer#!=(NULL)     #same
+			call jumpforwards_done(presprites,preid)
 			sv destination=:
 			mult destination id
 			add destination :   #for size comparison

@@ -7,14 +7,14 @@ include "common.h" "common.h.oh"
 import "re_alloc" re_alloc
 import "branch_init" branch_init
 
-function ibranch_add(valueu pf,svu _pointer_to_action)
+function ibranch_add(valueu pf)
 	valueu bra#1;set bra pf#:preframe.branchpointer
 	charx ok#1
 	set ok re_alloc(#bra#:branch.innerbranches,bra#:branch.isize)
 	if ok=(EXIT_SUCCESS)
 		svu pointer#1;set pointer bra#:branch.innerbranches
 		add pointer bra#:branch.isize
-		set pointer# branch_init(pf,_pointer_to_action,bra) #no suprabranch, same as root
+		set pointer# branch_init(pf,bra) #no suprabranch, same as root
 		if pointer#!=(NULL)
 			add bra#:branch.isize :
 			return (EXIT_SUCCESS)
@@ -84,5 +84,27 @@ function jumpbackward_resolve(valueu pf,wordxu number,charx log)
 			break
 		end
 		set prev prev#:branch.suprabranch
+	end
+end
+
+function jumpforwards_frame_done(valueu prefr)
+	if prefr#:preframe.actions_if_size!=0
+	end
+	if prefr#:preframe.actions_jump_size!=0
+	end
+end
+function jumpforwards_done(sv presprites,sv prespr) #id will be word*4
+	mult prespr :
+	add prespr presprites
+	set prespr prespr#
+	if prespr#:presprite.apreframe!=(NULL)
+		call jumpforwards_frame_done(prespr#:presprite.apreframe)
+	end
+	svu pointer;set pointer prespr#:presprite.preframes
+	valueu end#1;set end pointer
+	add end prespr#:presprite.size
+	while pointer!=end
+		call jumpforwards_frame_done(pointer#)
+		add pointer :
 	end
 end
