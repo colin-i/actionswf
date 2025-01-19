@@ -104,7 +104,9 @@ function jumpforwards_done(sv presprites,sv prespr) #id will be word*4
 	valueu end#1;set end pointer
 	add end prespr#:presprite.size
 	while pointer!=end
-		call jumpforwards_frame_done(pointer#)
+		if pointer#!=(NULL) #else if from_show
+			call jumpforwards_frame_done(pointer#)
+		end
 		add pointer :
 	end
 end
