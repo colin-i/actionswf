@@ -13,6 +13,7 @@ const Space=0x20
 const Comma=0x2c
 const ZeroChar=0x30
 const NineChar=0x39
+const Equal=0x3d
 const A=0x41
 const F=0x46
 const El=0x65
@@ -65,8 +66,8 @@ function preframe()
 	dataxu log_indents#1  #same as functions
 	#
 	valueu log_xsize#1   ;#example: a[a[a]]=a[a[a]] is 40 size vs 192 xsize
-	#
 	dataxu log_branchid#1 #for strings log
+	dataxu log_sizedfunctions#1  #why to make something spacial for oadata when here is fast
 end
 function branch()
 	valueu cuts#1

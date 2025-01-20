@@ -74,13 +74,14 @@ function branch_add(sv pf,dataxu size,dataxu offset,valueu code)
 end
 
 importx "printf" printf
+importx "putchar" putchar
 
 import "print_indent" print_indent
 import "print_unindent" print_unindent
 import "print_inline_start" print_inline_start
 import "prints_inline_start" prints_inline_start
 import "print_inline_done" print_inline_done
-import "print_iinline" print_iinline
+import "print_einline" print_einline
 import "prints_inline" prints_inline
 import "printt" printt
 
@@ -111,7 +112,8 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 			inc a
 		elseif b<12
 			if start!=(NULL)
-				call print_iinline(form,code#)
+				call putchar((Space))
+				call printf(form,code#)
 			else
 				call prints_inline(form)
 			end
@@ -141,12 +143,12 @@ function branch_log(sv br,valueu start)
 		add sz cuts#:branchcut.size
 		add cuts \branchcut\
 	end
-	call print_iinline("id=%u",br#:branch.log_id)
+	call print_einline("id",br#:branch.log_id)
 	call print_hex("size",sz)
 	set sz br#:branch.isize
 	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
-		call print_iinline("inners=%u",sz)
+		call print_einline("inners",sz)
 	end
 	call print_hex("aoffset",br#:branch.offset)
 	if br#:branch.offset_loop!=(no_loop)
@@ -159,10 +161,10 @@ function branch_log(sv br,valueu start)
 		call print_hhex("afsize",br#:branch.log_fn)
 	end
 	if br#:branch.log_backjumps!=0
-		call print_iinline("bjump=%u",br#:branch.log_backjumps)
+		call print_einline("bjump",br#:branch.log_backjumps)
 	end
 	if br#:branch.log_fwdjumps!=0
-		call print_iinline("fjump=%u",br#:branch.log_fwdjumps)
+		call print_einline("fjump",br#:branch.log_fwdjumps)
 	end
 	call prints_inline("code:")
 	call print_inline_done()

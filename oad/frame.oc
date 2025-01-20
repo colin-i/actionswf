@@ -6,7 +6,7 @@ importx "realloc" realloc
 override include_sec 1
 include "common.h" "common.h.oh"
 
-function re_alloc(sv pmem,dataxu size) #only dataxu external sizes, and +1 increments
+function re_alloc(svu pmem,dataxu size) #only dataxu external sizes, and +1 increments
 	if size!=0
 		dataxu currentmaxsize#1;set currentmaxsize size
 		divu currentmaxsize ((sprites_realloc_onepart))
@@ -20,11 +20,11 @@ function re_alloc(sv pmem,dataxu size) #only dataxu external sizes, and +1 incre
 			end
 			return (EXIT_FAILURE)
 		end # else is not on the edge
-	#else can be at presprite_init x2, string_add presprite_done function
+	#else can be at presprite_init x2, string_add x2, presprite_done function
 	end
 	return (EXIT_SUCCESS)
 end
-function re_calloc(sv pmem,svu size,valueu newsize)
+function re_calloc(svu pmem,svu size,valueu newsize)
 	charx ok#1;set ok re_alloc(pmem,size)
 	if ok=(EXIT_SUCCESS)
 		add size pmem#
@@ -36,14 +36,14 @@ function re_calloc(sv pmem,svu size,valueu newsize)
 	end
 	return ok
 end
-function re_calloc_size(sv pmem,sdu psize,dataxu newsize)
+function re_calloc_size(svu pmem,sdu psize,dataxu newsize)
 	charx ok#1;set ok re_calloc(pmem,psize#,newsize)
 	if ok=(EXIT_SUCCESS)
 		set psize# newsize
 	end
 	return ok
 end
-function re_alloc_add(sv pmem,sdu size,valueu value)
+function re_alloc_add(svu pmem,sdu size,valueu value)
 	charx ok#1;set ok re_alloc(pmem,size#)
 	if ok=(EXIT_SUCCESS)
 		sv mem;set mem pmem#
@@ -51,6 +51,13 @@ function re_alloc_add(sv pmem,sdu size,valueu value)
 		set mem# value
 		add size# :
 	end
+	return ok
+end
+function re_calloc_add(svu pmem,sdu psize)
+	dataxu newsize#1
+	set newsize psize#
+	add newsize :
+	charx ok#1;set ok re_calloc_size(pmem,psize,newsize)
 	return ok
 end
 
@@ -82,6 +89,7 @@ function preframe_init()
 							call tree_frame_init(pf)
 							set pf#:preframe.log_xsize 0
 							set pf#:preframe.log_branchid -1  #will inc to 0 at branch_init
+							set pf#:preframe.log_sizedfunctions 0
 						end
 						set pf#:preframe.size 0  #used at branch_init
 						set pf#:preframe.abranch branch_init(pf) #no ,topbranch,suprabranch since this is on root level and } can't happen and there is nothing for suprabranch
@@ -133,10 +141,9 @@ function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	#valuexu stroff#1
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
-		#set stroff pf#:preframe.logstrstart
-		#add stroff pf#:preframe.logstrstart_index
-		#set stroff stroff#
-		#incst pf#:preframe.logstrstart_index
+		if pf#:preframe.log_sizedfunctions!=0
+			call print("sizedfunctions: %u",pf#:preframe.log_sizedfunctions)
+		end
 
 		call prints_inline_start("ustrings:")
 		set log (TRUE)

@@ -137,3 +137,14 @@ function jumpforwards_done(sv presprites,sv prespr) #id will be word*4
 		add pointer :
 	end
 end
+
+function function_resolved(valueu data,valueu actions,valueu logpreframe)
+	svu pointer
+	set pointer data#:oadata.functions
+	add pointer data#:oadata.functions_size
+	decst pointer
+	set pointer# actions
+	if logpreframe!=(NULL)
+		inc logpreframe#:preframe.log_sizedfunctions
+	end
+end
