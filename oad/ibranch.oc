@@ -86,12 +86,41 @@ function jumpbackward_resolve(valueu pf,wordxu number,charx log)
 		set prev prev#:branch.suprabranch
 	end
 end
-
+import "global_blog" global_blog
 function jumpforwards_frame_done(valueu prefr)
-	if prefr!=(NULL)  #else if from_show / no aframe
+	if prefr!=(NULL)  #else is from_show / no aframe
+		svu pointer;svu end
+		valueu act#1
 		if prefr#:preframe.actions_if_size!=0
+			set pointer prefr#:preframe.actions_if
+			set end pointer
+			add end prefr#:preframe.actions_if_size
+			while pointer!=end
+				set act pointer#
+				set act#:action.if_flag (flag_set)
+				incst pointer
+			end
 		end
 		if prefr#:preframe.actions_jump_size!=0
+			set pointer prefr#:preframe.actions_jump
+			set end pointer
+			add end prefr#:preframe.actions_jump_size
+			charx log#1;set log global_blog()
+			if log=(TRUE)
+				valueu branch_item#1;set branch_item prefr#:preframe.branchpointer
+				while pointer!=end
+					set act pointer#
+					set act#:action.next (action_next_default)
+					inc branch_item#:branch.log_fwdjumps
+					incst pointer
+				end
+			else
+				while pointer!=end
+					set act pointer#
+					set act#:action.next (action_next_default)
+					incst pointer
+				end
+			end
 		end
 	end
 end

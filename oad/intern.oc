@@ -267,7 +267,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						set prefr#:preframe.actions_jump_size 0
 					end
 					set act prefr#:preframe.action_last
-					if act#:action.next=(NULL) #else is a jumpback, this if is not relevant for action_if (both cases can be)
+					if act#:action.next=(action_next_default) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 						if act#:action.return_flag=(flag_notset) #why not next=~NULL? is not cosmetic
 							set act#:action.next actions
 						end
@@ -347,7 +347,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				call ibranch_done(prefr)
 				set branch_item prefr#:preframe.branchpointer
 				set act branch_item#:branch.action_cut
-				set act#:action.next (NULL)  #in a normal case when the inner branch is not 0, was jump/definefunction linked to next
+				set act#:action.next (action_next_default)  #in a normal case when the inner branch is not 0, was jump/definefunction linked to next
 				set prefr#:preframe.action_last act
 				#set _pointer_to_action# (NULL) #in case was 0 size with no actions, this branch already has this, last action was DefineFunction/ActionJump/ActionIf
 				if global.blog=(TRUE)

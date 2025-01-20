@@ -63,7 +63,8 @@ data *font_color=0xff
 vstr ButtonData_d#1;set ButtonData_d "
 if(_root.tog==1){
 	_root.tog=0;_root._movie.stop()
-}else{
+}else if(_root.tog==0){
+//else if is intentional to demonstrate if_flag
 	_root.tog=1;_root._movie.play()
 }"
 sd b;set b swf_button(150,50,#ButtonData)
