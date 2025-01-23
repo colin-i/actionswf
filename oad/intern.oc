@@ -268,7 +268,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					if act#:action.next=(action_next_default) #else is a jumpback, this if is not relevant for action_if (both cases can be)
 						charx flags#1;set flags act#:action.flags
 						and flags (return_flag)
-						if flags=(no_flags) #why not next=~NULL? is not cosmetic
+						if flags!=(return_flag) #why not next=~NULL? is not cosmetic
 							set act#:action.next actions
 						end
 					end

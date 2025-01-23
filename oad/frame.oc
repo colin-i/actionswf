@@ -265,8 +265,8 @@ function frame_print_action(valueu a,valueu b,charx c,charx d)
 	end
 end
 function frame_print_action_flag(charx flags,charx f,charx c)
-	and f flags
-	if f!=(no_flags)
+	and flags f
+	if flags=f
 		call putchar(c)
 	end
 end
