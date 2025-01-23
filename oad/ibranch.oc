@@ -97,7 +97,7 @@ function jumpforwards_frame_done(valueu prefr)
 			add end prefr#:preframe.actions_if_size
 			while pointer!=end
 				set act pointer#
-				set act#:action.if_flag (flag_set)
+				or act#:action.flags (if_flag)
 				incst pointer
 			end
 		end

@@ -35,15 +35,14 @@ end
 const action_next_default=NULL
 const action_nextif_default=NULL
 const action_mark_default=-1
-const flag_notset=0
-const flag_set=1
+const nothing_flag=0x0
+const if_flag=0x1     #f
+const call_flag=0x2   #c
+const return_flag=0x4 #r
 function action()
 	valuexu next#1      #at log e if default
-	charx return_flag#1 #r
-
 	valuexu nextif#1    #at log i if not default
-	charx if_flag#1     #f
-
+	charx flags#1
 	datax amark#1       #at log m if not default
 end
 function mark()

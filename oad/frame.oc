@@ -255,8 +255,18 @@ end
 import "print_text" print_text
 import "prints" prints
 
-function frame_print_action(valueu a,valueu b,charx c)
+function frame_print_action(valueu a,valueu b,charx c,charx d)
 	if a!=b
+		if d=(FALSE)
+			call putchar(c)
+		end
+	elseif d=(TRUE)
+		call putchar(c)
+	end
+end
+function frame_print_action_flag(charx flags,charx f,charx c)
+	and f flags
+	if f!=0
 		call putchar(c)
 	end
 end
@@ -268,15 +278,19 @@ function frame_print(valueu n,dataxu nr_actions,valueu actions)
 	mult end nr_actions
 	add end actions
 	while actions!=end
-		# m can't be with i/f
+		# m can't be with i/f, m can be at end?
 		#these functions to have this function small? yes, and will be hard coded if not this way
-		call frame_print_action(actions#:action.amark,(action_mark_default),(Ml)) #call (int,imm32) #this goes full 64 bits on both o/c, there ulong,ulong
-		call frame_print_action(actions#:action.nextif,(action_nextif_default),(Il))
-		call frame_print_action(actions#:action.if_flag,(flag_notset),(Fl))
-		if actions#:action.next=(action_next_default)
-			call frame_print_action(actions#:action.return_flag,(flag_set),(El)) #at loop end,if this there, still need to ask if actions!=NULL	#this is also good at cut ends
-			call frame_print_action(actions#:action.return_flag,(flag_notset),(Rl))
-		end
+		#call (int,imm32) #this goes full 64 bits on both o/c, there ulong,ulong
+		# El at loop end,if this there, still need to ask if actions!=NULL	#this is also good at cut ends and end jumps
+
+		call frame_print_action(actions#:action.amark,(action_mark_default),(Ml),(FALSE))
+		call frame_print_action(actions#:action.nextif,(action_nextif_default),(Il),(FALSE))
+		call frame_print_action(actions#:action.next,(action_next_default),(El),(TRUE))
+		charx f#1;set f actions#:action.flags
+		call frame_print_action_flag(f,(if_flag),(Fl))
+		call frame_print_action_flag(f,(call_flag),(Cl))
+		call frame_print_action_flag(f,(return_flag),(Rl))
+
 		add actions \action\
 	end
 end
@@ -484,9 +498,8 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 				while pointer!=cursor
 					sub cursor \action\
 					set cursor#:action.next (action_next_default)     #last one is null
-					set cursor#:action.return_flag (flag_notset)
 					set cursor#:action.nextif (action_nextif_default) #other way at ActionIf
-					set cursor#:action.if_flag (flag_notset)
+					set cursor#:action.flags (nothing_flag)
 					set cursor#:action.amark (action_mark_default)    #other way at branch start
 				end
 				set _actions# pointer

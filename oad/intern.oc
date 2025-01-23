@@ -266,7 +266,9 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					end
 					set act prefr#:preframe.action_last
 					if act#:action.next=(action_next_default) #else is a jumpback, this if is not relevant for action_if (both cases can be)
-						if act#:action.return_flag=(flag_notset) #why not next=~NULL? is not cosmetic
+						charx flags#1;set flags act#:action.flags
+						and flags (return_flag)
+						if flags=(nothing_flag) #why not next=~NULL? is not cosmetic
 							set act#:action.next actions
 						end
 					end
@@ -357,7 +359,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				inc inlog
 			elseif inlog#=(xlog_return)
 				set act prefr#:preframe.action_last
-				set act#:action.return_flag (flag_set)
+				or act#:action.flags (return_flag)
 				inc inlog
 			elseif inlog#=(xlog_function)
 				set ok re_calloc_add(#data#:oadata.functions,#data#:oadata.functions_size,global.blog) #some functions have no size
