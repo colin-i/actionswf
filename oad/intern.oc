@@ -325,6 +325,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				end
 				inc inlog
 			elseif inlog#=(xlog_call)
+				set act prefr#:preframe.action_last
+				or act#:action.flags (call_flag)
 				inc inlog
 			elseif inlog#=(xlog_innerbranch)
 				set ok newbranch(px,pxx,prefr)
