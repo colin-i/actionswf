@@ -20,7 +20,7 @@ valuex bp#1;base bp;call ebase(bp)
 	callg action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
-functionXx actionf(ss buffer,ss *format)
+functionXv actionf(ss buffer,ss *format)
 base action.bp;call ebase(action.bp)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
@@ -28,7 +28,7 @@ base action.bp;call ebase(action.bp)
 	call is_ainit((xlog_ainit_false))
 	callg actionf_local(#buffer)
 endfunction
-#see at part_done functionXx actionf_init(ss buffer,ss *format)
+#see at part_done functionXv actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated
 	sd ptr;set ptr for_in_ptr()
 	sd was;set was ptr#
@@ -53,7 +53,7 @@ functionX action_init_sprite(sd sprite,ss actions)
 	callg action_sprite_base(sprite,actions,(TRUE))
 end
 import "actionf_sprite_local" actionf_sprite_local
-functionXx actionf_sprite(sd sprite,ss buffer,ss *format)
+functionXv actionf_sprite(sd sprite,ss buffer,ss *format)
 base action.bp;call ebase(action.bp)
 #sd sprite    sprite id
 #ss buffer    same as actionf
@@ -61,7 +61,7 @@ base action.bp;call ebase(action.bp)
 	call is_ainit((xlog_ainit_false))
 	callg actionf_sprite_local(sprite,#buffer)
 endfunction
-functionXx actionf_init_sprite(sd sprite,ss buffer,ss *format)
+functionXv actionf_init_sprite(sd sprite,ss buffer,ss *format)
 	call is_ainit((xlog_ainit_true))
 	callg actionf_sprite_local(sprite,#buffer)
 end
