@@ -266,7 +266,7 @@ function frame_print_action(valueu a,valueu b,charx c,charx d)
 end
 function frame_print_action_flag(charx flags,charx f,charx c)
 	and f flags
-	if f!=0
+	if f!=(no_flags)
 		call putchar(c)
 	end
 end
@@ -499,7 +499,7 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 					sub cursor \action\
 					set cursor#:action.next (action_next_default)     #last one is null
 					set cursor#:action.nextif (action_nextif_default) #other way at ActionIf
-					set cursor#:action.flags (nothing_flag)
+					set cursor#:action.flags (no_flags)
 					set cursor#:action.amark (action_mark_default)    #other way at branch start
 				end
 				set _actions# pointer

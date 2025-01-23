@@ -35,7 +35,7 @@ end
 const action_next_default=NULL
 const action_nextif_default=NULL
 const action_mark_default=-1
-const nothing_flag=0x0
+const no_flags=0x0
 const if_flag=0x1     #f
 const call_flag=0x2   #c
 const return_flag=0x4 #r
