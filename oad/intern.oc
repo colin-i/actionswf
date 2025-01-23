@@ -322,6 +322,8 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					call tree_entry_ex(prefr,(xlog_branch))
 				end
 				inc inlog
+			elseif inlog#=(xlog_call)
+				inc inlog
 			elseif inlog#=(xlog_innerbranch)
 				set ok newbranch(px,pxx,prefr)
 				if ok!=(EXIT_SUCCESS)

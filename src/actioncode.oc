@@ -709,22 +709,24 @@ function action_code_write_function(sd codepointer)
 	return codepointer
 endfunction
 
+import "debug_xlog_call" debug_xlog_call
 #codepointer
 function action_code_write_function_call(sv codepointer,sd pwant_return)
-    add codepointer (DWORD)
-    sd pointer
-    setcall pointer action_code_write_builtin_function(codepointer,pwant_return)
-    if pointer!=codepointer
-        return pointer
-    endif
-    sd member
-    setcall codepointer action_code_new_or_call(codepointer,#member)
-    if member=(no_pointer)
-        call action_one((ActionCallFunction))
-    else
-        call action_one((ActionCallMethod))
-    endelse
-    return codepointer
+	add codepointer (DWORD)
+	sd pointer
+	setcall pointer action_code_write_builtin_function(codepointer,pwant_return)
+	if pointer!=codepointer
+		return pointer
+	endif
+	sd member
+	setcall codepointer action_code_new_or_call(codepointer,#member)
+	if member=(no_pointer)
+		call action_one((ActionCallFunction))
+	else
+		call action_one((ActionCallMethod))
+	endelse
+	call debug_xlog_call()
+	return codepointer
 endfunction
 #codepointer
 function action_code_write_builtin_function(sv codepointer,sd pwant_return)

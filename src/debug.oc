@@ -511,3 +511,8 @@ function debug_xlog_return()
 		callg debug_phase_code_add_one((xlog_return))
 	end
 end
+function debug_xlog_call()
+	if log_init.prexx=(prexx_flags)
+		callg debug_phase_code_add_one((xlog_call))
+	end
+end
