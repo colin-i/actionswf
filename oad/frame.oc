@@ -227,18 +227,12 @@ function frame_init(valueu total)
 		sv text;set text malloc((frame_text_allocpart))
 		if text!=(NULL)
 			sv lines
-			charx bool#1;set bool (TRUE)
-			if total!=0
-				valueu size#1;set size (\line\)
-				mult size total
-				set lines malloc(size)
-				if lines=(NULL)
-					set bool (FALSE)
-				end
-			else
-				set lines (NULL)
-			end
-			if bool=(TRUE)
+			#charx bool#1;set bool (TRUE)
+			#if total!=0 even "" is 1 line
+			valueu size#1;set size (\line\)
+			mult size total
+			set lines malloc(size)
+			if lines!=(NULL)
 				set f#:frame.lines lines
 				set f#:frame.total 0
 				set f#:frame.text text
@@ -296,21 +290,22 @@ function frame_print(valueu n,dataxu nr_actions,valueu actions)
 end
 function frame_free(sv f,charx ainit,datax log_index)
 	valueu n#1;dataxu nr_actions#1
-	sv lines;set lines f#:frame.lines
+	valueu t#1;set t f#:frame.total
+	sv lines;set lines f#:frame.lines   ## why to have blank lines anyway
 	if log_index!=(no_index)
 		call frame_print_top(ainit,log_index)
-		call print_inline_start("lines=%lu",f#:frame.total)
-		if lines!=(NULL)
+		call print_inline_start("lines=%lu",t)
+		if t!=0
 			set n 0
 			set nr_actions lines#:line.total
 		end
 	end
-	if lines!=(NULL)
+	if t!=0 # action("") is 1 line
 		valueu ix#1;valueu actions#1
 		set ix 0
 		set actions lines#:line.actions
 		valueu end#1;set end \line\
-		mult end f#:frame.total
+		mult end t
 		sv pointer;set pointer lines
 		add end pointer
 		while pointer!=end
@@ -530,17 +525,17 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 end
 function frame_expand(valueu fr,valueu lines) #,sv p_totallines)
 	add lines fr#:frame.total
-	if lines!=0
-		valueu alloc#1;set alloc \line\
-		mult alloc lines
-		valueu re#1
-		set re realloc(fr#:frame.lines,alloc)
-		if re=(NULL)
-			return (EXIT_FAILURE)
-		end
+	#if lines!=0  action("") is 1 line
+	valueu alloc#1;set alloc \line\
+	mult alloc lines
+	valueu re#1
+	set re realloc(fr#:frame.lines,alloc)
+	if re!=(NULL)
 		set fr#:frame.lines re
 		#set p_totallines# fr#:frame.total
 		#this is at end because can be truncated on last blank lines: set fr#:frame.total lines
+		return (EXIT_SUCCESS)
 	end
-	return (EXIT_SUCCESS)
+	#end
+	return (EXIT_FAILURE)
 end

@@ -72,7 +72,7 @@ function preframe()
 end
 function branch()
 	valueu cuts#1
-	valueu size#1  #here a return undefined DoAction has 8 and a branchcut has 12(16 if aligned), there are no 3 size(tag+end) DoAction from actionswf lib
+	valueu size#1  # there are examples wich tends to x4 from DoAction to .x. a branchcut has 12(16 if aligned), there are no 3 size(tag+end) DoAction from actionswf lib
 
 	valuexu innerbranches#1 #for define functions and for 3rd part
 	dataxu isize#1  #same as oadata functions plus for 3rd that is bigger, a jump,push,define at least
