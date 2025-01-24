@@ -65,7 +65,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 								if exit=(EXIT_SUCCESS)
 									set exit presprite_done(sprites,0,0,poadata#,presprites) #root has not a done(0 to 0) in .log
 									if exit=(EXIT_SUCCESS)
-										set exit inter(swf_fullpath)
+										set exit inter(presprites,swf_fullpath)
 									end
 								end
 							end

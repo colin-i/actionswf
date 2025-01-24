@@ -1,0 +1,14 @@
+
+format elfobj64
+
+override include_sec 1
+include "common.h" "common.h.oh"
+
+import "global_presprites_size" global_presprites_size
+function save(sv presprites,valueu *file)
+	valueu end#1;set end presprites
+	add end global_presprites_size()
+	while presprites!=end
+		incst presprites
+	end
+end

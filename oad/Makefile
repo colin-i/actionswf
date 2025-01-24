@@ -31,7 +31,7 @@ re:
 
 xlog=../include/xlog.
 
-items=intern compare frame string branch ibranch log
+items=intern compare frame string branch ibranch log save
 #$(eval subobjects = )
 $(foreach var,$(items),$(eval subobjects += ${var}.o))
 #$(eval sublogs = )

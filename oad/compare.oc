@@ -14,6 +14,9 @@ include "common.h" "common.h.oh"
 #multithread unsafe
 dataxu presprites_size#1  #same as sprites_size
 #
+function global_presprites_size()
+	return global.presprites_size
+end
 
 char inter_extension_data=".data";vstr p_inter_extension_data^inter_extension_data
 function inter_extension(sv psize)
