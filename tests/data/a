@@ -17,4 +17,6 @@ ${CC} ${model} -w -g a.c -L../../oad -loadbgdata && \
 LD_LIBRARY_PATH=../../oad ${g} ./a.out ${f} || { echo a.out error; exit 1; }
 if [ -z "${d}" ]; then
 	rm ${f}.data
+else
+	mv ${f}.data .
 fi

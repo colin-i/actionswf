@@ -4,13 +4,15 @@ format elfobj64
 override include_sec 1
 include "common.h" "common.h.oh"
 
+const BYTE=1
+const WORD=2
 const DWORD=4
 
 import "global_presprites_size" global_presprites_size
-function save(sv presprites,valueu file)
+function save(svu presprites,valueu file)
 	valueu end#1;set end presprites
 	add end global_presprites_size()
-	dataxu counted#1;set counted 0
+	wordxu counted#1;set counted 0
 	sv pointer#1;set pointer presprites
 	while pointer!=end
 		if pointer#!=(NULL)
@@ -18,13 +20,49 @@ function save(sv presprites,valueu file)
 		end
 		incst pointer
 	end
-	charx out#1;set out iwrite(counted,file)
+	charx out#1;set out swrite(counted,file)
 	if out!=0
-		set pointer presprites
-		while pointer!=end
-			if pointer#!=(NULL)
+		while presprites!=end
+			valueu ps#1;set ps presprites#
+			if ps!=(NULL)
+				if ps#:presprite.apreframe!=(NULL)
+					set out truewrite(file)
+					if out=0
+						return (EXIT_FAILURE)
+					end
+					set out save_frame(ps#:presprite.apreframe,file)
+				else
+					set out falsewrite(file)
+				end
+				if out=0
+					return (EXIT_FAILURE)
+				end
+				dataxu size#1;set size ps#:presprite.size
+				sub size : #1 is always only ready for next
+				valueu fend#1;set fend size
+				div size :
+				set out swrite(size,file) #store from_show places, next they can be with action and later one frame is unmodified, plus all gotoAnd places
+				if out!=0
+					svu frames#1;set frames ps#:presprite.preframes
+					add fend frames
+					while frames!=fend
+						if frames#!=(NULL)
+							set out truewrite(file)
+							if out=0
+								return (EXIT_FAILURE)
+							end
+							set out save_frame(frames#,file)
+						else  # from_show
+							set out falsewrite(file)
+						end
+						if out=0
+							return (EXIT_FAILURE)
+						end
+						incst frames
+					end
+				end
 			end
-			incst pointer
+			incst presprites
 		end
 		return (EXIT_SUCCESS)
 	end
@@ -33,7 +71,53 @@ end
 
 importx "fwrite" fwrite
 
-function iwrite(dataxu n,valueu file)
-	charx out#1;set out fwrite(#n,(DWORD),1,file) #size_t but DWORD write
+function lowwrite(valueu buf,charx sz,valueu file)
+	charx out#1;set out fwrite(buf,sz,1,file)
 	return out
+end
+function swrite(wordxu n,valueu file)
+	charx out#1;set out lowwrite(#n,(WORD),file) #size_t but WORD write
+	return out
+end
+function iwrite(dataxu n,valueu file)
+	charx out#1;set out lowwrite(#n,(DWORD),file)
+	return out
+end
+function truewrite(valueu file)
+	char a=TRUE
+	charx out#1;set out lowwrite(#a,(BYTE),file)
+	return out
+end
+function falsewrite(valueu file)
+	char a=FALSE
+	charx out#1;set out lowwrite(#a,(BYTE),file)
+	return out
+end
+
+importx "strlen" strlen
+
+function calculate_strings(valuexu strings,valueu end)
+	dataxu size#1;set size 0
+	add end strings
+	while strings!=end
+		valueu str#1;set str strings#
+		valueu text#1;set text str#:string.base
+		add text str#:string.off
+		add size strlen(text)
+		inc size ##null end \0
+		incst strings
+	end
+	return size
+end
+
+function save_frame(valueu aframe,valueu file)
+	charx out#1
+	dataxu s#1;set s calculate_strings(aframe#:preframe.ustrings,aframe#:preframe.ussize)
+	set out iwrite(s,file)
+	if out!=0
+		set s calculate_strings(aframe#:preframe.strings,aframe#:preframe.ssize)
+		set out iwrite(s,file)
+		return out
+	end
+	return 0
 end
