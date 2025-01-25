@@ -543,7 +543,7 @@ function inter_last_extension(sv psize)
 	return global.p_inter_last_extension_data
 end
 import "save" save
-function inter(ss swf_fullpath)
+function inter(valueu presprites,ss swf_fullpath)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_last_extension_data
 	add size1 size
@@ -557,10 +557,13 @@ function inter(ss swf_fullpath)
 		set file fopen(from,"wb")
 		call free(from)
 		if file!=(NULL)
-			call save(file)
+			charx exit#1
+			set exit save(presprites,file)
 			call fclose(file)
-			sd exit;set exit compare(swf_fullpath)
-			return exit
+			if exit=(EXIT_SUCCESS)
+				set exit compare(swf_fullpath)
+				return exit
+			end
 		end
 	end
 	return (EXIT_FAILURE)

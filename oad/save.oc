@@ -4,11 +4,36 @@ format elfobj64
 override include_sec 1
 include "common.h" "common.h.oh"
 
+const DWORD=4
+
 import "global_presprites_size" global_presprites_size
-function save(sv presprites,valueu *file)
+function save(sv presprites,valueu file)
 	valueu end#1;set end presprites
 	add end global_presprites_size()
-	while presprites!=end
-		incst presprites
+	dataxu counted#1;set counted 0
+	sv pointer#1;set pointer presprites
+	while pointer!=end
+		if pointer#!=(NULL)
+			inc counted
+		end
+		incst pointer
 	end
+	charx out#1;set out iwrite(counted,file)
+	if out!=0
+		set pointer presprites
+		while pointer!=end
+			if pointer#!=(NULL)
+			end
+			incst pointer
+		end
+		return (EXIT_SUCCESS)
+	end
+	return (EXIT_FAILURE)
+end
+
+importx "fwrite" fwrite
+
+function iwrite(dataxu n,valueu file)
+	charx out#1;set out fwrite(#n,(DWORD),1,file) #size_t but DWORD write
+	return out
 end

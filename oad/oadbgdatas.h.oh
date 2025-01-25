@@ -1,5 +1,7 @@
 
 constif NULL=0
+constif FALSE=0
+constif TRUE=1
 
 function oadata()
 	valuexu sprites#1
