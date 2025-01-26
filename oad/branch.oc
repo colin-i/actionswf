@@ -129,23 +129,24 @@ function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
 end
 
 import "oadata_logpad_get" oadata_logpad_get #importx without args
+import "print_lhex" print_lhex
 import "print_hex" print_hex
 import "print_hhex" print_hhex
 
 function branch_log(sv br,valueu start)
 	call prints_inline_start("branch:")
-	valueu end#1;set end br#:branch.size
-
 	valueu cuts#1;set cuts br#:branch.cuts
-	dataxu sz#1;set sz 0
-	add end cuts
+	valueu end#1;set end cuts
+
+	valueu size#1;set size 0  # same like in branch.size comment
+	add end br#:branch.size
 	while cuts!=end
-		add sz cuts#:branchcut.size
+		add size cuts#:branchcut.size
 		add cuts \branchcut\
 	end
 	call print_einline("id",br#:branch.log_id)
-	call print_hex("size",sz)
-	set sz br#:branch.isize
+	call print_lhex("size",size)
+	dataxu sz#1;set sz br#:branch.isize
 	if sz!=0 #most of the cases, it is best that only root has functions
 		div sz :
 		call print_einline("inners",sz)
@@ -173,7 +174,7 @@ function branch_log(sv br,valueu start)
 	set cuts br#:branch.cuts
 	while cuts!=end
 		ss code;set code cuts#:branchcut.x
-		set sz cuts#:branchcut.size
+		set sz cuts#:branchcut.size  ##same minimum like in save save_branch
 
 		charx pad#1;set pad oadata_logpad_get()
 		#charx pad_minus_one#256-1 #was xlog_pad_default

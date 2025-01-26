@@ -19,10 +19,16 @@ fi
 diff ../.expected/example.swf.data example.swf.data
 if [ $? -ne 0 ]; then
 	if [ -n "${1}" ]; then exit 1; fi
+	source ../xxd
+	xxd${xxd_args} ../.expected/example.swf.data > 1
+	xxd${xxd_args} example.swf.data > 2
+	diff --color 1 2
+	rm 1 2
 	echo y \?; read -n1 -t $((60*60*24)) ans
 	if [ "${ans}" != "y" ]; then exit 1; fi
 	mv example.swf.data ../.expected
+else
+	rm example.swf.data
 fi
 
 rm data.txt
-rm example.swf.data

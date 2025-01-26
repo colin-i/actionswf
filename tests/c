@@ -7,7 +7,7 @@ if [ -z "${1}" ]; then
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
 	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
 else
-xxd_args=" -c 48 -g 4 "
+source ./xxd
 smart_diff () {
 	diff ${1} ${2}
 	if [ $? = 0 ]; then

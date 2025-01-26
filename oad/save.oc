@@ -109,7 +109,6 @@ function calculate_strings(valuexu strings,valueu end)
 	end
 	return size
 end
-
 function save_frame(valueu aframe,valueu file)
 	charx out#1
 	dataxu s#1;set s calculate_strings(aframe#:preframe.ustrings,aframe#:preframe.ussize)
@@ -117,7 +116,27 @@ function save_frame(valueu aframe,valueu file)
 	if out!=0
 		set s calculate_strings(aframe#:preframe.strings,aframe#:preframe.ssize)
 		set out iwrite(s,file)
-		return out
+		if out!=0
+			set out save_branch(aframe#:preframe.abranch,file)
+			return out
+		end
 	end
 	return 0
+end
+
+function save_branch(valueu br,valueu file) #at least a mathend/function_marker/whileblock_end/if_marker here
+	#here we are gipsying because on 32 we are not agreeing with qword size. we are writing cuts sized parts
+	valueu cuts#1;set cuts br#:branch.cuts
+	valueu end#1;set end cuts
+	add end br#:branch.size
+	while cuts!=end
+	      dataxu sz#1;set sz cuts#:branchcut.size
+		charx out#1;set out iwrite(sz,file)
+		if out=0
+			return 0
+		end
+		ss code;set code cuts#:branchcut.x
+		add cuts \branchcut\
+	end
+	return 1
 end
