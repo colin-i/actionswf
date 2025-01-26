@@ -23,6 +23,7 @@ function inter_extension(sv psize)
 	set psize# (\global.inter_extension_data)
 	return global.p_inter_extension_data
 end
+import "restore" restore
 function compare(ss swf_fullpath)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_extension_data
@@ -37,9 +38,11 @@ function compare(ss swf_fullpath)
 		set file fopen(prev,"rb")
 		call free(prev)
 		if file!=(NULL) #will mark diffs
+			charx ok#1;set ok restore(file)
 			call fclose(file)
-		#else will mark all
+			return ok
 		end
+		#else will mark all
 		return (EXIT_SUCCESS)
 	end
 	return (EXIT_FAILURE)

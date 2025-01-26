@@ -8,6 +8,39 @@ const BYTE=1
 const WORD=2
 const DWORD=4
 
+importx "fwrite" fwrite
+
+function lowwrite(valueu buf,charx sz,valueu file)
+	charx out#1;set out fwrite(buf,sz,1,file)
+	return out
+end
+function mediumwrite(valueu buf,wordxu sz,valueu file)
+	charx out#1;set out fwrite(buf,sz,1,file)
+	return out
+end
+function highwrite(valueu buf,dataxu sz,valueu file)
+	charx out#1;set out fwrite(buf,sz,1,file)
+	return out
+end
+function swrite(wordxu n,valueu file)
+	charx out#1;set out lowwrite(#n,(WORD),file) #size_t but WORD write
+	return out
+end
+function iwrite(dataxu n,valueu file)
+	charx out#1;set out lowwrite(#n,(DWORD),file)
+	return out
+end
+function truewrite(valueu file)
+	char a=TRUE
+	charx out#1;set out lowwrite(#a,(BYTE),file)
+	return out
+end
+function falsewrite(valueu file)
+	char a=FALSE
+	charx out#1;set out lowwrite(#a,(BYTE),file)
+	return out
+end
+
 import "global_presprites_size" global_presprites_size
 function save(svu presprites,valueu file)
 	valueu end#1;set end presprites
@@ -69,36 +102,14 @@ function save(svu presprites,valueu file)
 	return (EXIT_FAILURE)
 end
 
-importx "fwrite" fwrite
-
-function lowwrite(valueu buf,charx sz,valueu file)
-	charx out#1;set out fwrite(buf,sz,1,file)
-	return out
-end
-function mediumwrite(valueu buf,wordxu sz,valueu file)
-	charx out#1;set out fwrite(buf,sz,1,file)
-	return out
-end
-function highwrite(valueu buf,dataxu sz,valueu file)
-	charx out#1;set out fwrite(buf,sz,1,file)
-	return out
-end
-function swrite(wordxu n,valueu file)
-	charx out#1;set out lowwrite(#n,(WORD),file) #size_t but WORD write
-	return out
-end
-function iwrite(dataxu n,valueu file)
-	charx out#1;set out lowwrite(#n,(DWORD),file)
-	return out
-end
-function truewrite(valueu file)
-	char a=TRUE
-	charx out#1;set out lowwrite(#a,(BYTE),file)
-	return out
-end
-function falsewrite(valueu file)
-	char a=FALSE
-	charx out#1;set out lowwrite(#a,(BYTE),file)
+function save_frame(valueu aframe,valueu file)
+	charx out#1;set out save_strings(aframe#:preframe.ustrings,aframe#:preframe.ussize,file)
+	if out!=0
+		set out save_strings(aframe#:preframe.strings,aframe#:preframe.ssize,file)
+		if out!=0
+			set out save_branch(aframe#:preframe.abranch,file)
+		end
+	end
 	return out
 end
 
@@ -130,17 +141,6 @@ function save_strings(valuexu pointer,valueu end,valueu file)
 				return 0
 			end
 			incst strings
-		end
-	end
-	return out
-end
-
-function save_frame(valueu aframe,valueu file)
-	charx out#1;set out save_strings(aframe#:preframe.ustrings,aframe#:preframe.ussize,file)
-	if out!=0
-		set out save_strings(aframe#:preframe.strings,aframe#:preframe.ssize,file)
-		if out!=0
-			set out save_branch(aframe#:preframe.abranch,file)
 		end
 	end
 	return out
@@ -194,4 +194,120 @@ function save_branch(valueu br,valueu file) #at least a mathend/function_marker/
 		end
 	end
 	return out
+end
+
+#read
+
+importx "fread" fread
+importx "malloc" malloc
+importx "free" free
+
+function lowread(valueu file,valueu buf,charx sz)
+	call fread(buf,sz,1,file)
+end
+function mediumread(valueu file,wordxu sz)
+	valueu mem#1;set mem malloc(sz)
+	if mem!=(NULL)
+		call fread(mem,sz,1,file)
+		call free(mem) #temp
+	end
+	return mem
+end
+function highread(valueu file,dataxu sz)
+	valueu mem#1;set mem malloc(sz)
+	if mem!=(NULL)
+		call fread(mem,sz,1,file)
+		call free(mem) #temp
+	end
+	return mem
+end
+function cread(valueu file,ss pn)
+	call lowread(file,pn,(BYTE))
+end
+function sread(valueu file,swu pn)
+	call lowread(file,pn,(WORD))
+end
+function iread(valueu file,sdu pn)
+	call lowread(file,pn,(DWORD))
+end
+
+function restore(valueu file)
+	wordxu size#1
+	call sread(file,#size)
+	while size!=0
+		charx bl#1
+		call cread(file,#bl)
+		valueu mem#1
+		if bl=(TRUE)
+			set mem restore_frame(file)
+			if mem=(NULL)
+				return (EXIT_FAILURE)
+			end
+		end
+		wordxu frames#1;call sread(file,#frames)
+		while frames!=0
+			call cread(file,#bl)
+			if bl=(TRUE)
+				set mem restore_frame(file)
+				if mem=(NULL)
+					return (EXIT_FAILURE)
+				end
+			end
+			dec frames
+		end
+		dec size
+	end
+	return (EXIT_SUCCESS)
+end
+
+function restore_frame(valueu file)
+	valueu mem#1
+	set mem restore_strings(file)
+	if mem!=(NULL)
+		set mem restore_strings(file)
+		if mem!=(NULL)
+			set mem restore_branch(file)
+		end
+	end
+	return (~NULL) #temp
+end
+
+function restore_strings(valueu file)
+	wordxu size#1
+	call sread(file,#size)
+	valueu mem#1
+	set mem mediumread(file,size)
+	return (~NULL) #temp
+end
+
+function restore_branch(valueu file)
+	valueu mem#1
+	dataxu size#1
+	whiletrue
+		call iread(file,#size)
+		if size=0
+			break
+		end
+		set mem highread(file,size)
+		if mem=(NULL)
+			return (NULL)
+		end
+	end
+	call iread(file,#size)
+	while size!=0
+		set mem restore_branch(file)
+		if mem=(NULL)
+			return (NULL)
+		end
+		dec size
+	end
+	charx bl#1
+	call cread(file,#bl)
+	if bl=(TRUE)
+		set mem restore_branch(file)
+		if mem=(NULL)
+			return (NULL)
+		end
+	end
+	return (~NULL) #temp
 end
