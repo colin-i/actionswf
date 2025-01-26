@@ -39,6 +39,8 @@ end
 function preframe()
 	valuexu ustrings#1
 	dataxu ussize#1  ;#Count=ui16 * :
+	#attention that in a constantpool of actionrecordheader of ui16 there are, at maximum, 3 bytes constants(null and two bytes) counting in total 0xffff/3
+	#null and one byte are 255 maximum
 
 	valuexu strings#1
 	dataxu ssize#1  ;#Count=ui16 * :
