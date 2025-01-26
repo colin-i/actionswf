@@ -261,23 +261,35 @@ function restore(valueu file)
 end
 
 function restore_frame(valueu file)
+	wordxu size#1
 	valueu mem#1
-	set mem restore_strings(file)
-	if mem!=(NULL)
-		set mem restore_strings(file)
-		if mem!=(NULL)
-			set mem restore_branch(file)
+	set mem restore_strings(file,#size) #ustrings
+	if size!=0
+		if mem=(NULL)
+			return (NULL)
 		end
 	end
-	return (~NULL) #temp
+	set mem restore_strings(file,#size) #dup strings
+	if size!=0
+		if mem=(NULL)
+			return (NULL)
+		end
+	end
+	set mem restore_branch(file)
+	if mem!=(NULL)
+		return (~NULL) #temp
+	end
+	return (NULL)
 end
 
-function restore_strings(valueu file)
-	wordxu size#1
-	call sread(file,#size)
-	valueu mem#1
-	set mem mediumread(file,size)
-	return (~NULL) #temp
+function restore_strings(valueu file,swu psize)
+	call sread(file,psize)
+	if psize#!=0
+		valueu mem#1
+		set mem mediumread(file,psize#)
+		return mem
+	end
+	#undefined
 end
 
 function restore_branch(valueu file)
