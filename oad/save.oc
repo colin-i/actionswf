@@ -149,6 +149,7 @@ end
 function save_branch(valueu br,valueu file) #at least a mathend/function_marker/whileblock_end/if_marker here
 	# branch_log. here we are gipsying because on 32 we are not agreeing with qword size. we are writing cuts sized parts
 	#with this occasion: it is good that multiple action calls are not merged into a branch
+	#anyway on 32src there are ftell calls .x at xcode start, at expands, overall at reread, that will enforce a small file
 	valueu cuts#1;set cuts br#:branch.cuts
 	valueu end#1;set end cuts
 	add end br#:branch.size
@@ -241,7 +242,7 @@ function restore(valueu file)
 		if bl=(TRUE)
 			set mem restore_frame(file)
 			if mem=(NULL)
-				return (EXIT_FAILURE)
+				return (NULL)
 			end
 		end
 		wordxu frames#1;call sread(file,#frames)
@@ -250,14 +251,14 @@ function restore(valueu file)
 			if bl=(TRUE)
 				set mem restore_frame(file)
 				if mem=(NULL)
-					return (EXIT_FAILURE)
+					return (NULL)
 				end
 			end
 			dec frames
 		end
 		dec size
 	end
-	return (EXIT_SUCCESS)
+	return (~NULL) #temp
 end
 
 function restore_frame(valueu file)

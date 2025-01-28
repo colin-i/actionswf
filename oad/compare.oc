@@ -38,9 +38,13 @@ function compare(ss swf_fullpath)
 		set file fopen(prev,"rb")
 		call free(prev)
 		if file!=(NULL) #will mark diffs
-			charx ok#1;set ok restore(file)
+			svu oldpresprites;set oldpresprites restore(file)
 			call fclose(file)
-			return ok
+			if oldpresprites!=(NULL)
+				#compare
+				return (EXIT_SUCCESS)
+			end
+			return (EXIT_FAILURE)
 		end
 		#else will mark all
 		return (EXIT_SUCCESS)

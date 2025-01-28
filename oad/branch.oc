@@ -139,6 +139,7 @@ function branch_log(sv br,valueu start)
 	valueu end#1;set end cuts
 
 	valueu size#1;set size 0  # same like in branch.size comment
+	#long long on 32? is not the case, more at save_branch
 	add end br#:branch.size
 	while cuts!=end
 		add size cuts#:branchcut.size
