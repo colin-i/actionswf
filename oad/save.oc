@@ -200,7 +200,6 @@ end
 #read
 
 importx "fread" fread
-importx "malloc" malloc
 importx "free" free
 
 function lowread(valueu file,valueu buf,charx sz)
@@ -232,33 +231,48 @@ function iread(valueu file,sdu pn)
 	call lowread(file,pn,(DWORD))
 end
 
+importx "malloc" malloc
+
 function restore(valueu file)
-	wordxu size#1
-	call sread(file,#size)
-	while size!=0
-		charx bl#1
-		call cread(file,#bl)
-		valueu mem#1
-		if bl=(TRUE)
-			set mem restore_frame(file)
-			if mem=(NULL)
-				return (NULL)
-			end
-		end
-		wordxu frames#1;call sread(file,#frames)
-		while frames!=0
-			call cread(file,#bl)
-			if bl=(TRUE)
-				set mem restore_frame(file)
-				if mem=(NULL)
-					return (NULL)
+	valueu data#1;set data malloc((\preoadata\))
+	if data!=(NULL)
+		svu presprites;set presprites malloc((sprites_realloc_onepart))
+		if presprites!=(NULL)
+			set data#:preoadata.presprites presprites
+			set data#:preoadata.size 0
+			wordxu size#1
+			call sread(file,#size)
+			while size!=0
+				charx bl#1
+				call cread(file,#bl)
+				valueu mem#1
+				if bl=(TRUE)
+					set mem restore_frame(file)
+					if mem=(NULL)
+						call restore_free(data)
+						return (NULL)
+					end
 				end
+				wordxu frames#1;call sread(file,#frames)
+				while frames!=0
+					call cread(file,#bl)
+					if bl=(TRUE)
+						set mem restore_frame(file)
+						if mem=(NULL)
+							call restore_free(data)
+							return (NULL)
+						end
+					end
+					dec frames
+				end
+				dec size
 			end
-			dec frames
+		else
+			call free(data)
+			return (NULL)
 		end
-		dec size
 	end
-	return (~NULL) #temp
+	return data
 end
 
 function restore_frame(valueu file)
@@ -323,4 +337,13 @@ function restore_branch(valueu file)
 		end
 	end
 	return (~NULL) #temp
+end
+
+function restore_free(svu predata)
+	svu ps#1;set ps predata#:preoadata.presprites
+	valueu end#1;set end ps
+	add end predata#:preoadata.size
+	while ps!=end
+	end
+	call free(predata#:preoadata.presprites)
 end
