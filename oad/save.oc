@@ -346,4 +346,5 @@ function restore_free(svu predata)
 	while ps!=end
 	end
 	call free(predata#:preoadata.presprites)
+	call free(predata)
 end
