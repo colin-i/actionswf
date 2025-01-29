@@ -118,8 +118,3 @@ const pad_default=0x100
 const no_loop=0xffFFffFF
 
 const output_nl=xlog_nl #this must be the same with what is in memnl(), or change it
-
-function preoadata()
-	valuexu presprites#1
-	dataxu size#1
-end

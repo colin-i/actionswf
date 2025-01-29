@@ -4,6 +4,11 @@ format elfobj64
 override include_sec 1
 include "common.h" "common.h.oh"
 
+function preoadata()
+	valuexu presprites#1
+	dataxu size#1
+end
+
 const BYTE=1
 const WORD=2
 const DWORD=4
