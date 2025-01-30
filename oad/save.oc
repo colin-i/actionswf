@@ -272,12 +272,11 @@ function restore(valueu file)
 				end
 				dec size
 			end
-		else
-			call free(data)
-			return (NULL)
+			return data
 		end
+		call free(data)
 	end
-	return data
+	return (NULL)
 end
 
 function restore_frame(valueu file)
