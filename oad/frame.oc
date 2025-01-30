@@ -43,13 +43,13 @@ function re_calloc_size(svu pmem,sdu psize,dataxu newsize)
 	end
 	return ok
 end
-function re_alloc_add(svu pmem,sdu size,valueu value)
-	charx ok#1;set ok re_alloc(pmem,size#)
+function re_alloc_add(svu pmem,sdu psize,valueu value)
+	charx ok#1;set ok re_alloc(pmem,psize#)
 	if ok=(EXIT_SUCCESS)
 		sv mem;set mem pmem#
-		add mem size#
+		add mem psize#
 		set mem# value
-		add size# :
+		add psize# :
 	end
 	return ok
 end
