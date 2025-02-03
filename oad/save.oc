@@ -268,13 +268,27 @@ function restore(valueu file)
 									call restore_free(data)
 									return (NULL)
 								end
+								set ps#:presprite.apreframe mem
 							end
 							wordxu frames#1;call sread(file,#frames)
 							while frames!=0
 								call cread(file,#bl)
 								if bl=(TRUE)
-									set mem restore_frame(file)
-									if mem=(NULL)
+									whiletrue
+										set mem restore_frame(file)
+										if mem!=(NULL)
+											set ok re_alloc_add(#ps#:presprite.preframes,#ps#:presprite.size,mem)
+											if ok=(EXIT_SUCCESS)
+												break
+											end
+											call free(mem)
+										end
+										call restore_free(data)
+										return (NULL)
+									end
+								else
+									set ok re_alloc_add(#ps#:presprite.preframes,#ps#:presprite.size,(NULL))
+									if ok=(EXIT_FAILURE)
 										call restore_free(data)
 										return (NULL)
 									end
@@ -315,7 +329,10 @@ function restore_frame(valueu file)
 	end
 	set mem restore_branch(file)
 	if mem!=(NULL)
-		return (~NULL) #temp
+		valueu f#1;set f malloc((\preframe\))
+		if f!=(NULL)
+			return f
+		end
 	end
 	return (NULL)
 end
@@ -369,12 +386,17 @@ function restore_free(svu predata)
 	while pss!=end
 		valueu ps#1;set ps pss#
 		if ps#:presprite.apreframe!=(NULL)
+			call free(ps#:presprite.apreframe)
 		end
 		valueu fs#1;set fs ps#:presprite.preframes
 		sv f;set f fs
 		valueu fend#1;set fend f
 		add fend ps#:presprite.size
 		while f!=fend
+			if f#!=(NULL) #can be only showframe
+				call free(f#)
+			end
+			incst f
 		end
 		call free(fs)
 		call free(ps)
