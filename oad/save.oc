@@ -214,7 +214,6 @@ function mediumread(valueu file,wordxu sz)
 	valueu mem#1;set mem malloc(sz)
 	if mem!=(NULL)
 		call fread(mem,sz,1,file)
-		call free(mem) #temp
 	end
 	return mem
 end
@@ -339,9 +338,20 @@ end
 
 function restore_strings(valueu file,swu psize)
 	call sread(file,psize)
-	if psize#!=0
-		valueu mem#1
-		set mem mediumread(file,psize#)
+	swu size;set size psize#
+	if size!=0
+		ss mem
+		set mem mediumread(file,size)
+		if mem!=(NULL)
+			valueu end#1;set end mem
+			add end size
+			while mem!=end
+				swu sz;set sz strlen(mem) #even if strlen is size_t(8), only small needing
+				add mem sz
+				inc mem ##null end
+			end
+			call free(mem) #temp
+		end
 		return mem
 	end
 	#undefined
