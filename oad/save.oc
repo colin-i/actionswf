@@ -312,31 +312,49 @@ function restore(valueu file)
 end
 
 function restore_frame(valueu file)
-	wordxu size#1
-	valueu mem#1
-	set mem restore_strings(file,#size) #ustrings
-	if size!=0
-		if mem=(NULL)
-			return (NULL)
+	valueu f#1;set f malloc((\preframe\))
+	if f!=(NULL)
+		valueu us#1;set us malloc((sprites_realloc_onepart))
+		if us!=(NULL)
+			valueu ds#1;set ds malloc((sprites_realloc_onepart)) #dup strs
+			if ds!=(NULL)
+				set f#:preframe.ustrings us
+				set f#:preframe.ussize 0
+				set f#:preframe.strings ds
+				set f#:preframe.ssize 0
+				set f#:preframe.abranch (NULL)
+
+				wordxu size#1
+				valueu mem#1
+				set mem restore_strings(file,#size,#f#:preframe.ustrings,#f#:preframe.ussize)
+				if size!=0
+					if mem=(NULL)
+						call restore_frame_free(f)
+						return (NULL)
+					end
+				end
+				set mem restore_strings(file,#size,#f#:preframe.strings,#f#:preframe.ssize) #dup strings
+				if size!=0
+					if mem=(NULL)
+						call restore_frame_free(f)
+						return (NULL)
+					end
+				end
+				set mem restore_branch(file)
+				if mem!=(NULL)
+					return f
+				end
+				call restore_frame_free(f)
+				return (NULL)
+			end
+			call free(us)
 		end
-	end
-	set mem restore_strings(file,#size) #dup strings
-	if size!=0
-		if mem=(NULL)
-			return (NULL)
-		end
-	end
-	set mem restore_branch(file)
-	if mem!=(NULL)
-		valueu f#1;set f malloc((\preframe\))
-		if f!=(NULL)
-			return f
-		end
+		call free(f)
 	end
 	return (NULL)
 end
 
-function restore_strings(valueu file,swu psize)
+function restore_strings(valueu file,swu psize,svu *_strs,sdu *_size)
 	call sread(file,psize)
 	swu size;set size psize#
 	if size!=0
@@ -346,8 +364,7 @@ function restore_strings(valueu file,swu psize)
 			valueu end#1;set end mem
 			add end size
 			while mem!=end
-				swu sz;set sz strlen(mem) #even if strlen is size_t(8), only small needing
-				add mem sz
+				add mem strlen(mem) # swu, even if strlen is size_t(8), only small needing
 				inc mem ##null end
 			end
 			call free(mem) #temp
@@ -396,15 +413,15 @@ function restore_free(svu predata)
 	while pss!=end
 		valueu ps#1;set ps pss#
 		if ps#:presprite.apreframe!=(NULL)
-			call free(ps#:presprite.apreframe)
+			call restore_frame_free(ps#:presprite.apreframe)
 		end
 		valueu fs#1;set fs ps#:presprite.preframes
 		sv f;set f fs
 		valueu fend#1;set fend f
 		add fend ps#:presprite.size
 		while f!=fend
-			if f#!=(NULL) #can be only showframe
-				call free(f#)
+			if f#!=(NULL) #can be also showframe
+				call restore_frame_free(f#)
 			end
 			incst f
 		end
@@ -414,4 +431,25 @@ function restore_free(svu predata)
 	end
 	call free(predata#:preoadata.presprites)
 	call free(predata)
+end
+
+function restore_frame_free(valueu fr)
+	valueu end#1
+	sv cursor
+	set cursor fr#:preframe.ustrings
+	set end cursor;add end fr#:preframe.ussize
+	while cursor!=end
+	end
+	call free(fr#:preframe.ustrings)
+	set cursor fr#:preframe.strings
+	set end cursor;add end fr#:preframe.ssize
+	while cursor!=end
+	end
+	call free(fr#:preframe.strings)
+	call restore_branch_free(fr#:preframe.abranch)
+end
+
+function restore_branch_free(valueu br)
+	if br!=(NULL)
+	end
 end
