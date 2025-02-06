@@ -25,6 +25,9 @@ function inter_extension(sv psize)
 end
 import "restore" restore
 import "restore_free" restore_free
+import "printf" printf
+import "print_inline_done" print_inline_done
+import "global_blog" global_blog
 function compare(ss swf_fullpath)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_extension_data
@@ -43,6 +46,13 @@ function compare(ss swf_fullpath)
 			call fclose(file)
 			if oldpreoadata!=(NULL)
 				#compare
+				charx log#1;set log global_blog()
+				if log=(TRUE)
+					dataxu sz#1;set sz oldpreoadata#:preoadata.size
+					div sz :
+					call printf("%hu sprites restored",sz)
+					call print_inline_done()
+				end
 				call restore_free(oldpreoadata)
 				return (EXIT_SUCCESS)
 			end

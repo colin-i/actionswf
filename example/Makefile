@@ -91,6 +91,7 @@ clean:
 	-rm -f ${sfile}.log
 	-rm -f ${sfile}.x ${sfile}.xx
 	-rm -f ${sfile}
+	-rm -f ${sfile}.data
 
 distclean: clean
 

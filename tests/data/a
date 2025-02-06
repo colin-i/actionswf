@@ -1,5 +1,7 @@
 
-if [ -n "${1}" ]; then g="gdb --args"; fi
+if [ -n "${1}" ]; then
+	g="gdb -ex start --args"
+fi
 
 if [ -z "${CC}" ]; then
 	CC=cc
@@ -15,8 +17,4 @@ o a.oc x_file 1 && \
 otoc a.oc.x && \
 ${CC} ${model} -w -g a.c -L../../oad -loadbgdata && \
 LD_LIBRARY_PATH=../../oad ${g} ./a.out ${f} || { echo a.out error; exit 1; }
-if [ -z "${d}" ]; then
-	rm ${f}.data
-else
-	mv ${f}.data .
-fi
+#if [ -z "${d}" ]; then rm ${f}.data; else cp ${f}.data .; fi
