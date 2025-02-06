@@ -170,12 +170,12 @@ function save_branch(valueu br,valueu file) #at least a mathend/function_marker/
 	set out iwrite(0,file)
 	if out!=0
 		set sz br#:branch.isize ##expanded size
-		svu pointer;set pointer br#:branch.innerbranches
-		set end pointer
-		add end sz
+		set end sz
 		divu sz :
 		set out iwrite(sz,file)
 		if out!=0
+			svu pointer;set pointer br#:branch.innerbranches
+			add end pointer
 			while pointer!=end
 				set out save_branch(pointer#,file)
 				if out=0
