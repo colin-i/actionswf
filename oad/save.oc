@@ -336,7 +336,7 @@ function restore_frame(valueu file)
 					return f
 				end
 				if dsize!=0
-					call restore_strings_free(f#:preframe.restore_dstrings,f#:preframe.strings,f#:preframe.ssize)
+					call restore_strings_free(f#:preframe.restore_dstrings,f#:preframe.strings,f#:preframe.ssize) #inside comparation is extra in extra, but in flow is a saving
 				end
 				break
 			end
@@ -444,25 +444,23 @@ function restore_free(svu predata)
 end
 
 function restore_frame_free(valueu fr)
-	if fr#:preframe.ussize!=0 #not always having strings
-		call restore_strings_free(fr#:preframe.restore_ustrings,fr#:preframe.ustrings,fr#:preframe.ussize)
-	end
-	if fr#:preframe.ssize!=0
-		call restore_strings_free(fr#:preframe.restore_dstrings,fr#:preframe.strings,fr#:preframe.ssize)
-	end
+	call restore_strings_free(fr#:preframe.restore_ustrings,fr#:preframe.ustrings,fr#:preframe.ussize)
+	call restore_strings_free(fr#:preframe.restore_dstrings,fr#:preframe.strings,fr#:preframe.ssize)
 	call restore_branch_free(fr#:preframe.abranch)
 end
 
 function restore_strings_free(valueu constpool,svu strs,dataxu size)
-	call free(constpool)
-	sv cursor;set cursor strs
-	valueu end#1;set end strs
-	add end size
-	while cursor!=end
-		call free(cursor#)
-		incst cursor
+	if size!=0  #not always having strings
+		call free(constpool)
+		sv cursor;set cursor strs
+		valueu end#1;set end strs
+		add end size
+		while cursor!=end
+			call free(cursor#)
+			incst cursor
+		end
+		call free(strs)
 	end
-	call free(strs)
 end
 
 function restore_branch_free(valueu br)
