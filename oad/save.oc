@@ -231,8 +231,11 @@ function iread(valueu file,sdu pn)
 end
 
 importx "malloc" malloc
+importx "printf" printf
 
 import "re_alloc_add" re_alloc_add
+import "print_inline_done" print_inline_done
+import "global_blog" global_blog
 
 function restore(valueu file)
 	valueu data#1;set data malloc((\preoadata\))
@@ -243,6 +246,11 @@ function restore(valueu file)
 			set data#:preoadata.size 0
 			wordxu size#1
 			call sread(file,#size)
+			charx log#1;set log global_blog()
+			if log=(TRUE)
+				call printf("%hu sprites to restore",size)
+				call print_inline_done()
+			end
 			while size!=0
 				valueu ps#1;set ps malloc((\presprite\))
 				if ps!=(NULL)
