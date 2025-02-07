@@ -460,6 +460,7 @@ function restore_branch(valueu file)
 					call restore_branch_free(br)
 					return (NULL)
 				end
+				set br#:branch.subbranch (NULL)
 				return br
 			end
 			call restore_branch_cuts_free(br)
