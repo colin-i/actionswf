@@ -543,7 +543,7 @@ function inter_last_extension(sv psize)
 	return global.p_inter_last_extension_data
 end
 import "save" save
-function inter(valueu presprites,ss swf_fullpath)
+function inter(valueu presprites,ss swf_fullpath,valueu data)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_last_extension_data
 	add size1 size
@@ -561,7 +561,7 @@ function inter(valueu presprites,ss swf_fullpath)
 			set exit save(presprites,file)
 			call fclose(file)
 			if exit=(EXIT_SUCCESS)
-				set exit compare(swf_fullpath)
+				set exit compare(swf_fullpath,presprites,data)
 				return exit
 			end
 		end
@@ -586,6 +586,7 @@ function oadata_init(sv poadata)
 				if m!=(NULL)
 					set m#:mark.prev (mark_nothing)
 					set m#:mark.next (mark_nothing)
+					set a#:oadata.size \mark\
 					return (EXIT_SUCCESS)
 				end
 			end

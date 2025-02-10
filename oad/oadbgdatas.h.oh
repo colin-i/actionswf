@@ -14,7 +14,8 @@ function oadata()
 	#can stay outside, anyway is good for info
 	#here dtitles has a push/pop recognizer
 
-	valuexu marks#1
+	valueu marks#1
+	dataxu size#1  ;# 7fff... / 5 a only jump branch * 8 is still on 32, pragma pack on 2 ints is still 8
 end
 function sprite()
 	valuexu aframe#1

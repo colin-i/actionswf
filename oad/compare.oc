@@ -25,7 +25,8 @@ function inter_extension(sv psize)
 end
 import "restore" restore
 import "restore_free" restore_free
-function compare(ss swf_fullpath)
+import "mark_all" mark_all
+function compare(ss swf_fullpath,valueu presprites,valueu data)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_extension_data
 	add size1 size
@@ -39,17 +40,17 @@ function compare(ss swf_fullpath)
 		set file fopen(prev,"rb")
 		call free(prev)
 		if file!=(NULL) #will mark diffs
-			svu oldpreoadata;set oldpreoadata restore(file)
+			valueu oldpreoadata#1;set oldpreoadata restore(file)
 			call fclose(file)
 			if oldpreoadata!=(NULL)
-				#compare
+				#call mark_compare (oldpreoadata,presprites,global.presprites_size)
 				call restore_free(oldpreoadata)
 				return (EXIT_SUCCESS)
 			end
 			return (EXIT_FAILURE)
 		end
-		#else will mark all
-		return (EXIT_SUCCESS)
+		charx ok#1;set ok mark_all(presprites,global.presprites_size,data)
+		return ok
 	end
 	return (EXIT_FAILURE)
 end

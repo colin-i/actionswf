@@ -25,7 +25,7 @@ char logpad=xlog_pad_default
 
 #functions(except oadata_logpad) are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
-functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
+functionx oadata_make(ss swf_fullpath,svu poadata,charx log)
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
@@ -65,7 +65,7 @@ functionx oadata_make(ss swf_fullpath,sv poadata,charx log)
 								if exit=(EXIT_SUCCESS)
 									set exit presprite_done(sprites,0,0,poadata#,presprites) #root has not a done(0 to 0) in .log
 									if exit=(EXIT_SUCCESS)
-										set exit inter(presprites,swf_fullpath)
+										set exit inter(presprites,swf_fullpath,poadata#)
 									end
 								end
 							end
