@@ -65,7 +65,7 @@ importx "realloc" realloc
 
 function mark_action(valueu act,valueu data)
 	if act!=(NULL) #can be trick branch, while(true){break}
-		dataxu size#1;set size data#:oadata.size
+		valueu size#1;set size data#:oadata.size
 		add size \mark\
 		svu marks;set marks realloc(data#:oadata.marks,size)
 		if marks!=(NULL)
