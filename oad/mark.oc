@@ -1,0 +1,79 @@
+
+format elfobj64
+
+override include_sec 1
+include "common.h" "common.h.oh"
+
+function mark_all(svu presprites,valueu end,valueu data)
+	charx ok#1
+	add end presprites
+	while presprites!=end
+		if presprites#!=(NULL) #here can have other tags, the map order is important when debugging
+			valueu ps#1;set ps presprites#
+			valueu fr#1
+			if ps#:presprite.apreframe!=(NULL)
+				set fr ps#:presprite.apreframe
+				set ok mark_branch(fr#:preframe.abranch,data)
+				if ok=(EXIT_FAILURE)
+					return (EXIT_FAILURE)
+				end
+			end
+			svu frames;set frames ps#:presprite.preframes
+			valueu fend#1;set fend frames
+			add fend ps#:presprite.size
+			while frames!=end
+				if frames#!=(NULL) #also with shows
+					set fr frames#
+					set ok mark_branch(fr#:preframe.abranch,data)
+					if ok=(EXIT_FAILURE)
+						return (EXIT_FAILURE)
+					end
+				end
+				incst frames
+			end
+		end
+		incst presprites
+	end
+	return (EXIT_SUCCESS)
+end
+
+function mark_branch(valueu br,valueu data)
+	charx ok#1;set ok mark_action(br#:branch.action_top,data)
+	if ok=(EXIT_SUCCESS)
+		svu ibrs;set ibrs br#:branch.innerbranches
+		valueu end#1;set end ibrs
+		add end br#:branch.isize
+		while ibrs!=end
+			set ok mark_branch(ibrs#,data)
+			if ok=(EXIT_FAILURE)
+				return (EXIT_FAILURE)
+			end
+			incst ibrs
+		end
+		if br#:branch.subbranch!=(NULL)
+			set ok mark_branch(br#:branch.subbranch,data)
+			if ok=(EXIT_FAILURE)
+				return (EXIT_FAILURE)
+			end
+		end
+		return (EXIT_SUCCESS)
+	end
+	return (EXIT_FAILURE)
+end
+
+importx "realloc" realloc
+
+function mark_action(valueu act,valueu data)
+	if act!=(NULL) #can be trick branch, while(true){break}
+		dataxu size#1;set size data#:oadata.size
+		add size \mark\
+		svu marks;set marks realloc(data#:oadata.marks,size)
+		if marks!=(NULL)
+			set data#:oadata.marks marks
+			set data#:oadata.size size
+			return (EXIT_SUCCESS)
+		end
+		return (EXIT_FAILURE)
+	end
+	return (EXIT_SUCCESS)
+end
