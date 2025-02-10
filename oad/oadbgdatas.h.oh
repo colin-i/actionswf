@@ -17,6 +17,7 @@ function oadata()
 	valueu marks#1
 	valueu size#1  ;# 7fff... / 5 a only jump branch * 8 is still on 32, pragma pack on 2 ints is still 8
 	#anyway: Subclause 6.7.2.1 of the C Standard states, "There may be unnamed padding within a structure object, but not at its beginning" [ISO/IEC 9899:2011].
+	#__attribute__((aligned (16))) will do that
 end
 function sprite()
 	valuexu aframe#1
