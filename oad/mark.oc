@@ -21,7 +21,7 @@ function mark_all(svu presprites,valueu end,valueu data)
 			svu frames;set frames ps#:presprite.preframes
 			valueu fend#1;set fend frames
 			add fend ps#:presprite.size
-			while frames!=end
+			while frames!=fend
 				if frames#!=(NULL) #also with shows
 					set fr frames#
 					set ok mark_branch(fr#:preframe.abranch,data)
