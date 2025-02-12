@@ -26,6 +26,7 @@ end
 import "restore" restore
 import "restore_free" restore_free
 import "mark_all" mark_all
+import "mark_compare" mark_compare
 function compare(ss swf_fullpath,valueu presprites,valueu data)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_extension_data
@@ -39,17 +40,18 @@ function compare(ss swf_fullpath,valueu presprites,valueu data)
 		sd file
 		set file fopen(prev,"rb")
 		call free(prev)
+		charx ok#1
 		if file!=(NULL) #will mark diffs
 			valueu oldpreoadata#1;set oldpreoadata restore(file)
 			call fclose(file)
 			if oldpreoadata!=(NULL)
-				#call mark_compare (oldpreoadata,presprites,global.presprites_size)
+				set ok mark_compare(oldpreoadata,presprites,global.presprites_size,data)
 				call restore_free(oldpreoadata)
-				return (EXIT_SUCCESS)
+				return ok
 			end
 			return (EXIT_FAILURE)
 		end
-		charx ok#1;set ok mark_all(presprites,global.presprites_size,data)
+		set ok mark_all(presprites,global.presprites_size,data)
 		return ok
 	end
 	return (EXIT_FAILURE)

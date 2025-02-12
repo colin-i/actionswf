@@ -30,6 +30,10 @@ const no_index=-1
 const sprites_realloc_onepart=10*:
 #to be at least 2, for presprites_init; and 1 for sprite_done (root 0 move to final)
 
+function preoadata()
+	valuexu presprites#1
+	dataxu size#1
+end
 function presprite() #presprites_size is intern
 	valuexu apreframe#1
 

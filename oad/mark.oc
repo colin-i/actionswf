@@ -9,34 +9,40 @@ function mark_all(svu presprites,valueu end,valueu data)
 	add end presprites
 	while presprites!=end
 		if presprites#!=(NULL) #here can have other tags, the map order is important when debugging
-			valueu ps#1;set ps presprites#
-			valueu fr#1
-			if ps#:presprite.apreframe!=(NULL)
-				set fr ps#:presprite.apreframe
-				set ok mark_branch(fr#:preframe.abranch,data)
-				if ok=(EXIT_FAILURE)
-					return (EXIT_FAILURE)
-				end
-			end
-			svu frames;set frames ps#:presprite.preframes
-			valueu fend#1;set fend frames
-			add fend ps#:presprite.size
-			while frames!=fend
-				if frames#!=(NULL) #also with shows
-					set fr frames#
-					set ok mark_branch(fr#:preframe.abranch,data)
-					if ok=(EXIT_FAILURE)
-						return (EXIT_FAILURE)
-					end
-				end
-				incst frames
+			set ok mark_presprite(presprites#,data)
+			if ok!=(EXIT_SUCCESS)
+				return (EXIT_FAILURE)
 			end
 		end
 		incst presprites
 	end
 	return (EXIT_SUCCESS)
 end
-
+function mark_presprite(valueu ps,valueu data)
+	charx ok#1
+	valueu fr#1
+	if ps#:presprite.apreframe!=(NULL)
+		set fr ps#:presprite.apreframe
+		set ok mark_branch(fr#:preframe.abranch,data)
+		if ok=(EXIT_FAILURE)
+			return (EXIT_FAILURE)
+		end
+	end
+	svu frames;set frames ps#:presprite.preframes
+	valueu fend#1;set fend frames
+	add fend ps#:presprite.size
+	while frames!=fend
+		if frames#!=(NULL) #also with shows
+			set fr frames#
+			set ok mark_branch(fr#:preframe.abranch,data)
+			if ok=(EXIT_FAILURE)
+				return (EXIT_FAILURE)
+			end
+		end
+		incst frames
+	end
+	return (EXIT_SUCCESS)
+end
 function mark_branch(valueu br,valueu data)
 	charx ok#1;set ok mark_action(br#:branch.action_top,data)
 	if ok=(EXIT_SUCCESS)
@@ -60,9 +66,7 @@ function mark_branch(valueu br,valueu data)
 	end
 	return (EXIT_FAILURE)
 end
-
 importx "realloc" realloc
-
 function mark_action(valueu act,valueu data)
 	if act!=(NULL) #can be trick branch, while(true){break}
 		valueu size#1;set size data#:oadata.size
@@ -91,6 +95,48 @@ function mark_action(valueu act,valueu data)
 			return (EXIT_SUCCESS)
 		end
 		return (EXIT_FAILURE)
+	end
+	return (EXIT_SUCCESS)
+end
+
+function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
+	svu prevpresprites#1;set prevpresprites prevoadata#:preoadata.presprites
+	valueu prevend#1;set prevend prevpresprites;add prevend prevoadata#:preoadata.size
+	valueu end#1;set end presprites
+	add end size
+	while presprites!=end
+		if presprites#!=(NULL) #from parsed where the map to oadata out was
+			charx ok#1
+			valueu pvps#1
+			if prevpresprites!=prevend
+				set pvps prevpresprites#
+				incst prevpresprites
+#!
+				valueu ps#1;set ps presprites#
+				valueu fr#1
+				if ps#:presprite.apreframe!=(NULL)
+					set fr ps#:presprite.apreframe
+					#call mark_compare_branch(fr#:preframe.abranch
+				end
+				svu frs;set frs ps#:presprite.preframes
+				valueu fend#1;set fend frs
+				add fend ps#:presprite.size
+				while frs!=fend
+					if frs#!=(NULL) #shows
+						set fr frs#
+						#call mark_compare_branch(fr#:preframe.abranch
+					end
+					incst frs
+				end
+!
+			else
+				set ok mark_presprite(presprites#,data)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
+			end
+		end
+		incst presprites
 	end
 	return (EXIT_SUCCESS)
 end
