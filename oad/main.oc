@@ -137,12 +137,12 @@ functionx oadata_ok(ss swf_fullpath)
 end
 
 importx "puts" puts
+importx "printf" printf
 
 import "sprite_free" sprite_free
 
-import "print_indent" print_indent
-import "print_unindent" print_unindent
 import "print" print
+import "print_inline_done" print_inline_done
 
 functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
@@ -176,24 +176,17 @@ functionx oadata_free(sv data,charx log)
 				sv marks;set marks data#:oadata.marks
 				if marks!=(NULL)
 					if log=(TRUE)
-						call puts("mark struct:")
-						sd m;set m marks
-						dataxu i#1;set i 0
-						whiletrue
-							datax next#1;set next m#:mark.next
-							call print_indent()
-							call print("%u",i)
-							call print_indent()
-							call print("%d",m#:mark.prev)
-							call print("%d",next)
-							call print_unindent()
-							call print_unindent()
-							if next=(mark_nothing)
-								break
-							end
-							#add m \mark\
-							#inc i
+						valueu sz#1;set sz data#:oadata.size
+						div sz \mark\
+						call printf("marks: %u",sz)
+						if sz>^\mark\
+							#log first and last
+							valueu tolog#1;set tolog marks
+							add tolog data#:oadata.size
+							sub tolog \mark\
+							call printf(": %d %u ... %u %d",marks#:mark.prev,marks#:mark.next,tolog#:mark.prev,tolog#:mark.next)
 						end
+						call print_inline_done()
 					end
 					call free(marks)
 				end

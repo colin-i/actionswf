@@ -66,11 +66,28 @@ importx "realloc" realloc
 function mark_action(valueu act,valueu data)
 	if act!=(NULL) #can be trick branch, while(true){break}
 		valueu size#1;set size data#:oadata.size
+		valueu ix#1;set ix size
 		add size \mark\
 		svu marks;set marks realloc(data#:oadata.marks,size)
 		if marks!=(NULL)
 			set data#:oadata.marks marks
 			set data#:oadata.size size
+
+			add ix marks
+			if ix=marks
+				set ix#:mark.prev (mark_nothing)
+				set ix#:mark.next (mark_nothing)
+			else
+				set ix#:mark.next (mark_nothing)
+				div size \mark\
+				dec size
+				set ix#:mark.prev size
+				dec ix#:mark.prev
+
+				sub ix \mark\
+				set ix#:mark.next size
+			end
+
 			return (EXIT_SUCCESS)
 		end
 		return (EXIT_FAILURE)

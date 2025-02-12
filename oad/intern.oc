@@ -581,12 +581,9 @@ function oadata_init(sv poadata)
 			if a#:oadata.functions!=(NULL)
 				set a#:oadata.functions_size 0
 
-				set a#:oadata.marks malloc(\mark\)
-				sd m;set m a#:oadata.marks
-				if m!=(NULL)
-					set m#:mark.prev (mark_nothing)
-					set m#:mark.next (mark_nothing)
-					set a#:oadata.size \mark\
+				set a#:oadata.marks malloc(1)
+				if a#:oadata.marks!=(NULL)
+					set a#:oadata.size 0
 					return (EXIT_SUCCESS)
 				end
 			end
