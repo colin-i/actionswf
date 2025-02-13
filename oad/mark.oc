@@ -71,11 +71,14 @@ function mark_action(valueu act,valueu data)
 	if act!=(NULL) #can be trick branch, while(true){break}
 		valueu size#1;set size data#:oadata.size
 		valueu ix#1;set ix size
+		valueu index#1;set index ix
 		add size \mark\
 		svu marks;set marks realloc(data#:oadata.marks,size)
 		if marks!=(NULL)
 			set data#:oadata.marks marks
 			set data#:oadata.size size
+			div index \mark\
+			set act#:action.amark index
 
 			add ix marks
 			if ix=marks
