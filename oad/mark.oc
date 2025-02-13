@@ -114,24 +114,45 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 			if prevpresprites!=prevend
 				set pvps prevpresprites#
 				incst prevpresprites
-#!
+
 				valueu ps#1;set ps presprites#
 				valueu fr#1
+
 				if ps#:presprite.apreframe!=(NULL)
-					set fr ps#:presprite.apreframe
-					#call mark_compare_branch(fr#:preframe.abranch
+					if pvps#:presprite.apreframe!=(NULL)
+						set ok mark_compare_frame(pvps#:presprite.apreframe,ps#:presprite.apreframe,data)
+					else
+						set fr ps#:presprite.apreframe
+						set ok mark_branch(fr#:preframe.abranch,data)
+					end
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
 				end
+
+				svu prevfrs#1;set prevfrs pvps#:presprite.preframes
+				valueu prevfend#1;set prevfend prevfrs;add prevfend pvps#:presprite.size
+
 				svu frs;set frs ps#:presprite.preframes
 				valueu fend#1;set fend frs
 				add fend ps#:presprite.size
 				while frs!=fend
 					if frs#!=(NULL) #shows
-						set fr frs#
-						#call mark_compare_branch(fr#:preframe.abranch
+						if prevfrs!=prevfend
+							set ok mark_compare_frame(prevfrs#,frs#,data)
+						else
+							set fr frs#
+							set ok mark_branch(fr#:preframe.abranch,data)
+						end
+						if ok!=(EXIT_SUCCESS)
+							return (EXIT_FAILURE)
+						end
+					end
+					if prevfrs!=prevfend
+						incst prevfrs
 					end
 					incst frs
 				end
-!
 			else
 				set ok mark_presprite(presprites#,data)
 				if ok!=(EXIT_SUCCESS)
@@ -140,6 +161,29 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 			end
 		end
 		incst presprites
+	end
+	return (EXIT_SUCCESS)
+end
+function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
+	charx ok#1
+	#compare ustrings
+	#compare strings
+	#compare branch
+	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
+	return ok
+end
+function mark_compare_branch(valueu prevbr,valueu br,valueu data)
+	charx ok#1
+	#compare cuts
+	#inners
+	#subbranch
+	if br#:branch.subbranch!=(NULL)
+		if prevbr#:branch.subbranch!=(NULL)
+			set ok mark_compare_branch(prevbr#:branch.subbranch,br#:branch.subbranch,data)
+		else
+			set ok mark_branch(br#:branch.subbranch,data)
+		end
+		return ok
 	end
 	return (EXIT_SUCCESS)
 end
