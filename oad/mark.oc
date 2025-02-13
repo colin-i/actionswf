@@ -149,6 +149,7 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 					end
 					incst frs
 				end
+
 				incst prevpresprites
 			else
 				set ok mark_presprite(presprites#,data)
@@ -162,9 +163,20 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 	return (EXIT_SUCCESS)
 end
 function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
-	charx ok#1
-	#compare ustrings
-	#compare strings
+	charx ok#1;svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1
+
+	#compare ustrings, same for action_top like cuts
+	set prevstrs prevpf#:preframe.ustrings
+	set prevend prevstrs;add prevend prevpf#:preframe.ussize
+	set strs pf#:preframe.ustrings
+	set end strs;add end pf#:preframe.ussize
+
+	#compare strings, here compare string first(strings without knowing null end) then branches action_top
+	set strs pf#:preframe.strings
+	set end strs;add end pf#:preframe.ssize
+	set prevstrs prevpf#:preframe.strings
+	set prevend prevstrs;add prevend prevpf#:preframe.ssize
+
 	#compare branch
 	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
 	return ok
@@ -173,7 +185,7 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 	charx ok#1
 
 	#compare cuts
-	#only if action_top was not marked by previous string compares
+	#only if action_top was not marked by previous string compares, then size and memcmp
 
 	#inners
 	svu previns#1;set previns prevbr#:branch.innerbranches
