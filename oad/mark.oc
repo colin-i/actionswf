@@ -170,12 +170,18 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	set prevend prevstrs;add prevend prevpf#:preframe.ussize
 	set strs pf#:preframe.ustrings
 	set end strs;add end pf#:preframe.ussize
+	while strs!=end
+		incst strs
+	end
 
 	#compare strings, here compare string first(strings without knowing null end) then branches action_top
-	set strs pf#:preframe.strings
-	set end strs;add end pf#:preframe.ssize
 	set prevstrs prevpf#:preframe.strings
 	set prevend prevstrs;add prevend prevpf#:preframe.ssize
+	set strs pf#:preframe.strings
+	set end strs;add end pf#:preframe.ssize
+	while strs!=end
+		incst strs
+	end
 
 	#compare branch
 	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
