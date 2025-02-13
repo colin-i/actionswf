@@ -137,19 +137,17 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 				valueu fend#1;set fend frs
 				add fend ps#:presprite.size
 				while frs!=fend
-					if frs#!=(NULL) #shows
-						if prevfrs!=prevfend
-							set ok mark_compare_frame(prevfrs#,frs#,data)
-						else
-							set fr frs#
-							set ok mark_branch(fr#:preframe.abranch,data)
-						end
-						if ok!=(EXIT_SUCCESS)
-							return (EXIT_FAILURE)
-						end
-					end
 					if prevfrs!=prevfend
+						if frs#!=(NULL) #shows
+							set ok mark_compare_frame(prevfrs#,frs#,data)
+						end
 						incst prevfrs
+					elseif frs#!=(NULL) #shows
+						set fr frs#
+						set ok mark_branch(fr#:preframe.abranch,data)
+					end
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
 					end
 					incst frs
 				end
@@ -174,8 +172,28 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 end
 function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 	charx ok#1
+
 	#compare cuts
+	#only if action_top was not marked by previous string compares
+
 	#inners
+	svu previns#1;set previns prevbr#:branch.innerbranches
+	valueu prevend#1;set prevend previns;add prevend prevbr#:branch.isize
+	svu ins#1;set ins br#:branch.innerbranches
+	valueu end#1;set end ins;add end br#:branch.isize
+	while ins!=end
+		if previns!=prevend
+			set ok mark_compare_branch(previns#,ins#,data)
+			incst previns
+		else
+			set ok mark_branch(ins#,data)
+		end
+		if ok!=(EXIT_SUCCESS)
+			return (EXIT_FAILURE)
+		end
+		incst ins
+	end
+
 	#subbranch
 	if br#:branch.subbranch!=(NULL)
 		if prevbr#:branch.subbranch!=(NULL)
