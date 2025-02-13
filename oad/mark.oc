@@ -44,62 +44,62 @@ function mark_presprite(valueu ps,valueu data)
 	return (EXIT_SUCCESS)
 end
 function mark_branch(valueu br,valueu data)
-	charx ok#1;set ok mark_action(br#:branch.action_top,data)
-	if ok=(EXIT_SUCCESS)
-		svu ibrs;set ibrs br#:branch.innerbranches
-		valueu end#1;set end ibrs
-		add end br#:branch.isize
-		while ibrs!=end
-			set ok mark_branch(ibrs#,data)
-			if ok=(EXIT_FAILURE)
-				return (EXIT_FAILURE)
+	if br#:branch.action_top!=(NULL) #can be trick branch, while(true){break}
+		charx ok#1;set ok mark_action(br#:branch.action_top,data)
+		if ok=(EXIT_SUCCESS)
+			svu ibrs;set ibrs br#:branch.innerbranches
+			valueu end#1;set end ibrs
+			add end br#:branch.isize
+			while ibrs!=end
+				set ok mark_branch(ibrs#,data)
+				if ok=(EXIT_FAILURE)
+					return (EXIT_FAILURE)
+				end
+				incst ibrs
 			end
-			incst ibrs
-		end
-		if br#:branch.subbranch!=(NULL)
-			set ok mark_branch(br#:branch.subbranch,data)
-			if ok=(EXIT_FAILURE)
-				return (EXIT_FAILURE)
+			if br#:branch.subbranch!=(NULL)
+				set ok mark_branch(br#:branch.subbranch,data)
+				if ok=(EXIT_FAILURE)
+					return (EXIT_FAILURE)
+				end
 			end
-		end
-		return (EXIT_SUCCESS)
-	end
-	return (EXIT_FAILURE)
-end
-importx "realloc" realloc
-function mark_action(valueu act,valueu data)
-	if act!=(NULL) #can be trick branch, while(true){break}
-		valueu size#1;set size data#:oadata.size
-		valueu ix#1;set ix size
-		valueu index#1;set index ix
-		add size \mark\
-		svu marks;set marks realloc(data#:oadata.marks,size)
-		if marks!=(NULL)
-			set data#:oadata.marks marks
-			set data#:oadata.size size
-			div index \mark\
-			set act#:action.amark index
-
-			add ix marks
-			if ix=marks
-				set ix#:mark.prev (mark_nothing)
-				set ix#:mark.next (mark_nothing)
-			else
-				set ix#:mark.next (mark_nothing)
-				div size \mark\
-				dec size
-				set ix#:mark.prev size
-				dec ix#:mark.prev
-
-				sub ix \mark\
-				set ix#:mark.next size
-			end
-
 			return (EXIT_SUCCESS)
 		end
 		return (EXIT_FAILURE)
 	end
 	return (EXIT_SUCCESS)
+end
+importx "realloc" realloc
+function mark_action(valueu act,valueu data)
+	valueu size#1;set size data#:oadata.size
+	valueu ix#1;set ix size
+	valueu index#1;set index ix
+	add size \mark\
+	svu marks;set marks realloc(data#:oadata.marks,size)
+	if marks!=(NULL)
+		set data#:oadata.marks marks
+		set data#:oadata.size size
+		div index \mark\
+		set act#:action.amark index
+
+		add ix marks
+		if ix=marks
+			set ix#:mark.prev (mark_nothing)
+			set ix#:mark.next (mark_nothing)
+		else
+			set ix#:mark.next (mark_nothing)
+			div size \mark\
+			dec size
+			set ix#:mark.prev size
+			dec ix#:mark.prev
+
+			sub ix \mark\
+			set ix#:mark.next size
+		end
+
+		return (EXIT_SUCCESS)
+	end
+	return (EXIT_FAILURE)
 end
 
 function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
@@ -164,34 +164,33 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 end
 function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	charx ok#1;svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1
-
-	#compare ustrings, same for action_top like cuts
-	set prevstrs prevpf#:preframe.ustrings
-	set prevend prevstrs;add prevend prevpf#:preframe.ussize
-	set strs pf#:preframe.ustrings
-	set end strs;add end pf#:preframe.ussize
-	while strs!=end
-		incst strs
-	end
-
-	#compare strings, here compare string first(strings without knowing null end) then branches action_top
-	set prevstrs prevpf#:preframe.strings
-	set prevend prevstrs;add prevend prevpf#:preframe.ssize
-	set strs pf#:preframe.strings
-	set end strs;add end pf#:preframe.ssize
-	while strs!=end
-		incst strs
-	end
-
 	#compare branch
 	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
+	if ok=(EXIT_SUCCESS) #strings are last because if where first then will ask for action.amark not mark_nothing at cuts
+		#compare ustrings, action.amark!=mark_nothing and then same like strings, and then mark_action
+		set prevstrs prevpf#:preframe.ustrings
+		set prevend prevstrs;add prevend prevpf#:preframe.ussize
+		set strs pf#:preframe.ustrings
+		set end strs;add end pf#:preframe.ussize
+		while strs!=end
+			incst strs
+		end
+		#compare strings, here compare string first(strings without knowing null end) then branches action.amark!=mark_nothing, and then mark_action
+		set prevstrs prevpf#:preframe.strings
+		set prevend prevstrs;add prevend prevpf#:preframe.ssize
+		set strs pf#:preframe.strings
+		set end strs;add end pf#:preframe.ssize
+		while strs!=end
+			incst strs
+		end
+	end
 	return ok
 end
 function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 	charx ok#1
 
 	#compare cuts
-	#only if action_top was not marked by previous string compares, then size and memcmp
+	#size and memcmp, and then mark_action
 
 	#inners
 	svu previns#1;set previns prevbr#:branch.innerbranches
