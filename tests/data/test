@@ -1,4 +1,6 @@
 
+# 1 cc conv_64 e g rd xxd_args
+
 if [ -z "${CC}" ]; then
 	if [ "${conv_64}" = 1 ]; then
 		e=32
@@ -11,6 +13,9 @@ etest=../../example/example.swf.data
 
 if [ ! -e ${etest} ]; then
 	/bin/bash ./a || exit 1
+	if [ -n "${rd}" ]; then
+		read -t $((60*60*24))
+	fi
 fi
 
 set -o pipefail && /bin/bash ./a ${g} | tee data.txt || exit 1

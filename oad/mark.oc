@@ -44,28 +44,28 @@ function mark_presprite(valueu ps,valueu data)
 	return (EXIT_SUCCESS)
 end
 function mark_branch(valueu br,valueu data)
+	charx ok#1
 	if br#:branch.action_top!=(NULL) #can be trick branch, while(true){break}
-		charx ok#1;set ok mark_action(br#:branch.action_top,data)
-		if ok=(EXIT_SUCCESS)
-			svu ibrs;set ibrs br#:branch.innerbranches
-			valueu end#1;set end ibrs
-			add end br#:branch.isize
-			while ibrs!=end
-				set ok mark_branch(ibrs#,data)
-				if ok=(EXIT_FAILURE)
-					return (EXIT_FAILURE)
-				end
-				incst ibrs
-			end
-			if br#:branch.subbranch!=(NULL)
-				set ok mark_branch(br#:branch.subbranch,data)
-				if ok=(EXIT_FAILURE)
-					return (EXIT_FAILURE)
-				end
-			end
-			return (EXIT_SUCCESS)
+		set ok mark_action(br#:branch.action_top,data)
+		if ok!=(EXIT_SUCCESS)
+			return (EXIT_FAILURE)
 		end
-		return (EXIT_FAILURE)
+	end #but then has subbranches with actions
+	svu ibrs;set ibrs br#:branch.innerbranches
+	valueu end#1;set end ibrs
+	add end br#:branch.isize
+	while ibrs!=end
+		set ok mark_branch(ibrs#,data)
+		if ok=(EXIT_FAILURE)
+			return (EXIT_FAILURE)
+		end
+		incst ibrs
+	end
+	if br#:branch.subbranch!=(NULL)
+		set ok mark_branch(br#:branch.subbranch,data)
+		if ok=(EXIT_FAILURE)
+			return (EXIT_FAILURE)
+		end
 	end
 	return (EXIT_SUCCESS)
 end
