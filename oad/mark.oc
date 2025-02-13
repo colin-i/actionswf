@@ -113,8 +113,6 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 			valueu pvps#1
 			if prevpresprites!=prevend
 				set pvps prevpresprites#
-				incst prevpresprites
-
 				valueu ps#1;set ps presprites#
 				valueu fr#1
 
@@ -151,6 +149,7 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 					end
 					incst frs
 				end
+				incst prevpresprites
 			else
 				set ok mark_presprite(presprites#,data)
 				if ok!=(EXIT_SUCCESS)
