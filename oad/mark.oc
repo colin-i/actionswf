@@ -171,7 +171,7 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	#compare branch
 	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
 	if ok=(EXIT_SUCCESS) #strings are last because if where first then will ask for action.amark not mark_nothing at cuts
-		#compare ustrings, action.amark!=mark_nothing and then same like strings, and then mark_action
+		#compare ustrings, prev, action.amark!=mark_nothing and then same like strings, and then mark_action
 		set prevstrs prevpf#:preframe.ustrings
 		set prevend prevstrs;add prevend prevpf#:preframe.ussize
 		set strs pf#:preframe.ustrings
@@ -179,7 +179,7 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 		while strs!=end
 			incst strs
 		end
-		#compare strings, here compare string first(strings without knowing null end) then branches action.amark!=mark_nothing, and then mark_action
+		#compare strings, prev, here compare string first(strings without knowing null end) then branches action.amark!=mark_nothing, and then mark_action
 		set prevstrs prevpf#:preframe.strings
 		set prevend prevstrs;add prevend prevpf#:preframe.ssize
 		set strs pf#:preframe.strings
@@ -195,7 +195,7 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 
 	#compare cuts
 	if prevbr#:branch.size=br#:branch.size
-		#size and memcmp, and then mark_action
+		#size and memcmp, and then mark_action_if
 	else
 		set ok mark_action_if(br#:branch.action_top,data) #one case can be: prev with size, this no size
 		if ok!=(EXIT_SUCCESS)
