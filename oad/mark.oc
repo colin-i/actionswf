@@ -207,6 +207,7 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 		#	if ok!=(EXIT_SUCCESS)
 		#		return (EXIT_FAILURE)
 		#	end
+		#	break
 		#end
 	else
 		set ok mark_action_if(br#:branch.action_top,data) #one case can be: prev with size, this no size
