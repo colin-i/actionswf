@@ -195,7 +195,19 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 
 	#compare cuts
 	if prevbr#:branch.size=br#:branch.size
-		#size and memcmp, and then mark_action_if
+		#while cursor!=cutsend
+		#	if prevsize=size
+		#		if memcmp=0
+		#			add cursor branchcut
+		#			add prevcursor branchcut
+		#			continue
+		#		end
+		#	end
+		#	set ok mark_action_if
+		#	if ok!=(EXIT_SUCCESS)
+		#		return (EXIT_FAILURE)
+		#	end
+		#end
 	else
 		set ok mark_action_if(br#:branch.action_top,data) #one case can be: prev with size, this no size
 		if ok!=(EXIT_SUCCESS)
