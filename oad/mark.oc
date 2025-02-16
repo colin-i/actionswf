@@ -106,6 +106,15 @@ function mark_action(valueu act,valueu data)
 	return (EXIT_FAILURE)
 end
 
+function mark_string_branch(valueu br,valueu data)
+	valueu act#1;set act br#:branch.action_top
+	if act#:action.amark=(mark_nothing) #was already marked at another previous branch
+		charx ok#1;set ok mark_action(act,data)
+		return ok
+	end
+	return (EXIT_SUCCESS)
+end
+
 function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 	svu prevpresprites#1;set prevpresprites prevoadata#:preoadata.presprites
 	valueu prevend#1;set prevend prevpresprites;add prevend prevoadata#:preoadata.size
@@ -167,24 +176,65 @@ function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 	return (EXIT_SUCCESS)
 end
 function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
-	charx ok#1;svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1
-	#compare branch
-	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data)
+	charx ok#1
+	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data) #compare branch
 	if ok=(EXIT_SUCCESS) #strings are last because if where first then will ask for action.amark not mark_nothing at cuts
+		svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1;valueu str#1;valueu prevstr#1
 		#compare ustrings, prev, action.amark!=mark_nothing and then same like strings, and then mark_action
 		set prevstrs prevpf#:preframe.ustrings
 		set prevend prevstrs;add prevend prevpf#:preframe.ussize
 		set strs pf#:preframe.ustrings
 		set end strs;add end pf#:preframe.ussize
 		while strs!=end
+			set str strs#
+			if prevstrs!=prevend
+				incst prevstrs
+			else
+				set ok mark_string_branch(str#:ustring.ubranch,data)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
+				end
+			end
 			incst strs
 		end
+		svu brs#1;valueu brsend#1
+		svu prevbrs#1;valueu prevbrsend#1
 		#compare strings, prev, here compare string first(strings without knowing null end) then branches action.amark!=mark_nothing, and then mark_action
 		set prevstrs prevpf#:preframe.strings
 		set prevend prevstrs;add prevend prevpf#:preframe.ssize
 		set strs pf#:preframe.strings
 		set end strs;add end pf#:preframe.ssize
 		while strs!=end
+			set str strs#
+			if prevstrs!=prevend
+				set prevstr prevstrs#
+				set prevbrs prevstr#:string.branches
+				set prevbrsend prevbrs;add prevbrsend prevstr#:string.size
+				set brs str#:string.branches
+				set brsend brs;add brsend str#:string.size
+				while brs!=brsend
+					if prevbrs!=prevbrsend
+						incst prevbrs
+					else
+						set ok mark_string_branch(brs#,data)
+						if ok!=(EXIT_SUCCESS)
+							return (EXIT_FAILURE)
+						end
+					end
+					incst brs
+				end
+				incst prevstrs
+			else
+				set brs str#:string.branches
+				set brsend brs;add brsend str#:string.size
+				while brs!=brsend
+					set ok mark_string_branch(brs#,data)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
+					incst brs
+				end
+			end
 			incst strs
 		end
 	end
