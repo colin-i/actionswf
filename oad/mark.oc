@@ -114,6 +114,19 @@ function mark_string_branch(valueu br,valueu data)
 	end
 	return (EXIT_SUCCESS)
 end
+function mark_string_branches(valueu str,valueu data)
+	svu brs#1;valueu brsend#1;charx ok#1
+	set brs str#:string.branches
+	set brsend brs;add brsend str#:string.size
+	while brs!=brsend
+		set ok mark_string_branch(brs#,data)
+		if ok!=(EXIT_SUCCESS)
+			return (EXIT_FAILURE)
+		end
+		incst brs
+	end
+	return (EXIT_SUCCESS)
+end
 
 function mark_compare(valueu prevoadata,svu presprites,dataxu size,valueu data)
 	svu prevpresprites#1;set prevpresprites prevoadata#:preoadata.presprites
@@ -179,7 +192,7 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	charx ok#1
 	set ok mark_compare_branch(prevpf#:preframe.abranch,pf#:preframe.abranch,data) #compare branch
 	if ok=(EXIT_SUCCESS) #strings are last because if where first then will ask for action.amark not mark_nothing at cuts
-		svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1;valueu str#1;valueu prevstr#1
+		svu strs#1;valueu end#1;svu prevstrs;valueu prevend#1;valueu str#1;datax cmp#1
 		#compare ustrings, prev, action.amark!=mark_nothing and then same like strings, and then mark_action
 		set prevstrs prevpf#:preframe.ustrings
 		set prevend prevstrs;add prevend prevpf#:preframe.ussize
@@ -188,6 +201,14 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 		while strs!=end
 			set str strs#
 			if prevstrs!=prevend
+				set cmp mark_compare_string(prevstrs#,str)
+				if cmp!=0
+					#restored string has no branches, that diff is observable at cuts
+					set ok mark_string_branch(str#:ustring.ubranch,data)
+					if ok!=(EXIT_SUCCESS)
+						return (EXIT_FAILURE)
+					end
+				end
 				incst prevstrs
 			else
 				set ok mark_string_branch(str#:ustring.ubranch,data)
@@ -197,8 +218,6 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 			end
 			incst strs
 		end
-		svu brs#1;valueu brsend#1
-		svu prevbrs#1;valueu prevbrsend#1
 		#compare strings, prev, here compare string first(strings without knowing null end) then branches action.amark!=mark_nothing, and then mark_action
 		set prevstrs prevpf#:preframe.strings
 		set prevend prevstrs;add prevend prevpf#:preframe.ssize
@@ -207,32 +226,19 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 		while strs!=end
 			set str strs#
 			if prevstrs!=prevend
-				set prevstr prevstrs#
-				set prevbrs prevstr#:string.branches
-				set prevbrsend prevbrs;add prevbrsend prevstr#:string.size
-				set brs str#:string.branches
-				set brsend brs;add brsend str#:string.size
-				while brs!=brsend
-					if prevbrs!=prevbrsend
-						incst prevbrs
-					else
-						set ok mark_string_branch(brs#,data)
-						if ok!=(EXIT_SUCCESS)
-							return (EXIT_FAILURE)
-						end
-					end
-					incst brs
-				end
-				incst prevstrs
-			else
-				set brs str#:string.branches
-				set brsend brs;add brsend str#:string.size
-				while brs!=brsend
-					set ok mark_string_branch(brs#,data)
+				set cmp mark_compare_string(prevstrs#,str)
+				if cmp!=0
+					#restored string has no branches, that diff is observable at cuts
+					set ok mark_string_branches(str,data)
 					if ok!=(EXIT_SUCCESS)
 						return (EXIT_FAILURE)
 					end
-					incst brs
+				end
+				incst prevstrs
+			else
+				set ok mark_string_branches(str,data)
+				if ok!=(EXIT_SUCCESS)
+					return (EXIT_FAILURE)
 				end
 			end
 			incst strs
@@ -240,25 +246,31 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	end
 	return ok
 end
+importx "memcmp" memcmp
 function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 	charx ok#1
 
 	#compare cuts
 	if prevbr#:branch.size=br#:branch.size
-		#while cursor!=cutsend
-		#	if prevsize=size
-		#		if memcmp=0
-		#			add cursor branchcut
-		#			add prevcursor branchcut
-		#			continue
-		#		end
-		#	end
-		#	set ok mark_action_if(,)
-		#	if ok!=(EXIT_SUCCESS)
-		#		return (EXIT_FAILURE)
-		#	end
-		#	break
-		#end
+		svu prevcursor;svu cursor;valueu cutsend#1
+		set prevcursor prevbr#:branch.cuts
+		set cursor br#:branch.cuts
+		set cutsend cursor;add cutsend br#:branch.size
+		while cursor!=cutsend
+			if prevcursor#:branchcut.size=cursor#:branchcut.size
+				datax cmp#1;set cmp memcmp(prevcursor#:branchcut.x,cursor#:branchcut.x,cursor#:branchcut.size)
+				if cmp=0
+					add cursor \branchcut\
+					add prevcursor \branchcut\
+					continue
+				end
+			end
+			set ok mark_action_if(br#:branch.action_top,data)
+			if ok!=(EXIT_SUCCESS)
+				return (EXIT_FAILURE)
+			end
+			break
+		end
 	else
 		set ok mark_action_if(br#:branch.action_top,data) #one case can be: prev with size, this no size
 		if ok!=(EXIT_SUCCESS)
@@ -294,4 +306,13 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 		return ok
 	end
 	return (EXIT_SUCCESS)
+end
+importx "strcmp" strcmp
+function mark_compare_string(valueu prevstr,valueu str)
+	valueu s1#1;set s1 prevstr#:ustring.base
+	add s1 prevstr#:ustring.off
+	valueu s2#1;set s2 str#:ustring.base
+	add s2 str#:ustring.off
+	datax cmp#1;set cmp strcmp(s1,s2)
+	return cmp
 end
