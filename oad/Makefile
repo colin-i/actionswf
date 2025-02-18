@@ -83,9 +83,8 @@ test:
 	echo "Nothing"
 
 install-lib:
-	echo "not ready"
-#	install -D ${libname} \
-#		$(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} \
+		$(DESTDIR)$(prefix)/lib/${libname}
 
 install: all install-lib
 

@@ -12,3 +12,8 @@ Architecture: amd64 i386
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Action Swf library
+
+Package: libactionswf-dev
+Architecture: all
+Multi-Arch: foreign
+Description: Action Swf dev files
