@@ -99,7 +99,7 @@ const FontFlagsHasLayout=0x80
 #const FontFlagsBold=1
 
 include "lin.h" "win.h"
-include "../dev/flags.h.oh"
+include "../dev/flags.oh"
 
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
 Const _open_read=_O_RDONLY|flag_O_BINARY
@@ -141,4 +141,4 @@ const doubleH_sign=0x80000000
 #const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
 
-include "xlog.h.oh"
+include "xlog.oh"

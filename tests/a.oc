@@ -3,7 +3,7 @@ format elfobj64
 
 importx "_exit" exit
 
-einclude "../dev/import.h.oh"
+einclude "../dev/import.oh"
 
 include "entryraw.oc" "entry.oc"
 call xlog_pad_set(0x30)

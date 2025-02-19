@@ -1,5 +1,5 @@
 
-include "oadbgdatas.h" "oadbgdatas.h.oh"
+include "oadbgdatas.h" "oadbgdatas.oh"
 
 importx "oadata_make" oadata_make
 importx "oadata_free" oadata_free

@@ -5,7 +5,7 @@ format elfobj64
 importx "_sprintf" sprintf
 importx "_exit" exit
 
-einclude "../dev/import.h.oh"
+einclude "../dev/import.oh"
 
 const width=640
 const height=480

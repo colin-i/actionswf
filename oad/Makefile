@@ -57,23 +57,23 @@ ${libname}: main.o ${exte}
 	$(CC) ${model} -c -w -fPIC ${compilerflags} $*.c
 #-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
-%.oh: %.h.oh
+%.ohi: %.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@
 	echo "override include_sec 1" >> $@
 	cat $< >> $@
-%.h: %.oh
+%.h: %.ohi
 #	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
 	${OCOMP} $< ${OFLAGS} logfile 0
 	${OCONV} $<.x
 
 clean:
-	-rm -f common.oh              common.oh.x     common.h
-	-rm -f ${xlog}oh              ${xlog}oh.x     ${xlog}h
-	-rm -f oadbgdatas.oh          oadbgdatas.oh.x oadbgdatas.h
-	-rm -f ${objects} ${sublogs}  ${subx}         ${subc}
-	-rm -f            main.oc.log main.oc.x       main.c
-	-rm -f oadbgdata.oh           oadbgdata.oh.x  oadbgdata.h
+	-rm -f common.ohi            common.ohi.x     common.h
+	-rm -f ${xlog}ohi            ${xlog}ohi.x     ${xlog}h
+	-rm -f oadbgdatas.ohi        oadbgdatas.ohi.x oadbgdatas.h
+	-rm -f ${objects} ${sublogs} ${subx}          ${subc}
+	-rm -f           main.oc.log main.oc.x        main.c
+	-rm -f oadbgdata.ohi         oadbgdata.ohi.x  oadbgdata.h
 
 	-rm -f ${exte} ${libname}
 

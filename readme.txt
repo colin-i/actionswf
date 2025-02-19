@@ -2,7 +2,7 @@
 Action Swf can create swf files.
 The program is a set of objects made with O Language.
 A swf with actionscript example is in the example folder for static o language.
-The libactionswf-dev actionswf.h is for c/c++ language and import.h.oh are the imports for o language.
+The libactionswf-dev actionswf.h is for c/c++ language and import.oh are the imports for o language.
 The files swf.es and action.es has the main functions that can be used; functions from tool.es can be used in rare situations.
 When using the debug_log flag at swf_new_ex, action,action_sprite,swf_sprite_done calls are logged. The syntax is as follow:
 

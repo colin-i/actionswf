@@ -7,7 +7,7 @@ importx "free" free
 importx "memcpy" memcpy
 
 override include_sec 1
-include "common.h" "common.h.oh"
+include "common.h" "common.oh"
 
 import "fcontent" fcontent
 import "loop" loop

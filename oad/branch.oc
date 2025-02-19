@@ -2,7 +2,7 @@
 format elfobj64
 
 override include_sec 1
-include "common.h" "common.h.oh"
+include "common.h" "common.oh"
 
 importx "malloc" malloc
 

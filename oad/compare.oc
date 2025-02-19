@@ -9,7 +9,7 @@ importx "free" free
 importx "fclose" fclose
 
 override include_sec 1
-include "common.h" "common.h.oh"
+include "common.h" "common.oh"
 
 #multithread unsafe
 dataxu presprites_size#1  #same as sprites_size

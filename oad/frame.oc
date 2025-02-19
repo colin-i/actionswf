@@ -4,7 +4,7 @@ format elfobj64
 importx "realloc" realloc
 
 override include_sec 1
-include "common.h" "common.h.oh"
+include "common.h" "common.oh"
 
 function re_alloc(svu pmem,dataxu size) #only dataxu external sizes, and +1 increments
 	if size!=0

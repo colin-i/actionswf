@@ -2,7 +2,7 @@
 format elfobj64
 
 override include_sec 1
-include "common.h" "common.h.oh"
+include "common.h" "common.oh"
 
 function mark_all(svu presprites,valueu end,valueu data)
 	charx ok#1
