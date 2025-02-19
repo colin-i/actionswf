@@ -10,6 +10,7 @@ Install:
 ```sh
 sudo apt-get install actionswf
 ```
+There is also <i>libactionswf-dev</i>.\
 \
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/actionswf/releases).
 ```sh

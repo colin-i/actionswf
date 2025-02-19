@@ -46,7 +46,7 @@ function swf_new_ex_local(ss path,sd width,sd height,sd backgroundcolor,sd fps,s
 #sd height
 #sd backgroundcolor  0xRRGGBB  value
 #sd fps              swf frames per second
-#sd flags            see flags.h
+#sd flags            see flags.h.oh
     #F=uncompressed, C=ZLib
 const hd_start=\
     char *=F

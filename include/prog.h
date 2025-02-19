@@ -99,7 +99,7 @@ const FontFlagsHasLayout=0x80
 #const FontFlagsBold=1
 
 include "lin.h" "win.h"
-include "flags.h"
+include "../dev/flags.h.oh"
 
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
 Const _open_read=_O_RDONLY|flag_O_BINARY

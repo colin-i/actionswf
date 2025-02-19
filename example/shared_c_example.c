@@ -2,7 +2,7 @@
 //a simple shape moving on the stage example
 
 #include <stdio.h>
-#include "../include/actionswf.h"
+#include "../dev/actionswf.h"
 
 #define width 640
 #define height 480
