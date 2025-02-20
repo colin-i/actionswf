@@ -1,3 +1,9 @@
+actionswf (1-124) bionic; urgency=medium
+
+  * 32bit oad restore test
+
+ -- bc <bc@bc-desktop>  Thu, 20 Feb 2025 10:05:03 +0200
+
 actionswf (1-123) bionic; urgency=medium
 
   * fix actionswf.install
