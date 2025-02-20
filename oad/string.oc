@@ -103,7 +103,7 @@ function printn(sv s)
 	call fputc((output_nl),s)
 end
 function printt(ss str)
-	sv so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer
+	svu so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer
 	call fputs(str,so#)
 end
 function print_indent()
