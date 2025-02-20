@@ -1,3 +1,9 @@
+actionswf (1-123) bionic; urgency=medium
+
+  * fix actionswf.install
+
+ -- bc <bc@bc-desktop>  Thu, 20 Feb 2025 08:40:00 +0200
+
 actionswf (1-122) bionic; urgency=medium
 
   * liboadbgdata
