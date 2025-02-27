@@ -456,6 +456,7 @@ function swf_image_ex_local(ss imagepath,sd p_wh)
     setcall shape_id swf_shape_bitmap_local(dbl_id,width,p_wh#)
     return shape_id
 endfunction
+import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
 #id
 function swf_dbl_ex_local(ss imagepath,sd p_wh)
 #ss imagepath = path name for the dbl image
@@ -465,7 +466,7 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
     sd size
     sd cursor
     setcall mem file_get_content(imagepath,#size)
-    if size<8
+    if size<(dblsignature+dblsize)
         call error("missing image header")
     endif
     char hd_magic1={D,B,l,1};vdata magic1^hd_magic1
@@ -491,7 +492,6 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
     endif
     #add the define bits lossless file to mem
     add size (WORD)
-    import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
     call swf_tag_recordheader_long_entry(header,size)
     setcall id identifiers_get()
     call swf_mem_add(#id,(WORD))
@@ -511,6 +511,51 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
     call swf_mem_add(cursor,image_size)
     call file_get_content__resources_free()
     return id
+endfunction
+
+import "f_open" f_open
+importx "fseek" fseek
+importx "fclose" fclose
+import "f_tell_errors" f_tell_errors
+#id
+function swf_jpeg_local(ss imagepath,sd tag,ss alphapath)
+#ss imagepath = path name for the image
+#sd tag = jpeg 2 or 3
+#ss alphapath = path name for the image alpha
+	sd mem
+	sd size
+	setcall mem file_get_content(imagepath,#size)
+	sd allsize;set allsize size
+	if tag=(DefineBitsJPEG3)
+		sd file;set file f_open(alphapath,"rb")
+		call fseek(file,0,(SEEK_END))
+		sd size2;set size2 f_tell_errors(file)
+		call fclose(file) #i m closing it because i don't want to hardcode error(), but that means to add another little check here, in the meantime, another prog can fast modify everything and here no held at resources
+		add allsize size2
+		if allsize<0 #going to sign bit
+			call error("two big files")
+		end
+		add allsize (DWORD)
+	end
+	add allsize (WORD) #if going to sign bit, the error will be catched at realloc
+	call swf_tag_recordheader_long_entry(tag,allsize)
+	sd id
+	setcall id identifiers_get()
+	call swf_mem_add(#id,(WORD))
+	if tag=(DefineBitsJPEG3)
+		call swf_mem_add(#size,(DWORD))
+	end
+	call swf_mem_add(mem,size)
+	call file_get_content__resources_free()
+	if tag=(DefineBitsJPEG3)
+		setcall mem file_get_content(alphapath,#size)
+		if size!=size2
+			call error("sizes hazard at jpeg 3")
+		end
+		call swf_mem_add(mem,size)
+		call file_get_content__resources_free()
+	end
+	return id
 endfunction
 
 function swf_placeobject_local(sd refid,sd depth)

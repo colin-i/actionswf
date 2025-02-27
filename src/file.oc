@@ -61,13 +61,20 @@ importx "free" free
 import "error" error
 
 #file
+function f_open(sd path,sd format)
+	sd f;setcall f fopen(path,format)
+	if f=(NULL)
+		vstr err="fopen error"
+		call error(err)
+	end
+	return f
+end
+#file
 function f_open_mem(sd path,sd format)
 	sd f;setcall f fopen(path,format)
 	if f=(NULL)
 		call free(path)
-		char a="fopen error"
-		vstr e^a
-		call error(e)
+		call error(f_open.err)
 	endif
 	call free(path)
 	return f
@@ -188,4 +195,24 @@ function f_tell_errors(sd f)
 	end
 	call fclose(f)
 	call error(f_tell.er)
+endfunction
+
+import "file_resources_set" file_resources_set
+import "file_resources_free" file_resources_free
+function filepath_get_word(ss imagepath,sd offset,ss err)
+	sd file
+	setcall file file_open(imagepath,(_open_read))
+	call file_resources_set(file)
+	sd size
+	setcall size filesize(file)
+	sd offsetandword;set offsetandword offset
+	add offsetandword (WORD)
+	if size<^offsetandword
+		call error(err)
+	endif
+	call file_seek(file,offset,(SEEK_SET))
+	sw dim=0  #sw is long at the moment
+	call file_read(file,#dim,(WORD))
+	call file_resources_free()
+	return dim
 endfunction

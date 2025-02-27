@@ -66,7 +66,9 @@ const DefineShape3=32
         const solid_fill=0
         const repeating_bitmap_fill=0x40
 const DefineBitsLossless=20
+const DefineBitsJPEG2=21
 const DefineButton2=34
+const DefineBitsJPEG3=35
 const DefineBitsLossless2=36
 const DefineEditText=37
 const DefineSprite=39
@@ -142,3 +144,7 @@ const doubleH_sign=0x80000000
 const R_OK=4
 
 include "xlog.oh"
+
+const dblsignature=4
+const dblsize=4
+const dblformat=1

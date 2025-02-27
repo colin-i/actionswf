@@ -36,6 +36,14 @@ importX "swf_dbl_ex" swf_dbl_ex
 importX "swf_dbl_width" swf_dbl_width
 #height
 importX "swf_dbl_height" swf_dbl_height
+#id
+importX "swf_jpeg" swf_jpeg
+#id
+importX "swf_jpeg_alpha" swf_jpeg_alpha
+#width
+importX "swf_gif_width" swf_gif_width
+#height
+importX "swf_gif_height" swf_gif_height
 #utils
 importX "swf_done" swf_done
 importX "swf_new" swf_new

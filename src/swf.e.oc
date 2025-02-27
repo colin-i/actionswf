@@ -14,8 +14,6 @@ import "button_mem" button_mem
 
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
-import "file_resources_set" file_resources_set
-import "file_resources_free" file_resources_free
 import "struct_ids" struct_ids
 import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
@@ -291,7 +289,7 @@ functionX swf_dbl(ss imagepath)
 base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
     sd id
-    setcall id swf_dbl_ex_local(imagepath,0)
+    setcall id swf_dbl_ex_local(imagepath,(NULL))
     return id
 endfunction
 #id
@@ -301,46 +299,63 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
 	sd id;set id swf_dbl_ex_local(imagepath,p_wh)
 	return id
 endfunction
-import "file_open" file_open
-import "file_seek" file_seek
-import "file_read" file_read
-import "filesize" filesize
+import "filepath_get_word" filepath_get_word
 
 #width
 functionX swf_dbl_width(ss imagepath)
 base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-    sd file
-    setcall file file_open(imagepath,(_open_read))
-    call file_resources_set(file)
-    sd size
-    setcall size filesize(file)
-    if size<(4+4+1+2)
-        call error("invalid dbl file")
-    endif
-    call file_seek(file,(4+4+1),(SEEK_SET))
-    sd width=0
-    call file_read(file,#width,2)
-    call file_resources_free()
-    return width
+	base swf_new.bp;call ebase(swf_new.bp)
+	#format? ming newSWFDBLBitmap_fromInput
+	vstru err="invalid dbl file"
+	sw dim;set dim filepath_get_word(imagepath,(dblsignature+dblsize+dblformat),err)
+	return dim
 endfunction
 #height
 functionX swf_dbl_height(ss imagepath)
 base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-    sd file
-    setcall file file_open(imagepath,(_open_read))
-    call file_resources_set(file)
-    sd size
-    setcall size filesize(file)
-    if size<(4+4+1+2+2)
-        call error("invalid dbl file")
-    endif
-    call file_seek(file,(4+4+1+2),(SEEK_SET))
-    sd height=0
-    call file_read(file,#height,2)
-    call file_resources_free()
-    return height
+	base swf_new.bp;call ebase(swf_new.bp)
+	sw dim;set dim filepath_get_word(imagepath,(dblsignature+dblsize+dblformat+WORD),swf_dbl_width.err)
+	return dim
+endfunction
+
+import "swf_jpeg_local" swf_jpeg_local
+#https://stackoverflow.com/questions/7676701/java-jpeg-converter-for-odd-image-types
+#https://www.w3.org/Graphics/JPEG/jfif3.pdf
+#FFD8, can skip FFE[0-F] bigendianSize(usually 0010) = skip 20 bytes, FFDB...FFD9
+#
+#https://www.w3.org/Graphics/GIF/spec-gif89a.txt
+#Transparent Color Flag
+#anyway, more simple is: identify -format %A a.gif
+functionX swf_jpeg(ss imagepath)
+#ss imagepath = path name for the dbl image
+	sd id
+	setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
+	return id
+endfunction
+functionX swf_jpeg_alpha(ss imagepath,ss alphapath)
+#ss imagepath = path name for the dbl image
+	sd id
+	setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
+	return id
+endfunction
+
+const gifsignature=6 #GIF89a
+#width
+functionX swf_gif_width(ss imagepath)
+#ss imagepath = path name for the gif image
+	base swf_new.bp;call ebase(swf_new.bp)
+	vstr err="invalid gif file"
+	sw dim;set dim filepath_get_word(imagepath,(gifsignature),err)
+	return dim
+endfunction
+#height
+functionX swf_gif_height(ss imagepath)
+#ss imagepath = path name for the gif image
+	base swf_new.bp;call ebase(swf_new.bp)
+	sw dim;set dim filepath_get_word(imagepath,(gifsignature+WORD),swf_gif_width.err)
+	return dim
 endfunction
 
 ##############

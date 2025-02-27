@@ -126,6 +126,17 @@ int swf_dbl_width(char* imagepath);
 //height
 int swf_dbl_height(char* imagepath);
 
+//jpeg/png/gif
+
+//id
+int swf_jpeg(char* imagepath);
+//id
+int swf_jpeg_alpha(char* imagepath,char* alphapath);
+//width
+int swf_gif_width(char* imagepath);
+//height
+int swf_gif_height(char* imagepath);
+
 //back at generic swf functions
 
 void swf_done();
