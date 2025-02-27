@@ -1,3 +1,9 @@
+actionswf (1-125) bionic; urgency=medium
+
+  * jpeg/png/gif
+
+ -- bc <bc@bc-desktop>  Thu, 27 Feb 2025 11:39:23 +0200
+
 actionswf (1-124) bionic; urgency=medium
 
   * 32bit oad restore test
