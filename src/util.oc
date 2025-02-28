@@ -49,6 +49,14 @@ function word_arg_to_stack(ss arg)
     or value arg#
     return value
 endfunction
+function word_swap(sw word)
+	ss p^word
+	sw val;set val p#
+	mult val 0x100
+	divu word 0x100
+	or val p#
+	return val
+endfunction
 #swapped data
 function dword_swap(sd value)
     sd al

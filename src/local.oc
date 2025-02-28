@@ -457,60 +457,81 @@ function swf_image_ex_local(ss imagepath,sd p_wh)
     return shape_id
 endfunction
 import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
+import "word_swap" word_swap
 #id
 function swf_dbl_ex_local(ss imagepath,sd p_wh)
 #ss imagepath = path name for the dbl image
 #sd p_wh = pointer width a dword and height next dword
-    sd id
-    sd mem
-    sd size
-    sd cursor
-    setcall mem file_get_content(imagepath,#size)
-    if size<(dblsignature+dblsize)
-        call error("missing image header")
-    endif
-    char hd_magic1={D,B,l,1};vdata magic1^hd_magic1
-    char hd_magic2={D,B,l,2};vdata magic2^hd_magic2
-    if mem#!=magic1#
-    if mem#!=magic2#
-        call printEr("expecting dbl(define bits lossless 1 or 2)header; filepath: ")
-        call error(imagepath)
-    endif;endif
-    sd header=DefineBitsLossless2
-    if mem#=magic1#
-        set header (DefineBitsLossless)
-    endif
-    set cursor mem
-    add cursor (DWORD)
-
-    sd image_size
-    setcall image_size dword_swap(cursor#)
-    add cursor (DWORD)
-    sub size (2*DWORD)
-    if image_size>size
-        call error("size error at dbl")
-    endif
-    #add the define bits lossless file to mem
-    add size (WORD)
-    call swf_tag_recordheader_long_entry(header,size)
-    setcall id identifiers_get()
-    call swf_mem_add(#id,(WORD))
-    if p_wh!=0
-        #get width and height;BitmapFormat UI8,BitmapWidth UI16,BitmapHeight UI16
-        if image_size<(2*WORD+BYTE)
-            call error("size error at dbl when looking for width/height")
-        endif
-        sd pointer
-        set pointer cursor
-        add pointer (BYTE)
-        setcall p_wh# word_arg_to_stack(pointer)
-        add pointer (WORD)
-        add p_wh (DWORD)
-        setcall p_wh# word_arg_to_stack(pointer)
-    endif
-    call swf_mem_add(cursor,image_size)
-    call file_get_content__resources_free()
-    return id
+	sd id
+	sd mem
+	sd size
+	sd cursor
+	setcall mem file_get_content(imagepath,#size)
+	if size<(dblsignature+dblsize)
+	call error("missing image header")
+	endif
+	char hd_magic0={D,B,L,1};vdata magic0^hd_magic0
+	char hd_magic00={D,B,L,2};vdata magic00^hd_magic00
+	char hd_magic1={D,B,l,1};vdata magic1^hd_magic1
+	char hd_magic2={D,B,l,2};vdata magic2^hd_magic2
+	if mem#!=magic1#
+	if mem#!=magic2#
+	if mem#!=magic0#
+	if mem#!=magic00#
+		call printEr("expecting dbl(define bits lossless 1 or 2)header; filepath: ")
+		call error(imagepath)
+	endif;endif;endif;endif
+	set cursor mem
+	add cursor 2
+	sd header
+	sd image_size
+	if cursor#s^=(l)
+		inc cursor
+		if cursor#s^=(1)
+			set header (DefineBitsLossless)
+		else
+			set header (DefineBitsLossless2)
+		end
+		inc cursor
+		set image_size dword_swap(cursor#)
+		add cursor (DWORD)
+		sub size (2*DWORD)
+	else #this is 1950-1952 when all size was on WORD
+		inc cursor
+		if cursor#s^=(1)
+			set header (DefineBitsLossless)
+		else
+			set header (DefineBitsLossless2)
+		end
+		inc cursor
+		set image_size word_swap(cursor#w^)
+		add cursor (WORD)
+		sub size (DWORD+WORD)
+	end
+	if image_size>size
+		call error("size error at dbl")
+	endif
+	#add the define bits lossless file to mem
+	add size (WORD)
+	call swf_tag_recordheader_long_entry(header,size)
+	setcall id identifiers_get()
+	call swf_mem_add(#id,(WORD))
+	if p_wh!=0
+		#get width and height;BitmapFormat UI8,BitmapWidth UI16,BitmapHeight UI16
+		if image_size<(2*WORD+BYTE)
+			call error("size error at dbl when looking for width/height")
+		endif
+		sd pointer
+		set pointer cursor
+		add pointer (BYTE)
+		setcall p_wh# word_arg_to_stack(pointer)
+		add pointer (WORD)
+		add p_wh (DWORD)
+		setcall p_wh# word_arg_to_stack(pointer)
+	endif
+	call swf_mem_add(cursor,image_size)
+	call file_get_content__resources_free()
+	return id
 endfunction
 
 import "f_open" f_open
