@@ -273,7 +273,6 @@ endfunction
 functionX swf_image(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	base swf_new.bp;call ebase(swf_new.bp)
 	data width#1;data *height#1
 	sd shape_id;setcall shape_id swf_image_ex_local(imagepath,#width)
 	return shape_id
@@ -291,7 +290,6 @@ endfunction
 functionX swf_dbl(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	base swf_new.bp;call ebase(swf_new.bp)
 	sd id
 	setcall id swf_dbl_ex_local(imagepath,(NULL))
 	return id
