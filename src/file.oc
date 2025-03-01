@@ -223,13 +223,12 @@ function dblsize_start(ss imagepath,sd p_size,ss p_ver)
 	setcall file file_open(imagepath,(_open_read))
 	call file_resources_set(file)
 	setcall p_size# filesize(file)
-	if p_size#<^(dblsignature)
+	if p_size#<^(dblsignature_major)
 		call error("error at dblsize start")
 	end
 	charx sig#2
 	charx imp#1
-	charx *#1
-	call read(file,#sig,(DWORD)) #if not with errors, like read() to be a macro and be inserted there?
+	call read(file,#sig,(dblsignature_major)) #if not with errors, like read() to be a macro and be inserted there?
 	set p_ver# imp
 	return file
 endfunction

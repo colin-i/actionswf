@@ -145,7 +145,8 @@ const R_OK=4
 
 include "xlog.oh"
 
-const dblsignature=4
+const dblsignature_major=3
+const dblsignature=dblsignature_major+1
 const dblsize=4
 const dblsize16=2
 const dblformat=1
