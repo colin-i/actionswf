@@ -23,11 +23,12 @@ importX "swf_shape_basic" swf_shape_basic
 importX "swf_shape_bitmap" swf_shape_bitmap
 #id
 importX "swf_shape_border" swf_shape_border
+
+#dbl
 #id
 importX "swf_image" swf_image
 #id
 importX "swf_image_ex" swf_image_ex
-#dbl
 #id
 importX "swf_dbl" swf_dbl
 #id
@@ -36,6 +37,12 @@ importX "swf_dbl_ex" swf_dbl_ex
 importX "swf_dbl_width" swf_dbl_width
 #height
 importX "swf_dbl_height" swf_dbl_height
+
+#jpeg/png/gif
+#id
+importX "swf_imagej" swf_imagej
+#id
+importX "swf_imagej_alpha" swf_imagej_alpha
 #id
 importX "swf_jpeg" swf_jpeg
 #id
@@ -44,6 +51,7 @@ importX "swf_jpeg_alpha" swf_jpeg_alpha
 importX "swf_gif_width" swf_gif_width
 #height
 importX "swf_gif_height" swf_gif_height
+
 #utils
 importX "swf_done" swf_done
 importX "swf_new" swf_new

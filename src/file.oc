@@ -96,13 +96,13 @@ function file_open(ss filepath,sd flags)
 endfunction
 #offset
 function file_seek(sd file,sd off,sd method)
-    sd seekint
+	sd seekint
 	setcall seekint lseek(file,off,method) #Some devices are incapable of seeking and POSIX does not specify which devices must support lseek
 	#in the rest: a normal error will be when file is to large and seeking there
-    If seekint=-1
-        vstr seekerr="File seek error"
-        call error(seekerr)
-    endif
+	If seekint=-1
+		vstr seekerr="File seek error"
+		call error(seekerr)
+	endif
 	return seekint
 endfunction
 #offset
@@ -135,20 +135,20 @@ function file_get_content(ss filepath,sv p_size)  #size is a stack variable
 		dec size
 	end
 	call file_get_content__resources((TRUE),(fd_none),mem)
-	call file_read(file,mem,size)
+	call read(file,mem,size)
 	if p_size=(NULL)
 		add size mem
 		set size# (Nullchar)
 	end
 	return mem
 endfunction
-function file_read(sd file,sd mem,sd size)
-    sd read_sz
-    setcall read_sz read(file,mem,size)
-    if read_sz!=size
-        call error("Read length is different or error")
-    endif
-endfunction
+#function file_read(sd file,sd mem,sd size)
+#    sd read_sz
+#    setcall read_sz read(file,mem,size)
+#    if read_sz!=size
+#        call error("Read length is different or error")
+#    endif
+#endfunction
 
 #write
 
@@ -210,9 +210,38 @@ function filepath_get_word(ss imagepath,sd offset,ss err)
 	if size<^offsetandword
 		call error(err)
 	endif
-	call file_seek(file,offset,(SEEK_SET))
+	call lseek(file,offset,(SEEK_SET))
 	sw dim=0  #sw is long at the moment
-	call file_read(file,#dim,(WORD))
+	call read(file,#dim,(WORD))
+	call file_resources_free()
+	return dim
+endfunction
+
+#file
+function dblsize_start(ss imagepath,sd p_size,ss p_ver)
+	sd file
+	setcall file file_open(imagepath,(_open_read))
+	call file_resources_set(file)
+	setcall p_size# filesize(file)
+	if p_size#<^(dblsignature)
+		call error("error at dblsize start")
+	end
+	charx sig#2
+	charx imp#1
+	charx *#1
+	call read(file,#sig,(DWORD)) #if not with errors, like read() to be a macro and be inserted there?
+	set p_ver# imp
+	return file
+endfunction
+function dblsize_end(sd file,sd size,sd offset)
+	sd offsetandword;set offsetandword offset
+	add offsetandword (WORD)
+	if size<^offsetandword
+		call error("error at dblsize end")
+	endif
+	call lseek(file,offset,(SEEK_SET))
+	sw dim=0  #sw is long at the moment
+	call read(file,#dim,(WORD))
 	call file_resources_free()
 	return dim
 endfunction

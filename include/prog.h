@@ -147,4 +147,5 @@ include "xlog.oh"
 
 const dblsignature=4
 const dblsize=4
+const dblsize16=2
 const dblformat=1
