@@ -1,3 +1,9 @@
+actionswf (1-126) bionic; urgency=medium
+
+  * image jpeg/png/gif
+
+ -- bc <bc@bc-desktop>  Mon, 03 Mar 2025 07:22:27 +0200
+
 actionswf (1-125) bionic; urgency=medium
 
   * jpeg/png/gif
