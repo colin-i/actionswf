@@ -11,6 +11,10 @@ endif
 ifndef linkerflags
 linkerflags=-O3 -s
 endif
+ifndef compilerflags
+compilerflags=${linkerflags}
+endif
+
 ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
 		model=-m32
