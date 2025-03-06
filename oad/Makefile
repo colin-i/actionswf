@@ -29,6 +29,8 @@ libname=liboadbgdata.so
 exte=libexte.a
 
 all: ${libname} oadbgdata.h
+oadbgdata.h: oadbgdatas.h #anyway will do it at objects
+
 re:
 	$(MAKE) clean
 	$(MAKE) all
