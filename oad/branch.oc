@@ -85,8 +85,8 @@ import "print_einline" print_einline
 import "prints_inline" prints_inline
 import "printt" printt
 
-function branch_code(ssu code,valueu end,ss _a,ss _b,ss form)
-	ssu start;set start code
+function branch_code(ss code,valueu end,ss _a,ss _b,ss form)
+	ss start;set start code
 	charx a#1;charx b#1
 	set a _a#;set b _b#
 	add end code

@@ -103,7 +103,7 @@ function memdec(ss start,value end)
 	return val
 end
 #end
-function memhex_parse_withinc(ssu start,swu out) #arecordheader,function,if,jump are 15/16 bits at max
+function memhex_parse_withinc(ss start,swu out) #arecordheader,function,if,jump are 15/16 bits at max
 	inc start
 	ss a;set a start
 	whiletrue #the action row is ending in new line
