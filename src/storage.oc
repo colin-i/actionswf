@@ -112,22 +112,22 @@ import "def_mem" def_mem
 import "debug_show" debug_show
 
 function swf_mem(sd proc,sd arg,sd len)
-    vdata path_mem=NULL
-    #4-7 is 0
-    data path_size#1
-    data filelength_offset#1
-    data file_out=fd_error
+	vdata path_mem=NULL
+	#4-7 is 0
+	data path_size#1
+	data filelength_offseted#1
+	data file_out=fd_error
 
-    data id#1
+	data id#1
 	#data main_id#1 #was moved to a throwless location
-    value call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
+	value call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 
-    data id_stack#1
+	data id_stack#1
 
 	if proc=(mem_exp_change_back)
-        set id swf_frames_reg.main_id
-        set call_struct c_main
-        ret
+		set id swf_frames_reg.main_id
+		set call_struct c_main
+		ret
 	endif
 	if proc=(mem_exp_change_pool)  #this can be stackable, at debug titles, at normal usage is back at the main id
 	#is after action_code_values_init
@@ -168,7 +168,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		import "push_init" push_init
 		call push_init()
 		#
-		set filelength_offset len
+		set filelength_offseted len
 		#
 		ret
 	endif
@@ -193,36 +193,56 @@ function swf_mem(sd proc,sd arg,sd len)
 		endif
 		ret
 	endif
-    if path_mem=(NULL)
-    #swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
-        call error("there isn't a swf started")
-    endif
-    if proc=(mem_exp_add)
-        #blockMain blockPool
-        sv p_block
-        setcall p_block call_struct((ids_get_pointer),id)
-        call mem_block_add(p_block,arg,len)
-    elseif proc=(mem_exp_change)
+	if path_mem=(NULL)
+	#swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
+		call error("there isn't a swf started")
+	endif
+	if proc=(mem_exp_add)
+		#blockMain blockPool
+		sv p_block
+		setcall p_block call_struct((ids_get_pointer),id)
+		call mem_block_add(p_block,arg,len)
+	elseif proc=(mem_exp_change)
 		set id arg
 		set call_struct c_main
-    else
-    #if proc==(mem_exp_done)
-        call swf_tag_end()
+	else
+	#if proc==(mem_exp_done)
+		call swf_tag_end()
 
-        sd block
-        setcall block call_struct((ids_get),swf_frames_reg.main_id)
-        sd mem;sd size;call block_get_mem_size(block,#mem,#size)
+		sd block
+		setcall block call_struct((ids_get),swf_frames_reg.main_id)
+		ss mem;sd size;call block_get_mem_size(block,#mem,#size)
 
-        sd pointer
-        set pointer mem
-        add pointer filelength_offset
-        set pointer# size
+		sd pointer
+		set pointer mem
+		add pointer filelength_offseted
+		set pointer# size
 
-        import "file_open" file_open
-        setcall file_out file_open(path_mem,(_open_write))
-        import "file_write" file_write
-        call file_write(file_out,mem,size)
-    endelse
+		import "file_open" file_open
+		setcall file_out file_open(path_mem,(_open_write))
+
+#		and flags (flag_compressed)
+#		if flags==0
+			import "file_write" file_write
+			call file_write(file_out,mem,size)
+#		else
+#			set mem 'C'
+#			add filelength_offseted (DWORD)
+#			call file_write(file_out,mem,filelength_offseted)
+#			sub size filelength_offseted
+#			ss dest
+#			sv destsize
+#			set destsize compressBound(size)
+#			malloc destsize
+#			if dest
+#				sd er;set er compress(#dest,#destsize,pointer,size)
+#				if er=Z_OK
+#					call file_write or free dest(file_out,dest,destsize)
+#					free dest
+#					ret
+#			error "compress error"
+#		end
+	endelse
 endfunction
 function swf_mem_add(ss dest,sd size)
     call swf_mem((mem_exp_add),dest,size)
