@@ -50,9 +50,11 @@ doaction () {
 	done
 }
 number_expected () {
-	case ${p} in
-		''|*[!0-9]*) echo "error: Not a number"; exit 1 ;;
-	esac #This rejects empty strings and strings containing non-digits
+	if [ -z "${no_number_check}" ]; then
+		case ${p} in
+			''|*[!0-9]*) echo "error: Not a number"; exit 1 ;;
+		esac #This rejects empty strings and strings containing non-digits
+	fi
 }
 new_tag () {
 	number_expected

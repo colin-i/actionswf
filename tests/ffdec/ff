@@ -9,7 +9,7 @@ LD_LIBRARY_PATH=${LD_LIBRARY_PATH} qq ./a.out && {
 	if [ -z "${a}" ]; then a=0
 	elif [ ${a} = -1 ]; then exit; fi
 	if [ -n "${wait}" ]; then read; fi
-	isdebug=x LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${bashdbg} ../../oaalternative a.swf "qq ./a.out ${a}" || {
+	isdebug=x no_number_check=x LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${bashdbg} ../../oaalternative a.swf "qq ./a.out ${a}" || {
 		swfdump -D${1} a.swf.orig > 1
 		swfdump -D${1} a.swf > 2
 		diff 1 2 --color
