@@ -7,13 +7,13 @@ einclude "../../dev/import.oh"
 
 include "../entryraw.oc" "../entry.oc"
 
-sd f=debug_titles
+sd f
 if argc=1
-	set f (debug_log|flag_pool_write)
+	set f (debug_log|flag_pool_write)      #pool read write is only for test, the real test for them was at first test, here to fast work not needing unique strings
 else
 	importx "puts" puts
 	call puts("debug_alt flag_pool_read")
-	set f (debug_alt|flag_pool_read)
+	or f (debug_alt|flag_pool_read)        #if with log, only to test
 	sub a1# (0x30)
 	or f a1#
 end

@@ -1,3 +1,4 @@
+#!/bin/bash
 
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #isdebug=
@@ -29,9 +30,6 @@ mkdir -p ${out}
 
 cd ${folder}
 
-v=
-if [ -n "${isdebug}" ]; then v=-v; fi
-
 move () {
 	mv ${v} "${1}" ${2}
 	if [ -n "${isdebug}" ]; then
@@ -51,7 +49,13 @@ doaction () {
 		move ${var} ../${out}/${f}
 	done
 }
+number_expected () {
+	case ${p} in
+		''|*[!0-9]*) echo "error: Not a number"; exit 1 ;;
+	esac #This rejects empty strings and strings containing non-digits
+}
 new_tag () {
+	number_expected
 	s=${p}
 	t= #type
 	if [ -n "${isdebug}" ]; then echo id = ${s}; fi
@@ -60,6 +64,8 @@ new_tag () {
 ainits_counter=1
 ainits=( )
 s= #id
+v=
+if [ -n "${isdebug}" ]; then v=-v; set -x; fi
 while read p; do
 	if [ -z "${s}" ]; then
 		new_tag
@@ -68,6 +74,7 @@ while read p; do
 			if [ -z "${p}" ]; then
 				t=1 #can be show or done
 			else
+				number_expected
 				t=2 #action
 				at=${p}
 				if [ -n "${isdebug}" ]; then echo at = ${at}; fi
@@ -78,6 +85,7 @@ while read p; do
 				echo show
 			else
 			#done
+				number_expected
 				if [ -n "${isdebug}" ]; then echo finalId = ${p}; fi
 				if [ "${ainits[${s}]}" = 1 ]; then #button or DoInitAction sprite
 					f=`find -name "BUTTONCONDACTION on(release).as" | grep "DefineButton2_${p}"`
