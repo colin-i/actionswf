@@ -1,12 +1,12 @@
 
 #init order is: pool x log alt titles asShows forin
-#then a good workflows is: log|write,alt,oaalternative
+#then a good workflows is: log,oaalternative with alt,prexx,xx
 
 const debug_none=0
 const debug_log=0x1
 const debug_alt=0x2
 const debug_titles=0x4        #oad is also counting on this, but is not good for ffdec
-const debug_x=0x8             #oaalternative will try to error a log that was with debug_x
+const debug_x=0x8             #oaalternative will try to error a log that was with prexx
 const debug_x_pad=0x10
 
 const flag_forin1=0x20
