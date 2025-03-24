@@ -17,6 +17,9 @@ sfile=${name}.swf
 OFLAGS=conv_64 ${conv_64}
 linkname=actionswf
 linkfile=${linkname}.lib
+ifndef _L
+	_L=../src
+endif
 
 ifeq (${platform},win)
 	OFLAGS += inplace_reloc 0
@@ -32,9 +35,6 @@ else
 	endif
 	#exit_end 1 #same problem as ocompiler, even at qemu-amd64
 	#endif
-	ifndef _L
-		_L=../src
-	endif
 endif
 
 all: build exe
@@ -66,16 +66,21 @@ link:
 		if [ "${conv_64}" = "1" ]; then \
 			i686-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
 		else \
-			x86_64-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+			x86_64-w64-mingw32-gcc ${linkerflags} ${name}.o -o ${name}.exe -L. -l${linkname}; \
 		fi \
 	fi
 #launchpad amd64 is segmentation with ld instead of cc
 #				$(CC) ${linkerflags} -m32 ${name}.o -o ${name} -L../src -l:${libname}; \
+#x86_64-w64-mingw32-ld ${linkerflags} ${name}.o -entry main -lmsvcrt -o ${name}.exe -L. -l${linkname}; \
+#at win gcc-mingw-w64-x86-64-win32 , because ld will not argc first argument
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
 		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} && \
 		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x; \
+	else \
+		WINEPATH=${_L} ${launcher} ./${name}.exe && \
+		WINEPATH=${_L} ${launcher} ./${name}.exe x; \
 	fi
 #\? is 0x3f log,alt,titles,x , inside -0x30, 0 is 0x30, \; to 0xb log,alt,x , = is 0xd log,titles,x
 
