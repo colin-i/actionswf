@@ -36,7 +36,7 @@ import "identifiers_get" identifiers_get
 
 functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
 	valuex bp#1;base bp;call ebase(bp)
-	callg swf_new_ex_local(path,width,height,backgroundcolor,fps,(debug_none))
+	callg swf_new_ex_local(path,width,height,backgroundcolor,fps,(flag_none))
 endfunction
 
 import "swf_button_base" swf_button_base

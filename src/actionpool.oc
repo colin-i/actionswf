@@ -61,7 +61,7 @@ function pool_init(sd flags)
 		else
 			set pool_data.write (FALSE) #most of are write else read
 			set pool_data.read (TRUE)
-			and flags (~flag_pool_write)
+			and flags (~flagpre_pool_write)
 		end
 		return flags
 	end

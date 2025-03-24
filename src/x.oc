@@ -135,7 +135,7 @@ function x_init(sd flags,sd path)
 		if test=0 #save
 			set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
 			datax flag#1
-			set flag (debug_x_pad)
+			set flag (flagpre_x_pad)
 			and flag flags
 		else #restore ,no parse, no log/alt
 			sd file;set file f_open_mem(b,"rb")
@@ -169,7 +169,7 @@ function debug_x_pointers(valuex start,valuex size)
 
 		inc size  ##is on last \0
 		sub size start
-		if x_init.flag=(debug_x_pad)
+		if x_init.flag=(flagpre_x_pad)
 			set mark f_tell(x_data.f) #long
 			add mark (xlog_strings_size)
 			add mark size    ##overflow is same
@@ -204,7 +204,7 @@ function debug_x_pointers(valuex start,valuex size)
 		end
 		set mark f_tell(x_data.f)
 		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
-		if x_init.flag=(debug_x_pad)
+		if x_init.flag=(flagpre_x_pad)
 			if pad!=0
 				char zero={0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #47 pad is maximum
 				call f_write(x_data.f,#zero,pad)

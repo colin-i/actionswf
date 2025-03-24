@@ -6,14 +6,14 @@ importx "_exit" exit
 einclude "../../dev/import.oh"
 
 include "../entryraw.oc" "../entry.oc"
-
 sd f
 if argc=1
-	set f (debug_log|flag_pool_write)      #pool read write is only for test, the real test for them was at first test, here to fast work not needing unique strings
+	set f (prexx_flags|flagpre_mix) #also prexx_flag to test flagpre_mix
+	#pool read write is only for test, the real test for them was at first test, here to fast work not needing unique strings
 else
 	importx "puts" puts
-	call puts("debug_alt flag_pool_read")
-	or f (debug_alt|flag_pool_read)        #if with log, only to test
+	call puts("flag_alt flag_pool_read")
+	or f (flag_alt|flag_pool_read)        #if with log, only to test
 	sub a1# (0x30)
 	or f a1#
 end

@@ -6,13 +6,13 @@ constif TRUE=1
 function oadata()
 	valuexu sprites#1
 	dataxu sprites_size#1 ;#1(root)+ui16 *: ,for free
-	#dtitles has a constant pool end recognizer for frame_one/frame
 
 	#these are pointers to actions
 	valuexu functions#1   #is this in conflict with for3 same sign? no, there will be another offset, remembering that offset at functions is at start
 	dataxu functions_size#1  #anyway is using a counter at appending (preferred instead of null), DefineFunction is at minimum 8 same as : then swfsizeui32 minus some tags
 	#can stay outside, anyway is good for info
-	#here dtitles has a push/pop recognizer
+	#dtitles has a constant pool end recognizer for frame_one(ainit,button)/frame
+	#for functions, dtitles has a push/pop recognizer
 
 	valueu marks#1
 	valueu size#1

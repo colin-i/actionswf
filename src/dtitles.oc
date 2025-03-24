@@ -63,7 +63,7 @@ function dtitles_conclude_record(sd mem,sd finalidstr)
 end
 
 function dtitles_init(sd flags)
-	and flags (debug_titles)
+	and flags (flag_titles)
 	if flags!=0
 		set dtitles_conclude.bool (TRUE)
 		dataxu func#1 #like ui32 swf size

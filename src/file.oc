@@ -71,12 +71,17 @@ function f_open(sd path,sd format)
 end
 #file
 function f_open_mem(sd path,sd format)
+	sd f;set f f_open_mem_ex(path,format)
+	call free(path)
+	return f
+endfunction
+#file
+function f_open_mem_ex(sd path,sd format)
 	sd f;setcall f fopen(path,format)
 	if f=(NULL)
 		call free(path)
 		call error(f_open.err)
 	endif
-	call free(path)
 	return f
 endfunction
 

@@ -11,8 +11,11 @@ cd ${dname} || exit 1
 
 bname=`basename ${1}`
 
-log=${bname}.log
-if [ ! -e ${log} ]; then echo no log; exit 1; fi
+log=${bname}.log.log
+if [ ! -e ${log} ]; then
+	log=${bname}.log
+	if [ ! -e ${log} ]; then echo no log; exit 1; fi
+fi
 
 folder="${bname%.*}"
 if [ -n "${isdebug}" ]; then echo ${folder}; fi
