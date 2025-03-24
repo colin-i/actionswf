@@ -114,8 +114,7 @@ import "debug_show" debug_show
 function swf_mem(sd proc,sd arg,sd len)
 	vdata path_mem=NULL
 	#4-7 is 0
-	data path_size#1
-	data filelength_offseted#1
+	charx filelength_offseted#1
 	data file_out=fd_error
 
 	data id#1
@@ -149,6 +148,7 @@ function swf_mem(sd proc,sd arg,sd len)
 		endif
 		#0
 		import "memalloc" memalloc
+		svu path_size
 		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
 		call memcpy(path_mem,arg,path_size)
