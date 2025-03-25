@@ -1,3 +1,2 @@
 
-if [ -z "${WINEPREFIX}" ]; then WINEPREFIX="/home/bc/a/wine"; fi
-WINEPREFIX=${WINEPREFIX} launcher=wine64 linkerflags= ./makewin64
+launcher=wine64 linkerflags= ./makewin64
