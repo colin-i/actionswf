@@ -257,7 +257,6 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 				if er=(Z_OK)
 					import "file_write_mem" file_write_mem
 					callret file_write_mem(file_out,dest,destsize) #will compress at least a RECT,ui16,ui16 + a tag(9) with the background colors
-					# and a write 0,error is also no jail
 				end
 				call free(dest)
 				call error("compress error")
