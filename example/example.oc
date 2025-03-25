@@ -13,6 +13,10 @@ const shape_lat=40
 
 ####################
 
+const flags1=flagpre_log|flagpre_pool_write|debug_xpad
+#|flagpre_write_no
+const flags2=flag_compress|flag_pool_uread|flag_x   ;#for tests/data
+
 include "entry_arg.oc" "entry.oc"
 call xlog_pad_set(0x30)
 

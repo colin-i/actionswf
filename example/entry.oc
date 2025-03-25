@@ -1,8 +1,9 @@
 
 entryraw main(sd argc,sd *argv0,ss *argv1)
-sd flags=flagpre_log|flagpre_pool_write|debug_xpad
-if argc!=1
-	or flags (flag_pool_uread|flag_x) #for tests/data
-	or flags (flag_titles)
+sd flags
+if argc=1
+	set flags (flags1)
+else
+	set flags (flags2)
 end
 #sub argv1# 0x30

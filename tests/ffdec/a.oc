@@ -9,8 +9,8 @@ include "../entryraw.oc" "../entry.oc"
 sd f
 importx "puts" puts
 if argc=1
-	call puts("prexx_flags flagpre_mix")
-	set f (prexx_flags|flagpre_mix)
+	call puts("prexx_flags flagpre_mix flagpre_write_no")
+	set f (prexx_flags|flagpre_mix|flagpre_write_no)
 elseif argc=2
 	call puts("xx_flags")
 	set f (xx_flags)
