@@ -5,6 +5,11 @@ include "../include/prog.h"
 #win32 with _
 importx "memcpy" memcpy
 
+const Z_OK=0
+importx "compressBound" compressBound
+importx "compress" compress
+importx "free" free
+
 #this is throwless here
 import "struct_ids" struct_ids
 import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
@@ -110,8 +115,9 @@ import "struct_ids_action_set" struct_ids_action_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 import "debug_show" debug_show
+import "memalloc" memalloc
 
-function swf_mem(sd proc,sd arg,sd len)
+function swf_mem(sd proc,sd arg,sd len,sd flags)
 	vdata path_mem=NULL
 	#4-7 is 0
 	charx filelength_offseted#1
@@ -143,11 +149,11 @@ function swf_mem(sd proc,sd arg,sd len)
 	if proc=(mem_exp_init)
 		#arg is file
 		#len is filelength offset
+		#flags
 		if path_mem!=(NULL)
 			call error("The previous swf was not ended.")
 		endif
 		#0
-		import "memalloc" memalloc
 		svu path_size
 		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
@@ -168,7 +174,21 @@ function swf_mem(sd proc,sd arg,sd len)
 		import "push_init" push_init
 		call push_init()
 		#
-		set filelength_offseted len
+		sd test=flagpre_write_no;and test flags
+		charx is_file_write#1
+		if test=0
+			set filelength_offseted len
+			set is_file_write (TRUE)
+			and flags (flag_compress)
+			charx is_compress#1
+			if flags!=0
+				set is_compress (TRUE)
+			else
+				set is_compress (FALSE)
+			end
+		else
+			set is_file_write (FALSE)
+		end
 		#
 		ret
 	endif
@@ -207,41 +227,44 @@ function swf_mem(sd proc,sd arg,sd len)
 		set call_struct c_main
 	else
 	#if proc==(mem_exp_done)
-		call swf_tag_end()
+		if is_file_write=(TRUE)
+			call swf_tag_end()
 
-		sd block
-		setcall block call_struct((ids_get),swf_frames_reg.main_id)
-		ss mem;sd size;call block_get_mem_size(block,#mem,#size)
+			sd block
+			setcall block call_struct((ids_get),swf_frames_reg.main_id)
+			ss mem;sd size;call block_get_mem_size(block,#mem,#size)
 
-		sd pointer
-		set pointer mem
-		add pointer filelength_offseted
-		set pointer# size
+			sd pointer
+			set pointer mem
+			add pointer filelength_offseted
+			set pointer# size
 
-		import "file_open" file_open
-		setcall file_out file_open(path_mem,(_open_write))
+			import "file_open" file_open
+			setcall file_out file_open(path_mem,(_open_write))
 
-#		and flags (flag_compressed)
-#		if flags==0
 			import "file_write" file_write
-			call file_write(file_out,mem,size)
-#		else
-#			set mem 'C'
-#			add filelength_offseted (DWORD)
-#			call file_write(file_out,mem,filelength_offseted)
-#			sub size filelength_offseted
-#			ss dest
-#			sv destsize
-#			set destsize compressBound(size)
-#			malloc destsize
-#			if dest
-#				sd er;set er compress(#dest,#destsize,pointer,size)
-#				if er=Z_OK
-#					call file_write or free dest(file_out,dest,destsize)
-#					free dest
-#					ret
-#			error "compress error"
-#		end
+			if is_compress=(TRUE)
+				set mem# (C)
+				add filelength_offseted (DWORD)
+				call file_write(file_out,mem,filelength_offseted)
+				sub size filelength_offseted
+				ss dest
+				sv destsize
+				set destsize compressBound(size)
+				set dest memalloc(destsize)
+				add pointer (DWORD)
+				sd er;set er compress(dest,#destsize,pointer,size)
+				if er=(Z_OK)
+					import "file_write_mem" file_write_mem
+					callret file_write_mem(file_out,dest,destsize) #will compress at least a RECT,ui16,ui16 + a tag(9) with the background colors
+					# and a write 0,error is also no jail
+				end
+				call free(dest)
+				call error("compress error")
+			else
+				call file_write(file_out,mem,size)
+			end
+		end
 	endelse
 endfunction
 function swf_mem_add(ss dest,sd size)

@@ -158,18 +158,23 @@ endfunction
 #write
 
 function file_write(sd file,sd buffer,sd size)
-    if size=0
-        ret
-    endif
-    sd len
-    setcall len write(file,buffer,size)
-    if len=size
-        ret
-    endif
-    vstr er="File write error"
-    call error(er)
+	sd len
+	setcall len write(file,buffer,size)
+	if len=size
+		ret
+	endif
+	vstr er="File write error"
+	call error(er)
 endfunction
-
+function file_write_mem(sd file,sd buffer,sd size)
+	sd len
+	setcall len write(file,buffer,size)
+	call free(buffer)
+	if len=size
+		ret
+	endif
+	call error(file_write.er)
+endfunction
 
 function f_printf(sd nr,sd file) #,sd *format,sd a1...,sd aN
 	sd r;set r f_printf_in(#file,nr)
