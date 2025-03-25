@@ -22,6 +22,6 @@ o a.oc logfile 0 conv_64 ${conv_64} ${inc} && {
 		fi
 	fi && {
 		if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=${_L}../src; fi
-		LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out
+		LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out ${extra}
 	}
 }
