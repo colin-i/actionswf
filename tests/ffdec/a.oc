@@ -12,11 +12,11 @@ if argc=1
 	call puts("prexx_flags flagpre_mix flagpre_write_no")
 	set f (prexx_flags|flagpre_mix|flagpre_write_no)
 elseif argc=2
-	call puts("xx_flags")
-	set f (xx_flags)
+	call puts("xx_flags flag_compress")
+	set f (xx_flags|flag_compress)
 else
-	call puts("flag_alt flag_pool_uread")
-	set f (flag_alt|flag_pool_uread)
+	call puts("flag_alt flag_pool_uread flag_compress")
+	set f (flag_alt|flag_pool_uread|flag_compress)
 end
 
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
