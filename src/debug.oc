@@ -165,7 +165,7 @@ import "strlen_of" strlen_of
 function flags_init(sd flags,sd path)
 	set flags pool_init(flags)
 	set flags x_init(flags,path)
-	call log_init(flags,path)
+	set flags log_init(flags,path)
 	call alt_init(flags,path)
 	call dtitles_init(flags)
 
@@ -173,12 +173,15 @@ function flags_init(sd flags,sd path)
 	call for_in(flags)
 endfunction
 
-function log_init(datax prexx,sd path)
+function log_init(sd flags,sd path)
 	if debug_data.file!=(NULL)
 		call error("swf started, log not closed")
 	end
+	datax prexx#1
+	set prexx flags
+	and prexx (prexx_flags)
 	sd test=flagpre_log
-	and test prexx
+	and test flags
 	if test=(flagpre_log)
 		sd size=4;addcall size strlen_of(path,4+1)
 		sd b;setcall b memalloc(size)
@@ -186,10 +189,9 @@ function log_init(datax prexx,sd path)
 		call sprintf(b,lg,path)
 		setcall debug_data.file f_open_mem_ex(b,"w+b")  #+ is because at definefunction it is reading back for delimiter character
 
-		set test prexx
-		and prexx (prexx_flags)
 		if prexx=(prexx_flags)
-			and test (flagpre_mix) #first log is with prexx, second log is for alt
+			set test (flagpre_mix) #first log is with prexx, second log is for alt
+			and test flags
 			if test!=0
 				call sprintf(b,lg,b)
 				set debug_data.file2 f_open_mem_ex(b,"wb")
@@ -201,12 +203,13 @@ function log_init(datax prexx,sd path)
 			setcall debug_data.mem memalloc(1)
 			#this is later #set debug_data.size 0
 			set debug_data.all_size 1
+
+			and flags (~antixx_write)
 		else
 			call free(b)
 		end
-	else
-		and prexx (prexx_flags)
 	end
+	return flags
 end
 
 import "f_printf" f_printf

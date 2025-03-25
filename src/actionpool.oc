@@ -61,6 +61,8 @@ function pool_init(sd flags)
 		else
 			set pool_data.write (FALSE) #most of are write else read
 			set pool_data.read (TRUE)
+			wordx read_unlink#1;set read_unlink (flag_pool_read_unlink)
+			and read_unlink flags
 			and flags (~flagpre_pool_write)
 		end
 		return flags
@@ -159,7 +161,9 @@ function pool_read(sd id,sd frame_nr)
 			add mem (pool_cursor_size)
 			call fread(mem,sz,1,f)
 			call fclose(f)
-			call unlink(name)
+			if pool_init.read_unlink!=0
+				call unlink(name)
+			end
 		end
 		call free(name)
 	end

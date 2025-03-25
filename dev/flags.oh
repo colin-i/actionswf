@@ -1,11 +1,11 @@
 
 #init order is: pool x log alt titles asShows forin
-#then a good workflows is: prexx|flagpre_mix,oaalternative with alt,xx
+#then a good workflows(for ffdec and oadbg) is: prexx_flags|flagpre_mix,oaalternative with flag_alt,xx_flags|flag_titles,and final with xx_flags|flag_pool_read_unlink
 
 const flag_none=0
 const flagpre_log=0x1
 const flag_alt=0x2
-const flag_titles=0x4         #oad is also counting on this at the final swf, and is not good for ffdec
+const flag_titles=0x4
 const flagpre_x=0x8           #oaalternative will try to if the log has prexx data
 const flagpre_x_pad=0x10
 const flag_forin1=0x20
@@ -14,10 +14,12 @@ const flag_x=0x80             #will turn off antix_read flags
 const flagpre_pool_write=0x100
 const flag_pool_read=0x200    #will turn off flag_pool_write
 const flagpre_mix=0x400
+const flag_pool_read_unlink=0x800
 
 const debug_xpad=flagpre_x|flagpre_x_pad
 const flags_pool=flagpre_pool_write|flag_pool_read
 const flags_x=flagpre_x|flag_x
-const prexx_flags=flagpre_log|flagpre_pool_write|flagpre_x
+const prexx_flags=flagpre_log|flagpre_pool_write|flagpre_x #will turn off antixx_write
 const xx_flags=flag_pool_read|flag_x
 const antix_read=flagpre_log|flag_alt|debug_xpad
+const antixx_write=flag_titles                             #oad and ffdec are counting on this

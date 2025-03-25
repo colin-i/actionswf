@@ -11,8 +11,8 @@ call xlog_pad_set(0x30)
 sd f=flagpre_log|flagpre_pool_write|debug_xpad
 if argc=2
 	importx "puts" puts
-	call puts("flag_x flag_pool_read flag_titles")
-	or f (flag_pool_read|flag_x|flag_titles)
+	call puts("flag_pool_uread flag_x flag_titles")
+	or f (flag_pool_uread|flag_x|flag_titles)
 end
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 
