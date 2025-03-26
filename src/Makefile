@@ -66,9 +66,9 @@ OFLAGS += inplace_reloc 0 include_sec 1
 all: compile ounused link def
 link:
 	if [ "${conv_64}" = "1" ]; then \
-		i686-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -L. -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		i686-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt ${L} -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	else \
-		x86_64-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt -L. -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
+		x86_64-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt ${L} -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
 #on 64 is mingw-w64-x86-64-dev
 
@@ -82,13 +82,14 @@ OFLAGS += underscore_pref 1
 all: ${libname}
 
 ifeq (${conv_64},1)
-ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc -lz -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 ${libname}: ${name}
 	ln -f ${name} ${libname}
 
 else
 #same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} ${L} -lc -lz -L. -l:${exte} --exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} ${L} -lc `pkg-config --libs zlib` -L. -l:${exte} --exclude-libs ${exte}
+#and pkg-config for -lc? is not in libc6-dev. where is?
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	ln -f ${name} ${libname}
