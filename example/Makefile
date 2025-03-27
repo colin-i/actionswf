@@ -79,8 +79,9 @@ exe:
 		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} && \
 		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x; \
 	else \
-		WINEPATH=${_L} ${launcher} ./${name}.exe && \
-		WINEPATH=${_L} ${launcher} ./${name}.exe x; \
+		export WINEPATH=${WINEPATH}\;${_L}; \
+		${launcher} ./${name}.exe && \
+		${launcher} ./${name}.exe x; \
 	fi
 
 %: %.oc

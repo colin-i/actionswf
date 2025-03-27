@@ -1,4 +1,4 @@
 
-./makewin 64 $@
+depend_dll_path=${HOME}/x86_64_lib_mingw ./makewin 64 $@
 
 #when diff these dlls, expect alt least time/date (twice) and checksum

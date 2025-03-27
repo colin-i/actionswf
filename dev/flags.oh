@@ -1,6 +1,7 @@
 
 #init order is: pool x log alt titles asShows forin
 #a good workflow(for ffdec and oadbg): prexx_flags|flagpre_mix|flagpre_write_no,xx_flags|flag_titles,xx_flags|flag_compress,oaalternative with flag_alt|flag_pool_read_unlink|flag_compress
+#or:                              prexx_flags|flagpre_mix,oaalternative with flag_alt|flag_pool_read,xx_flags|flag_titles  ,xx_flags|flag_pool_read_unlink|flag_compress
 
 const flag_none=0
 const flagpre_log=0x1

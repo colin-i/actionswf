@@ -22,7 +22,7 @@ folder="${bname%.*}"
 if [ -n "${isdebug}" ]; then echo ${folder}; fi
 
 if [ -z "${isdebug}" ]; then
-	ffdec -export script ${folder} ${1} > /dev/null || exit 1  #silent somehow
+	ffdec -export script ${folder} ${1} > /dev/null || exit 1
 else
 	echo ffdec -export script ${folder} ${1}
 	ffdec -export script ${folder} ${1} || exit 1
@@ -71,7 +71,7 @@ ainits_counter=1
 ainits=( )
 s= #id
 v=
-if [ -n "${isdebug}" ]; then v=-v; set -x; fi
+if [ -n "${isdebug}" ]; then v=-v; fi #; set -x
 while read p; do
 	if [ -z "${s}" ]; then
 		new_tag
