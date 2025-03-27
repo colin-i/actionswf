@@ -9,8 +9,8 @@ shift
 cd .. && \
 mkdir actionswf && \
 mv src/actionswf.dll actionswf && \
-mv ${depend_dll_path}/libzlib1.dll actionswf && \
-mv ${depend_dll_path}/libssp-0.dll actionswf && \
+ln ${depend_dll_path}/libzlib1.dll actionswf && \
+ln ${depend_dll_path}/libssp-0.dll actionswf && \
 cd src && \
 ./makewin${ver} clean && \
 cd .. && \
