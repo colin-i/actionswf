@@ -97,6 +97,7 @@ clean:
 	-rm -f ${sfile}.x ${sfile}.xx
 	-rm -f ${sfile}
 	-rm -f ${sfile}.data
+	-rm -f expected.swf
 
 distclean: clean
 
@@ -106,7 +107,9 @@ install:
 uninstall:
 	echo "No uninstall"
 
-test:
+expected.swf:
+	ffdec -decompress expected.c.swf expected.swf
+test: expected.swf
 	diff ${sfile} expected.swf
 
 .PHONY: all build uns lib link exe install clean distclean uninstall test
