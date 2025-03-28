@@ -2,3 +2,4 @@
 example/expected.swf
 tests/.expected/example.swf.data
 tests/.expected/example.swf.data32
+example/expected.c.swf
