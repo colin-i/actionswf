@@ -1,3 +1,9 @@
+actionswf (1-130) bionic; urgency=medium
+
+  * pkg-config
+
+ -- bc <bc@bc-desktop>  Fri, 28 Mar 2025 09:20:46 +0200
+
 actionswf (1-129) bionic; urgency=medium
 
   * fix: -lz
