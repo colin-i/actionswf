@@ -16,7 +16,7 @@ o a.oc logfile 0 conv_64 ${conv_64} ${inc} && {
 		fi
 	else
 		if [ -z "${LD_LIBRARY_PATH}" ]; then
-			cc a.o -lz -L${_L}../src -lactionswf
+			cc a.o -lz -L${_L}../src -lactionswf #local cc has -lz? bionic i386 cc has no -lz? who cares
 		else
 			cc a.o -lz -L${LD_LIBRARY_PATH} -lactionswf
 		fi
