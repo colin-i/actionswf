@@ -112,7 +112,7 @@ expected.swf:
 test: expected.swf
 	diff ${sfile} expected.swf
 expected.c.swf: build
-	x3=x $(MAKE) -f Makefile exe
+	x3=x $(MAKE) exe
 	mv example.swf $@
 
 .PHONY: all build uns lib link exe install clean distclean uninstall test
