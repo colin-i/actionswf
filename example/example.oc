@@ -16,6 +16,7 @@ const shape_lat=40
 const flags1=flagpre_log|flagpre_pool_write|debug_xpad
 #|flagpre_write_no
 const flags2=flag_pool_uread|flag_x   ;#for tests/data . flag_compress is at ffdec test, and here will compare from 2 different(maybe) zlibs
+const flags3=flags2|flag_compress
 
 include "entry_arg.oc" "entry.oc"
 call xlog_pad_set(0x30)
