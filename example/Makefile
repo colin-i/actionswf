@@ -77,11 +77,11 @@ link:
 exe:
 	if [ "${platform}" = "lin" ]; then \
 		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} && \
-		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x; \
+		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x ${x3}; \
 	else \
 		export WINEPATH=${WINEPATH}\;${_L}; \
 		${launcher} ./${name}.exe && \
-		${launcher} ./${name}.exe x; \
+		${launcher} ./${name}.exe x ${x3}; \
 	fi
 
 %: %.oc
@@ -108,9 +108,12 @@ uninstall:
 	echo "No uninstall"
 
 expected.swf:
-	ffdec -decompress expected.c.swf expected.swf
+	ffdec -decompress expected.c.swf $@
 test: expected.swf
 	diff ${sfile} expected.swf
+expected.c.swf: build
+	$(MAKE) -f Makefile x3=x
+	mv example.swf $@
 
 .PHONY: all build uns lib link exe install clean distclean uninstall test
 
