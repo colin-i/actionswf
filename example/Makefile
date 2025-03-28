@@ -58,7 +58,7 @@ link:
 		if [ "${conv_64}" = "1" ]; then \
 			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc -lz -L${_L} -l:${libname}; \
 		elif [ -z "${ldprefer}" ]; then \
-			$(CC) ${linkerflags} ${name}.o -o ${name} -L${_L} -l:${libname}; \
+			$(CC) ${linkerflags} ${name}.o -o ${name} -lz -L${_L} -l:${libname}; \
 		else \
 			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} ${L} -lc -lz -L${_L} -l:${libname}; \
 		fi \

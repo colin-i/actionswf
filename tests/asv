@@ -12,13 +12,13 @@ o a.oc logfile 0 conv_64 ${conv_64} ${inc} && {
 			LD_LIBRARY_PATH=/home/bc/Desktop/out/ld/usr/lib/i386-linux-gnu /home/bc/Desktop/out/ld/usr/bin/i686-linux-gnu-ld.bfd \
 				--dynamic-linker=/lib/ld-linux.so.2 a.o -entry main -lc -lz -L${_L}../src -lactionswf
 		else
-			cc a.o -L${_L}../src -lactionswf
+			cc a.o -lz -L${_L}../src -lactionswf
 		fi
 	else
 		if [ -z "${LD_LIBRARY_PATH}" ]; then
-			cc a.o -L${_L}../src -lactionswf
+			cc a.o -lz -L${_L}../src -lactionswf
 		else
-			cc a.o -L${LD_LIBRARY_PATH} -lactionswf
+			cc a.o -lz -L${LD_LIBRARY_PATH} -lactionswf
 		fi
 	fi && {
 		if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=${_L}../src; fi
