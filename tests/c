@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # 0 is diff and move else is diff or exit, without ${1} is clean
 
 if [ -z "${1}" ]; then
@@ -7,11 +7,11 @@ if [ -z "${1}" ]; then
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
 	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
 else
-source ./xxd
+. ./xxd
 smart_diff () {
 	diff ${1} ${2}
 	if [ $? = 0 ]; then
-		ok+=" + `du -b ${1}`"
+		ok="${ok} + `du -b ${1}`"
 		return 0
 	fi
 	if [ -n "${3}" ]; then return 1; fi
