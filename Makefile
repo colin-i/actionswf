@@ -14,10 +14,11 @@ $(SUBDIRS):
 	$(MAKE) -C $@ conv_64=${conv_64} $(MAKECMDGOALS)
 
 test:
-	cd tests && conv_64=${conv_64} $(SHELL) ./as && conv_64=${conv_64} $(SHELL) ./c 1 && cd ffdec && conv_64=${conv_64} $(SHELL) ./as && \
-	cd ../data && conv_64=${conv_64} $(SHELL) ./test x && echo tests ok
+	RUN__SHELL=$(SHELL) . ./shl && cd tests && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
+	cd ffdec && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
+	cd ../data && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./test x && echo tests ok
 clean:
-	cd tests; $(SHELL) ./c; cd ffdec; $(SHELL) ./c; cd ../data; $(SHELL) ./c
+	RUN__SHELL=$(SHELL) . ./shl && cd tests && $${RUN__SHELL} ./c && cd ffdec && $${RUN__SHELL} ./c && cd ../data && $${RUN__SHELL} ./c
 install:
 	install -D oaalternative $(DESTDIR)$(prefix)/bin/oaalternative
 uninstall:
