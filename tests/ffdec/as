@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=../../src; fi
 isdebug=x _L=../ ${RUN__SHELL} ../asv && \
 extra=x isdebug=x _L=../ ${RUN__SHELL} ../asv && \

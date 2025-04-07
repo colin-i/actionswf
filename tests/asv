@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 inc="include_sec 1"
 if [ -z "${conv_64}" ]; then conv_64=0
 elif [ ${conv_64} = 1 ]; then
