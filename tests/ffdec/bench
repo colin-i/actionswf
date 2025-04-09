@@ -1,0 +1,22 @@
+
+f=../../dev/flags.oh
+srch () {
+	b=`cat $f | grep -Po "(?<=^const $1=)[^ ]*"`
+	if [ `expr substr $b 1 1` != 0 ]; then
+		b=`echo $b | sed "s/|/ /g"`
+		for c in $b; do
+			srch $c
+		done
+		return
+	fi
+	z="${z} ${b}"
+}
+step () {
+	echo "$@"
+	z=
+	for a in $@; do
+		srch $a
+		z="$z "
+	done
+	echo "$z"
+}

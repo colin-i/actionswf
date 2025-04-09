@@ -1,2 +1,9 @@
 
 echo bench2
+
+. bench
+
+step prexx_flags flagpre_mix
+step flag_alt flag_pool_read
+step xx_flags flag_titles
+step xx_flags flag_pool_read_unlink flag_compress
