@@ -18,9 +18,10 @@ elif argc=3
 	call puts("flag_alt flag_pool_uread flag_compress")
 	set f (flag_alt|flag_pool_uread|flag_compress)
 else
-	call puts("profiler")
-	importx "sprintf" sprintf
-	call sprintf(#f,"%lu",a1) #long is only to test
+	importx "sscanf" sscanf
+	call sscanf(a1,"%lu",#f)  #long is only to test
+	importx "printf" printf
+	call printf("profiler %lu",f)  #long is only to test
 end
 
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
