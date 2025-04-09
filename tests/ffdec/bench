@@ -12,8 +12,8 @@ srch () {
 	z="${z} ${b}"
 }
 step () {
-	com=$1
-	shift
+	com=$1;shift
+	com2=$1;shift
 	echo "$@"
 	z=
 	for a in $@; do
@@ -23,7 +23,7 @@ step () {
 	n=$(echo $z | sed "s/ /|/g")
 	n="\$((${n}))"
 	n=`eval echo $n`
-	${com} 0x`printf "%x" $n` x x
+	${com} "${com2} 0x`printf "%x" $n` x x"
 }
 
 #OCOMP
