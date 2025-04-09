@@ -3,7 +3,7 @@ echo bench1
 
 . bench
 
-step prexx_flags flagpre_mix flagpre_write_no
-step xx_flags flag_titles
-step xx_flags flag_compress
-step flag_alt flag_pool_read_unlink flag_compress
+step echo prexx_flags flagpre_mix flagpre_write_no
+step echo xx_flags flag_titles
+step echo xx_flags flag_compress
+step echo flag_alt flag_pool_read_unlink flag_compress

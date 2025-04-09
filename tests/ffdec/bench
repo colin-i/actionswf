@@ -12,17 +12,19 @@ srch () {
 	z="${z} ${b}"
 }
 step () {
+	com=$1
+	shift
 	echo "$@"
 	z=
 	for a in $@; do
 		srch $a
 		z="$z "
 	done
-	echo "$z"
 	n=$(echo $z | sed "s/ /|/g")
 	n="\$((${n}))"
 	n=`eval echo $n`
-	#OCOMP
-	#ld
-	#./a.out $n x x
+	${com} 0x`printf "%x" $n` x x
 }
+
+#OCOMP
+#ld

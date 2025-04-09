@@ -6,7 +6,7 @@ importx "_exit" exit
 einclude "../../dev/import.oh"
 
 include "../entryraw.oc" "../entry.oc"
-sd f
+dataxu f#1
 importx "puts" puts
 if argc=1
 	call puts("prexx_flags flagpre_mix flagpre_write_no")
@@ -19,9 +19,9 @@ elif argc=3
 	set f (flag_alt|flag_pool_uread|flag_compress)
 else
 	importx "sscanf" sscanf
-	call sscanf(a1,"%lu",#f)  #long is only to test
+	call sscanf(a1,"%x",#f)  #long is only to test
 	importx "printf" printf
-	call printf("profiler %lu",f)  #long is only to test
+	call printf("profiler %x",f)  #long is only to test
 end
 
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
