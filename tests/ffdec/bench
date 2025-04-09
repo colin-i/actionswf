@@ -19,4 +19,10 @@ step () {
 		z="$z "
 	done
 	echo "$z"
+	n=$(echo $z | sed "s/ /|/g")
+	n="\$((${n}))"
+	n=`eval echo $n`
+	#OCOMP
+	#ld
+	#./a.out $n x x
 }
