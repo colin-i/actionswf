@@ -1,5 +1,7 @@
 
 f=../../dev/flags.oh
+export LD_LIBRARY_PATH=/home/bc/x86_64_lib/cross:../../src
+level_index=1
 srch () {
 	b=`cat $f | grep -Po "(?<=^const $1=)[^ ]*"`
 	if [ `expr substr $b 1 1` != 0 ]; then
@@ -13,7 +15,6 @@ srch () {
 }
 step () {
 	com=$1;shift
-	com2=$1;shift
 	echo "$@"
 	z=
 	for a in $@; do
@@ -23,8 +24,7 @@ step () {
 	n=$(echo $z | sed "s/ /|/g")
 	n="\$((${n}))"
 	n=`eval echo $n`
-	${com} "${com2} 0x`printf "%x" $n` x x"
+	${com} "qq ./a.out 0x`printf "%x" $n` x x"
+	if [ -n "${level}" ] && [ ${level} = ${level_index} ]; then exit; fi
+	level_index=$((level_index+1))
 }
-
-#OCOMP
-#ld
