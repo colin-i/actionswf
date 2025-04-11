@@ -1,2 +1,2 @@
 
-LD_LIBRARY_PATH=/home/bc/before LD=/home/bc/before/x86_64-linux-gnu-ld.bfd L=-L/home/bc/before/lib OFLAGSEXTRA+=" inplace_reloc 0" ./m64d $@
+LD=/usr/x86_64-linux-gnu/bin/ld L=-L/home/bc/x86_64_lib/cross OFLAGSEXTRA+=" inplace_reloc 0" ./m64d $@

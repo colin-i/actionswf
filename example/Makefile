@@ -56,11 +56,11 @@ lib:
 link:
 	if [ "${platform}" = "lin" ]; then \
 		if [ "${conv_64}" = "1" ]; then \
-			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc `pkg-config --libs zlib` -L${_L} -l:${libname}; \
+			$(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${name}.o -entry main -o ${name} -lc ${L} `pkg-config --libs zlib` -L${_L} -l:${libname}; \
 		elif [ -z "${ldprefer}" ]; then \
 			$(CC) ${linkerflags} ${name}.o -o ${name} `pkg-config --libs zlib` -L${_L} -l:${libname}; \
 		else \
-			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} ${L} -lc `pkg-config --libs zlib` -L${_L} -l:${libname}; \
+			$(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${name}.o -entry main -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L${_L} -l:${libname}; \
 		fi \
 	else \
 		if [ "${conv_64}" = "1" ]; then \
@@ -76,8 +76,8 @@ link:
 
 exe:
 	if [ "${platform}" = "lin" ]; then \
-		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} && \
-		LD_LIBRARY_PATH=${_L} ${launcher} ./${name} x ${x3}; \
+		LD_LIBRARY_PATH=${_L}${_L2} ${launcher} ./${name} && \
+		LD_LIBRARY_PATH=${_L}${_L2} ${launcher} ./${name} x ${x3}; \
 	else \
 		export WINEPATH=${WINEPATH}\;${_L}; \
 		${launcher} ./${name}.exe && \
