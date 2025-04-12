@@ -10,7 +10,7 @@ reln () {
 }
 reln a.swf.x32.txt
 reln data32.txt
-reln example.swf.data32
+reln example.swf.data32.txt
 
 if [ -n "${mirror}" ]; then git pull local master; fi && \
 if [ -z "${1}" ]; then make clean && cd src && ./mr32d && cd ../example && ./mr32d && cd ..; fi && \
