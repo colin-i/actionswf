@@ -13,8 +13,8 @@ if argc=1
 	set f (flagpre_log|flagpre_pool_write|debug_xpad|flagpre_write_no)
 else
 	importx "puts" puts
-	call puts("flag_pool_uread flag_x flag_titles")
-	set f (flag_pool_uread|flag_x|flag_titles)
+	call puts("flag_pool_read_unlink flag_x flag_titles")
+	set f (xxu_flags|flag_titles)
 end
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 

@@ -148,9 +148,9 @@ function x_init(sd flags,sd path)
 			set actionx.pointer x_data.mem
 			add actionx.end actionx.pointer
 
-			sd xx=xx_flags
+			sd xx=flags_pool_read
 			and xx flags
-			if xx=(xx_flags)
+			if xx!=0
 				inc size
 				set b memalloc(size)
 				call sprintf(b,"%s.xx",path)

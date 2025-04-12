@@ -98,6 +98,7 @@ clean:
 	-rm -f ${sfile}
 	-rm -f ${sfile}.data
 	-rm -f expected.swf
+	-rm -f expected.c.swf
 
 distclean: clean
 
@@ -108,12 +109,15 @@ uninstall:
 	echo "No uninstall"
 
 expected.swf:
+	base64 -d expected.c.swf.txt > expected.c.swf
 	ffdec -decompress expected.c.swf $@
 test: expected.swf
 	diff ${sfile} expected.swf
 expected.c.swf: build
 	x3=x $(MAKE) exe
-	mv example.swf $@
+	mv ${sfile} $@
+expected.c.swf.txt: expected.c.swf
+	base64 $< > $@
 
 .PHONY: all build uns lib link exe install clean distclean uninstall test
 

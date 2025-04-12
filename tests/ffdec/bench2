@@ -1,9 +1,4 @@
-
-echo bench2
-
-. ./bench
-
-step eval prexx_flags flagpre_mix
-step "../../oaalternative a.swf" flag_alt flag_pool_read
-step eval xx_flags flag_titles
-step eval xx_flags flag_pool_read_unlink flag_compress
+eval prexx_flags flagpre_mix
+"../../oaalternative a.swf" flag_alt flag_pool_read
+eval xx_flags flag_titles
+eval xxu_flags flag_compress

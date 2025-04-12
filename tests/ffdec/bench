@@ -1,12 +1,17 @@
 
-f=../../dev/flags.oh
 export LD_LIBRARY_PATH=/home/bc/x86_64_lib/cross:../../src
 level_index=1
+get_hexflag () {
+	b=`cat $1 | grep -Po "(?<=^const $2=)[^ ]*"`
+}
 srch () {
-	b=`cat $f | grep -Po "(?<=^const $1=)[^ ]*"`
+	get_hexflag ../../dev/flags.oh $1
+	if [ -z "$b" ]; then
+		get_hexflag ../../dev/import.oh $1
+	fi
 	if [ `expr substr $b 1 1` != 0 ]; then
-		b=`echo $b | sed "s/|/ /g"`
-		for c in $b; do
+		d=`echo $b | sed "s/|/ /g"`
+		for c in $d; do
 			srch $c
 		done
 		return
@@ -19,7 +24,6 @@ step () {
 	z=
 	for a in $@; do
 		srch $a
-		z="$z "
 	done
 	n=$(echo $z | sed "s/ /|/g")
 	n="\$((${n}))"

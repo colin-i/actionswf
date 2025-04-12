@@ -54,7 +54,7 @@ function pool_init(sd flags)
 	sd test=flags_pool
 	and test flags
 	if test!=0
-		and test (flag_pool_read)
+		and test (flags_pool_read)
 		if test=0
 			set pool_data.write (TRUE)
 			set pool_data.read (FALSE)  #is a read alone test case

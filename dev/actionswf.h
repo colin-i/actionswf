@@ -2,7 +2,10 @@
 #define flag_forin1 0x20
 #define flag_framesAsShows 0x40
 #define flagpre_pool_write 0x100
-#define flag_pool_read 0x200
+#define flag_pool_read_unlink 0x800
+#define flag_compress 0x2000
+
+
 
 #ifdef __cplusplus
 extern "C" {
