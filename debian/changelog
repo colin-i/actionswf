@@ -1,3 +1,9 @@
+actionswf (1-131) bionic; urgency=medium
+
+  * small change with flag_pool_read
+
+ -- bc <bc@bc-desktop>  Sun, 13 Apr 2025 17:33:33 +0300
+
 actionswf (1-130) bionic; urgency=medium
 
   * pkg-config
