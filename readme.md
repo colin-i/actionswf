@@ -13,7 +13,7 @@ There is also <i>libactionswf-dev</i>.\
 \
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/actionswf/releases).
 ```sh
-yum install actionswf-*.*.rpm
+dnf install actionswf-*.*.rpm
 ```
 \
 On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases) has the dll.
