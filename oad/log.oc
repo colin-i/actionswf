@@ -15,21 +15,6 @@ function tree_exit()
 	return global.error
 end
 
-function tree_frame_init(valueu pf)
-	set pf#:preframe.log_mem (NULL)
-	set pf#:preframe.log_size 0
-	set pf#:preframe.log_allsize 0
-	set pf#:preframe.log_indents 0
-end
-importx "free" free
-import "print_text" print_text
-function tree_frame_free(valueu pf)
-	if pf#:preframe.log_mem!=(NULL)
-		call tree_entry_ex(pf,(output_nl))  #for memnl, if for prints will be '\0'
-		call print_text(pf#:preframe.log_mem,pf#:preframe.log_size)
-		call free(pf#:preframe.log_mem)
-	end
-end
 const tree_pad=pad_default
 const tree_pad_=(tree_pad-1)
 const _tree_pad_=~tree_pad_
@@ -49,7 +34,6 @@ function tree_resize(valueu pf,valueu sz)
 	end
 	return (EXIT_SUCCESS)
 end
-
 function tree_entry_ex(valueu pf,charx type)
 	charx ok#1;set ok tree_resize(pf,1)
 	if ok=(EXIT_SUCCESS)
@@ -57,6 +41,22 @@ function tree_entry_ex(valueu pf,charx type)
 		add p pf#:preframe.log_size
 		set p# type
 		inc pf#:preframe.log_size
+	end
+end
+
+function tree_frame_init(valueu pf)
+	set pf#:preframe.log_mem (NULL)
+	set pf#:preframe.log_size 0
+	set pf#:preframe.log_allsize 0
+	set pf#:preframe.log_indents 0
+end
+importx "free" free
+import "print_text" print_text
+function tree_frame_free(valueu pf)
+	if pf#:preframe.log_mem!=(NULL)
+		call tree_entry_ex(pf,(output_nl))  #for memnl, if for prints will be '\0'
+		call print_text(pf#:preframe.log_mem,pf#:preframe.log_size)
+		call free(pf#:preframe.log_mem)
 	end
 end
 
