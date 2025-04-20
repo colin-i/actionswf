@@ -12,6 +12,7 @@ char logpad=xlog_pad_default
 
 importx "puts" puts
 importx "printf" printf
+importx "free" free
 
 import "sprite_free" sprite_free
 
@@ -72,7 +73,6 @@ end
 
 importx "strlen" strlen
 importx "malloc" malloc
-importx "free" free
 importx "memcpy" memcpy
 
 import "fcontent" fcontent
