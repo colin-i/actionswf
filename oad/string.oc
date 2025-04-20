@@ -102,6 +102,10 @@ importx "fputc" fputc
 function printn(sv s)
 	call fputc((output_nl),s)
 end
+function print_inline_done()
+	sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
+	call printn(so#)
+end
 function printt(ss str)
 	svu so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer
 	call fputs(str,so#)
@@ -139,10 +143,6 @@ end
 function prints_inline(ss format)
 	call putchar((Space))
 	call printt(format)
-end
-function print_inline_done()
-	sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
-	call printn(so#)
 end
 
 import "memnl" memnl
