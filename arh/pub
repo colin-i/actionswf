@@ -10,7 +10,7 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ~/test/rel && \
 ~/test/pub rpm rel && \
 ~/test/uponrpm && \
-~/test/up && \
+~/test/upgen actionswf.zip && \
 ~/test/pub uponrpm && \
 ~/test/pub2 && \
 ~/test/publp2 && \

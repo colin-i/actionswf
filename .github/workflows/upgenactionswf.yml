@@ -3,7 +3,7 @@ on:
  workflow_dispatch:
 
 jobs:
- ubuild:
+ ubuildgen:
   runs-on: ubuntu-18.04 #latest is ok but it must be downloaded first
   steps:
    - name: Run a multi-line script
