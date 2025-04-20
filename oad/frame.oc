@@ -131,10 +131,20 @@ import "print_unindent" print_unindent
 import "print_hex_start" print_hex_start
 import "print_hex" print_hex
 import "print_lhex" print_lhex
+import "prints" prints
 import "indent" indent
 
 importx "printf" printf
 importx "putchar" putchar
+
+function frame_print_top(charx ainit,datax log_index)
+	if ainit=(xlog_ainit_false)
+		call print("frame %u",log_index)
+	else
+		call prints("init")
+	end
+	call print_indent()
+end
 
 function preframe_free(sv pf,charx ainit,datax log_index,valueu logstart)
 	charx log#1
@@ -247,7 +257,6 @@ function frame_init(valueu total)
 end
 
 import "print_text" print_text
-import "prints" prints
 
 function frame_print_action(valueu a,valueu b,charx c,charx d)
 	if a!=b
@@ -345,15 +354,6 @@ function frame_free(sv f,charx ainit,datax log_index)
 	end
 	call free(f#:frame.text)
 	call free(f)
-end
-
-function frame_print_top(charx ainit,datax log_index)
-	if ainit=(xlog_ainit_false)
-		call print("frame %u",log_index)
-	else
-		call prints("init")
-	end
-	call print_indent()
 end
 
 function nframe_init(sv pf,valueu total)
