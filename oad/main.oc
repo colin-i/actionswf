@@ -1,13 +1,79 @@
 
 format elfobj64
 
+override include_sec 1
+include "common.h" "common.oh"
+
+#multithread unsafe
+char logpad=xlog_pad_default
+#
+
+#functions(except oadata_free,oadata_logpad) are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
+
+importx "puts" puts
+importx "printf" printf
+
+import "sprite_free" sprite_free
+
+import "print" print
+import "print_inline_done" print_inline_done
+
+functionx oadata_free(sv data,charx log)
+	if data!=(NULL)
+		sv sprites;set sprites data#:oadata.sprites
+		if sprites!=(NULL)
+			sv s;set s sprites
+			sv end;set end data#:oadata.sprites_size
+			add end s
+			if log=(TRUE)
+				call puts("sprites:")
+			end
+			while s!=end
+				if log!=(TRUE)
+					call sprite_free(s,(NULL))
+				else
+					call sprite_free(s,sprites)
+				end
+				incst s
+			end
+			call free(sprites)
+
+			sv functions;set functions data#:oadata.functions
+			if functions!=(NULL)
+				if log=(TRUE)
+					set s data#:oadata.functions_size
+					div s :
+					call print("functions: %u",s)
+				end
+				call free(functions)
+
+				sv marks;set marks data#:oadata.marks
+				if marks!=(NULL)
+					if log=(TRUE)
+						valueu sz#1;set sz data#:oadata.size
+						div sz \mark\
+						call printf("marks: %u",sz)
+						if sz>^\mark\
+							#log first and last
+							valueu tolog#1;set tolog marks
+							add tolog data#:oadata.size
+							sub tolog \mark\
+							call printf(": %d %u ... %u %d",marks#:mark.prev,marks#:mark.next,tolog#:mark.prev,tolog#:mark.next)
+						end
+						call print_inline_done()
+					end
+					call free(marks)
+				end
+			end
+		end
+		call free(data)
+	end
+end
+
 importx "strlen" strlen
 importx "malloc" malloc
 importx "free" free
 importx "memcpy" memcpy
-
-override include_sec 1
-include "common.h" "common.oh"
 
 import "fcontent" fcontent
 import "loop" loop
@@ -18,12 +84,6 @@ import "preoadata_free" preoadata_free
 import "presprite_done" presprite_done
 import "tree_init" tree_init
 import "tree_exit" tree_exit
-
-#multithread unsafe
-char logpad=xlog_pad_default
-#
-
-#functions(except oadata_logpad) are returning 0(long) on success and != on failure (EXIT_FAILURE or another != (from extern calls))
 
 functionx oadata_make(ss swf_fullpath,svu poadata,charx log)
 	set poadata# (NULL)
@@ -134,66 +194,6 @@ functionx oadata_ok(ss swf_fullpath)
 		call free(from)
 	end
 	return (EXIT_FAILURE)
-end
-
-importx "puts" puts
-importx "printf" printf
-
-import "sprite_free" sprite_free
-
-import "print" print
-import "print_inline_done" print_inline_done
-
-functionx oadata_free(sv data,charx log)
-	if data!=(NULL)
-		sv sprites;set sprites data#:oadata.sprites
-		if sprites!=(NULL)
-			sv s;set s sprites
-			sv end;set end data#:oadata.sprites_size
-			add end s
-			if log=(TRUE)
-				call puts("sprites:")
-			end
-			while s!=end
-				if log!=(TRUE)
-					call sprite_free(s,(NULL))
-				else
-					call sprite_free(s,sprites)
-				end
-				incst s
-			end
-			call free(sprites)
-
-			sv functions;set functions data#:oadata.functions
-			if functions!=(NULL)
-				if log=(TRUE)
-					set s data#:oadata.functions_size
-					div s :
-					call print("functions: %u",s)
-				end
-				call free(functions)
-
-				sv marks;set marks data#:oadata.marks
-				if marks!=(NULL)
-					if log=(TRUE)
-						valueu sz#1;set sz data#:oadata.size
-						div sz \mark\
-						call printf("marks: %u",sz)
-						if sz>^\mark\
-							#log first and last
-							valueu tolog#1;set tolog marks
-							add tolog data#:oadata.size
-							sub tolog \mark\
-							call printf(": %d %u ... %u %d",marks#:mark.prev,marks#:mark.next,tolog#:mark.prev,tolog#:mark.next)
-						end
-						call print_inline_done()
-					end
-					call free(marks)
-				end
-			end
-		end
-		call free(data)
-	end
 end
 
 functionx oadata_logpad_get()
