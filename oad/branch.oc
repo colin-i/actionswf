@@ -5,6 +5,7 @@ override include_sec 1
 include "common.h" "common.oh"
 
 importx "malloc" malloc
+importx "free" free
 
 import "global_blog" global_blog
 
@@ -201,8 +202,6 @@ function branch_log(sv br,valueu start)
 end
 
 import "tree_entrylive" tree_entrylive
-
-importx "free" free
 
 function branch_free(valueu br,valueu logstart,dataxu indents)
 	if logstart!=(NULL)
