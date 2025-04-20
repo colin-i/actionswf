@@ -200,6 +200,7 @@ end
 #read
 
 importx "fread" fread
+importx "malloc" malloc
 importx "free" free
 
 function lowread(valueu file,valueu buf,charx sz)
@@ -229,7 +230,79 @@ function iread(valueu file,sdu pn)
 	call lowread(file,pn,(DWORD))
 end
 
-importx "malloc" malloc
+function restore_strings_free(valueu constpool,svu strs,dataxu size)
+	if size!=0  #not always having strings
+		sv cursor;set cursor strs
+		valueu end#1;set end strs
+		add end size
+		while cursor!=end
+			call free(cursor#)
+			incst cursor
+		end
+		call free(strs)
+		call free(constpool)
+	end
+end
+function restore_branch_inners_free(valueu br)
+	sv cursor;set cursor br#:branch.innerbranches
+	valueu end#1;set end cursor
+	add end br#:branch.isize
+	while cursor!=end
+		call restore_branch_free(cursor#)
+		incst cursor
+	end
+end
+function restore_branch_cuts_free(valueu br)
+	valueu cursor#1;set cursor br#:branch.cuts
+	valueu end#1;set end cursor
+	add end br#:branch.size
+	while cursor!=end
+		call free(cursor#:branchcut.x)
+		add cursor \branchcut\
+	end
+	call free(br#:branch.cuts)
+end
+function restore_branch_free(valueu br)
+	call restore_branch_cuts_free(br)
+	call restore_branch_inners_free(br)
+	valueu sbr#1;set sbr br#:branch.subbranch
+	if sbr!=(NULL)
+		call restore_branch_free(sbr)
+	end
+	call free(br)
+end
+function restore_frame_free(valueu fr)
+	call restore_strings_free(fr#:preframe.restore_ustrings,fr#:preframe.ustrings,fr#:preframe.ussize)
+	call restore_strings_free(fr#:preframe.restore_dstrings,fr#:preframe.strings,fr#:preframe.ssize)
+	call restore_branch_free(fr#:preframe.abranch)
+end
+function restore_free(svu predata)
+	svu pss#1;set pss predata#:preoadata.presprites
+	valueu end#1;set end pss
+	add end predata#:preoadata.size
+	while pss!=end
+		valueu ps#1;set ps pss#
+		if ps#:presprite.apreframe!=(NULL)
+			call restore_frame_free(ps#:presprite.apreframe)
+		end
+		valueu fs#1;set fs ps#:presprite.preframes
+		sv f;set f fs
+		valueu fend#1;set fend f
+		add fend ps#:presprite.size
+		while f!=fend
+			if f#!=(NULL) #can be also showframe
+				call restore_frame_free(f#)
+			end
+			incst f
+		end
+		call free(fs)
+		call free(ps)
+		incst pss
+	end
+	call free(predata#:preoadata.presprites)
+	call free(predata)
+end
+
 importx "printf" printf
 
 import "re_alloc_add" re_alloc_add
@@ -463,80 +536,4 @@ function restore_branch(valueu file)
 		call free(br)
 	end
 	return (NULL)
-end
-
-function restore_free(svu predata)
-	svu pss#1;set pss predata#:preoadata.presprites
-	valueu end#1;set end pss
-	add end predata#:preoadata.size
-	while pss!=end
-		valueu ps#1;set ps pss#
-		if ps#:presprite.apreframe!=(NULL)
-			call restore_frame_free(ps#:presprite.apreframe)
-		end
-		valueu fs#1;set fs ps#:presprite.preframes
-		sv f;set f fs
-		valueu fend#1;set fend f
-		add fend ps#:presprite.size
-		while f!=fend
-			if f#!=(NULL) #can be also showframe
-				call restore_frame_free(f#)
-			end
-			incst f
-		end
-		call free(fs)
-		call free(ps)
-		incst pss
-	end
-	call free(predata#:preoadata.presprites)
-	call free(predata)
-end
-
-function restore_frame_free(valueu fr)
-	call restore_strings_free(fr#:preframe.restore_ustrings,fr#:preframe.ustrings,fr#:preframe.ussize)
-	call restore_strings_free(fr#:preframe.restore_dstrings,fr#:preframe.strings,fr#:preframe.ssize)
-	call restore_branch_free(fr#:preframe.abranch)
-end
-
-function restore_strings_free(valueu constpool,svu strs,dataxu size)
-	if size!=0  #not always having strings
-		sv cursor;set cursor strs
-		valueu end#1;set end strs
-		add end size
-		while cursor!=end
-			call free(cursor#)
-			incst cursor
-		end
-		call free(strs)
-		call free(constpool)
-	end
-end
-
-function restore_branch_free(valueu br)
-	call restore_branch_cuts_free(br)
-	call restore_branch_inners_free(br)
-	valueu sbr#1;set sbr br#:branch.subbranch
-	if sbr!=(NULL)
-		call restore_branch_free(sbr)
-	end
-	call free(br)
-end
-function restore_branch_cuts_free(valueu br)
-	valueu cursor#1;set cursor br#:branch.cuts
-	valueu end#1;set end cursor
-	add end br#:branch.size
-	while cursor!=end
-		call free(cursor#:branchcut.x)
-		add cursor \branchcut\
-	end
-	call free(br#:branch.cuts)
-end
-function restore_branch_inners_free(valueu br)
-	sv cursor;set cursor br#:branch.innerbranches
-	valueu end#1;set end cursor
-	add end br#:branch.isize
-	while cursor!=end
-		call restore_branch_free(cursor#)
-		incst cursor
-	end
 end
