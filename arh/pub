@@ -10,8 +10,9 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ~/test/rel && \
 ~/test/pub rpm rel && \
 ~/test/uponrpm && \
+~/test/pkg/onb && \
 ~/test/upgen actionswf.zip && \
-~/test/pub uponrpm && \
+~/test/pub uponrpm pkg && \
 ~/test/pub2 && \
 ~/test/publp2 && \
 ~/test/lp && \
