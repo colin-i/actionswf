@@ -14,6 +14,9 @@ endif
 ifndef compilerflags
 compilerflags=${linkerflags}
 endif
+ifndef CFLAGS
+include ./cflags
+endif
 
 ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
@@ -60,7 +63,7 @@ ${libname}: main.o ${exte}
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
-	$(CC) ${model} -c -w -fPIC ${compilerflags} -Wno-int-conversion -Wno-incompatible-pointer-types $*.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${CFLAGS} $*.c
 #-Wno are a must at pkgbuild
 #-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
