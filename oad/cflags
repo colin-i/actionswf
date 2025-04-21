@@ -1,2 +1,2 @@
 
-CFLAGS=-Wno-int-conversion -Wno-incompatible-pointer-types
+EXTRA_CFLAGS=-Wno-int-conversion -Wno-incompatible-pointer-types

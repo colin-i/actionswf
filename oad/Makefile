@@ -14,7 +14,7 @@ endif
 ifndef compilerflags
 compilerflags=${linkerflags}
 endif
-ifndef CFLAGS
+ifndef EXTRA_CFLAGS
 include ./cflags
 endif
 
