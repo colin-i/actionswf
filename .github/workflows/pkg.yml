@@ -23,23 +23,23 @@ jobs:
      mkdir bot
      chown bot:bot bot
      cd bot
-     pacman -Sy --noconfirm sudo
+     pacman -Sy --noconfirm --needed sudo git base-devel wget sudo lib32-glibc bc
      echo "ALL ALL=(ALL) NOPASSWD: /usr/bin/*" > /etc/sudoers.d/a  #needed at makepkg -i and yay makepkg calls
 
-     pacman -S --noconfirm --needed git base-devel wget sudo
      su bot -c 'git clone --depth 1 https://aur.archlinux.org/yay-bin.git'
      cd yay-bin
      su bot -c 'makepkg -i --noconfirm'
-     pacman -S --noconfirm lib32-glibc bc
+
      su bot -c 'yay -Sy --noconfirm ffdec-bin ocompiler'
 
      su bot -c 'git clone -n --depth=1 --filter=tree:0 https://github.com/colin-i/pkgbuilds'
      cd pkgbuilds
      su bot -c "git sparse-checkout set --no-cone /${name}"
      su bot -c 'git checkout'
+
      cd ${name}
      su bot -c makepkg
-     ls
+
      nm=`ls | grep ".*\.zst$" | grep -v debug`
      nm2=`echo ${nm} | sed s/-x86_64/-arch-x86_64/`
      mv ${nm} ${here}/${nm2}
