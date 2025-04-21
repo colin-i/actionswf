@@ -13,7 +13,7 @@ jobs:
   - name: Checkout
     uses: actions/checkout@v3
     with:
-     path: src/actionswf
+     path: src
   - name: build
     run: |
      sudo apt update
@@ -21,7 +21,7 @@ jobs:
      wget https://github.com/colin-i/o/releases/download/1-5%2B226/ocompiler-1.5+226-1-arch-x86_64.pkg.tar.zst
      sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ocompiler-1.5+226-1-arch-x86_64.pkg.tar.zst
 
-     cd src/actionswf/oad
+     cd src/oad
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
@@ -31,7 +31,7 @@ jobs:
      cd ..
      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
 
-     cd ../..
+     cd ..
      wget https://raw.githubusercontent.com/colin-i/pkgbuilds/refs/heads/main/${name}-`uname -m`/PKGBUILD
      makepkg
 
