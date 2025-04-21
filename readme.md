@@ -11,6 +11,12 @@ sudo apt-get install actionswf
 ```
 There is also <i>libactionswf-dev</i>.\
 \
+\
+On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/edor/releases). Or:
+```sh
+yay -Sy actionswf
+```
+\
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/actionswf/releases).
 ```sh
 dnf install actionswf-*.*.rpm
