@@ -63,7 +63,7 @@ ${libname}: main.o ${exte}
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 	${OCONV} $<.x
-	$(CC) ${model} -c -w -fPIC ${compilerflags} ${CFLAGS} $*.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 #-Wno are a must at pkgbuild
 #-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error
