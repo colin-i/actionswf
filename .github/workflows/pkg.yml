@@ -23,7 +23,7 @@ jobs:
      mkdir bot
      chown bot:bot bot
      cd bot
-     pacman -Sy --noconfirm --needed sudo git base-devel wget sudo lib32-glibc bc
+     pacman -Sy --noconfirm --needed sudo git base-devel wget lib32-glibc bc
      echo "ALL ALL=(ALL) NOPASSWD: /usr/bin/*" > /etc/sudoers.d/a  #needed at makepkg -i and yay makepkg calls
 
      su bot -c 'git clone --depth 1 https://aur.archlinux.org/yay-bin.git'
