@@ -2,7 +2,7 @@
 inc="include_sec 1"
 if [ -z "${conv_64}" ]; then conv_64=0
 elif [ ${conv_64} = 1 ]; then
-	if [ "`dpkg-architecture -qDEB_HOST_ARCH`" = "amd64" ]; then #cross
+	if [ "`dpkg-architecture -qDEB_HOST_ARCH`" != "i386" ]; then #cross
 		inc=
 	fi
 fi
