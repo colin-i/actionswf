@@ -19,6 +19,9 @@ ifndef linkerflags
 linkerflags=-O3 -s
 #-O0 to 3 is same at .so here
 endif
+ifndef prefix
+prefix=/usr
+endif
 
 ifndef OSTRIP
 OSTRIP=ostrip

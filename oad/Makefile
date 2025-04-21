@@ -17,6 +17,9 @@ endif
 ifndef EXTRA_CFLAGS
 include ./cflags
 endif
+ifndef prefix
+prefix=/usr
+endif
 
 ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)

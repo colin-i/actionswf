@@ -9,6 +9,10 @@ endif
 
 SUBDIRS := src oad
 
+ifndef prefix
+prefix=/usr
+endif
+
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@ conv_64=${conv_64} $(MAKECMDGOALS)
