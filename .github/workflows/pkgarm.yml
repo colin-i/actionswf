@@ -12,36 +12,31 @@ jobs:
   steps:
   - name: Checkout
     uses: actions/checkout@v3
+    with:
+     path: src/actionswf
   - name: build
     run: |
-     here=`pwd`
-
      sudo apt update
      sudo apt install -y pacman-package-manager qemu-user libc6-i386-cross libc6-amd64-cross makepkg libarchive-tools #libarchive-tools with bsdtar, called at makepkg
      wget https://github.com/colin-i/o/releases/download/1-5%2B226/ocompiler-1.5+226-1-arch-x86_64.pkg.tar.zst
      sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ocompiler-1.5+226-1-arch-x86_64.pkg.tar.zst
 
-     cd oad
+     cd src/actionswf/oad
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
      make
-     cd ..
 
+     cd ..
      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
 
-     mkdir pkgbuild
-     cd pkgbuild
+     cd ../..
      wget https://raw.githubusercontent.com/colin-i/pkgbuilds/refs/heads/main/${name}-`uname -m`/PKGBUILD
-     mkdir -p src/${name}
-     mv ../oad src/${name}
-
      makepkg
 
      nm=`ls | grep ".*\.gz$"`
      nm2=`echo ${nm} | sed "s/-aarch64/-ubuntu-aarch64/; s/${name}/liboadbgdata/"`
-     mv ${nm} ${here}/${nm2}
      wget https://github.com/colin-i/test/releases/download/1.5/${name} -O 1.txt
 
      echo "file=${nm2}" >> $GITHUB_ENV
