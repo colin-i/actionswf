@@ -1,2 +1,2 @@
 
-make clean && git status
+cd example && make clean && cd .. && make clean && git status
