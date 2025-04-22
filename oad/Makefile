@@ -96,8 +96,13 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} \
-		$(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} $(DESTDIR)$(prefix)/lib/${libname}
+	if [ -e ../include_dev ]; then \
+		install -D oadbgdata.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.h && \
+		install -D oadbgdatas.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.h && \
+		install -D oadbgdata.oh $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.oh && \
+		install -D oadbgdatas.oh $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.oh
+	fi
 
 install: all install-lib
 

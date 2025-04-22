@@ -155,8 +155,13 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} \
-		$(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} $(DESTDIR)$(prefix)/lib/${libname}
+	if [ -e ../include_dev ]; then \
+		install -D ../dev/actionswf.h $(DESTDIR)$(prefix)/include/${projname}/actionswf.h && \
+		install -D ../dev/import.oh $(DESTDIR)$(prefix)/include/${projname}/import.oh && \
+		install -D ../dev/importf.oh $(DESTDIR)$(prefix)/include/${projname}/importf.oh && \
+		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flags.oh
+	fi
 
 install: all install-lib
 

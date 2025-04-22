@@ -30,7 +30,7 @@ jobs:
      cd yay-bin
      su bot -c 'makepkg -i --noconfirm'
 
-     su bot -c 'yay -Sy --noconfirm ffdec-bin ocompiler'
+     su bot -c 'yay -Sy --noconfirm --needed ffdec-bin ocompiler'
 
      su bot -c 'git clone -n --depth=1 --filter=tree:0 https://github.com/colin-i/pkgbuilds'
      cd pkgbuilds
