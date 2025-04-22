@@ -1,3 +1,9 @@
+actionswf (1-133) bionic; urgency=medium
+
+  * dev to actionswf instead of lib... to match pkg
+
+ -- bc <bc@bc-desktop>  Tue, 22 Apr 2025 12:40:49 +0300
+
 actionswf (1-132) bionic; urgency=medium
 
   * bc
