@@ -101,13 +101,19 @@ install-lib:
 		install -D oadbgdata.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.h && \
 		install -D oadbgdatas.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.h && \
 		install -D oadbgdata.oh $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.oh && \
-		install -D oadbgdatas.oh $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.oh
+		install -D oadbgdatas.oh $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.oh; \
 	fi
 
 install: all install-lib
 
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
+	-if [ -e ../include_dev ]; then \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.h; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.h; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.oh; \
+	fi
 
 #.PHONY targets are not default files, then, make will not try to test if a rule has an updated file on the disk (if has will skip that rule)
 .PHONY: all install install-lib clean distclean uninstall test re
