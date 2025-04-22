@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 function bits_packs(ss dest,sd packs)
     sd i=0

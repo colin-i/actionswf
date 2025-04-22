@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 importx "_open" open
 importx "_read" read

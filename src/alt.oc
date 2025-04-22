@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 importx "strrchr" strrchr
 importx "strcpy" strcpy

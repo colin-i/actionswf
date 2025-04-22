@@ -1,5 +1,5 @@
 
-include "ascii.h"
+include "ascii.oh"
 
 const TRUE=1
 const FALSE=0
@@ -76,14 +76,14 @@ const DefineFont2=48
 const ExportAssets=56
 const DoInitAction=59
 
-include "action.h"
+include "action.oh"
 
 const ButtonStateUp=1
 const ButtonStateOver=2*ButtonStateUp
 const ButtonStateDown=2*ButtonStateOver
 const ButtonStateHitTest=2*ButtonStateDown
 
-include "text.h"
+include "text.oh"
 
 const StateMoveTo=1
 const StateFillStyle0=2*StateMoveTo
@@ -100,7 +100,7 @@ const FontFlagsHasLayout=0x80
 #const FontFlagsItalic=2
 #const FontFlagsBold=1
 
-include "lin.h" "win.h"
+include "lin.oh" "win.oh"
 include "../dev/flags.oh"
 
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200

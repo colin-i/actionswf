@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 import "identifiers_set" identifiers_set
 import "stack_to_word_arg" stack_to_word_arg
@@ -94,7 +94,7 @@ endfunction
 #id
 function swf_font_local(ss fontname,sd font_flags)
 #ss fontname    = a string with the browser font, for example "_sans"
-#sd font_flags  = prog.h file is with the flags
+#sd font_flags  = prog.oh file is with the flags
     const font_hd_start=\
 
     char id#2
@@ -143,7 +143,7 @@ function swf_text_local(sd bound_width,sd bound_height,ss variablename,sd flags,
 #sd bound_width  width of the text
 #sd bound_height height
 #ss variablename to change it with actionscript
-#sd flags        see include/text.h
+#sd flags        see include/text.oh
 #sv structure    see edittext_struct()  from character.oc, set the flags first
     #CharacterID
     sd size=2

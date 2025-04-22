@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 function debug_mark()
 	valuex row#1

@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 import "action_debug" action_debug
 import "action_data" action_data

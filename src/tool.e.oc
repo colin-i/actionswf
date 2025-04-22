@@ -11,7 +11,7 @@ functionx erbool_reset()
     set p# 0
 endfunction
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 functionx freereset()
 #this is called by user only if want to abort after some calls

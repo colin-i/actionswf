@@ -3,7 +3,7 @@ format elfobj64
 
 #ActionPush added to a query, and released at the action for them
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 import "mem_free" mem_free
 

@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 import "for_in_ptr" for_in_ptr
 import "is_ainit" is_ainit

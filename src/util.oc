@@ -10,7 +10,7 @@ importx "memcmp" memcmp
 
 import "platform_iob" platform_iob
 
-include "../include/prog.h"
+include "../include/prog.oh"
 
 function printEr(ss msg)
     sd len;setcall len strlen(msg)
