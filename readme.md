@@ -9,7 +9,7 @@ Or the *Manual installation step* from this [link](https://gist.github.com/colin
 ```sh
 sudo apt-get install actionswf
 ```
-There is also <i>libactionswf-dev</i>. <i>liboadbgdata</i> <i>.gz</i> file is for aarch64 architecture.\
+There is also <i>libactionswf-dev</i>. <i>liboadbgdata</i> <i>.gz</i> file from [releases](https://github.com/colin-i/actionswf/releases) is for aarch64 architecture.\
 \
 \
 On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/edor/releases). Or:
