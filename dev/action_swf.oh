@@ -1,4 +1,6 @@
 
+#include "import.oh"
+
 const StateMoveTo=1
 const StateFillStyle0=2*StateMoveTo
 const StateFillStyle1=2*StateFillStyle0
@@ -9,7 +11,6 @@ const ButtonStateUp=1
 const ButtonStateOver=2*ButtonStateUp
 const ButtonStateDown=2*ButtonStateOver
 const ButtonStateHitTest=2*ButtonStateDown
-
 ##ButtonData
 
 ##text flags

@@ -7,7 +7,7 @@ get_hexflag () {
 srch () {
 	get_hexflag ../../dev/flags.oh $1
 	if [ -z "$b" ]; then
-		get_hexflag ../../dev/import.oh $1
+		get_hexflag ../../dev/flagss.oh $1
 	fi
 	if [ `expr substr $b 1 1` != 0 ]; then
 		d=`echo $b | sed "s/|/ /g"`
