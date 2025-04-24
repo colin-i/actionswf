@@ -1,6 +1,4 @@
 
-#include "import.oh"
-
 const StateMoveTo=1
 const StateFillStyle0=2*StateMoveTo
 const StateFillStyle1=2*StateFillStyle0

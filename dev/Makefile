@@ -18,7 +18,8 @@ all: flags.h flagss.h actionswf.oh
 	cat $< >> $@
 
 actionswf.oh: action_swf.oh
-	sed "s/^#//g" $< > $@
+	echo "include \"import.oh\"" > $@
+	sed "s/^#//g" $< >> $@
 
 test:
 	echo dev
