@@ -7,7 +7,7 @@ else
 conv_64=0
 endif
 
-SUBDIRS := src oad
+SUBDIRS := dev src oad
 
 ifndef prefix
 prefix=/usr

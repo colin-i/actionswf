@@ -22,7 +22,7 @@ fi
 status=`cat ./test.status`; rm ./test.status
 if [ ${status} != 0 ]; then  exit 1; fi          #set -o pipefail && a | tee || exit
 
-. ../integ && {
+at_folder=../ . ../integ && {
 	diff ../.expected/data${e}.txt data.txt
 	if [ $? != 0 ]; then
 		if [ -n "${1}" ]; then exit 1; fi

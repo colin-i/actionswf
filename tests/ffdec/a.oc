@@ -3,9 +3,11 @@ format elfobj64
 
 importx "_exit" exit
 
+include "../entryraw.oc" "../entry.oc"
+
+override include_sec 1
 einclude "../../dev/import.oh"
 
-include "../entryraw.oc" "../entry.oc"
 dataxu f#1
 importx "puts" puts
 if argc=1

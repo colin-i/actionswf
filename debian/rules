@@ -11,17 +11,22 @@ export DH_VERBOSE = 1
 
 override_dh_auto_install:
 	#modify also where include_dev flag is
-	echo oad/oadbgdata.h usr/include/actionswf/ > debian/libactionswf-dev.install
-	echo oad/oadbgdatas.h usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo oad/oadbgdatas.oh usr/include/actionswf/ > debian/libactionswf-dev.install
 	echo oad/oadbgdata.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
-	echo oad/oadbgdatas.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo oad/oadbgdatas.h usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo oad/oadbgdata.h usr/include/actionswf/ >> debian/libactionswf-dev.install
 	#
-	#these must transition to otoc
-	echo dev/actionswf.h usr/include/actionswf/ >> debian/libactionswf-dev.install
-	#
-	echo dev/import.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
-	echo dev/importf.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	#yes otoc
 	echo dev/flags.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo dev/flagss.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	#no otoc
+	echo dev/importf.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo dev/import.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
+	#from otoc
+	echo dev/flags.h usr/include/actionswf/ >> debian/libactionswf-dev.install
+	echo dev/flagss.h usr/include/actionswf/ >> debian/libactionswf-dev.install
+	#not from otoc
+	echo dev/actionswf.h usr/include/actionswf/ >> debian/libactionswf-dev.install
 
 	#same as ocompiler, when adding another one, make install are useless
 	echo oaalternative usr/bin/ > debian/actionswf.install

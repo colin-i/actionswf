@@ -1,6 +1,3 @@
 
-include "flags.oh"
-const xx_flags=flag_x|flag_pool_read
-const xxu_flags=flag_x|flag_pool_read_unlink
-
+include "flagss.oh"
 include "importf.oh"

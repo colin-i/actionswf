@@ -143,7 +143,7 @@ function swf_text_local(sd bound_width,sd bound_height,ss variablename,sd flags,
 #sd bound_width  width of the text
 #sd bound_height height
 #ss variablename to change it with actionscript
-#sd flags        see include/text.oh
+#sd flags        see dev/action_swf.oh at text flags
 #sv structure    see edittext_struct()  from character.oc, set the flags first
     #CharacterID
     sd size=2

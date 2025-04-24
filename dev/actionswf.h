@@ -1,9 +1,5 @@
 
-#define flag_forin1 0x20
-#define flag_framesAsShows 0x40
-#define flagpre_pool_write 0x100
-#define flag_pool_read_unlink 0x800
-#define flag_compress 0x2000
+#include "flagss.h"
 
 
 
@@ -18,6 +14,12 @@ extern "C" {
 #define StateFillStyle1 2*StateFillStyle0
 #define StateLineStyle 2*StateFillStyle1
 #define StateNewStyles 2*StateLineStyle
+
+#define ButtonStateUp 1
+#define ButtonStateOver 2*ButtonStateUp
+#define ButtonStateDown 2*ButtonStateOver
+#define ButtonStateHitTest 2*ButtonStateDown
+
 #pragma pack(push,4)
 typedef struct ButtonData_str{
     unsigned int def_fill;
@@ -39,6 +41,7 @@ typedef struct ButtonData_str{
     char* actions;
 }ButtonData;
 #pragma pack(pop)
+
 #define HasText 0x80
 #define WordWrap 0x40
 #define Multiline 0x20
@@ -55,6 +58,12 @@ typedef struct ButtonData_str{
 #define WasStatic 0x400
 #define HTML 0x200
 #define UseOutlines 0x100
+
+#define layout_align_left 0
+#define layout_align_right 1
+#define layout_align_center 2
+#define layout_align_justify 3
+
 #pragma pack(push,4)
 typedef struct EditText_str
 {
@@ -71,6 +80,7 @@ typedef struct EditText_str
     int layout_leading;
 } EditText;
 #pragma pack(pop)
+
 #define FontFlagsHasLayout 0x80
 #define FontFlagsShiftJIS 0x40
 #define FontFlagsSmallText 0x20
@@ -81,8 +91,8 @@ typedef struct EditText_str
 #define FontFlagsBold 1
 
 
-//swf
 
+//swf
 
 //button
 
@@ -173,7 +183,6 @@ void swf_exports_done();
 
 //action
 
-
 //this/an action
 
 void action(char* ac);
@@ -186,7 +195,6 @@ void action_sprite(int sprite,char* ac);
 void actionf_sprite(int sprite,char* buffer,char* format,...);
 void action_init_sprite(int sprite,char* ac);
 void actionf_init_sprite(int sprite,char* buffer,char* format,...);
-
 
 
 //tool
