@@ -111,7 +111,7 @@ uninstall:
 expected.swf:
 	base64 -d expected.c.swf.txt > expected.c.swf
 	ffdec -decompress expected.c.swf $@
-test: expected.swf
+test: all expected.swf
 	diff ${sfile} expected.swf
 expected.c.swf: build
 	x3=x $(MAKE) exe

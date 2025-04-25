@@ -5,6 +5,9 @@ format elfobj64
 importx "sprintf" sprintf
 importx "_exit" exit
 
+include "entry_arg.oc" "entry.oc"
+
+override include_sec 1
 einclude "../dev/import.oh"
 
 const width=640
@@ -18,7 +21,15 @@ const flags1=flagpre_log|flagpre_pool_write|debug_xpad
 const flags2=xxu_flags   ;#for tests/data . flag_compress is at ffdec test, and here will compare from 2 different(maybe) zlibs
 const flags3=flags2|flag_compress
 
-include "entry_arg.oc" "entry.oc"
+sd flags
+if argc=1
+	set flags (flags1)
+elseif argc=2
+	set flags (flags2)
+else
+	set flags (flags3)
+end
+
 call xlog_pad_set(0x30)
 
 call swf_new_ex("example.swf",(width),(height),0x001100,24,flags)

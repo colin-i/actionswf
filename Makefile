@@ -1,7 +1,7 @@
 
 MEDTARGETS := test clean distclean
 TOPTARGETS := all install uninstall
-#distclean is called for configures (unexistent here, then, is deprecated for us)
+#distclean is called at launchpad build, for here if there were configures
 
 SUBDIRS := dev src oad
 ALLDIRS := example $(SUBDIRS)
