@@ -19,6 +19,7 @@ const flagpre_mix=0x400
 const flag_pool_read_unlink=0x800 #will turn off flag_pool_write
 const flagpre_write_no=0x1000
 const flag_compress=0x2000
+const flag_deprecation=0x4000
 
 const debug_xpad=flagpre_x|flagpre_x_pad
 const flags_pool=flagpre_pool_write|flag_pool_read|flag_pool_read_unlink

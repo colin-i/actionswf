@@ -137,6 +137,23 @@ function md_printf(sd c,sd format,sd val) #to not write null on unknown
 	return n
 end
 
+import "string_nl_print" string_nl_print
+
+function deprecation()
+	charx bool#1
+	if bool=(TRUE)
+		call string_nl_print("DBL tags are deprecated, use GIF/JPEG/PNG functions")
+	end
+end
+function deprecation_init(sd flags)
+	and flags (flag_deprecation)
+	if flags=(flag_none)
+		set deprecation.bool (FALSE)
+	else
+		set deprecation.bool (TRUE)
+	end
+end
+
 import "row_termination" row_termination
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
@@ -171,6 +188,7 @@ function flags_init(sd flags,sd path)
 
 	call frames_as_shows(flags)
 	call for_in(flags)
+	call deprecation_init(flags)
 endfunction
 
 function log_init(sd flags,sd path)

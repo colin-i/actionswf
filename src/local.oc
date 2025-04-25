@@ -24,8 +24,12 @@ import "alt_action" alt_action
 #this has throws but for mem_exp_change and back are not required
 import "swf_actionblock" swf_actionblock
 
+import "deprecation" deprecation
+
 importx "strlen" strlen
 importx "memcpy" memcpy
+importx "fseek" fseek
+importx "fclose" fclose
 
 #aftercalli
 
@@ -468,7 +472,7 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
 	sd cursor
 	setcall mem file_get_content(imagepath,#size)
 	if size<(dblsignature+dblsize)
-	call error("missing image header")
+		call error("missing image header")
 	endif
 	char hd_magic0={D,B,L,1};vdata magic0^hd_magic0
 	char hd_magic00={D,B,L,2};vdata magic00^hd_magic00
@@ -531,12 +535,11 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
 	endif
 	call swf_mem_add(cursor,image_size)
 	call file_get_content__resources_free()
+	call deprecation()
 	return id
 endfunction
 
 import "f_open" f_open
-importx "fseek" fseek
-importx "fclose" fclose
 import "f_tell_errors" f_tell_errors
 #id
 function swf_jpeg_local(ss imagepath,sd tag,ss alphapath)
