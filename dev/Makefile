@@ -6,6 +6,10 @@ ifndef OCONV
 OCONV=otoc
 endif
 
+ifndef prefix
+prefix=/usr
+endif
+
 all: flags.h flagss.h actionswf.oh
 
 %.h: %.ohi
