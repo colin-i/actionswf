@@ -1,3 +1,9 @@
+actionswf (1-135) bionic; urgency=medium
+
+  * fix example test
+
+ -- bc <bc@bc-desktop>  Fri, 25 Apr 2025 09:21:17 +0300
+
 actionswf (1-134) bionic; urgency=medium
 
   * more headers
