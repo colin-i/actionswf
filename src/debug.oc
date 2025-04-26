@@ -139,18 +139,18 @@ end
 
 import "string_nl_print" string_nl_print
 
-function deprecation()
-	charx bool#1
-	if bool=(TRUE)
-		call string_nl_print("DBL tags are deprecated, use GIF/JPEG/PNG functions")
-	end
-end
 function deprecation_init(sd flags)
-	and flags (flag_deprecation_no)
+	charx bool#1
+	charx full#1
+	and flags (flag_deprecation_no|flag_deprecation_partial)
 	if flags=(flag_none)
-		set deprecation.bool (TRUE)
-	else
-		set deprecation.bool (FALSE)
+		set bool (TRUE)
+		set full (TRUE)
+	elseif flags=(flag_deprecation_partial)
+		set bool (TRUE)
+		set full (FALSE)
+	else #flag_deprecation_no
+		set bool (FALSE)
 	end
 end
 
@@ -555,5 +555,16 @@ end
 function debug_xlog_call()
 	if log_init.prexx=(prexx_flags)
 		callg debug_phase_code_add_one((xlog_call))
+	end
+end
+
+function deprecation()
+	if deprecation_init.bool=(TRUE)
+		vstr e="DBL tags are deprecated, use GIF/JPEG/PNG functions"
+		if deprecation_init.full=(TRUE)
+			call error(e)
+		else
+			call string_nl_print(e)
+		end
 	end
 end
