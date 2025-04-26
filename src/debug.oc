@@ -146,11 +146,11 @@ function deprecation()
 	end
 end
 function deprecation_init(sd flags)
-	and flags (flag_deprecation)
+	and flags (flag_deprecation_no)
 	if flags=(flag_none)
-		set deprecation.bool (FALSE)
-	else
 		set deprecation.bool (TRUE)
+	else
+		set deprecation.bool (FALSE)
 	end
 end
 

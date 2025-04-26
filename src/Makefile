@@ -96,7 +96,7 @@ ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eo
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	ln -f ${name} ${libname}
-	#is not with ln -s because will be one file install
+#is not with ln -s because will be one file install
 else
 ${libname}: ${name}
 	$(eval strp = )
