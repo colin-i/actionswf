@@ -466,6 +466,7 @@ import "word_swap" word_swap
 function swf_dbl_ex_local(ss imagepath,sd p_wh)
 #ss imagepath = path name for the dbl image
 #sd p_wh = pointer width a dword and height next dword
+#include "/home/bc/games/this_is_for_testing"
 	sd id
 	sd mem
 	sd size

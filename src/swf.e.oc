@@ -351,9 +351,11 @@ functionX swf_imagej_alpha(ss imagepath,sd width,sd height,ss alphapath)
 	return shape_id
 endfunction
 
-#https://stackoverflow.com/questions/7676701/java-jpeg-converter-for-odd-image-types
+#libming is skipping at least FFE[0-F] , src/blocks/jpeg.c methodWriteJpegFile
 #https://www.w3.org/Graphics/JPEG/jfif3.pdf
-#FFD8, can skip FFE[0-F] bigendianSize(usually 0010) = skip 20 bytes, FFDB...FFD9
+#https://stackoverflow.com/questions/7676701/java-jpeg-converter-for-odd-image-types
+#but "Every jpeg without a JFIF header is essentially broken as there's no way of knowing what color coding is used."
+#and from the time when we wrote jpegs, there are 6 values there, more at https://raw.githubusercontent.com/colin-i/ostream/refs/heads/master/src/media/jpeg_enc.oc write_jpeg_headers_appinfo
 #
 #https://www.w3.org/Graphics/GIF/spec-gif89a.txt
 #Transparent Color Flag
