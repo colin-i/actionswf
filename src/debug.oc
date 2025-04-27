@@ -142,13 +142,13 @@ import "string_nl_print" string_nl_print
 function deprecation_init(sd flags)
 	charx bool#1
 	charx full#1
-	and flags (flag_deprecation_no|flag_deprecation_partial)
+	and flags (flag_deprecation_no|flag_deprecation_yes)
 	if flags=(flag_none)
 		set bool (TRUE)
-		set full (TRUE)
-	elseif flags=(flag_deprecation_partial)
-		set bool (TRUE)
 		set full (FALSE)
+	elseif flags=(flag_deprecation_yes)
+		set bool (TRUE)
+		set full (TRUE)
 	else #flag_deprecation_no
 		set bool (FALSE)
 	end
@@ -169,6 +169,13 @@ importx "fseek" fseek
 importx "fread" fread
 importx "fprintf" fprintf
 importx "free" free
+
+importx "getenv" getenv
+importx "strlen" strlen
+importx "malloc" malloc
+importx "fopen" fopen
+importx "fscanf" fscanf
+importx "fclose" fclose
 
 #aftercallimport ebool
 
@@ -560,11 +567,45 @@ end
 
 function deprecation()
 	if deprecation_init.bool=(TRUE)
-		vstr e="DBL tags are deprecated; use GIF/JPEG/PNG functions, flag_deprecation_partial, flag_deprecation_no"
+		vstr e="DBL tags are deprecated; use GIF/JPEG/PNG functions, flag_deprecation_no"
 		if deprecation_init.full=(TRUE)
 			call error(e)
 		else
 			call string_nl_print(e)
+		end
+	end
+end
+
+const EOF=-1
+
+function user_flags(sw pflags)
+	ss h
+include "../include/linhome.oh" "../include/winhome.oh"
+	set h getenv(homefolder)
+	if h!=(NULL)
+		ss sz;set sz strlen(h)
+		char prefs=".actionswf"^
+		sd len=1+\.prefs+1
+		add len sz
+		sd m;set m malloc(len)
+		if m!=(NULL)
+			call memcpy(m,h,sz)
+			add sz m
+			set sz# (path_separator)
+			inc sz
+			call memcpy(sz,#prefs,\.prefs)
+			add sz \.prefs
+			set sz# (Nullchar)
+			sd f;set f fopen(m,"rb")
+			if f!=(NULL)
+				data flags#1   ;#protocol %x is unsigned int
+				sd ret;set ret fscanf(f,"%x",#flags)
+				if ret!=(EOF)
+					or pflags# flags
+				end
+				call fclose(f)
+			end
+			call free(m)
 		end
 	end
 end

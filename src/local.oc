@@ -25,6 +25,7 @@ import "alt_action" alt_action
 import "swf_actionblock" swf_actionblock
 
 import "deprecation" deprecation
+import "user_flags" user_flags
 
 importx "strlen" strlen
 importx "memcpy" memcpy
@@ -69,6 +70,7 @@ data size2=\-hd2
 vdata hd_pack2%hd2
 
 	import "flags_init" flags_init
+	call user_flags(#flags)
 	call flags_init(flags,path)
 	call swf_mem((mem_exp_init),path,(file_sz_off-hd_start),flags)
 
