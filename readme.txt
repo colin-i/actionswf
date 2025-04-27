@@ -4,7 +4,9 @@ The program is a set of objects made with O Language.
 A swf with actionscript example is in the example folder for static o language.
 The libactionswf-dev actionswf.h is for c/c++ languages and actionswf.oh is for for o language.
 The files swf.es and action.es has the main functions that can be used; functions from tool.es can be used in rare situations.
-When using the debug_log flag at swf_new_ex, action,action_sprite,swf_sprite_done calls are logged. The syntax is as follow:
+To override a default flag without calling swf_new_ex, write in user home folder .actionswf file (example to override flagpre_log and flag_deprecation_yes, write 8001).
+When using the flagpre_log flag, action,action_sprite,swf_sprite_done calls are logged for oaalternative, more is logged at prexx_flags for debugging.
+The log will look like this:
 
 SpriteId
 ActionInitBool
@@ -28,8 +30,9 @@ Where:
 SpriteId or 0 for root.
 ActionInitBool is a 0/1 digit.
 FinalSpriteId is the id in the swf
-these are at prexx_flags:
+
+these are only at prexx_flags:
 	TextLinesNumber is the number of lines that TextLines has.
 	TextLines is the text like in action[_sprite] call.
-	* NumberA1-NumberAN lines from TextLinesNumber
-	... ? the notation is at include/xlog.oh ,there are special chars and numbers, a minimal example: ,1F,,F -> 3 actions, first is an action with ACTIONRECORDHEADER of 0x1F Length, second has ActionCode < 0x80, third has Length 0xF
+	*NumberA1-NumberAN lines from TextLinesNumber
+	... ? the notation is at dev/xlog.oh ,there are special chars and numbers, a minimal example: ,1F,,F -> 3 actions, first is an action with ACTIONRECORDHEADER of 0x1F Length, second has ActionCode < 0x80, third has Length 0xF
