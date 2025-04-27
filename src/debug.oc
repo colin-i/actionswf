@@ -154,6 +154,46 @@ function deprecation_init(sd flags)
 	end
 end
 
+importx "getenv" getenv
+importx "strlen" strlen
+importx "malloc" malloc
+importx "fopen" fopen
+importx "fscanf" fscanf
+importx "fclose" fclose
+
+const EOF=-1
+function user_flags(sw pflags)
+	ss h
+include "../include/linhome.oh" "../include/winhome.oh"
+	set h getenv(homefolder)
+	if h!=(NULL)
+		ss sz;set sz strlen(h)
+		char prefs=".actionswf"^
+		sd len=1+\.prefs+1
+		add len sz
+		sd m;set m malloc(len)
+		if m!=(NULL)
+			call memcpy(m,h,sz)
+			add sz m
+			set sz# (path_separator)
+			inc sz
+			call memcpy(sz,#prefs,\.prefs)
+			add sz \.prefs
+			set sz# (Nullchar)
+			sd f;set f fopen(m,"rb")
+			if f!=(NULL)
+				data flags#1   ;#protocol %x is unsigned int
+				sd ret;set ret fscanf(f,"%x",#flags)
+				if ret!=(EOF)
+					or pflags# flags
+				end
+				call fclose(f)
+			end
+			call free(m)
+		end
+	end
+end
+
 import "row_termination" row_termination
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
 import "block_get_size" block_get_size
@@ -170,12 +210,6 @@ importx "fread" fread
 importx "fprintf" fprintf
 importx "free" free
 
-importx "getenv" getenv
-importx "strlen" strlen
-importx "malloc" malloc
-importx "fopen" fopen
-importx "fscanf" fscanf
-importx "fclose" fclose
 
 #aftercallimport ebool
 
@@ -572,40 +606,6 @@ function deprecation()
 			call error(e)
 		else
 			call string_nl_print(e)
-		end
-	end
-end
-
-const EOF=-1
-
-function user_flags(sw pflags)
-	ss h
-include "../include/linhome.oh" "../include/winhome.oh"
-	set h getenv(homefolder)
-	if h!=(NULL)
-		ss sz;set sz strlen(h)
-		char prefs=".actionswf"^
-		sd len=1+\.prefs+1
-		add len sz
-		sd m;set m malloc(len)
-		if m!=(NULL)
-			call memcpy(m,h,sz)
-			add sz m
-			set sz# (path_separator)
-			inc sz
-			call memcpy(sz,#prefs,\.prefs)
-			add sz \.prefs
-			set sz# (Nullchar)
-			sd f;set f fopen(m,"rb")
-			if f!=(NULL)
-				data flags#1   ;#protocol %x is unsigned int
-				sd ret;set ret fscanf(f,"%x",#flags)
-				if ret!=(EOF)
-					or pflags# flags
-				end
-				call fclose(f)
-			end
-			call free(m)
 		end
 	end
 end
