@@ -9,6 +9,13 @@ extern "C" {
 
 
 
+#define no_fill -1
+#define solid_fill 0
+#define repeating_bitmap_fill 0x40
+#define clipped_bitmap_fill 0x41
+#define nonsmoothed_repeating_bitmap 0x42
+#define nonsmoothed_clipped_bitmap 0x43
+//
 #define StateMoveTo 1
 #define StateFillStyle0 2*StateMoveTo
 #define StateFillStyle1 2*StateFillStyle0
@@ -58,7 +65,7 @@ typedef struct ButtonData_str{
 #define WasStatic 0x400
 #define HTML 0x200
 #define UseOutlines 0x100
-
+//
 #define layout_align_left 0
 #define layout_align_right 1
 #define layout_align_center 2
@@ -89,13 +96,6 @@ typedef struct EditText_str
 #define FontFlagsWideCodes 4
 #define FontFlagsItalic 2
 #define FontFlagsBold 1
-
-#define no_fill -1
-#define solid_fill 0
-#define repeating_bitmap_fill 0x40
-#define clipped_bitmap_fill 0x41
-#define nonsmoothed_repeating_bitmap 0x42
-#define nonsmoothed_clipped_bitmap 0x43
 
 
 
