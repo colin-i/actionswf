@@ -14,6 +14,7 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ask=x ~/test/pkg/onab && \
 ~/test/upgen actionswf.zip && \
 ~/test/pub uponrpm pkg pkgarm && \
+~/test/pkg/aur && \
 ~/test/pub2 && \
 ~/test/publp2 && \
 ~/test/lp && \
