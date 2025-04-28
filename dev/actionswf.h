@@ -90,6 +90,13 @@ typedef struct EditText_str
 #define FontFlagsItalic 2
 #define FontFlagsBold 1
 
+#define no_fill -1
+#define solid_fill 0
+#define repeating_bitmap_fill 0x40
+#define clipped_bitmap_fill 0x41
+#define nonsmoothed_repeating_bitmap 0x42
+#define nonsmoothed_clipped_bitmap 0x43
+
 
 
 //swf
