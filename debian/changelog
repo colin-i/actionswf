@@ -1,3 +1,9 @@
+actionswf (1-138) bionic; urgency=medium
+
+  * new constants at headers
+
+ -- bc <bc@bc-desktop>  Thu, 01 May 2025 15:50:46 +0300
+
 actionswf (1-137) bionic; urgency=medium
 
   * don't default stop swf_dbl functions
