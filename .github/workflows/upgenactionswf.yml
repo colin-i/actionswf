@@ -4,7 +4,7 @@ on:
 
 jobs:
  ubuildgen:
-  runs-on: ubuntu-18.04 #latest is ok but it must be downloaded first
+  runs-on: ubuntu-22.04 #latest is ok but it must be downloaded first
   steps:
    - name: Run a multi-line script
      run: |
