@@ -65,7 +65,7 @@ ${libname}: main.o ${exte}
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
-	${OCONV} $<.x
+	${OCONV} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 #-Wno are a must at pkgbuild
 #-fPIC since launchpad bionic build

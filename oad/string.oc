@@ -96,7 +96,7 @@ function indent()
 end
 
 importx "fputs" fputs
-importx "stdout" stdout
+^importx "stdout" stdout
 importx "fputc" fputc
 
 function printn(sv s)
@@ -165,7 +165,7 @@ function print_text(ss a,valueu c)
 	end
 end
 
-importx "stderr" stderr
+^importx "stderr" stderr
 function printe(ss er)
 	sv se^stderr
 	set se se#
