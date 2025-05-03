@@ -1,3 +1,9 @@
+actionswf (1-140) bionic; urgency=medium
+
+  * matching longs at oad
+
+ -- bc <bc@bc-desktop>  Sat, 03 May 2025 18:45:27 +0300
+
 actionswf (1-139) bionic; urgency=medium
 
   * fix oad build
