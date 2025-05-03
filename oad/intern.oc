@@ -39,7 +39,7 @@ import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 ^import "get_nframe" get_nframe 5
 #
-importx "strlen" strlen                              #same as malloc realloc
+importx "strlen" strlen                              #same as malloc realloc. fwrite and memcpy. fread is not builtin but not using the return so no register high part clean there
 importx "memcpy" memcpy
 importx "free" free
 import "compare" compare
