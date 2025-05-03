@@ -90,7 +90,7 @@ function re_calloc_add(svu pmem,sdu psize)
 	return ok
 end
 
-function preframe_init()
+function preframe_init() #0
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
 		sv ustrings

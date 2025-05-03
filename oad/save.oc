@@ -214,14 +214,14 @@ end
 function lowread(valueu file,valueu buf,charx sz)
 	call fread(buf,sz,1,file)
 end
-function mediumread(valueu file,wordxu sz)
+function mediumread(valueu file,wordxu sz) #1
 	valueu mem#1;set mem malloc(sz)
 	if mem!=(NULL)
 		call fread(mem,sz,1,file)
 	end
 	return mem
 end
-function highread(valueu file,dataxu sz)
+function highread(valueu file,dataxu sz) #1
 	valueu mem#1;set mem malloc(sz)
 	if mem!=(NULL)
 		call fread(mem,sz,1,file)
@@ -388,7 +388,7 @@ function restore(valueu file) #1
 	return (NULL)
 end
 
-function restore_frame(valueu file)
+function restore_frame(valueu file) #1
 	valueu f#1;set f malloc((\preframe\))
 	if f!=(NULL)
 		whiletrue
@@ -467,7 +467,7 @@ function restore_strings(valueu file,svu _constpool,svu _strs,sd _size)
 	return cpsize
 end
 
-function restore_branch(valueu file)
+function restore_branch(valueu file) #1
 	valueu br#1;set br malloc(\branch\)
 	if br!=(NULL)
 		valueu mem#1

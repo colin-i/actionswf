@@ -116,7 +116,7 @@ function memnl(ss log,sv pnext) #2
 	end
 	return log
 end
-function memdec(ss start,value end)
+function memdec(ss start,value end) #2
 	sub end start
 	add start end
 	sd nr=1
@@ -135,7 +135,8 @@ function memdec(ss start,value end)
 	return val
 end
 #end
-function memhex_parse_withinc(ss start,swu out) #arecordheader,function,if,jump are 15/16 bits at max
+#arecordheader,function,if,jump are 15/16 bits at max
+function memhex_parse_withinc(ss start,swu out)
 	inc start
 	ss a;set a start
 	whiletrue #the action row is ending in new line
