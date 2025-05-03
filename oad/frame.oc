@@ -1,10 +1,39 @@
 
 format elfobj64
 
-importx "realloc" realloc
-
 override include_sec 1
 include "common.h" "common.oh"
+
+importx "realloc" realloc
+#
+importx "malloc" malloc
+importx "free" free
+import "branch_init" branch_init
+import "tree_frame_init" tree_frame_init
+import "global_blog" global_blog
+#
+import "string_log" string_log
+import "branch_free" branch_free
+import "tree_frame_free" tree_frame_free
+import "prints_inline_start" prints_inline_start
+import "print_inline_start" print_inline_start
+import "print_inline_done" print_inline_done
+import "print" print
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+import "print_hex_start" print_hex_start
+import "print_hex" print_hex
+import "print_lhex" print_lhex
+import "prints" prints
+import "indent" indent
+importx "printf" printf
+importx "putchar" putchar
+#
+import "print_text" print_text
+#
+import "text_after_nlines" text_after_nlines
+import "memnlcr" memnlcr
+importx "memcpy" memcpy
 
 function re_alloc(svu pmem,dataxu size) #only dataxu external sizes, and +1 increments
 	if size!=0
@@ -61,13 +90,6 @@ function re_calloc_add(svu pmem,sdu psize)
 	return ok
 end
 
-importx "malloc" malloc
-importx "free" free
-
-import "branch_init" branch_init
-import "tree_frame_init" tree_frame_init
-import "global_blog" global_blog
-
 function preframe_init()
 	sv pf;set pf malloc((\preframe\))
 	if pf!=(NULL)
@@ -117,25 +139,6 @@ function preframe_init()
 	end
 	return (NULL)
 end
-
-import "string_log" string_log
-import "branch_free" branch_free
-import "tree_frame_free" tree_frame_free
-
-import "prints_inline_start" prints_inline_start
-import "print_inline_start" print_inline_start
-import "print_inline_done" print_inline_done
-import "print" print
-import "print_indent" print_indent
-import "print_unindent" print_unindent
-import "print_hex_start" print_hex_start
-import "print_hex" print_hex
-import "print_lhex" print_lhex
-import "prints" prints
-import "indent" indent
-
-importx "printf" printf
-importx "putchar" putchar
 
 function frame_print_top(charx ainit,datax log_index)
 	if ainit=(xlog_ainit_false)
@@ -255,8 +258,6 @@ function frame_init(valueu total)
 	end
 	return (NULL)
 end
-
-import "print_text" print_text
 
 function frame_print_action(valueu a,valueu b,charx c,charx d)
 	if a!=b
@@ -396,10 +397,6 @@ end
 #with () for c
 const frame_text_allocpart_=(frame_text_allocpart-1)
 const _frame_text_allocpart_=~frame_text_allocpart_
-import "text_after_nlines" text_after_nlines
-import "memnlcr" memnlcr
-
-importx "memcpy" memcpy
 
 function frame_text_add(valueu fr,svu _text,valueu lines)
 	valueu starttext#1;set starttext _text#

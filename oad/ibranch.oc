@@ -6,6 +6,12 @@ include "common.h" "common.oh"
 
 import "re_alloc" re_alloc
 import "branch_init" branch_init
+#
+import "re_alloc_add" re_alloc_add
+#
+import "printe" printe
+#
+import "global_blog" global_blog
 
 function ibranch_add(valueu pf)
 	valueu bra#1;set bra pf#:preframe.branchpointer
@@ -27,8 +33,6 @@ function ibranch_done(valueu pf)
 	set pf#:preframe.branchpointer bra#:branch.topbranch
 end
 
-import "re_alloc_add" re_alloc_add
-
 function jumpforwardif_resolve(valueu pf,wordxu number)
 	dataxu offset#1;set offset pf#:preframe.size
 	sub offset number
@@ -47,7 +51,6 @@ function jumpforwardif_resolve(valueu pf,wordxu number)
 		set prev prev#:branch.suprabranch
 	end
 end
-import "printe" printe
 function jumpforward_resolve(valueu pf,wordxu number)
 	dataxu offset#1;set offset pf#:preframe.size
 	sub offset number
@@ -86,7 +89,6 @@ function jumpbackward_resolve(valueu pf,wordxu number,charx log)
 		set prev prev#:branch.suprabranch
 	end
 end
-import "global_blog" global_blog
 function jumpforwards_frame_done(valueu prefr)
 	if prefr!=(NULL)  #else is from_show / no aframe
 		svu pointer;svu end

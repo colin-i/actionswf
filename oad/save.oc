@@ -9,6 +9,21 @@ const WORD=2
 const DWORD=4
 
 importx "fwrite" fwrite
+#
+import "global_presprites_size" global_presprites_size
+#
+importx "strlen" strlen
+#
+importx "fread" fread
+importx "malloc" malloc
+importx "free" free
+#
+importx "printf" printf
+import "re_alloc_add" re_alloc_add
+import "print_inline_done" print_inline_done
+import "global_blog" global_blog
+#
+importx "realloc" realloc
 
 function lowwrite(valueu buf,charx sz,valueu file)
 	charx out#1;set out fwrite(buf,sz,1,file)
@@ -41,7 +56,6 @@ function falsewrite(valueu file)
 	return out
 end
 
-import "global_presprites_size" global_presprites_size
 function save(svu presprites,valueu file)
 	valueu end#1;set end presprites
 	add end global_presprites_size()
@@ -112,8 +126,6 @@ function save_frame(valueu aframe,valueu file)
 	end
 	return out
 end
-
-importx "strlen" strlen
 
 function save_strings(valuexu pointer,valueu end,valueu file)
 	valuexu strings#1;set strings pointer
@@ -198,10 +210,6 @@ function save_branch(valueu br,valueu file) #at least a mathend/function_marker/
 end
 
 #read
-
-importx "fread" fread
-importx "malloc" malloc
-importx "free" free
 
 function lowread(valueu file,valueu buf,charx sz)
 	call fread(buf,sz,1,file)
@@ -302,12 +310,6 @@ function restore_free(svu predata)
 	call free(predata#:preoadata.presprites)
 	call free(predata)
 end
-
-importx "printf" printf
-
-import "re_alloc_add" re_alloc_add
-import "print_inline_done" print_inline_done
-import "global_blog" global_blog
 
 function restore(valueu file)
 	valueu data#1;set data malloc((\preoadata\))
@@ -464,8 +466,6 @@ function restore_strings(valueu file,svu _constpool,svu _strs,sd _size)
 	end
 	return cpsize
 end
-
-importx "realloc" realloc
 
 function restore_branch(valueu file)
 	valueu br#1;set br malloc(\branch\)

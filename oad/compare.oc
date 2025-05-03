@@ -1,19 +1,40 @@
 
 format elfobj64
 
-importx "strlen" strlen
-importx "malloc" malloc
-importx "memcpy" memcpy
-importx "fopen" fopen
-importx "free" free
-importx "fclose" fclose
-
 override include_sec 1
 include "common.h" "common.oh"
 
 #multithread unsafe
 dataxu presprites_size#1  #same as sprites_size
 #
+
+importx "strlen" strlen
+importx "malloc" malloc
+importx "memcpy" memcpy
+importx "fopen" fopen
+importx "free" free
+importx "fclose" fclose
+#
+import "restore" restore
+import "restore_free" restore_free
+import "mark_all" mark_all
+import "mark_compare" mark_compare
+#
+import "frame_free" frame_free
+import "print" print
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+#
+importx "puts" puts
+import "preframe_free" preframe_free
+#
+import "re_calloc" re_calloc
+import "re_calloc_size" re_calloc_size
+import "nframe_init" nframe_init
+import "frame_expand" frame_expand
+#
+import "jumpforwards_done" jumpforwards_done
+
 function global_presprites_size()
 	return global.presprites_size
 end
@@ -23,10 +44,6 @@ function inter_extension(sv psize)
 	set psize# (\global.inter_extension_data)
 	return global.p_inter_extension_data
 end
-import "restore" restore
-import "restore_free" restore_free
-import "mark_all" mark_all
-import "mark_compare" mark_compare
 function compare(ss swf_fullpath,valueu presprites,valueu data)
 	sd size;set size strlen(swf_fullpath)
 	sd size1=\global.inter_extension_data
@@ -56,12 +73,6 @@ function compare(ss swf_fullpath,valueu presprites,valueu data)
 	end
 	return (EXIT_FAILURE)
 end
-
-import "frame_free" frame_free
-
-import "print" print
-import "print_indent" print_indent
-import "print_unindent" print_unindent
 
 function sprite_free(sv s,sv start) #log is start != null
 	sv sp;set sp s#
@@ -115,10 +126,6 @@ function preoadata_init(sv ppresprites,sv psprites)
 	end
 	return (EXIT_FAILURE)
 end
-
-importx "puts" puts
-
-import "preframe_free" preframe_free
 
 function preoadata_free(sv presprites,sv sprites,charx log,valueu xstart)
 	if presprites!=(NULL)
@@ -186,11 +193,6 @@ function preoadata_free(sv presprites,sv sprites,charx log,valueu xstart)
 		end
 	end
 end
-
-import "re_calloc" re_calloc
-import "re_calloc_size" re_calloc_size
-import "nframe_init" nframe_init
-import "frame_expand" frame_expand
 
 #                       wordxu preid                                         at action only from here
 function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,charx ainit,valueu linestotal)
@@ -309,8 +311,6 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 	end
 	return (EXIT_FAILURE)
 end
-
-import "jumpforwards_done" jumpforwards_done
 
 function presprite_done(sv sprites,wordxu preid,wordxu id,sv data,sv presprites)
 	sv pointer=:

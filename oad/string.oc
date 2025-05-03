@@ -4,17 +4,27 @@ format elfobj64
 override include_sec 1
 include "common.h" "common.oh"
 
-import "re_alloc" re_alloc
+#multithread unsafe
+char indents=0
+#
 
+import "re_alloc" re_alloc
 importx "malloc" malloc
 importx "printf" printf
 importx "putchar" putchar
 importx "free" free
 importx "strlen" strlen
-
-#multithread unsafe
-char indents=0
 #
+importx "fputs" fputs
+^importx "stdout" stdout
+importx "fputc" fputc
+#
+import "memnl" memnl
+importx "fwrite" fwrite
+#
+^importx "stderr" stderr
+#
+import "re_alloc_add" re_alloc_add
 
 const ui8max_=256
 
@@ -95,10 +105,6 @@ function indent()
 	end
 end
 
-importx "fputs" fputs
-^importx "stdout" stdout
-importx "fputc" fputc
-
 function printn(sv s)
 	call fputc((output_nl),s)
 end
@@ -145,9 +151,6 @@ function prints_inline(ss format)
 	call printt(format)
 end
 
-import "memnl" memnl
-
-importx "fwrite" fwrite
 function print_text(ss a,valueu c)
 	sv so^stdout
 	ss b
@@ -165,7 +168,6 @@ function print_text(ss a,valueu c)
 	end
 end
 
-^importx "stderr" stderr
 function printe(ss er)
 	sv se^stderr
 	set se se#
@@ -194,8 +196,6 @@ function string_log(valueu base,valueu off)
 	inc off ##to log like in .x where 0 is NULL and 1 is offset 0
 	call print_lhex(base,off)  #will recognize the branch (visual) when having the string -> branch link and the branch offset
 end
-
-import "re_alloc_add" re_alloc_add
 
 function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
 	wordxu id#1;set id xxcontent#

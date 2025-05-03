@@ -6,8 +6,27 @@ include "common.h" "common.oh"
 
 importx "malloc" malloc
 importx "free" free
-
 import "global_blog" global_blog
+#
+importx "realloc" realloc
+#
+importx "printf" printf
+importx "putchar" putchar
+import "print_indent" print_indent
+import "print_unindent" print_unindent
+import "print_inline_start" print_inline_start
+import "prints_inline_start" prints_inline_start
+import "print_inline_done" print_inline_done
+import "print_einline" print_einline
+import "prints_inline" prints_inline
+import "printt" printt
+#
+import "oadata_logpad_get" oadata_logpad_get #importx without args
+import "print_lhex" print_lhex
+import "print_hex" print_hex
+import "print_hhex" print_hhex
+#
+import "tree_entrylive" tree_entrylive
 
 #branch pointer
 function branch_init(valueu pf,valueu ptbra,valueu pbra)
@@ -54,7 +73,6 @@ function branch_init(valueu pf,valueu ptbra,valueu pbra)
 	return (NULL)
 end
 
-importx "realloc" realloc
 function branch_add(sv pf,dataxu size,dataxu offset,valueu code)
 	sub size offset
 	sv br;set br pf#:preframe.branchpointer
@@ -73,18 +91,6 @@ function branch_add(sv pf,dataxu size,dataxu offset,valueu code)
 	end
 	return (EXIT_FAILURE)
 end
-
-importx "printf" printf
-importx "putchar" putchar
-
-import "print_indent" print_indent
-import "print_unindent" print_unindent
-import "print_inline_start" print_inline_start
-import "prints_inline_start" prints_inline_start
-import "print_inline_done" print_inline_done
-import "print_einline" print_einline
-import "prints_inline" prints_inline
-import "printt" printt
 
 function branch_code(ss code,valueu end,ss _a,ss _b,ss form)
 	ss start;set start code
@@ -128,11 +134,6 @@ function branch_code(ss code,valueu end,ss _a,ss _b,ss form)
 	end
 	set _a# a;set _b# b
 end
-
-import "oadata_logpad_get" oadata_logpad_get #importx without args
-import "print_lhex" print_lhex
-import "print_hex" print_hex
-import "print_hhex" print_hhex
 
 function branch_log(sv br,valueu start)
 	call prints_inline_start("branch:")
@@ -200,8 +201,6 @@ function branch_log(sv br,valueu start)
 	end
 	call print_unindent()
 end
-
-import "tree_entrylive" tree_entrylive
 
 function branch_free(valueu br,valueu logstart,dataxu indents)
 	if logstart!=(NULL)

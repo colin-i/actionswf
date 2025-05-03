@@ -13,11 +13,26 @@ char logpad=xlog_pad_default
 importx "puts" puts
 importx "printf" printf
 importx "free" free
-
 import "sprite_free" sprite_free
-
 import "print" print
 import "print_inline_done" print_inline_done
+#
+importx "strlen" strlen
+importx "malloc" malloc
+importx "memcpy" memcpy
+import "fcontent" fcontent
+import "loop" loop
+import "inter" inter
+import "oadata_init" oadata_init
+import "preoadata_init" preoadata_init
+import "preoadata_free" preoadata_free
+import "presprite_done" presprite_done
+import "tree_init" tree_init
+import "tree_exit" tree_exit
+#
+importx "rename" rename
+import "inter_extension" inter_extension
+import "inter_last_extension" inter_last_extension
 
 functionx oadata_free(sv data,charx log)
 	if data!=(NULL)
@@ -70,20 +85,6 @@ functionx oadata_free(sv data,charx log)
 		call free(data)
 	end
 end
-
-importx "strlen" strlen
-importx "malloc" malloc
-importx "memcpy" memcpy
-
-import "fcontent" fcontent
-import "loop" loop
-import "inter" inter
-import "oadata_init" oadata_init
-import "preoadata_init" preoadata_init
-import "preoadata_free" preoadata_free
-import "presprite_done" presprite_done
-import "tree_init" tree_init
-import "tree_exit" tree_exit
 
 functionx oadata_make(ss swf_fullpath,svu poadata,charx log)
 	set poadata# (NULL)
@@ -156,10 +157,6 @@ functionx oadata_make(ss swf_fullpath,svu poadata,charx log)
 	end
 	return (EXIT_FAILURE)
 end
-
-importx "rename" rename
-import "inter_extension" inter_extension
-import "inter_last_extension" inter_last_extension
 
 functionx oadata_ok(ss swf_fullpath)
 # move ...last.data ...data
