@@ -8,7 +8,7 @@ importx "realloc" realloc
 #
 importx "malloc" malloc
 importx "free" free
-^import "branch_init" branch_init
+^import "branch_init" branch_init 1
 import "tree_frame_init" tree_frame_init
 import "global_blog" global_blog
 #
@@ -31,8 +31,8 @@ importx "putchar" putchar
 #
 import "print_text" print_text
 #
-^import "text_after_nlines" text_after_nlines
-^import "memnlcr" memnlcr
+^import "text_after_nlines" text_after_nlines 3
+^import "memnlcr" memnlcr 3
 importx "memcpy" memcpy
 
 function re_alloc(svu pmem,dataxu size) #only dataxu external sizes, and +1 increments
@@ -357,7 +357,7 @@ function frame_free(sv f,charx ainit,datax log_index)
 	call free(f)
 end
 
-function nframe_init(sv pf,valueu total)
+function nframe_init(sv pf,valueu total) #2
 	set pf# preframe_init()
 	if pf#!=(NULL)
 		valueu f#1;set f frame_init(total)
@@ -366,7 +366,7 @@ function nframe_init(sv pf,valueu total)
 	return (NULL)
 end
 
-function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf)
+function get_nframe(sv presprites,sv sprites,wordxu preid,charx ainit,sv ppf) #5
 	sv ps=:
 	mult ps preid
 	sv s;set s ps

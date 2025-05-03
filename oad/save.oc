@@ -311,7 +311,7 @@ function restore_free(svu predata)
 	call free(predata)
 end
 
-function restore(valueu file)
+function restore(valueu file) #1
 	valueu data#1;set data malloc((\preoadata\))
 	if data!=(NULL)
 		svu presprites;set presprites malloc((sprites_realloc_onepart))

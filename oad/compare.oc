@@ -11,11 +11,11 @@ dataxu presprites_size#1  #same as sprites_size
 importx "strlen" strlen
 importx "malloc" malloc
 importx "memcpy" memcpy
-^importx "fopen" fopen
+^importx "fopen" fopen 2
 importx "free" free
 importx "fclose" fclose
 #
-^import "restore" restore
+^import "restore" restore 1
 import "restore_free" restore_free
 import "mark_all" mark_all
 import "mark_compare" mark_compare
@@ -30,7 +30,7 @@ import "preframe_free" preframe_free
 #
 import "re_calloc" re_calloc
 import "re_calloc_size" re_calloc_size
-^import "nframe_init" nframe_init
+^import "nframe_init" nframe_init 2
 import "frame_expand" frame_expand
 #
 import "jumpforwards_done" jumpforwards_done
@@ -40,7 +40,7 @@ function global_presprites_size()
 end
 
 char inter_extension_data=".data";vstr p_inter_extension_data^inter_extension_data
-function inter_extension(sv psize)
+function inter_extension(sv psize) #1
 	set psize# (\global.inter_extension_data)
 	return global.p_inter_extension_data
 end

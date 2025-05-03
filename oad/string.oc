@@ -19,7 +19,7 @@ importx "fputs" fputs
 ^importx "stdout" stdout
 importx "fputc" fputc
 #
-^import "memnl" memnl
+^import "memnl" memnl 2
 importx "fwrite" fwrite
 #
 ^importx "stderr" stderr

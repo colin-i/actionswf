@@ -20,7 +20,7 @@ import "print_inline_done" print_inline_done
 importx "strlen" strlen
 importx "malloc" malloc
 importx "memcpy" memcpy
-^import "fcontent" fcontent
+^import "fcontent" fcontent 2
 import "loop" loop
 import "inter" inter
 import "oadata_init" oadata_init
@@ -31,8 +31,8 @@ import "tree_init" tree_init
 import "tree_exit" tree_exit
 #
 importx "rename" rename
-^import "inter_extension" inter_extension
-^import "inter_last_extension" inter_last_extension
+^import "inter_extension" inter_extension 1
+^import "inter_last_extension" inter_last_extension 1
 
 functionx oadata_free(sv data,charx log)
 	if data!=(NULL)

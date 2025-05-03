@@ -9,7 +9,7 @@ dataxu xoffset#1
 charx blog#1
 #
 
-^importx "fopen" fopen
+^importx "fopen" fopen 2
 importx "fseek" fseek
 importx "ftell" ftell
 importx "malloc" malloc
@@ -22,7 +22,7 @@ import "re_calloc_add" re_calloc_add
 import "frame_actions" frame_actions
 import "string_add" string_add
 import "string_id" string_id
-^import "branch_init" branch_init
+^import "branch_init" branch_init 3
 import "ibranch_add" ibranch_add
 import "ibranch_done" ibranch_done
 import "tree_entry_ex" tree_entry_ex
@@ -37,7 +37,7 @@ import "function_resolved" function_resolved
 #
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
-^import "get_nframe" get_nframe
+^import "get_nframe" get_nframe 5
 #
 importx "strlen" strlen
 importx "memcpy" memcpy
@@ -50,7 +50,7 @@ function global_blog()
 	return global.blog
 end
 
-function fcontent(sd path,sv psize)
+function fcontent(sd path,sv psize) #2
 	sd f;set f fopen(path,"rb")
 	if f!=(NULL)
 		call fseek(f,0,(SEEK_END))
@@ -71,7 +71,8 @@ function fcontent(sd path,sv psize)
 end
 
 #at these memnl the last row is ending in nl from src
-function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an example with cr: ffdec action output is \r\n
+ #here is moving through text, an example with cr: ffdec action output is \r\n
+function memnlcr(ss log,sv pnext,sv _cr) #3
 	set pnext# 1
 	if log#!=(xlog_nl) #empty row / last row
 		whiletrue
@@ -101,7 +102,8 @@ function memnlcr(ss log,sv pnext,sv _cr) #here is moving through text, an exampl
 	end
 	return log
 end
-function memnl(ss log,sv pnext) #here is moving only on nl from src
+#here is moving only on nl from src
+function memnl(ss log,sv pnext) #2
 	set pnext# 1
 	if log#!=(xlog_nl) #emptyrow
 		inc log
@@ -422,7 +424,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 	return (EXIT_FAILURE)
 end
 
-function text_after_nlines(ss inlog,valueu linesnr,valueu crs)
+function text_after_nlines(ss inlog,valueu linesnr,valueu crs) #3
 	ss next
 	while linesnr>^0
 		call memnlcr(inlog,#next,crs)
@@ -539,7 +541,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 end
 
 char inter_last_extension_data=".last.data";vstr p_inter_last_extension_data^inter_last_extension_data
-function inter_last_extension(sv psize)
+function inter_last_extension(sv psize) #1
 	set psize# (\global.inter_last_extension_data)
 	return global.p_inter_last_extension_data
 end

@@ -29,7 +29,7 @@ import "print_hhex" print_hhex
 import "tree_entrylive" tree_entrylive
 
 #branch pointer
-function branch_init(valueu pf,valueu ptbra,valueu pbra)
+function branch_init(valueu pf,valueu ptbra,valueu pbra) #3
 	valueu bra#1
 	set bra malloc((\branch\))
 	if bra!=(NULL)
