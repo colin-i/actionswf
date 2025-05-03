@@ -11,8 +11,8 @@ charx blog#1
 
 ^importx "fopen" fopen 2
 importx "fseek" fseek
-importx "ftell" ftell
-importx "malloc" malloc
+^importx "ftell" ftell 1                             #this is hard to catch must compile and look at asm to see is an int
+importx "malloc" malloc                              #to catch practical but to catch only by warnings, is a long if also this warning comes -Wbuiltin-declaration-mismatch
 importx "fread" fread
 importx "fclose" fclose
 #
@@ -39,7 +39,7 @@ import "presprite_init" presprite_init
 import "presprite_done" presprite_done
 ^import "get_nframe" get_nframe 5
 #
-importx "strlen" strlen
+importx "strlen" strlen                              #same as malloc realloc
 importx "memcpy" memcpy
 importx "free" free
 import "compare" compare
