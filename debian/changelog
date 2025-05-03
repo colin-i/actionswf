@@ -1,3 +1,9 @@
+actionswf (1-139) bionic; urgency=medium
+
+  * fix oad build
+
+ -- bc <bc@bc-desktop>  Sat, 03 May 2025 06:42:52 +0300
+
 actionswf (1-138) bionic; urgency=medium
 
   * new constants at headers
