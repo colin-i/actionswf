@@ -9,7 +9,7 @@ dataxu xoffset#1
 charx blog#1
 #
 
-importx "fopen" fopen
+^importx "fopen" fopen
 importx "fseek" fseek
 importx "ftell" ftell
 importx "malloc" malloc
@@ -22,7 +22,7 @@ import "re_calloc_add" re_calloc_add
 import "frame_actions" frame_actions
 import "string_add" string_add
 import "string_id" string_id
-import "branch_init" branch_init
+^import "branch_init" branch_init
 import "ibranch_add" ibranch_add
 import "ibranch_done" ibranch_done
 import "tree_entry_ex" tree_entry_ex
@@ -37,7 +37,7 @@ import "function_resolved" function_resolved
 #
 import "presprite_init" presprite_init
 import "presprite_done" presprite_done
-import "get_nframe" get_nframe
+^import "get_nframe" get_nframe
 #
 importx "strlen" strlen
 importx "memcpy" memcpy

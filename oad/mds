@@ -1,3 +1,6 @@
 
-#if [ -n "${1}" ]; then OCOMP="q ~/o/ocompiler-1/src/o"; if [ ${1} = 0 ]; then shift; OCOMP=${OCOMP} ./md $@; exit; fi; shift; fi
-OCONV="qq ~/o/ocompiler-1/otoc/otoc" OCOMP="q ~/o/ocompiler-1/src/o" ./md $@
+if [ -z "${launcher}" ]; then launcher="q"; fi
+if [ -z "${OCOMP}" ]; then OCOMP="${launcher} ~/o/ocompiler-1/src/o"; fi
+if [ -z "${OCONV}" ]; then OCONV="${launcher}${launcher} ~/o/ocompiler-1/otoc/otoc"; fi
+if [ -z "${OLINK}" ]; then OLINK="${launcher} ~/o/ocompiler-1/ounused/ounused"; fi
+OCONV="${OCONV}" OCOMP="${OCOMP}" OLINK="${OLINK}" ./md $@

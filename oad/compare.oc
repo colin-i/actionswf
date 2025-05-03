@@ -11,11 +11,11 @@ dataxu presprites_size#1  #same as sprites_size
 importx "strlen" strlen
 importx "malloc" malloc
 importx "memcpy" memcpy
-importx "fopen" fopen
+^importx "fopen" fopen
 importx "free" free
 importx "fclose" fclose
 #
-import "restore" restore
+^import "restore" restore
 import "restore_free" restore_free
 import "mark_all" mark_all
 import "mark_compare" mark_compare
@@ -30,7 +30,7 @@ import "preframe_free" preframe_free
 #
 import "re_calloc" re_calloc
 import "re_calloc_size" re_calloc_size
-import "nframe_init" nframe_init
+^import "nframe_init" nframe_init
 import "frame_expand" frame_expand
 #
 import "jumpforwards_done" jumpforwards_done

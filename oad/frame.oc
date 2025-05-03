@@ -8,7 +8,7 @@ importx "realloc" realloc
 #
 importx "malloc" malloc
 importx "free" free
-import "branch_init" branch_init
+^import "branch_init" branch_init
 import "tree_frame_init" tree_frame_init
 import "global_blog" global_blog
 #
@@ -31,8 +31,8 @@ importx "putchar" putchar
 #
 import "print_text" print_text
 #
-import "text_after_nlines" text_after_nlines
-import "memnlcr" memnlcr
+^import "text_after_nlines" text_after_nlines
+^import "memnlcr" memnlcr
 importx "memcpy" memcpy
 
 function re_alloc(svu pmem,dataxu size) #only dataxu external sizes, and +1 increments
