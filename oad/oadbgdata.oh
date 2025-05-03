@@ -1,7 +1,8 @@
 
 include "oadbgdatas.h" "oadbgdatas.oh"
 
-importx "oadata_make" oadata_make
-importx "oadata_free" oadata_free
-importx "oadata_ok" oadata_ok
-importx "oadata_logpad_set" oadata_logpad_set
+importx "oadata_make" oadata_make 3
+importx "oadata_free" oadata_free 2
+importx "oadata_ok" oadata_ok 1
+importx "oadata_logpad_get" oadata_logpad_get
+importx "oadata_logpad_set" oadata_logpad_set 1

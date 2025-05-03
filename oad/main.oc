@@ -34,7 +34,7 @@ importx "rename" rename
 ^import "inter_extension" inter_extension 1
 ^import "inter_last_extension" inter_last_extension 1
 
-functionx oadata_free(sv data,charx log)
+functionx oadata_free(sv data,charx log) #2
 	if data!=(NULL)
 		sv sprites;set sprites data#:oadata.sprites
 		if sprites!=(NULL)
@@ -86,7 +86,7 @@ functionx oadata_free(sv data,charx log)
 	end
 end
 
-functionx oadata_make(ss swf_fullpath,svu poadata,charx log)
+functionx oadata_make(ss swf_fullpath,svu poadata,charx log) #3
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
