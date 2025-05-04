@@ -7,6 +7,7 @@
 //not the same as #ifndef __builtin_malloc
 //old gcc cannot do in one line if __has_builtin is not: #if (! defined(__has_builtin)) || (! __has_builtin(__builtin_malloc))
 #undef ok_lets_define_the_function
+//a blank -E -dD will show __macros and one _macro
 
 #if defined(__has_builtin)
 #	if ! __has_builtin(__builtin_malloc)
