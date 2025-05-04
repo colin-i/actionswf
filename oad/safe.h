@@ -20,7 +20,7 @@
 #endif
 
 #if defined(__has_builtin)
-#	if ! __has_builtin(__builtin_realloc))
+#	if ! __has_builtin(__builtin_realloc)
 #		define ok_lets_define_the_function
 #	endif
 #endif
@@ -30,7 +30,7 @@ void*realloc(void*,long unsigned int);
 #endif
 
 #if defined(__has_builtin)
-#	if ! __has_builtin(__builtin_strlen))
+#	if ! __has_builtin(__builtin_strlen)
 #		define ok_lets_define_the_function
 #	endif
 #endif
