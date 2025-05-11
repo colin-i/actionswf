@@ -61,7 +61,7 @@ ${exte}: ${subobjects}
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log ${sublogs}
 	$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
-# -l:intern.o ? is ok but exclude-libs intern.o/...a will not exclude
+# -l:intern.o ? is ok but exclude-libs intern.o/libintern.a will not exclude
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}

@@ -36,8 +36,10 @@ override_dh_auto_install:
 
 	dh_auto_install -- prefix=/usr
 
+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 override_dh_gencontrol:
 	dh_gencontrol
 	echo -n "Depends: actionswf (= " >> debian/libactionswf-dev/DEBIAN/control
 	echo -n `cat debian/changelog | head -1 | grep -Poe "[^(]*(?=\))"` >> debian/libactionswf-dev/DEBIAN/control
 	echo ")" >> debian/libactionswf-dev/DEBIAN/control
+endif
