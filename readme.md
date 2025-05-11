@@ -17,10 +17,13 @@ On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/edor/
 yay -Sy actionswf
 ```
 \
-On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/actionswf/releases).
+On Fedora:
 ```sh
-dnf install actionswf-*.*.rpm
+sudo dnf copr enable colin/project
+sudo dnf install actionswf
 ```
+There is also <i>actionswf-devel</i>.\
+\
 \
 On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases) has the dll.
 
