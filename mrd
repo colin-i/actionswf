@@ -1,1 +1,1 @@
-cd src && ./mrd && cd ../oad && ./md
+cd src && ./mrd && cd ../oad && ./md && cd ../dev && make
