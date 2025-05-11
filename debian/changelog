@@ -1,3 +1,15 @@
+actionswf (1-145) bionic; urgency=medium
+
+  * and not at i386
+
+ -- bc <bc@bc-desktop>  Sun, 11 May 2025 17:18:51 +0300
+
+actionswf (1-144) bionic; urgency=medium
+
+  * -dev with main package same version req
+
+ -- bc <bc@bc-desktop>  Sun, 11 May 2025 14:32:38 +0300
+
 actionswf (1-143) bionic; urgency=medium
 
   * typo fix
