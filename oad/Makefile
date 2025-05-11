@@ -96,7 +96,7 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} $(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	if [ -e ../include_dev ]; then \
 		install -D oadbgdata.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.h && \
 		install -D oadbgdatas.h $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.h && \
@@ -107,7 +107,7 @@ install-lib:
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
+	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	-if [ -e ../include_dev ]; then \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdata.h; \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.h; \

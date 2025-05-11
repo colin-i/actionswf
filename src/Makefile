@@ -91,8 +91,9 @@ ${libname}: ${name}
 
 else
 #same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L. -l:${exte} --exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L. -l:${exte} --build-id --exclude-libs ${exte}
 #and pkg-config for -lc? is not in libc6-dev. where is?
+#--build-id for rpm
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	ln -f ${name} ${libname}
@@ -155,7 +156,7 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} $(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	if [ -e ../include_dev ]; then \
 		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flags.oh && \
 		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flagss.oh && \
@@ -167,7 +168,7 @@ install-lib:
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
+	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	-if [ -e ../include_dev ]; then \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/flags.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/flagss.oh; \
