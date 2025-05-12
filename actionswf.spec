@@ -1,4 +1,3 @@
-%global srcname actionswf
 
 Name: actionswf
 Version: 1.143
