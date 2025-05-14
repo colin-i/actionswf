@@ -20,6 +20,9 @@ endif
 ifndef prefix
 prefix=/usr
 endif
+ifndef platform
+platform=lin
+endif
 
 ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
@@ -31,7 +34,8 @@ endif
 
 OFLAGS=x_file 2
 
-libname=liboadbgdata.so
+libfirstname=liboadbgdata
+libname=${libfirstname}.so
 exte=libexte.a
 
 all: ${libname} oadbgdata.h
@@ -60,7 +64,11 @@ ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log ${sublogs}
-	$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}
+	if [ "${platform}" = "lin" ]; then \
+		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}; \
+	else \
+		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libfirstname}.dll -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
+	fi
 # -l:intern.o ? is ok but exclude-libs intern.o/libintern.a will not exclude
 
 %.o: %.oc

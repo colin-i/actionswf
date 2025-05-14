@@ -33,6 +33,8 @@ import "tree_exit" tree_exit
 importx "rename" rename
 ^import "inter_extension" inter_extension 1
 ^import "inter_last_extension" inter_last_extension 1
+#
+import "printe" printe
 
 functionx oadata_free(sv data,charx log) #2
 	if data!=(NULL)
@@ -200,6 +202,7 @@ functionx oadata_logpad_set(charx a)
 	if a!=0
 		set global.logpad a
 	else
+		call printe("logpad will be 1")
 		set global.logpad 1
 	end
 end
