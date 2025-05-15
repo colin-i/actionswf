@@ -16,7 +16,6 @@ importx "free" free
 import "sprite_free" sprite_free
 import "print" print
 import "print_inline_done" print_inline_done
-import "platform_init" platform_init
 #
 importx "strlen" strlen
 importx "malloc" malloc
@@ -88,7 +87,6 @@ functionx oadata_free(sv data,charx log) #2
 end
 
 functionx oadata_make(ss swf_fullpath,svu poadata,charx log) #3
-	call platform_init()
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext

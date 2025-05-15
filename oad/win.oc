@@ -15,13 +15,6 @@ function file_struct()
 	vstrx *_tmpfname#1
 end
 
-function platform_init()
-	#maybe is documented static, but who cares
-	#set global.sout s __iob_func()
-	#add global.sout \file_struct\*STDOUT_FILENO
-	# ...
-end
-
 function platform_stdout()
 	valueu s#1;set s __iob_func()
 	add s \file_struct\*STDOUT_FILENO

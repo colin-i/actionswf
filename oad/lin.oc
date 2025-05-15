@@ -1,27 +1,17 @@
 
 format elfobj64
 
-#multithread unsafe
-valueu sout#1
-valueu serr#1
-#
-
 ^importx "stdout" stdout
 ^importx "stderr" stderr
 
 function platform_stdout()
-	return global.sout
+	svu s^stdout
+	return s#
 end
 
 function platform_stderr()
-	return global.serr
-end
-
-function platform_init()
-	svu s^stdout
-	set global.sout s#
-	set s stderr
-	set global.serr s#
+	svu s^stderr
+	return s#    #no return s? unfortunately here at C &stderr is the same as stderr, else use !set s s#
 end
 
 entryraw global()
