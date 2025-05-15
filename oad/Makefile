@@ -28,14 +28,18 @@ ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
 		model=-m32
 	endif
-#else
+else
 #	model=
+	ifeq (${platform},win) #to long long
+		OCONVFLAGS=-
+	endif
 endif
 
 OFLAGS=x_file 2
 
 libfirstname=liboadbgdata
 libname=${libfirstname}.so
+libnamedll=${libfirstname}.dll
 exte=libexte.a
 
 all: ${libname} oadbgdata.h
@@ -67,13 +71,13 @@ ${libname}: main.o ${exte}
 	if [ "${platform}" = "lin" ]; then \
 		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}; \
 	else \
-		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libfirstname}.dll -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
+		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
 	fi
 # -l:intern.o ? is ok but exclude-libs intern.o/libintern.a will not exclude
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
-	${OCONV} $<.x import
+	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 #-Wno are a must at pkgbuild
 #-fPIC since launchpad bionic build
@@ -96,7 +100,7 @@ clean:
 	-rm -f           main.oc.log main.oc.x        main.c
 	-rm -f oadbgdata.ohi         oadbgdata.ohi.x  oadbgdata.h
 
-	-rm -f ${exte} ${libname}
+	-rm -f ${exte} ${libname} ${libnamedll}
 
 distclean: clean
 

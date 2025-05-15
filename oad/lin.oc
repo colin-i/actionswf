@@ -1,13 +1,13 @@
 
 format elfobj64
 
-^importx "stdout" stdout
-^importx "stderr" stderr
-
 #multithread unsafe
 valueu sout#1
 valueu serr#1
 #
+
+^importx "stdout" stdout
+^importx "stderr" stderr
 
 function platform_stdout()
 	return global.sout
