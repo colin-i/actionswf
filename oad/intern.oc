@@ -15,6 +15,7 @@ importx "fseek" fseek
 importx "malloc" malloc                              #to catch practical but to catch only by warnings, is a long if also this warning comes -Wbuiltin-declaration-mismatch
 importx "fread" fread
 importx "fclose" fclose
+import "printe" printe
 #
 import "branch_add" branch_add
 #
@@ -32,7 +33,6 @@ import "jumpforward_resolve" jumpforward_resolve
 import "jumpforwardif_resolve" jumpforwardif_resolve
 import "jumpbackward_resolve" jumpbackward_resolve
 import "jumpbackward_resolved" jumpbackward_resolved
-import "printe" printe
 import "function_resolved" function_resolved
 #
 import "presprite_init" presprite_init
@@ -67,6 +67,7 @@ function fcontent(sd path,sv psize) #2
 		end
 		call fclose(f)
 	end
+	call printe("file error")
 	return (NULL)
 end
 

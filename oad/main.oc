@@ -16,6 +16,7 @@ importx "free" free
 import "sprite_free" sprite_free
 import "print" print
 import "print_inline_done" print_inline_done
+import "platform_init" platform_init
 #
 importx "strlen" strlen
 importx "malloc" malloc
@@ -33,8 +34,6 @@ import "tree_exit" tree_exit
 importx "rename" rename
 ^import "inter_extension" inter_extension 1
 ^import "inter_last_extension" inter_last_extension 1
-#
-import "printe" printe
 
 functionx oadata_free(sv data,charx log) #2
 	if data!=(NULL)
@@ -89,6 +88,7 @@ functionx oadata_free(sv data,charx log) #2
 end
 
 functionx oadata_make(ss swf_fullpath,svu poadata,charx log) #3
+	call platform_init()
 	set poadata# (NULL)
 	sd size;set size strlen(swf_fullpath)
 	char logext=".log";vstr slogext^logext
@@ -202,7 +202,6 @@ functionx oadata_logpad_set(charx a)
 	if a!=0
 		set global.logpad a
 	else
-		call printe("logpad will be 1")
 		set global.logpad 1
 	end
 end

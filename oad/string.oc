@@ -16,13 +16,13 @@ importx "free" free
 importx "strlen" strlen
 #
 importx "fputs" fputs
-^importx "stdout" stdout
+^import "platform_stdout" platform_stdout
 importx "fputc" fputc
 #
 ^import "memnl" memnl 2
 importx "fwrite" fwrite
 #
-^importx "stderr" stderr
+^import "platform_stderr" platform_stderr
 #
 import "re_alloc_add" re_alloc_add
 
@@ -109,12 +109,12 @@ function printn(sv s)
 	call fputc((output_nl),s)
 end
 function print_inline_done()
-	sv so^stdout  #isn't at c an extra step? who cares, at o is not possible without this
-	call printn(so#)
+	valueu so#1;set so platform_stdout()
+	call printn(so)
 end
 function printt(ss str)
-	svu so^stdout  #isn't at c an extra step? who cares, at o, to put stdout an arg is like putting the pointer
-	call fputs(str,so#)
+	valueu so#1;set so platform_stdout()
+	call fputs(str,so)
 end
 function print_indent()
 	inc global.indents
@@ -152,7 +152,7 @@ function prints_inline(ss format)
 end
 
 function print_text(ss a,valueu c)
-	sv so^stdout
+	valueu so#1;set so platform_stdout()
 	ss b
 	valueu d#1
 	add c a
@@ -161,7 +161,7 @@ function print_text(ss a,valueu c)
 		if d!=a  #why to write a whitespaces row?
 			sub d a
 			call indent()
-			call fwrite(a,d,1,so#)
+			call fwrite(a,d,1,so)
 			call print_inline_done()
 		end
 		set a b
@@ -169,8 +169,7 @@ function print_text(ss a,valueu c)
 end
 
 function printe(ss er)
-	sv se^stderr
-	set se se#
+	valueu se#1;set se platform_stderr()
 	call fputs(er,se)
 	call printn(se)
 end

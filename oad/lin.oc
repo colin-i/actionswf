@@ -1,0 +1,27 @@
+
+format elfobj64
+
+^importx "stdout" stdout
+^importx "stderr" stderr
+
+#multithread unsafe
+valueu sout#1
+valueu serr#1
+#
+
+function platform_stdout()
+	return global.sout
+end
+
+function platform_stderr()
+	return global.serr
+end
+
+function platform_init()
+	svu s^stdout
+	set global.sout s#
+	set s stderr
+	set global.serr s#
+end
+
+entryraw global()
