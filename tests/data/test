@@ -18,7 +18,7 @@ if [ ! -e ${etest} ]; then
 	fi
 fi
 
-{ ${RUN__SHELL} ./a ${g} ; echo $? > ./test.status ; } | tee data.txt
+{ ${RUN__SHELL} ./a${what_a} ${g} ; echo $? > ./test.status ; } | tee data.txt
 status=`cat ./test.status`; rm ./test.status
 if [ ${status} != 0 ]; then  exit 1; fi          #set -o pipefail && a | tee || exit
 

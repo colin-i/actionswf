@@ -90,7 +90,7 @@ ${libname}: main.o ${exte}
 %.h: %.ohi
 #	if [ $@ = common.h ]; then $(MAKE) ${xlog}h;fi
 	${OCOMP} $< ${OFLAGS} logfile 0
-	${OCONV} $<.x
+	${OCONV} ${OCONVFLAGS} $<.x
 
 clean:
 	-rm -f common.ohi            common.ohi.x     common.h

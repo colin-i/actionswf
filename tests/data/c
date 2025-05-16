@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -f a.oc.x a.c a.out
+rm -f a.oc.x a.c a.out a.exe
