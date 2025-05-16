@@ -4,6 +4,24 @@ format elfobj64
 override include_sec 1
 einclude "../../oad/oadbgdata.h" "../../oad/oadbgdata.oh"
 
+#importx "printf" printf
+#^importx "strerror" strerror
+
+#importx "__errno_location" __errno_location
+#function err()
+#	sd _e;set _e __errno_location()
+#	datax e#1;set e _e#
+#	ss s;set s strerror(e)
+#	call printf("%s\n",s)
+#end
+
+#importx "_get_errno" _get_errno
+#function err()
+#	datax e#1
+#	call _get_errno(#e)
+#	ss s;set s strerror(e)
+#	call printf("%s\n",s)
+#endfunction
 
 entry main(data srgc,sv argv)
 	call oadata_logpad_set(0x30)
@@ -11,7 +29,13 @@ entry main(data srgc,sv argv)
 	ss path;set path argv#
 	sd data
 	sd a;set a oadata_make(path,#data,(TRUE))
-	if a!=0;return a;end
+	if a!=0
+#		call err()
+		return a
+	end
 	call oadata_free(data,(TRUE))
 	set a oadata_ok(path)
+#	if a!=0
+#		call err()
+#	end
 	return a
