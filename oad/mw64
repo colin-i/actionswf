@@ -1,0 +1,9 @@
+
+./mw${what_m} && \
+cd ../example && \
+./mrwd && \
+cd ../tests/data && \
+./testw${what_m} && \
+./c && \
+cd ../../example && \
+make clean
