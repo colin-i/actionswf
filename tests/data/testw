@@ -1,2 +1,2 @@
 
-what_a=w ./test $@
+platform=win ./test $@

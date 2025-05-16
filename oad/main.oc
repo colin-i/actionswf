@@ -30,6 +30,7 @@ import "presprite_done" presprite_done
 import "tree_init" tree_init
 import "tree_exit" tree_exit
 #
+importx "unlink" unlink
 importx "rename" rename
 ^import "inter_extension" inter_extension 1
 ^import "inter_last_extension" inter_last_extension 1
@@ -182,6 +183,7 @@ functionx oadata_ok(ss swf_fullpath)
 			call memcpy(size,sinterfinal,size2)
 
 			datax r#1 ;#same 0/-1, here is int
+			call unlink(to) #same 0/-1, on windows will not rename if "File exists"
 			set r rename(from,to)
 
 			call free(from)

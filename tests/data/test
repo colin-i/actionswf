@@ -11,8 +11,12 @@ fi
 
 etest=../../example/example.swf.data
 
+if [ "${platform}" = "win" ]; then
+	what_a=w
+fi
+
 if [ ! -e ${etest} ]; then
-	${RUN__SHELL} ./a || exit 1
+	${RUN__SHELL} ./a${what_a} || exit 1
 	if [ -n "${rd}" ]; then
 		read -t $((60*60*24))
 	fi
@@ -23,6 +27,9 @@ status=`cat ./test.status`; rm ./test.status
 if [ ${status} != 0 ]; then  exit 1; fi          #set -o pipefail && a | tee || exit
 
 at_folder=../ . ../integ && {
+	if [ "${platform}" = "win" ]; then
+		sed -i 's/\r$//' data.txt
+	fi
 	diff ../.expected/data${e}.txt data.txt
 	if [ $? != 0 ]; then
 		if [ -n "${1}" ]; then exit 1; fi
