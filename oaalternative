@@ -1,4 +1,20 @@
-#!/bin/sh
+@{a="\"} >$null # " 2>/dev/null || true #" >NUL 2>&1 || TYPE NUL & ECHO OFF
+if (# NEQ x GOTO initialized
+"true" -ne "\`"); then { #") {
+function rem {
+	"true" -ne "\" >$null #"
+}
+}; "true" -ne "\`" ; fi #">$null
+rem '
+:initialized
+ECHO Batch detected. The script can run in /bin/sh. Exiting...
+GOTO :eof
+rem '
+if ("true" -ne "\") {
+echo "PowerShell detected. The script can run in /bin/sh. Exiting..."
+exit
+} <#"); then :;
+fi #>
 
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #isdebug=
