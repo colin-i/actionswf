@@ -1,0 +1,18 @@
+on:
+ workflow_dispatch:
+
+jobs:
+ bbuild:
+  runs-on: windows-latest
+  steps:
+   - uses: actions/checkout@v4
+   - shell: pwsh
+     run: |
+      & { Invoke-Expression (Get-Content -Raw ./oaalternative) }
+      echo ok
+   - shell: cmd
+     run: |
+      mv oaalternative oaalternative.cmd
+      call oaalternative.cmd
+      echo ok
+      exit /b 0
