@@ -18,6 +18,8 @@ jobs:
    - shell: bash
      run: |
       /bin/bash ./oaalternative.cmd
+      echo ok
    - shell: sh
      run: |
       /bin/sh ./oaalternative.cmd
+      echo ok
