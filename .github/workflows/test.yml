@@ -17,7 +17,11 @@ jobs:
       exit /b 0
    - shell: bash
      run: |
-      /bin/bash ./oaalternative.cmd || { echo ok; exit 0; }
+      touch a.a.log
+      mkdir a
+      skip_ffdec=x /bin/bash oaalternative.cmd a.a
+      echo ok
    - shell: sh
      run: |
-      /bin/sh ./oaalternative.cmd || { echo ok; exit 0; }
+      skip_ffdec=x /bin/sh oaalternative.cmd a.a
+      echo ok
