@@ -8,11 +8,16 @@ jobs:
    - uses: actions/checkout@v4
    - shell: pwsh
      run: |
-      & { Invoke-Expression (Get-Content -Raw ./oaalternative) }
+      & { Invoke-Expression (Get-Content -Raw ./oaalternative.cmd) }
       echo ok
    - shell: cmd
      run: |
-      mv oaalternative oaalternative.cmd
       call oaalternative.cmd
       echo ok
       exit /b 0
+   - shell: bash
+     run: |
+      /bin/bash ./oaalternative.cmd
+   - shell: sh
+     run: |
+      /bin/sh ./oaalternative.cmd

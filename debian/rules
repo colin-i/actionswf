@@ -30,7 +30,7 @@ override_dh_auto_install:
 	echo dev/actionswf.h usr/include/actionswf/ >> debian/libactionswf-dev.install
 
 	#same as ocompiler, when adding another one, make install are useless
-	echo oaalternative usr/bin/ > debian/actionswf.install
+	echo oaalternative.sh usr/bin/ > debian/actionswf.install
 	echo src/libactionswf.so usr/lib/ >> debian/actionswf.install
 	echo oad/liboadbgdata.so usr/lib/ >> debian/actionswf.install
 

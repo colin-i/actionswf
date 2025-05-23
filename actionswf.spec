@@ -35,7 +35,7 @@ install_number=64 %make_install
 %files
 %attr(0644, root, root) "%{_libdir}/libactionswf.so"
 %attr(0644, root, root) "%{_libdir}/liboadbgdata.so"
-%attr(0755, root, root) "%{_bindir}/oaalternative"
+%attr(0755, root, root) "%{_bindir}/oaalternative.sh"
 
 %files devel
 %attr(0644, root, root) "%{_includedir}/%{name}/oadbgdatas.oh"

@@ -28,9 +28,9 @@ test:
 clean:
 	RUN__SHELL=$(SHELL) . ./shl && cd tests && $${RUN__SHELL} ./c && cd ffdec && $${RUN__SHELL} ./c && cd ../data && $${RUN__SHELL} ./c
 install:
-	install -D oaalternative $(DESTDIR)$(prefix)/bin/oaalternative
+	install -D oaalternative.sh $(DESTDIR)$(prefix)/bin/oaalternative.sh
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative
+	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative.sh
 
 .PHONY: $(TOPTARGETS) $(MEDTARGETS) $(ALLDIRS)
 .NOTPARALLEL:
