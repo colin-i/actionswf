@@ -20,7 +20,7 @@ if [ -z "${CC}" ]; then
 fi
 if [ "${platform}" = "win" ]; then
 	ext=exe
-	exelauncher=wine64
+	exelauncher=wine6
 	export WINEPATH=../../oad
 	OCONVFLAGS=-
 else
