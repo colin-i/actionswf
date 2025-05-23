@@ -25,7 +25,7 @@ sudo dnf install actionswf
 There is also <i>actionswf-devel</i>.\
 \
 \
-On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases) has the dll.
+On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).
 
 ## From source
 Compile with [O Compiler](https://github.com/colin-i/o).
