@@ -17,4 +17,4 @@ return
 POWERSHELL_SCRIPT
 #>
 
-`dirname $0`/oaalternative.sh
+`dirname $0`/oaalternative.sh "$@"

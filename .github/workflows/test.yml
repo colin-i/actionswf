@@ -12,16 +12,16 @@ jobs:
       echo ok
    - shell: cmd
      run: |
-      call oaalternative.cmd
+      call ./oaalternative.cmd
       echo ok
       exit /b 0
    - shell: bash
      run: |
       touch a.a.log
       mkdir a
-      skip_ffdec=x /bin/bash oaalternative.cmd a.a
+      skip_ffdec=x /bin/bash ./oaalternative.cmd a.a
       echo ok
    - shell: sh
      run: |
-      skip_ffdec=x /bin/sh oaalternative.cmd a.a
+      skip_ffdec=x /bin/sh ./oaalternative.cmd a.a
       echo ok
