@@ -1,7 +1,7 @@
 
 Name: actionswf
 Version: 1.143
-Release: 1
+Release: 2
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -26,7 +26,7 @@ This package contains necessary header files for actionswf development.
 touch include_dev
 
 %build
-make
+linkerflags="-O3 -g" make  # -g here is important if wanting to have debuginfo and debugsource packages
 
 %install
 install_number=64 %make_install
@@ -53,6 +53,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon May 26 2025 Costin Botescu <costin.botescu@gmail.com> 1.143-2
+- 
+
 * Mon May 26 2025 Costin Botescu <costin.botescu@gmail.com> 1.143-1
 - "sync" (costin.b.84@gmail.com)
 - "sync" (costin.b.84@gmail.com)
