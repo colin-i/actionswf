@@ -25,6 +25,23 @@ sudo dnf install actionswf
 There is also <i>actionswf-devel</i>.\
 \
 \
+On openSUSE, run the following as __root__:\
+For openSUSE Tumbleweed:
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Tumbleweed/home:costin.repo
+```
+For openSUSE Leap:
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Leap_15.6/home:costin.repo
+```
+And:
+```sh
+zypper refresh
+zypper install actionswf
+```
+An optional step is to install **actionswf-devel**.\
+\
+\
 On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).
 
 ## From source

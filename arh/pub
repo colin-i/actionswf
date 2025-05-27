@@ -14,6 +14,7 @@ ask=x ~/test/pkg/onab && \
 ~/test/pub pkg pkgarm && \
 ~/test/pkg/aur && \
 ~/test/rpm/copr && \
+~/test/rpm/suse && \
 ~/test/pub2 && \
 ~/test/publp2 && \
 ~/test/lp && \
