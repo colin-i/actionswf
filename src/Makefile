@@ -85,7 +85,8 @@ OFLAGS += underscore_pref 1
 all: ${libname}
 
 ifeq (${conv_64},1)
-ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
+#this past that focal ld is not, don't think there will be problems with cc: ATLDCOM = $(LD) ${linkerflags} -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${eobs} -shared -entry DllMain -o ${prefname} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
+ATLDCOM=$(CC) -m32  ${eobs} -shared -shared -Wl,-entry=DllMain ${linkerflagsextra} -o ${prefname} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} -Wl,--exclude-libs=${exte}
 ${libname}: ${name}
 	ln -f ${name} ${libname}
 

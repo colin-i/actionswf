@@ -69,7 +69,7 @@ ${exte}: ${subobjects}
 ${libname}: main.o ${exte}
 	${OLINK} main.oc.log ${sublogs}
 	if [ "${platform}" = "lin" ]; then \
-		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs ${exte}; \
+		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
 	fi

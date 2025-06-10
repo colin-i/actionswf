@@ -13,7 +13,9 @@ endif
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), i386)
 conv_64=1
 else
+ifndef conv_64  #when there is no dpkg-architecture
 conv_64=0
+endif
 endif
 
 $(TOPTARGETS): $(SUBDIRS)
