@@ -129,6 +129,8 @@ int swf_shape_basic(int width,int height,int fillcolor,int linecolor);
 //id
 int swf_shape_bitmap(int bitmapId,int width,int height);
 //id
+int swf_shape_bitmap_clipped(int bitmapId,int width,int height);
+//id
 int swf_shape_border(int width,int height,int linesize,int linecolor);
 
 //dbl
@@ -156,6 +158,10 @@ int swf_imagej_alpha(char* imagepath,int width,int height,char* alphapath);
 int swf_jpeg(char* imagepath);
 //id
 int swf_jpeg_alpha(char* imagepath,char* alphapath);
+//id
+int swf_jpeg_clipped(char* imagepath);
+//id
+int swf_jpeg_alpha_clipped(char* imagepath,char* alphapath);
 //width
 int swf_gif_width(char* imagepath);
 //height

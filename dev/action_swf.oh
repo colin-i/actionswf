@@ -3,7 +3,7 @@
 const no_fill=-1
 const solid_fill=0
 const repeating_bitmap_fill=0x40
-#const clipped_bitmap_fill=0x41
+const clipped_bitmap_fill=0x41
 #const nonsmoothed_repeating_bitmap=0x42
 #const nonsmoothed_clipped_bitmap=0x43
 #

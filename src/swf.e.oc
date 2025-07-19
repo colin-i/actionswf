@@ -202,8 +202,7 @@ endfunction
 import "swf_shape_local" swf_shape_local
 functionX swf_shape(sd width,sd height,sd args)
 	base swf_new.bp;call ebase(swf_new.bp)
-	sd id;set id swf_shape_local(width,height,args)
-	return id
+	callret swf_shape_local(width,height,args)
 endfunction
 
 #id
@@ -217,17 +216,19 @@ functionX swf_shape_basic(sd width,sd height,sd fillcolor,sd linecolor)
 	sd ycurve_value;set ycurve_value height;div ycurve_value 6
 	sd lineheight;set lineheight width;if lineheight>height;set lineheight height;endif;div lineheight 20
 	#xc width/6;yc..hg..;lh (min(w,h))/20
-	sd id
-	setcall id swf_shape_simple(width,height,fillcolor,lineheight,linecolor,xcurve_value,ycurve_value)
-	return id
+	callret swf_shape_simple(width,height,fillcolor,lineheight,linecolor,xcurve_value,ycurve_value)
 endfunction
 
 #id
-import "swf_shape_bitmap_local" swf_shape_bitmap_local
+import "swf_shape_bitmap_local_repeating" swf_shape_bitmap_local_repeating
 functionX swf_shape_bitmap(sd bitmapId,sd width,sd height)
 	base swf_new.bp;call ebase(swf_new.bp)
-	sd id;set id swf_shape_bitmap_local(bitmapId,width,height)
-	return id
+	callret swf_shape_bitmap_local_repeating(bitmapId,width,height)
+endfunction
+import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
+functionX swf_shape_bitmap_clipped(sd bitmapId,sd width,sd height)
+	base swf_new.bp;call ebase(swf_new.bp)
+	callret swf_shape_bitmap_local_clipped(bitmapId,width,height)
 endfunction
 #id
 functionX swf_shape_border(sd width,sd height,sd linesize,sd linecolor)
@@ -338,17 +339,24 @@ import "swf_jpeg_local" swf_jpeg_local
 #id
 functionX swf_imagej(ss imagepath,sd width,sd height)
 	base swf_new.bp;call ebase(swf_new.bp)
-#ss imagepath, width, height
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
-	sd shape_id;setcall shape_id swf_shape_bitmap_local(id,width,height)
-	return shape_id
+	callret swf_shape_bitmap_local_repeating(id,width,height)
 endfunction
-#id
 functionX swf_imagej_alpha(ss imagepath,sd width,sd height,ss alphapath)
 	base swf_new.bp;call ebase(swf_new.bp)
+#ss imagepath, width, height, alpha
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
-	sd shape_id;setcall shape_id swf_shape_bitmap_local(id,width,height)
-	return shape_id
+	callret swf_shape_bitmap_local_repeating(id,width,height)
+endfunction
+functionX swf_imagej_clipped(ss imagepath,sd width,sd height)
+	base swf_new.bp;call ebase(swf_new.bp)
+	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
+	callret swf_shape_bitmap_local_clipped(id,width,height)
+endfunction
+functionX swf_imagej_alpha_clipped(ss imagepath,sd width,sd height,ss alphapath)
+	base swf_new.bp;call ebase(swf_new.bp)
+	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
+	callret swf_shape_bitmap_local_clipped(id,width,height)
 endfunction
 
 #libming is skipping at least FFE[0-F] , src/blocks/jpeg.c methodWriteJpegFile

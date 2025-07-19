@@ -420,14 +420,22 @@ function swf_shape_local(sd width,sd height,sd args)
 endfunction
 
 #id
-function swf_shape_bitmap_local(sd bitmapId,sd width,sd height)
+function swf_shape_bitmap_local_repeating(sd bitmapId,sd width,sd height)
+	callret swf_shape_bitmap_local(bitmapId,width,height,(repeating_bitmap_fill))
+end
+function swf_shape_bitmap_local_clipped(sd bitmapId,sd width,sd height)
+	callret swf_shape_bitmap_local(bitmapId,width,height,(clipped_bitmap_fill))
+end
+function swf_shape_bitmap_local(sd bitmapId,sd width,sd height,sd bitmap_fill)
+#                                                                 ruffle will extra pixel at repeating image and at transparent is annoying
 #sd bitmapId    id, e.g.: from swf_dbl
-    sd shape_id
-    sd width_variable
-    set width_variable width
-    sd height_variable
-    set height_variable height
-    data struct=repeating_bitmap_fill
+	sd shape_id
+	sd width_variable
+	set width_variable width
+	sd height_variable
+	set height_variable height
+	data struct#1
+	set struct bitmap_fill
         data refid#1
         set refid bitmapId
     data *=0
@@ -460,7 +468,7 @@ function swf_image_ex_local(ss imagepath,sd p_wh)
     #add dbl to a shape
     sd shape_id
     sd width;set width p_wh#;add p_wh (DWORD)
-    setcall shape_id swf_shape_bitmap_local(dbl_id,width,p_wh#)
+    setcall shape_id swf_shape_bitmap_local_clipped(dbl_id,width,p_wh#)
     return shape_id
 endfunction
 import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
