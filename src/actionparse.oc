@@ -43,9 +43,7 @@ import "is_numeric" is_numeric
 #strpbrk
 function action_code_membersplit(ss ac)
     char delims=".["
-    ss next
-    setcall next strpbrk(ac,#delims)
-    return next
+	callret strpbrk(ac,#delims) #pointer
 endfunction
 
 #str
@@ -75,9 +73,7 @@ endfunction
 function cond_blocks_noerror()
     sd c
     setcall c brace_blocks_counter()
-    sd blocks
-    setcall blocks cond_blocks_at_index(c#)
-    return blocks
+	callret cond_blocks_at_index(c#)
 endfunction
 
 function cond_blocks_at_index(sd i)
@@ -91,9 +87,7 @@ endfunction
 
 import "swf_actionblock" swf_actionblock
 function brace_blocks_get_memblock()
-    sd memblock
-    setcall memblock swf_actionblock((mem_exp_get_block))
-    return memblock
+	callret swf_actionblock((mem_exp_get_block))
 endfunction
 
 function for_in(datax flag)
@@ -141,8 +135,7 @@ const sar_shr=Greaterthan
 const ifElse_sign=Questionmark
 #pointer
 function action_code_row(ss ac,sd a_block_detected)
-	setcall ac action_code_row_ex(ac,a_block_detected,-1)
-    return ac
+	callret action_code_row_ex(ac,a_block_detected,-1)
 endfunction
 #pointer
 function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
@@ -306,8 +299,7 @@ function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
             call error("unexpected closing brace sign after code block opened")
         endif
         inc ac
-        setcall ac else_verify(ac,else_index)
-        return ac
+		callret else_verify(ac,else_index)
 	endif
     setcall ac action_code_row_parse_instrument(ac)
     if a_block_detected=(TRUE)
@@ -338,7 +330,7 @@ function else_verify(ss ac,sd else_index)
 
     ss pointer
     setcall pointer else_elseif_expression(ac,#bool_is_elseif)
-    if pointer=ac
+    if ac=pointer
         return ac
     endif
     while pointer!=ac
@@ -372,7 +364,7 @@ function else_elseif_expression(ss ac,sd p_elseif)
     set p_elseif# (FALSE)
     ss pointer
     setcall pointer str_expression_at_start(ac,"else")
-    if pointer=ac
+    if ac=pointer
         return ac
     endif
     setcall ac str_expression_at_start(pointer,"if")
@@ -393,8 +385,7 @@ function action_code_row_parse_instrument(ss ac)
     if pointer!=ac
         call action_code_set((ActionReturn))
         char an_end=";"
-        setcall ac action_code_row_parse_tool(pointer,an_end)
-        return ac
+		callret action_code_row_parse_tool(pointer,an_end)
     endif
     setcall pointer str_expression_at_start_withEndCare(ac,"break")
     if pointer!=ac
@@ -407,8 +398,7 @@ function action_code_row_parse_instrument(ss ac)
         return pointer
     endif
     #
-    setcall pointer action_parse_pack(ac,(Semicolon))
-    return pointer
+	callret action_parse_pack(ac,(Semicolon))
 endfunction
 #pointer
 function action_parse_pack(ss ac,sd endChar)
@@ -509,8 +499,7 @@ function action_parse_pack(ss ac,sd endChar)
 		return ac
 	endelse
 	set ac spaces(ac) #ffdec
-	setcall ac action_parse_right(ac,endChar)
-	return ac
+	callret action_parse_right(ac,endChar)
 endfunction
 function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
     ss test
@@ -563,8 +552,7 @@ function action_parse_test_mixt_equal(ss start,sv p_ac)
 	endelseif
 	set p_ac# ac
 	#this was for strings but now is memtrail()	set ac# 0
-	sd action;setcall action action_parse_take_action(op,pointer)
-	return action
+	callret action_parse_take_action(op,pointer)
 endfunction
 #pointer
 function action_parse_right(ss ac,sd endChar)
@@ -575,13 +563,11 @@ function action_parse_right(ss ac,sd endChar)
         return pointer
     endif
     #
-    setcall ac action_code_row_parse_tool(ac,endChar)
-    return ac
+	callret action_code_row_parse_tool(ac,endChar)
 endfunction
 #pointer
 function action_code_row_parse_tool(ss ac,sd endtype)
-    setcall ac action_code_row_parse_tool_util(ac,0,endtype,0)
-    return ac
+	callret action_code_row_parse_tool_util(ac,0,endtype,0)
 endfunction
 
 #pointer
@@ -646,8 +632,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
                 call action_code_set((ifElse_start))
                 set p_ifElse_bool# (TRUE)
                 setcall ac action_code_row_parse_tool(ac,(Colon))
-                setcall ac action_code_row_parse_tool_util(ac,p_op,endtype1,endtype2)
-                return ac
+				callret action_code_row_parse_tool_util(ac,p_op,endtype1,endtype2)
             endif
         endif
         #
@@ -1028,9 +1013,7 @@ function cond_blocks()
     if c#=(brace_blocks_max)
         call error("too many blocks: {}")
     endif
-    sd blocks
-    setcall blocks cond_blocks_at_index(c#)
-    return blocks
+	callret cond_blocks_at_index(c#)
 endfunction
 function brace_blocks_counter_dec()
     sd c
@@ -1316,8 +1299,7 @@ function action_code_parse_new_or_call(ss ac,sd type)
                 set last_dot pointer
                 set bool (TRUE)
             elseif pointer#=(Openparenthesis)
-                setcall pointer action_code_parse_function_detected(ac,last_dot,pointer,type)
-                return pointer
+				callret action_code_parse_function_detected(ac,last_dot,pointer,type)
             endelseif
         endif
     endwhile

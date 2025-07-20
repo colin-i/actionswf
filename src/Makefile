@@ -31,6 +31,10 @@ ifndef nobits_virtual
 nobits_virtual=1
 endif
 
+ifndef strippy
+strippy=ostriputil
+endif
+
 #if modifying OFLAGS will lose inside data (at kinetic is reversed: first that def, then this def)
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
@@ -61,8 +65,6 @@ $(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 $(eval logs = )
 $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.e.oc.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.oc.log))
-
-strippy=ostriputil
 
 ifeq (${platform},win)
 OFLAGS += inplace_reloc 0 include_sec 1
@@ -104,11 +106,11 @@ ${libname}: ${name}
 else
 ${libname}: ${name}
 	$(eval strp = )
-	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.e.oc.log ${items_prefix}${var}.o))
+	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.e.oc.log ${items_prefix}${var}.e.o))
 	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.oc.log ${items_prefix}${var}.o))
 	${OSTRIP} ${name} ${strp}
-	#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 	${strippy} ${name} ${libname}
+#if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 endif
 
 endif
@@ -187,5 +189,3 @@ uninstall:
 #make compile && make link linkerflags= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
 #make linkerflags= conv_64=0
 #make linkerflags= conv_64=0 link
-
-#make strippy="python /home/bc/Desktop/ostriputil/ostriputil-1/ostriputil/main.py" OFLAGSEXTRA="function_name 1 nul_res_pref 1"

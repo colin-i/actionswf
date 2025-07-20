@@ -331,9 +331,7 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
         set xNV xcurve
         data *=0
     data *=-1
-    sd id
-    setcall id swf_shape_local(width,height,struct)
-    return id
+	callret swf_shape_local(width,height,struct)
 endfunction
 
 #id
@@ -345,9 +343,7 @@ function swf_text_initial_font_centered(sd width,sd height,ss text,sd font_id,sd
     call edittext_text(text)
     sd e_struct
     setcall e_struct edittext_struct()
-    sd text_id
-    setcall text_id swf_text_local(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),e_struct)
-    return text_id
+	callret swf_text_local(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),e_struct)
 endfunction
 
 #button

@@ -125,9 +125,7 @@ function block_get_psize(sd block)
 endfunction
 #size
 function block_get_fullsize(sd block)
-    sd size
-    setcall size struct_off(block,(mem_struct__size_off))
-    return size
+	callret struct_off(block,(mem_struct__size_off))
 endfunction
 #mem
 function block_get_mem(sd block)
@@ -177,8 +175,7 @@ function part_of_variable(sd value)
     if bool=(TRUE)
         return (TRUE)
     endif
-    setcall bool is_letter(value)
-    return bool
+	callret is_letter(value)
 endfunction
 #bool
 function is_letter(sd value)
@@ -257,8 +254,7 @@ function str_expression_at_start(ss string,ss expression)
     if bool=(TRUE)
         return string
     endif
-    setcall next spaces(next)
-    return next
+	callret spaces(next)
 endfunction
 #next/same
 function str_expression_at_start_withEndCare(ss ac,ss expression)
@@ -430,9 +426,7 @@ function memrealloc(sd mem,sd size)
     return ptr
 endfunction
 function memalloc(sd size)
-    sd mem
-    setcall mem memrealloc(0,size)
-    return mem
+	callret memrealloc(0,size)
 endfunction
 function memalloc_errors(sd size,sd file)
 	sd mem
@@ -448,9 +442,7 @@ endfunction
 
 #id
 function def_mem()
-    sd id
-    setcall id struct_ids((ids_set))
-    return id
+	callret struct_ids((ids_set))
 endfunction
 #mem
 function def_data()
@@ -671,9 +663,7 @@ function dupreserve_string(ss str)
     sd len
     setcall len strlen(str)
     inc len
-    sd mem
-    setcall mem memalloc(len)
-    return mem
+	callret memalloc(len)
 endfunction
 
 #pointer after "abc"

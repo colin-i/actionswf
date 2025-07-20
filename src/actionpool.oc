@@ -23,10 +23,9 @@ endfunction
 import "struct_ids_actionpool" struct_ids_actionpool
 #block
 function actionpool_currentblock()
-    sd poolid;sd block
+    sd poolid
     setcall poolid actionpoolid_get()
-    setcall block struct_ids_actionpool((ids_get),poolid)
-    return block
+	callret struct_ids_actionpool((ids_get),poolid)
 endfunction
 
 importx "free" free
@@ -210,9 +209,7 @@ end
 
 #pool id (U16)
 function actionpool_value(ss value)
-	sd id
-	set id actionpool_value_ex(value,(FALSE))
-	return id
+	callret actionpool_value_ex(value,(FALSE))
 end
 #pool id
 function actionpool_value_ex(ss value,sd force)

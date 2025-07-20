@@ -188,7 +188,7 @@ function infinite_loop_check(sd codepointer)
 end
 function action_true_compare(ss command)
 	sd compare
-	set compare strcmp("true",command)
+	set compare strcmp("true",command) #int
 	return compare
 end
 
@@ -352,8 +352,7 @@ function action__code_row_ex(sd codepointer)
 	if attrib=(else_marker)
 		call error("ELSE is not linked at this point")
 	end
-	setcall codepointer action_code_pack(codepointer)
-	return codepointer
+	callret action_code_pack(codepointer)
 endfunction
 function action_code_pack(sd codepointer)
 	sd attrib
@@ -837,13 +836,11 @@ function action_code_right(sd codepointer)
     if pointer!=codepointer
         return pointer
     endif
-    setcall codepointer action_code_right_util(codepointer)
-    return codepointer
+	callret action_code_right_util(codepointer)
 endfunction
 #codepointer
 function action_code_right_util(sd codepointer)
-	set codepointer action_code_right_util_ex(codepointer,(NULL))
-	return codepointer
+	callret action_code_right_util_ex(codepointer,(NULL))
 end
 function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 	if codepointer#=(new_action)
@@ -910,13 +907,11 @@ endfunction
 function action_code_right_number(sd codepointer)
     if codepointer#=(parenthesis_start)
         add codepointer (DWORD)
-        setcall codepointer action_code_right_util(codepointer)
-        return codepointer
+		callret action_code_right_util(codepointer)
     endif
     if codepointer#=(call_action_right)
 		sd want_return=TRUE
-        setcall codepointer action_code_write_function_call(codepointer,#want_return)
-        return codepointer
+		callret action_code_write_function_call(codepointer,#want_return)
     endif
     sd attrib;sd var
     set attrib codepointer#

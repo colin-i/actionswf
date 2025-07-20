@@ -137,9 +137,7 @@ vstr actions#1
         setcall text_id swf_text_initial_font_centered(width,height,text,font_id,font_height,font_color)
     endelse
 
-    sd id
-    setcall id swf_button_base(shape_up,shape_over,shape_down,noText,text_id,text_y,actions)
-    return id
+	callret swf_button_base(shape_up,shape_over,shape_down,noText,text_id,text_y,actions)
 endfunction
 #id
 functionX swf_button_last(ss newtext,ss actions)
@@ -165,9 +163,7 @@ functionX swf_button_last(ss newtext,ss actions)
         setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,font_color)
     endif
 
-    sd id
-    setcall id swf_button_base(shape_up,shape_over,shape_down,noText,newtext_id,text_y,actions)
-    return id
+	callret swf_button_base(shape_up,shape_over,shape_down,noText,newtext_id,text_y,actions)
 endfunction
 
 #font
@@ -176,16 +172,13 @@ endfunction
 import "swf_font_local" swf_font_local
 functionX swf_font(ss fontname,sd font_flags)
 	base swf_new.bp;call ebase(swf_new.bp)
-	sd id;set id swf_font_local(fontname,font_flags)
-	return id
+	callret swf_font_local(fontname,font_flags)
 endfunction
 #id
 functionX swf_font_basic(ss fontname)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss fontname    = a string with the browser font, for example "_sans"
-	sd id
-	setcall id swf_font_local(fontname,0)
-	return id
+	callret swf_font_local(fontname,0)
 endfunction
 
 #text
@@ -194,8 +187,7 @@ endfunction
 import "swf_text_local" swf_text_local
 functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv structure)
 	base swf_new.bp;call ebase(swf_new.bp)
-	sd id;set id swf_text_local(bound_width,bound_height,variablename,flags,structure)
-	return id
+	callret swf_text_local(bound_width,bound_height,variablename,flags,structure)
 endfunction
 
 #id
@@ -237,7 +229,6 @@ functionX swf_shape_border(sd width,sd height,sd linesize,sd linecolor)
 #sd height     border height
 #sd linesize  line size
 #sd linecolor  0xRGBA color
-    sd shape
     sd neg_w=-1
     sd neg_h=-1
     mult neg_w width
@@ -264,8 +255,7 @@ functionX swf_shape_border(sd width,sd height,sd linesize,sd linecolor)
     data *=0;data nord#1
         set nord neg_h
     data *=-1
-    setcall shape swf_shape_local(width,height,#border)
-    return shape
+	callret swf_shape_local(width,height,#border)
 endfunction
 
 ######################dbl
@@ -275,25 +265,21 @@ functionX swf_image(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
 	data width#1;data *height#1
-	sd shape_id;setcall shape_id swf_image_ex_local(imagepath,#width)
-	return shape_id
+	callret swf_image_ex_local(imagepath,#width)
 endfunction
 #id
 import "swf_image_ex_local" swf_image_ex_local
 functionX swf_image_ex(ss imagepath,sd p_wh)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath, sd p_wh
-	sd id;set id swf_image_ex_local(imagepath,p_wh)
-	return id
+	callret swf_image_ex_local(imagepath,p_wh)
 endfunction
 
 #id
 functionX swf_dbl(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	sd id
-	setcall id swf_dbl_ex_local(imagepath,(NULL))
-	return id
+	callret swf_dbl_ex_local(imagepath,(NULL))
 endfunction
 #id
 import "swf_dbl_ex_local" swf_dbl_ex_local
@@ -310,27 +296,23 @@ functionX swf_dbl_width(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
 	#format? ming newSWFDBLBitmap_fromInput
-	dataxu size#1;charx t#1;sw dim
+	dataxu size#1;charx t#1;#sw dim
 	sd file;set file dblsize_start(imagepath,#size,#t)
 	if t=(l)
-		set dim dblsize_end(file,size,(dblsignature+dblsize+dblformat))
-	else
-		set dim dblsize_end(file,size,(dblsignature+dblsize16+dblformat))
+		callret dblsize_end(file,size,(dblsignature+dblsize+dblformat))
 	end
-	return dim
+	callret dblsize_end(file,size,(dblsignature+dblsize16+dblformat))
 endfunction
 #height
 functionX swf_dbl_height(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	dataxu size#1;charx t#1;sw dim
+	dataxu size#1;charx t#1;#sw dim
 	sd file;set file dblsize_start(imagepath,#size,#t)
 	if t=(l)
-		set dim dblsize_end(file,size,(dblsignature+dblsize+dblformat+WORD))
-	else
-		set dim dblsize_end(file,size,(dblsignature+dblsize16+dblformat+WORD))
+		callret dblsize_end(file,size,(dblsignature+dblsize+dblformat+WORD))
 	end
-	return dim
+	callret dblsize_end(file,size,(dblsignature+dblsize16+dblformat+WORD))
 endfunction
 
 #jpeg/png/gif
@@ -371,16 +353,12 @@ endfunction
 functionX swf_jpeg(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	sd id
-	setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
-	return id
+	callret swf_jpeg_local(imagepath,(DefineBitsJPEG2))
 endfunction
 functionX swf_jpeg_alpha(ss imagepath,ss alphapath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	sd id
-	setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
-	return id
+	callret swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
 endfunction
 
 import "filepath_get_word" filepath_get_word
@@ -390,15 +368,15 @@ functionX swf_gif_width(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the gif image
 	vstr err="invalid gif file"
-	sw dim;set dim filepath_get_word(imagepath,(gifsignature),err)
-	return dim
+	#sw dim
+	callret filepath_get_word(imagepath,(gifsignature),err)
 endfunction
 #height
 functionX swf_gif_height(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the gif image
-	sw dim;set dim filepath_get_word(imagepath,(gifsignature+WORD),swf_gif_width.err)
-	return dim
+	#sw dim
+	callret filepath_get_word(imagepath,(gifsignature+WORD),swf_gif_width.err)
 endfunction
 
 ##############

@@ -1,2 +1,2 @@
 
-launcher=q OCOMP=~/o/ocompiler-1/src/o launcher64=qq OCONV=~/o/ocompiler-1/otoc/otoc ./testw
+launcher=q OCOMP=~/o/ocompiler-2/src/o launcher64=qq OCONV=~/o/ocompiler-2/otoc/otoc ./testw
