@@ -1,5 +1,5 @@
 set -e
 cd src
-./teststrip
+OCOMP=~/o/ocompiler-2/src/o OSTRIP=~/o/ocompiler-2/ostrip/ostrip ./teststrip
 cd ../example
 make test
