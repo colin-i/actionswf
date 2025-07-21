@@ -107,9 +107,10 @@ else
 ${libname}: ${name}
 	$(eval strp = )
 	$(foreach var,$(expitems),$(eval strp += ${items_prefix}${var}.e.oc.log ${items_prefix}${var}.e.o))
-	$(foreach var,$(items),$(eval strp += ${items_prefix}${var}.oc.log ${items_prefix}${var}.o))
-	${OSTRIP} ${name} ${strp}
-	${strippy} ${name} ${libname}
+	cat 1 | grep ^./libexte.a | grep -o '^[^ ]*' | grep -Po '(?<=\()[^\)]*' > 2
+	for a in `cat 2`; do if [ -n "$$b" ]; then b="$$b $${a}c.log $$a"; else b="$${a}c.log $$a"; fi; done; echo $$b > 3
+	${OSTRIP} ${name} ${strp} `cat 3`
+	${strippy} ${name} ${libname} ${anotherobjcopy}
 #if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 endif
 
@@ -118,7 +119,8 @@ endif
 ${name}: ${obs} ${eobs}
 	${OLINK} ${logs}
 	$(AR) cr ${exte} ${obs}
-	${ATLDCOM}
+	${ATLDCOM} > 1
+# > 1 for ostrip
 endif
 
 %.o: %.oc
@@ -148,7 +150,7 @@ clean:
 	-rm -f ${name}
 	-rm -f ${projname}.dll
 	-rm -f ${defname}
-	-rm -f strip.py
+	-rm -f 1 2 3
 	-rm -f .data
 	-rm -f .text
 	-rm -f .rela.dyn

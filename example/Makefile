@@ -112,7 +112,7 @@ expected.swf:
 	base64 -d expected.c.swf.txt > expected.c.swf
 	ffdec -decompress expected.c.swf $@
 test: all expected.swf
-	diff ${sfile} expected.swf
+	diff ${sfile} expected.swf && echo $$?
 expected.c.swf: build
 	x3=x $(MAKE) exe
 	mv ${sfile} $@
