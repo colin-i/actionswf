@@ -24,13 +24,13 @@ jobs:
      git sparse-checkout set --no-cone /ocompiler
      git checkout
      cd ocompiler
-     vera=`cat ./PKGBUILD | grep ^pkgver | grep -Po "(?<==).*"`
-     ver=`echo ${vera} | sed "s/\./-/"`
+     ver=`cat ./PKGBUILD | grep ^pkgver | grep -Po "(?<==).*"`
      rel=`cat ./PKGBUILD | grep ^pkgrel | grep -Po "(?<==).*"`
+     otag=ocompiler-${ver}-${rel}
      cd ../..
 
-     wget https://github.com/colin-i/o/releases/download/${ver}/ocompiler-${vera}-${rel}-arch-x86_64.pkg.tar.zst
-     sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ocompiler-${vera}-${rel}-arch-x86_64.pkg.tar.zst
+     wget https://github.com/colin-i/o/releases/download/${otag}/${otag}-arch-x86_64.pkg.tar.zst
+     sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ${otag}-arch-x86_64.pkg.tar.zst
 
      cd src/oad
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
