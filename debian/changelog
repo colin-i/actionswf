@@ -1,3 +1,9 @@
+actionswf (1-146) bionic; urgency=medium
+
+  * clipped/repeating
+
+ -- bc <bc@bc-desktop>  Wed, 23 Jul 2025 16:27:03 +0300
+
 actionswf (1-145) bionic; urgency=medium
 
   * and not at i386

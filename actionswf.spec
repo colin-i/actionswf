@@ -1,7 +1,7 @@
 
 Name: actionswf
-Version: 1.143
-Release: 2
+Version: 1.146
+Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -53,6 +53,20 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Jul 23 2025 Costin Botescu <costin.botescu@gmail.com> 1.146-0
+- new tag standards at pkg (costin.botescu@gmail.com)
+- change src Makefile for ld new version (costin.botescu@gmail.com)
+- test strip (costin.botescu@gmail.com)
+- callrets (costin.botescu@gmail.com)
+- clipped/repeating (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- that gcc was not the solution (costin.botescu@gmail.com)
+- fixes for suse i586 (costin.botescu@gmail.com)
+- readme and pub (costin.botescu@gmail.com)
+
 * Mon May 26 2025 Costin Botescu <costin.botescu@gmail.com> 1.143-2
 - 
 
