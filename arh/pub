@@ -7,8 +7,8 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ./makewin64 && \
 ~/test/rel && \
 ~/test/pub rel && \
-~/test/pkg/onb && \
-ask=x ~/test/pkg/onab && \
+type=arm ~/test/pkg/onb && \
+~/test/pkg/onab && \
 ~/test/upgen actionswf.zip && \
 ~/test/pub pkg pkgarm && \
 ~/test/pkg/aur && \
