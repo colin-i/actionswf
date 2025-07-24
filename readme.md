@@ -1,7 +1,7 @@
 # Action SWF
 
 ## Install
-On Ubuntu from PPA.
+On Ubuntu(amd64 i386)(bionic focal jammy noble) from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
@@ -9,23 +9,23 @@ Or the *Manual installation step* from this [link](https://gist.github.com/colin
 ```sh
 sudo apt-get install actionswf
 ```
-There is also <i>libactionswf-dev</i>. <i>liboadbgdata</i> <i>.gz</i> file from [releases](https://github.com/colin-i/actionswf/releases) is for aarch64 architecture.\
+There is also <i>libactionswf-dev</i>(all). <i>liboadbgdata</i> <i>.gz</i> file from [releases](https://github.com/colin-i/actionswf/releases) is for aarch64 architecture.\
 \
 \
-On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/edor/releases). Or:
+On Arch Linux(x86_64), <i>.zst</i> file from [releases](https://github.com/colin-i/edor/releases). Or:
 ```sh
 yay -Sy actionswf
 ```
 \
-On Fedora:
+On Fedora(x86_64):
 ```sh
 sudo dnf copr enable colin/project
 sudo dnf install actionswf
 ```
-There is also <i>actionswf-devel</i>.\
+There is also <i>actionswf-devel</i>(noarch).\
 \
 \
-On openSUSE, run the following as __root__:\
+On openSUSE(x86_64), run the following as __root__:\
 For openSUSE Tumbleweed:
 ```sh
 zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Tumbleweed/home:costin.repo
@@ -40,7 +40,7 @@ And:
 zypper refresh
 zypper install actionswf
 ```
-An optional step is to install **actionswf-devel**.\
+An optional step is to install **actionswf-devel**(noarch).\
 \
 \
 On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).
