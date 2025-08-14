@@ -31,3 +31,7 @@ ${OCOMP} a.oc inplace_reloc 0 logfile 0 && \
 }
 
 # ffdec=/home/bc/Desktop/ffdec/usr/bin/ffdec FFDEC_JARFILENAME=../../../../Desktop/ffdec/usr/share/java/ffdec/ffdec.jar ./ff
+
+#prepare_and_exit=x ./ff
+#LD_LIBRARY_PATH=/home/bc/x86_64_lib/cross:../../src qq ./a.out 1 x x
+#LD_LIBRARY_PATH=/home/bc/x86_64_lib/cross:../../src isdebug=x no_number_check=x ../../oaalternative.sh a.swf 'qq ./a.out 2 x x'
