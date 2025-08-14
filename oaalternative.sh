@@ -5,6 +5,7 @@
 #skip_ffdec=
 #wait=
 #no_number_check=
+#ffdec=
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
 
@@ -23,11 +24,14 @@ folder="${bname%.*}"
 if [ -n "${isdebug}" ]; then echo ${folder}; fi
 
 if [ -z "${skip_ffdec}" ]; then
+	if [ -z "${ffdec}" ]; then
+		ffdec=ffdec
+	fi
 	if [ -z "${isdebug}" ]; then
-		ffdec -export script ${folder} ${1} > /dev/null || exit 1
+		${ffdec} -export script ${folder} ${1} > /dev/null || exit 1
 	else
-		echo ffdec -export script ${folder} ${1}
-		ffdec -export script ${folder} ${1} || exit 1
+		echo ${ffdec} -export script ${folder} ${1}
+		${ffdec} -export script ${folder} ${1} || exit 1
 	fi
 	if [ -n "${wait}" ]; then read; fi
 fi
@@ -156,5 +160,5 @@ if [ -n "${2}" ]; then
 	mv ${v} ${1} ${1}.orig && \
 	${2} && \
 	diff ${1} ${1}.orig && \
-	rm -r ${v} ${folder}
+	rm -r ${v} ${folder} #the folder is empty at this point
 fi

@@ -84,10 +84,16 @@ a=a==2?b:c;
 
 a=function(){return 2;}
 
-while(a<9){if(a==1){a=2;}else if(a==2){continue;}else if(a==4){break;}else{a=6;}}
+while(a<9){if(a==1){break;}a=2+a;}
 
 for(i=0;i<2;i=1+i){
-	if(a==1){a=2;}else if(a==2){continue;}
+	if(a==1){
+		if(a==3){
+			a=4;continue;
+		}
+		a=3;
+	}
+	a=2+a;
 }
 
 for(a in b){c=1+c;}
