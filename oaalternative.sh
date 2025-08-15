@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
-#is_debug copy
+#is_debug no_clean
 #skip_ffdec ffdec
 #skip_alternative no_number_check
 #scripts
@@ -42,7 +42,7 @@ if [ -z "${skip_ffdec}" ]; then
 	fi
 fi
 mover () {
-	if [ -z "${copy}" ]; then
+	if [ -z "${no_clean}" ]; then
 		mv ${v} "${@}" || exit 1
 	else
 		cp ${v} "${@}" || exit 1
@@ -130,7 +130,9 @@ if [ -z "${skip_alternative}" ]; then
 				fi
 			elif [ ${t} = 1 ]; then
 				if [ -z "${p}" ]; then
-					echo show
+					if [ -n "${is_debug}" ]; then
+						echo show
+					fi
 				else
 				#done
 					number_expected
@@ -182,7 +184,7 @@ if [ -n "${2}" ]; then
 	if [ -n "${scripts}" ]; then
 		mover "${out}"/* "${scripts}"
 	fi
-	if [ -z "${copy}" ]; then
+	if [ -z "${no_clean}" ]; then
 		rm -r ${v} "${out}"  #or rmdir if -n scripts
 		rm -r ${v} "${folder}"
 		rm "${bname}".orig

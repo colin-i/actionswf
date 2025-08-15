@@ -624,22 +624,22 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
         #set end: is static variable and can be mod again inside previous function
         set end endtype1
         set end2 endtype2
-        #
-        if was_parenthesis=0
-            setcall ac action_code_take_main(ac,#op,op_set)
-            if op=(ifElse_sign)
-                inc ac
-                call action_code_set((ifElse_start))
-                set p_ifElse_bool# (TRUE)
-                setcall ac action_code_row_parse_tool(ac,(Colon))
+		#
+		if was_parenthesis=0
+			setcall ac action_code_take_main(ac,#op,op_set)
+			if op=(ifElse_sign)
+				inc ac
+				call action_code_set((ifElse_start))
+				set p_ifElse_bool# (TRUE)
+				setcall ac action_code_row_parse_tool(ac,(Colon))
 				callret action_code_row_parse_tool_util(ac,p_op,endtype1,endtype2)
-            endif
-        endif
-        #
-        setcall ac action_code_extended_operations(ac,op)
-        if is_compare_ptr#=(TRUE)
-            set is_compare_ptr# (FALSE)
-        else
+			endif
+		endif
+		#
+		setcall ac action_code_extended_operations(ac,op)
+		if is_compare_ptr#=(TRUE)
+			set is_compare_ptr# (FALSE)
+		else
 			if op=0
 				if p_op!=0
 					set p_op# op
@@ -650,7 +650,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 			if bool=(TRUE);return ac;endif
 			sd x;setcall x action_parse_take_action(op,ac)
 			call action_code_set(x)
-        endelse
+		endelse
     endwhile
 endfunction
 #action
@@ -726,7 +726,7 @@ function action_code_take_main(ss ac,sv p_op,ss delims) #ss p_op will not clean 
 	ss pointer
 	setcall pointer action_code_str(ac)
 	if pointer!=0
-		#set pointer spaces(pointer) ffdec
+		set pointer spaces(pointer) ;#ffdec _text.message = \"Angle: \" +b
 		set p_op# pointer#;set pointer# 0
 		return pointer
 	endif
