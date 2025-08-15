@@ -71,7 +71,7 @@ endfunction
 #name/null
 function action_code_write_builtin_names(sv codepointer,sv p_action) #action is value only because is working with stack
 	sd name
-	set name x_pointer_touchless(codepointer)
+	set name x_pointer(codepointer)
 	sd compare
 	vstr int="int"
 	setcall compare strcmp(name,int)
@@ -155,7 +155,7 @@ endfunction
 
 import "x_pointer" x_pointer
 import "x_pointer_touchless" x_pointer_touchless
-import "x_pointer_x" x_pointer_x
+#import "x_pointer_x" x_pointer_x
 function action_code_get_pointer(sv p_codepointer)
 	sd a;set a x_pointer(p_codepointer#)
 	incst p_codepointer#  #to pass the pointer
@@ -738,11 +738,13 @@ function action_code_write_builtin_function(sv codepointer,sd pwant_return)
 	add pointer :  #to pass the pointer
 	#
 	sd cursor
+	sd was;set was pointer# ;#cannot set later, trace('b') is ok but trace(eval('b')) will write to .x and at next x run will wrong the pointer
 	setcall cursor action_code_write_builtin_set(pointer,pwant_return)
 	if cursor=pointer
+		set pointer# was
 		return codepointer
 	endif
-	call x_pointer_x(pointer) #in case is to .x, must trim pointer
+	#moved above: call x_pointer_x(pointer) #in case is to .x, must trim pointer
 	return cursor
 endfunction
 #codepointer
