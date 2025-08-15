@@ -67,7 +67,7 @@ function push_add_ex(sd size,sd value,sd type)
 	set push.size newsize
 end
 function push_add(sd size,sd value)
-	call push_add_ex(size,value,0)
+	callg push_add_ex(size,value,0)
 end
 
 function action_push(sd type,sd valuehigh,sd valuelow)
