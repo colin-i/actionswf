@@ -1,5 +1,5 @@
 
-#init order is: pool x log alt titles asShows forin
+#init order is: pool x log alt titles asShows forin deprecation
 #a good workflow(for ffdec and oadbg): like in bench1
 #or:                                   like in bench2
 #a test/fasts result: 5.159259578 10.291831766

@@ -198,7 +198,7 @@ import "cond_blocks_at_index" cond_blocks_at_index
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
 import "cond_blocks_noerror" cond_blocks_noerror
 import "debug_phase_code_remove" debug_phase_code_remove
-import "flag_dup_get" flag_dup_get
+import "flag_noDup_get" flag_noDup_get
 import "x_pointer_twice_set" x_pointer_twice_set
 import "x_pointer_twice_unset" x_pointer_twice_unset
 
@@ -389,10 +389,10 @@ function action_code_pack(sd codepointer)
 	if need_right=(TRUE)
 		if codepointer#=(ActionIncrement)
 			add codepointer (DWORD)
-			call action_code_inc_dec((ActionIncrement),attrib)
+			call action_code_inc_dec((ActionIncrement),attrib,member_codepointer_start)
 		elseif codepointer#=(ActionDecrement)
 			add codepointer (DWORD)
-			call action_code_inc_dec((ActionDecrement),attrib)
+			call action_code_inc_dec((ActionDecrement),attrib,member_codepointer_start)
 		elseif codepointer#=(mixt_equal)
 			#+= .. ^= ..
 			add codepointer (DWORD)
@@ -415,14 +415,13 @@ function action_code_pack(sd codepointer)
 endfunction
 import "actionrecordheader" actionrecordheader
 import "swf_actionblock_add" swf_actionblock_add
-function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember)
+function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember,sd member)
 	if setvar_or_setmember=(ActionSetVariable)
 		call action_code_dupGet_var()
-		call action_one(inc_dec)
 	else
-		call action_code_dupGet_member()
-		call action_one(inc_dec)
-	endelse
+		call action_code_dupGet_member_if(member)
+	end
+	callg action_one(inc_dec)
 endfunction
 function action_code_dupGet_var()
     call action_one((ActionPushDuplicate))
@@ -441,17 +440,17 @@ function action_code_dupGet_member()
 	call action_one((ActionPushDuplicate))
 	call action_push((ap_RegisterNumber),reg)
 	call action_one((ActionStackSwap))
-	call action_one((ActionGetMember))
+	callg action_one((ActionGetMember))
 endfunction
 function action_code_dupGet_member_if(sd member_codepointer)
-	sd f;set f flag_dup_get()
-	if f!=(flag_none)
-		call x_pointer_twice_set()
-		call action_member_loop_right(member_codepointer)
-		call x_pointer_twice_unset()
-	else
+	sd f;set f flag_noDup_get()
+	if f=(flag_none)
 		callg action_code_dupGet_member()
+		ret
 	end
+	call x_pointer_twice_set()
+	call action_member_loop_right(member_codepointer)
+	call x_pointer_twice_unset()
 end
 
 import "brace_blocks_add_write_current" brace_blocks_add_write_current
@@ -961,29 +960,29 @@ function action_one_command(ss command)
 	#
 	setcall compare strcmp("null",command)
 	if compare=0
-		call action_push((ap_Null))
+		callg action_push((ap_Null))
 		ret
 	endif
 	setcall compare strcmp("undefined",command)
 	if compare=0
-		call action_push((ap_Undefined))
+		callg action_push((ap_Undefined))
 		ret
 	endif
 	set compare action_true_compare(command)
 	if compare=0
-		call action_push((ap_Boolean),1)
+		callg action_push((ap_Boolean),1)
 		ret
 	endif
 	setcall compare strcmp("false",command)
 	if compare=0
-		call action_push((ap_Boolean),0)
+		callg action_push((ap_Boolean),0)
 		ret
 	endif
-	call action_get_one(command)
+	callg action_get_one(command)
 endfunction
 function action_get_one(ss variable)
     call action_push((ap_Constant8),variable)
-    call action_one((ActionGetVariable))
+    callg action_one((ActionGetVariable))
 endfunction
 
 #codepointer

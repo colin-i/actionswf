@@ -27,7 +27,7 @@ function alt_free()
 	end
 end
 
-function flag_dup_get()
+function flag_noDup_get()
 	datax flag_dup#1
 	return flag_dup
 end
@@ -47,8 +47,8 @@ function alt_init(sd flags,sd path)
 		call error("swf started, alt not closed")
 	end
 
-	set flag_dup_get.flag_dup flags
-	and flag_dup_get.flag_dup (flag_noDuplicate) #needed at ffdec reproducible
+	set flag_noDup_get.flag_dup flags
+	and flag_noDup_get.flag_dup (flag_noDuplicate) #needed at ffdec reproducible
 
 	and flags (flag_alt)
 	if flags=(flag_alt)
