@@ -27,6 +27,11 @@ function alt_free()
 	end
 end
 
+function flag_dup_get()
+	datax flag_dup#1
+	return flag_dup
+end
+
 import "ainit" ainit
 
 importx "strlen" strlen
@@ -41,6 +46,10 @@ function alt_init(sd flags,sd path)
 	if alt_join.folder!=(NULL)
 		call error("swf started, alt not closed")
 	end
+
+	set flag_dup_get.flag_dup flags
+	and flag_dup_get.flag_dup (flag_noDuplicate) #needed at ffdec reproducible
+
 	and flags (flag_alt)
 	if flags=(flag_alt)
 		sd size;setcall size strlen(path)

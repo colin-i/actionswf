@@ -21,6 +21,7 @@ const flagpre_write_no=0x1000
 const flag_compress=0x2000
 const flag_deprecation_no=0x4000
 const flag_deprecation_yes=0x8000 #will turn off flag_deprecation_no
+const flag_noDuplicate=0x10000
 
 const debug_xpad=flagpre_x|flagpre_x_pad
 const flags_pool=flagpre_pool_write|flag_pool_read|flag_pool_read_unlink

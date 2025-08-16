@@ -394,9 +394,9 @@ functionX swf_done()
 endfunction
 
 import "swf_new_ex_local" swf_new_ex_local
-functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd add_debug)
+functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd flags)
 	base swf_new.bp;call ebase(swf_new.bp)
-	call swf_new_ex_local(path,width,height,backgroundcolor,fps,add_debug)
+	call swf_new_ex_local(path,width,height,backgroundcolor,fps,flags)
 endfunction
 
 import "swf_placeobject_local" swf_placeobject_local

@@ -198,6 +198,9 @@ import "cond_blocks_at_index" cond_blocks_at_index
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
 import "cond_blocks_noerror" cond_blocks_noerror
 import "debug_phase_code_remove" debug_phase_code_remove
+import "flag_dup_get" flag_dup_get
+import "x_pointer_twice_set" x_pointer_twice_set
+import "x_pointer_twice_unset" x_pointer_twice_unset
 
 #aftercallimport ebool
 
@@ -376,6 +379,7 @@ function action_code_pack(sd codepointer)
 	endelseif
 	#else is ActionDefineLocal/ActionSetVariable
 	if is_member=(TRUE)
+		sd member_codepointer_start;set member_codepointer_start codepointer
 		setcall codepointer action_member_loop_left(codepointer)
 	else
 		#definelocal or setvariable or delete2
@@ -394,7 +398,9 @@ function action_code_pack(sd codepointer)
 			add codepointer (DWORD)
 			sd mixt_op;set mixt_op codepointer#;add codepointer (DWORD)
 			if attrib=(ActionSetVariable);call action_code_dupGet_var()
-			else;call action_code_dupGet_member();endelse
+			else
+				call action_code_dupGet_member_if(member_codepointer_start)
+			endelse
 			setcall codepointer action_code_right(codepointer)
 			call action_one(mixt_op)
 		else
@@ -437,6 +443,17 @@ function action_code_dupGet_member()
 	call action_one((ActionStackSwap))
 	call action_one((ActionGetMember))
 endfunction
+function action_code_dupGet_member_if(sd member_codepointer)
+	sd f;set f flag_dup_get()
+	if f!=(flag_none)
+		call x_pointer_twice_set()
+		call action_member_loop_right(member_codepointer)
+		call x_pointer_twice_unset()
+	else
+		callg action_code_dupGet_member()
+	end
+end
+
 import "brace_blocks_add_write_current" brace_blocks_add_write_current
 
 import "add_dummy_jump" add_dummy_jump

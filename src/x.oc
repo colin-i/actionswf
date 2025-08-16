@@ -27,9 +27,16 @@ function x_pointer(sv pointer)
 	sd value
 	set value pointer#
 	if x_data.f!=(NULL)
+		charx twice#1 #since noDuplicate flag for no duplication for members, is reserved, are witings at file when is used, touchless is only at infiniteCheck or defFuncArgsTest
 		import "action_debug" action_debug
-		sub pointer# action_debug((action_debug_get_mem))
-		inc pointer#  ##only to not be comparable with (no_pointer)
+		sd mem;set mem action_debug((action_debug_get_mem))
+		if twice=(FALSE)
+			sub pointer# mem
+			inc pointer#  ##only to not be comparable with (no_pointer)
+		else
+			add value mem
+			dec value
+		end
 	elseif x_data.mem!=(NULL) #flag_x
 		vstrx base#1
 		add value base ##reverse
@@ -37,12 +44,6 @@ function x_pointer(sv pointer)
 	end
 	return value
 end
-#function x_pointer_x(sv pointer) #same as x_pointer
-#	if x_data.f!=(NULL)
-#		sub pointer# action_debug((action_debug_get_mem))
-#		inc pointer#
-#	end
-#end
 function x_pointer_touchless(sv pointer)
 	sd value
 	set value pointer#
@@ -52,6 +53,18 @@ function x_pointer_touchless(sv pointer)
 	end
 	return value
 end
+function x_pointer_twice_set()
+	set x_pointer.twice (TRUE)
+end
+function x_pointer_twice_unset()
+	set x_pointer.twice (FALSE)
+end
+#function x_pointer_x(sv pointer) #same as x_pointer
+#	if x_data.f!=(NULL)
+#		sub pointer# action_debug((action_debug_get_mem))
+#		inc pointer#
+#	end
+#end
 
 import "action_code_values" action_code_values
 import "action_code_get" action_code_get
@@ -137,6 +150,8 @@ function x_init(sd flags,sd path)
 			datax flag#1
 			set flag (flagpre_x_pad)
 			and flag flags
+
+			set x_pointer.twice (FALSE)
 		else #restore ,no parse, no log/alt
 			sd file;set file f_open_mem(b,"rb")
 			call fseek(file,0,(SEEK_END))
