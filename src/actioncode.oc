@@ -378,28 +378,44 @@ function action_code_pack(sd codepointer)
 		set need_pop (TRUE)
 	endelseif
 	#else is ActionDefineLocal/ActionSetVariable
+	sd name
 	if is_member=(TRUE)
 		sd member_codepointer_start;set member_codepointer_start codepointer
 		setcall codepointer action_member_loop_left(codepointer)
 	else
 		#definelocal or setvariable or delete2
-		sd name;set name action_code_get_pointer(#codepointer)
+		set name action_code_get_pointer(#codepointer)
 		call action_push((ap_Constant8),name)
 	endelse
 	if need_right=(TRUE)
+		sd f
 		if codepointer#=(ActionIncrement)
 			add codepointer (DWORD)
-			call action_code_inc_dec((ActionIncrement),attrib,member_codepointer_start)
+			set f flag_noDup_get()
+			if attrib=(ActionSetVariable)
+				call action_code_dupGet_var_if(f,name)
+			else
+				call action_code_dupGet_member_if(f,member_codepointer_start)
+			end
+			call action_one((ActionIncrement))
 		elseif codepointer#=(ActionDecrement)
 			add codepointer (DWORD)
-			call action_code_inc_dec((ActionDecrement),attrib,member_codepointer_start)
+			set f flag_noDup_get()
+			if attrib=(ActionSetVariable)
+				call action_code_dupGet_var_if(f,name)
+			else
+				call action_code_dupGet_member_if(f,member_codepointer_start)
+			end
+			call action_one((ActionDecrement))
 		elseif codepointer#=(mixt_equal)
 			#+= .. ^= ..
 			add codepointer (DWORD)
 			sd mixt_op;set mixt_op codepointer#;add codepointer (DWORD)
-			if attrib=(ActionSetVariable);call action_code_dupGet_var()
+			set f flag_noDup_get()
+			if attrib=(ActionSetVariable)
+				call action_code_dupGet_var_if(f,name)
 			else
-				call action_code_dupGet_member_if(member_codepointer_start)
+				call action_code_dupGet_member_if(f,member_codepointer_start)
 			endelse
 			setcall codepointer action_code_right(codepointer)
 			call action_one(mixt_op)
@@ -415,17 +431,13 @@ function action_code_pack(sd codepointer)
 endfunction
 import "actionrecordheader" actionrecordheader
 import "swf_actionblock_add" swf_actionblock_add
-function action_code_inc_dec(sd inc_dec,sd setvar_or_setmember,sd member)
-	if setvar_or_setmember=(ActionSetVariable)
-		call action_code_dupGet_var()
+function action_code_dupGet_var_if(sd f,sd name)
+	if f=(flag_none)
+		call action_one((ActionPushDuplicate))
 	else
-		call action_code_dupGet_member_if(member)
+		call action_push((ap_Constant8),name)
 	end
-	callg action_one(inc_dec)
-endfunction
-function action_code_dupGet_var()
-    call action_one((ActionPushDuplicate))
-    call action_one((ActionGetVariable))
+	callg action_one((ActionGetVariable))
 endfunction
 const first_storereg=0
 const ActionStoreRegister_length=1
@@ -442,8 +454,7 @@ function action_code_dupGet_member()
 	call action_one((ActionStackSwap))
 	callg action_one((ActionGetMember))
 endfunction
-function action_code_dupGet_member_if(sd member_codepointer)
-	sd f;set f flag_noDup_get()
+function action_code_dupGet_member_if(sd f,sd member_codepointer)
 	if f=(flag_none)
 		callg action_code_dupGet_member()
 		ret
