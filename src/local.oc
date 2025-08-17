@@ -458,11 +458,11 @@ function swf_shape_bitmap_local(sd bitmapId,sd width,sd height,sd bitmap_fill)
 endfunction
 
 #id
-function swf_image_ex_local(ss imagepath,sd p_wh)
+function swf_image_ex_local(ss imagepath,sd p_wh,sd verif)
 #ss imagepath = path name for the dbl image
 #sd p_wh      = pointer width height
     sd dbl_id
-    setcall dbl_id swf_dbl_ex_local(imagepath,p_wh)
+    setcall dbl_id swf_dbl_ex_local(imagepath,p_wh,verif)
     #add dbl to a shape
     sd width;set width p_wh#;add p_wh (DWORD)
 	callret swf_shape_bitmap_local_clipped(dbl_id,width,p_wh#)
@@ -470,7 +470,7 @@ endfunction
 import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
 import "word_swap" word_swap
 #id
-function swf_dbl_ex_local(ss imagepath,sd p_wh)
+function swf_dbl_ex_local(ss imagepath,sd p_wh,sd verif)
 #ss imagepath = path name for the dbl image
 #sd p_wh = pointer width a dword and height next dword
 	sd id
@@ -543,7 +543,9 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh)
 	endif
 	call swf_mem_add(cursor,image_size)
 	call file_get_content__resources_free()
-	call deprecation()
+	if verif=(FALSE)
+		call deprecation()
+	end
 	return id
 endfunction
 

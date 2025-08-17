@@ -204,6 +204,7 @@ import "for_in" for_in
 import "frames_as_shows" frames_as_shows
 import "ainit" ainit
 import "pool_init" pool_init
+import "verbose" verbose
 
 importx "fseek" fseek
 importx "fread" fread
@@ -230,6 +231,7 @@ function flags_init(sd flags,sd path) #this order is copied in a comment at flag
 	call frames_as_shows(flags)
 	call for_in(flags)
 	call deprecation_init(flags)
+	call verbose(flags)
 endfunction
 
 function log_init(sd flags,sd path)

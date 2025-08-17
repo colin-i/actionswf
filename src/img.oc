@@ -3,12 +3,17 @@ format elfobj64
 
 include "../include/prog.oh"
 
+function verbose(datax flag)
+	and flag (flag_verbose)
+end
+
 importx "strlen" strlen
 importx "memcmp" memcmp
 importx "memcpy" memcpy
 importx "malloc" malloc
 importx "access" access
 importx "free" free
+importx "printf" printf
 
 import "ebase" ebase
 
@@ -52,7 +57,7 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 	end
 
 	sd dblsize;set dblsize f_size(dbl)
-	sub dblsize 4+4  #is ok, is sign compared
+	sub dblsize 4+4  #is unsigned compared to stay in ui32 tags, if short overflow will fail at dbl checks anyway
 
 	sub size dbl
 	set sz size
@@ -80,9 +85,9 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 			call memcpy(cr,#jp,5)
 
 			add jpgsize f_size_errors(jpg)
-			#if jpgsize>0 #paranoia #don't care what decision will be at these sizes
+			#if jpgsize>0 #overflow can't make in swf, ui32tags
 			add jpgsize 4
-			#if jpgsize>0 #paranoia #don't care what decision will be at these sizes
+			#if jpgsize>0 #same
 			set id imgx_decision(dblsize,jpgsize,dbl,jpg,f1,p_wh,is_image)
 			#end
 			#end
@@ -90,6 +95,29 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 		end
 	end
 	call free(f1)
+	if verbose.flag!=(flag_none)
+		add dblsize 2 #again, ui32 tags
+		add jpgsize 2
+		sd c
+		if dblsize<^jpgsize
+			set c (Lessthan)
+		else
+			set c (Greaterthan)
+		end
+		ss plus
+		if acs!=0
+			set plus ""
+		else
+			set plus "+msk"
+		end
+		call printf("dbl 0x%lx %c jpg%s 0x%lx",dblsize,c,plus,jpgsize)
+		if p_wh!=(NULL)
+			sd w;set w p_wh#
+			add p_wh (DWORD)
+			call printf(" %hux%hu",w,p_wh#)
+		end
+		call printf(" %s\n",dbl)
+	end
 	return id
 end
 
@@ -101,15 +129,15 @@ import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
 
 function imgx_decision(sd dblsize,sd jpgsize,ss dbl,ss jpg,ss msk,sd p_wh,sd is_image) #,sd is_clipped
 	valuex bp#1;base bp;call ebase(bp)
-	if dblsize<jpgsize
+	if dblsize<^jpgsize
 		if is_image=(FALSE)
-			callret swf_dbl_ex_local(dbl,p_wh)
+			callret swf_dbl_ex_local(dbl,p_wh,(TRUE))
 		end
 		if p_wh=(NULL)
 			datax width#1;datax height#1
-			callret swf_image_ex_local(dbl,#width)
+			callret swf_image_ex_local(dbl,#width,(TRUE))
 		end
-		callret swf_image_ex_local(dbl,p_wh)
+		callret swf_image_ex_local(dbl,p_wh,(TRUE))
 	end
 	sd id
 	if msk=(NULL)

@@ -1,5 +1,5 @@
 
-#init order is: pool x log alt titles asShows forin deprecation
+#init order is: pool x log alt titles asShows forin deprecation verbose
 #a good workflow(for ffdec and oadbg): like in bench1
 #or:                                   like in bench2
 #a test/fasts result: 5.159259578 10.291831766
@@ -22,6 +22,7 @@ const flag_compress=0x2000
 const flag_deprecation_no=0x4000
 const flag_deprecation_yes=0x8000 #will turn off flag_deprecation_no
 const flag_noDuplicate=0x10000
+const flag_verbose=0x20000
 
 const debug_xpad=flagpre_x|flagpre_x_pad
 const flags_pool=flagpre_pool_write|flag_pool_read|flag_pool_read_unlink

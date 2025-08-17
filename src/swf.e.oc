@@ -265,28 +265,27 @@ functionX swf_image(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
 	data width#1;data *height#1
-	callret swf_image_ex_local(imagepath,#width)
+	callret swf_image_ex_local(imagepath,#width,(FALSE))
 endfunction
 #id
 import "swf_image_ex_local" swf_image_ex_local
 functionX swf_image_ex(ss imagepath,sd p_wh)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath, sd p_wh
-	callret swf_image_ex_local(imagepath,p_wh)
+	callret swf_image_ex_local(imagepath,p_wh,(FALSE))
 endfunction
 
 #id
 functionX swf_dbl(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	callret swf_dbl_ex_local(imagepath,(NULL))
+	callret swf_dbl_ex_local(imagepath,(NULL),(FALSE))
 endfunction
 #id
 import "swf_dbl_ex_local" swf_dbl_ex_local
 functionX swf_dbl_ex(ss imagepath,sd p_wh)
 	base swf_new.bp;call ebase(swf_new.bp)
-	sd id;set id swf_dbl_ex_local(imagepath,p_wh)
-	return id
+	callret swf_dbl_ex_local(imagepath,p_wh,(FALSE))
 endfunction
 
 import "dbl_dim" dbl_dim
