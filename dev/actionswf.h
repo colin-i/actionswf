@@ -167,6 +167,17 @@ int swf_gif_width(char* imagepath);
 //height
 int swf_gif_height(char* imagepath);
 
+//both
+
+//id
+int swf_imagex(char* imagepath);
+//id
+int swf_imagex_ex(char* imagepath,int wh[2]);
+//id
+int swf_img(char* imagepath);
+//id
+int swf_img_ex(char* imagepath,int wh[2]);
+
 //back at generic swf functions
 
 void swf_done();

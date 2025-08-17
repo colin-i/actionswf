@@ -601,7 +601,7 @@ end
 
 function deprecation()
 	if deprecation_init.bool=(TRUE)
-		vstr e="DBL tags are deprecated; use GIF/JPEG/PNG functions, flag_deprecation_no"
+		vstr e="DBL tags are deprecated; use GIF/JPEG/PNG/img functions, flag_deprecation_no"
 		if deprecation_init.full=(TRUE)
 			call error(e)
 		else

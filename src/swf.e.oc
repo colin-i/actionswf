@@ -289,30 +289,18 @@ functionX swf_dbl_ex(ss imagepath,sd p_wh)
 	return id
 endfunction
 
-import "dblsize_start" dblsize_start
-import "dblsize_end" dblsize_end
+import "dbl_dim" dbl_dim
 #width
 functionX swf_dbl_width(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	#format? ming newSWFDBLBitmap_fromInput
-	dataxu size#1;charx t#1;#sw dim
-	sd file;set file dblsize_start(imagepath,#size,#t)
-	if t=(l)
-		callret dblsize_end(file,size,(dblsignature+dblsize+dblformat))
-	end
-	callret dblsize_end(file,size,(dblsignature+dblsize16+dblformat))
+	callret dbl_dim(imagepath,0)
 endfunction
 #height
 functionX swf_dbl_height(ss imagepath)
 	base swf_new.bp;call ebase(swf_new.bp)
 #ss imagepath = path name for the dbl image
-	dataxu size#1;charx t#1;#sw dim
-	sd file;set file dblsize_start(imagepath,#size,#t)
-	if t=(l)
-		callret dblsize_end(file,size,(dblsignature+dblsize+dblformat+WORD))
-	end
-	callret dblsize_end(file,size,(dblsignature+dblsize16+dblformat+WORD))
+	callret dbl_dim(imagepath,(WORD))
 endfunction
 
 #jpeg/png/gif
@@ -378,6 +366,28 @@ functionX swf_gif_height(ss imagepath)
 	#sw dim
 	callret filepath_get_word(imagepath,(gifsignature+WORD),swf_gif_width.err)
 endfunction
+
+#both
+
+import "imgx" imgx
+
+#id
+functionX swf_imagex(ss imagepath)
+	base swf_new.bp;call ebase(swf_new.bp)
+	callret imgx(imagepath,(NULL),(TRUE))
+end
+functionX swf_imagex_ex(ss imagepath,sd p_wh)
+	base swf_new.bp;call ebase(swf_new.bp)
+	callret imgx(imagepath,p_wh,(TRUE))
+end
+functionX swf_img(ss imagepath)
+	base swf_new.bp;call ebase(swf_new.bp)
+	callret imgx(imagepath,(NULL),(FALSE))
+end
+functionX swf_img_ex(ss imagepath,sd p_wh)
+	base swf_new.bp;call ebase(swf_new.bp)
+	callret imgx(imagepath,p_wh,(FALSE))
+end
 
 ##############
 import "exportsId_get" exportsId_get

@@ -52,6 +52,7 @@ end
 
 importx "fwrite" fwrite
 importx "ftell" ftell
+importx "fseek" fseek
 
 importx "fopen" fopen
 importx "free" free
@@ -164,7 +165,7 @@ function file_write(sd file,sd buffer,sd size)
 		ret
 	endif
 	vstr er="File write error"
-	call error(er)
+	callg error(er)
 endfunction
 function file_write_mem(sd file,sd buffer,sd size)
 	sd len
@@ -173,20 +174,20 @@ function file_write_mem(sd file,sd buffer,sd size)
 	if len=size
 		ret
 	endif
-	call error(file_write.er)
+	callg error(file_write.er)
 endfunction
 
 function f_printf(sd nr,sd file) #,sd *format,sd a1...,sd aN
 	sd r;set r f_printf_in(#file,nr)
 	if r=-1
-		call error("fprintf error")
+		callg error("fprintf error")
 	endif
 endfunction
 
 function f_write(sd f,sd buf,sd sz)
 	sd r;set r fwrite(buf,sz,1,f)
 	if r!=1
-		call error("fwrite error")
+		callg error("fwrite error")
 	end
 endfunction
 
@@ -204,8 +205,38 @@ function f_tell_errors(sd f)
 		return r
 	end
 	call fclose(f)
-	call error(f_tell.er)
+	callg error(f_tell.er)
 endfunction
+
+function f_size(sd path)
+	vstr rb="rb"
+	sd f;set f fopen(path,rb)
+	if f!=(NULL)
+		call fseek(f,0,(SEEK_END))
+		sd size
+		set size ftell(f)
+		call fclose(f)
+		if size!=-1
+			return size
+		end
+	end
+	vstr er="f_size error"
+	callg error(er)
+end
+function f_size_errors(sd path)
+	sd f;set f fopen(path,f_size.rb)
+	if f!=(NULL)
+		call fseek(f,0,(SEEK_END))
+		sd size
+		set size ftell(f)
+		call fclose(f)
+		if size!=-1
+			return size
+		end
+	end
+	call free(f)
+	callg error(f_size.er)
+end
 
 import "file_resources_set" file_resources_set
 import "file_resources_free" file_resources_free
@@ -254,3 +285,16 @@ function dblsize_end(sd file,sd size,sd offset)
 	call file_resources_free()
 	return dim
 endfunction
+
+#size
+function dbl_dim(ss imagepath,sd off)
+	#format? ming newSWFDBLBitmap_fromInput
+	dataxu size#1;charx t#1;#sw dim
+	sd file;set file dblsize_start(imagepath,#size,#t)
+	if t=(l)
+		add off (dblsignature+dblsize+dblformat)
+	else
+		add off (dblsignature+dblsize16+dblformat)
+	end
+	callret dblsize_end(file,size,off)
+end

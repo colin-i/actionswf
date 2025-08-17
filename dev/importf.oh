@@ -58,6 +58,16 @@ importX "swf_gif_width" swf_gif_width
 #height
 importX "swf_gif_height" swf_gif_height
 
+#both
+#id
+importX "swf_imagex" swf_imagex
+#id
+importX "swf_imagex_ex" swf_imagex_ex
+#id
+importX "swf_img" swf_img
+#id
+importX "swf_img_ex" swf_img_ex
+
 #utils
 importX "swf_done" swf_done
 importX "swf_new" swf_new
