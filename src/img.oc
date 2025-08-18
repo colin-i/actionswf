@@ -50,6 +50,7 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 						end
 					end
 					call error("img is pairing with jpg/msk error") #will leave at bp
+					break #to silence the jump
 				end
 			end
 			break
