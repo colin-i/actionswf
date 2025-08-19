@@ -12,7 +12,7 @@ call xlog_pad_set(0x30)
 
 sd f
 if argc=1
-	set f (flagpre_log|flagpre_pool_write|debug_xpad|flagpre_write_no)
+	set f (prexx_flags|flagpre_x_pad|flagpre_write_no)
 else
 	importx "puts" puts
 	call puts("flag_pool_read_unlink flag_x flag_titles")

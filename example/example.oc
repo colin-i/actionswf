@@ -16,7 +16,7 @@ const shape_lat=40
 
 ####################
 
-const flags1=flagpre_log|flagpre_pool_write|debug_xpad
+const flags1=prexx_flags|flagpre_x_pad
 #|flagpre_write_no
 const flags2=xxu_flags   ;#for tests/data . flag_compress is at ffdec test, and here will compare from 2 different(maybe) zlibs
 const flags3=flags2|flag_compress

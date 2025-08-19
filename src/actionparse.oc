@@ -810,7 +810,7 @@ function action_code_str(ss ac)
     return next
 endfunction
 function action_code_take(ss ac)
-	sd b;setcall b numeric_code(ac)
+	sd b;setcall b numeric_code_orConstruction(ac)
 	if b=(TRUE)
 		ret
 	endif
@@ -828,7 +828,7 @@ function action_code_take_pointer(sd ac)
     endelse
 endfunction
 #bool
-function numeric_code(ss ac)
+function numeric_code_orConstruction(ss ac)
 	ss pointer;set pointer ac
 	char neg="-"
 	if pointer#=neg
@@ -843,7 +843,15 @@ function numeric_code(ss ac)
 			char n="NaN"
 			set c mem_cmp_bool(pointer,#n,\.n)
 			if c=(FALSE)
-				return (FALSE)
+				if ac=pointer
+					return (FALSE)
+				end
+				#here is -pointer
+				call action_code_set((ap_Integer))
+				call action_code_set(0)
+				call action_code_set((ActionSubtract))
+				call action_code_take_pointer(pointer)
+				return (TRUE)
 			end
 			sd b=-1^doubleH_sign
 			if ac!=pointer ##swfdump is seeing -nan , nan

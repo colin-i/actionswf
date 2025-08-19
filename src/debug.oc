@@ -248,7 +248,7 @@ function log_init(sd flags,sd path)
 		sd b;setcall b memalloc(size)
 		vstr lg="%s.log"
 		call sprintf(b,lg,path)
-		setcall debug_data.file f_open_mem_ex(b,"w+b")  #+ is because at definefunction it is reading back for delimiter character
+		setcall debug_data.file f_open_mem_ex(b,"w+b")  #+ is because at definefunction it is reading back for delimiter character, when .log is for oad
 
 		if prexx=(prexx_flags)
 			set test (flagpre_mix) #first log is with prexx, second log is for alt

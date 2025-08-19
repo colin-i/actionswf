@@ -12,7 +12,7 @@ dataxu f#1
 importx "puts" puts
 if argc=1
 	call puts("prexx_flags flagpre_mix flagpre_write_no")
-	set f (prexx_flags|flagpre_mix|flagpre_write_no)
+	set f (prexx_flags|flagpre_mix|flagpre_write_no) #xx to test also at ffdec
 elseif argc=2
 	call puts("xx_flags flag_compress")
 	set f (xx_flags|flag_compress)

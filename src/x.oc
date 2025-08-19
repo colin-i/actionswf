@@ -99,12 +99,12 @@ function actionx()
 	vdatax pointer#1
 	valuex end#1
 	if x_data.mem!=(NULL)
-	#flag_x log(xx) | log, alt, debug_x|debug_x_pad
+	#flag_x log(xx) | log, alt, flagpre_x|flagpre_x_pad
 		if end<=^pointer
 			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
 		sd size
-		set size pointer#v            ;#size of escaped block that was at parse + pad if debug_x_pad flag . xlog_strings_size
+		set size pointer#v            ;#size of escaped block that was at parse + pad if flagpre_x_pad flag . xlog_strings_size
 		incst pointer                 ##here at parse was the escaped mem
 		set x_pointer.base pointer    ##for x_pointer function
 		add pointer size              ##and add DWORD since liboadata read size without parse
@@ -163,9 +163,9 @@ function x_init(sd flags,sd path)
 			set actionx.pointer x_data.mem
 			add actionx.end actionx.pointer
 
-			sd xx=flags_pool_read
+			sd xx=flags_xx
 			and xx flags
-			if xx!=0
+			if xx=(flags_xx)
 				inc size
 				set b memalloc(size)
 				call sprintf(b,"%s.xx",path)
