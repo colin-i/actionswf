@@ -25,8 +25,7 @@ const flag_noDuplicate=0x10000
 const flag_verbose=0x20000
 const flag_xx=0x40000                           #to let .log for alt and .x for regrab
 
-const flags_pool=flagpre_pool_write|flag_pool_read|flag_pool_read_unlink
-const flags_pool_read=flag_pool_read|flag_pool_read_unlink
+const flags_pool=flagpre_pool_write|flag_pool_read
 const flags_x=flagpre_x|flag_x
 const prex_flags=flagpre_log|flagpre_pool_write|flagpre_x
 const prexx_flags=prex_flags|flag_xx            #will turn off antixx_write
