@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.146
+Version: 1.147
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -53,6 +53,27 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Aug 20 2025 Costin Botescu <costin.botescu@gmail.com> 1.147-0
+- read_done (costin.botescu@gmail.com)
+- must separate flag_pool_read from flag_pool_read_unlink for easiness at .xx
+  yes or no (costin.botescu@gmail.com)
+- =-x   ,   .log for alt with .x for regrab (costin.botescu@gmail.com)
+- minus a jump (costin.botescu@gmail.com)
+- no warning when dbl from img. flag_verbose (costin.botescu@gmail.com)
+- img[_ex]/imagex[_ex] to do: warning off (costin.botescu@gmail.com)
+- and noDup at var (costin.botescu@gmail.com)
+- noDup at incdec member (costin.botescu@gmail.com)
+- no duplicate for mixt member (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- fix builtin .x run (costin.botescu@gmail.com)
+- more parse spaces (costin.botescu@gmail.com)
+- oaalt 3 parts (costin.botescu@gmail.com)
+- keep alt scripts (costin.botescu@gmail.com)
+- new ffdec updates (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- readme (costin.botescu@gmail.com)
+- pkgs one push (costin.botescu@gmail.com)
+
 * Wed Jul 23 2025 Costin Botescu <costin.botescu@gmail.com> 1.146-0
 - new tag standards at pkg (costin.botescu@gmail.com)
 - change src Makefile for ld new version (costin.botescu@gmail.com)
