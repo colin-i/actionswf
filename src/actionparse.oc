@@ -850,6 +850,7 @@ function numeric_code_orConstruction(ss ac)
 				call action_code_set((ap_Integer))
 				call action_code_set(0)
 				call action_code_set((ActionSubtract))
+				set pointer spaces(pointer)
 				call action_code_take_pointer(pointer)
 				return (TRUE)
 			end

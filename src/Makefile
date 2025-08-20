@@ -115,10 +115,10 @@ ${libname}: ${name}
 endif
 
 endif
-
-${name}: ${obs} ${eobs}
+${exte}: ${obs} ${eobs} #eobs here for ounused
 	${OLINK} ${logs}
 	$(AR) cr ${exte} ${obs}
+${name}: ${exte}
 	${ATLDCOM} > 1
 # > 1 for ostrip
 endif
