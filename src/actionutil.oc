@@ -238,7 +238,7 @@ function action_caller(ss member,sv pfname,sd codepointer)
 		sv values
 		setcall values action_code_get()
 
-		call action_code_member(member)
+		call action_code_member(member,0)
 		call action_member_loop_right(values)
 
 		import "debug_x_expand" debug_x_expand

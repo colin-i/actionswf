@@ -509,7 +509,7 @@ function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
         call action_code_set_pointer(pointer)
     else
         call action_code_set(ac2)
-	callg action_code_member(pointer)
+	callg action_code_member(pointer,-1)
     endelse
 endfunction
 #0/action
@@ -674,7 +674,7 @@ function action_parse_take_action(sd op,ss ac)
 		if ac#!=(sar_shr);set x (ActionBitRShift)
 		else;set x (ActionBitURShift);endelse
 	else
-		#at "qwer"x can be x
+		#at "asd"x can be x
 		call error("unrecognized actionscript operation")
 	endelse
 	return x
@@ -829,7 +829,7 @@ function action_code_take_pointer(sd ac)
         call action_code_set_pointer(ac)
     else
         call action_code_set((ActionGetMember))
-		callg action_code_member(ac)
+		callg action_code_member(ac,-1)
     endelse
 endfunction
 function pointer_prefix()
@@ -905,34 +905,43 @@ function numeric_code_orConstruction(ss ac)
 	call action_code_set(value_low)
 	return (TRUE)
 endfunction
-function action_code_member(ss ac)
-    vstr delims=".["
-    char dot=".";char sqbrace_start="["
-    char sqbrace_end="]"
-    while ac#!=0
-        sd pos
-        setcall pos strcspn(ac,delims)
-        ss pointer
-        set pointer ac
-        if pos!=0
-        #0 is at second+ multi-dimensional arrays levels
-            add pointer pos
-            call action_code_set_pointer(ac)
-        endif
-        if pointer#=sqbrace_start
-		set pointer# 0
-		inc pointer
-		call action_code_set_pointer((no_pointer)) #to compare square brackets on same field with pointers
-		call action_code_set((square_bracket_start))
-		setcall pointer action_code_row_parse_tool(pointer,sqbrace_end)
-        endif
-        if pointer#=dot
-            set pointer# 0
-            inc pointer
-        endif
-        set ac pointer
-    endwhile
-    call action_code_set_pointer((no_pointer))
+function action_code_member(ss pointer,sd full)
+	vstr delims=".["
+	char sqbrace_start="["
+	char sqbrace_end="]"
+	call action_code_set_pointer(pointer) #owner?
+	sd pos
+	setcall pos strcspn(pointer,delims)
+	add pointer pos
+	if full!=0
+		sd p_currentnr
+		setcall p_currentnr action_code_values_index()
+		set full p_currentnr#
+	end
+	while pointer#!=0
+		if pointer#=sqbrace_start
+			set pointer# 0
+			inc pointer
+			call action_code_set_pointer((no_pointer)) #to compare square brackets on same field with pointers
+			call action_code_set((square_bracket_start))
+			setcall pointer action_code_row_parse_tool(pointer,sqbrace_end)
+		else
+			set pointer# 0
+			inc pointer
+		end
+		setcall pos strcspn(pointer,delims)
+		if pos!=0
+		#0 is at second+ multi-dimensional arrays levels ]. or when simply want to end
+			call action_code_set_pointer(pointer)
+			add pointer pos
+		endif
+	endwhile
+	if full!=0
+		if p_currentnr#=full
+			call action_code_set_pointer(pointer) #force a full member
+		end
+	end
+	call action_code_set_pointer((no_pointer))
 	callg action_code_set((member_end)) #to compare square brackets on same field with pointers
 endfunction
 
