@@ -184,7 +184,7 @@ function forin(sd pointer)
 	else
 		#enum can take ActionEnumerate(x.x[z]), x.x ... is a pattern that ActionEnumerate will recognize
 		call action_code_set((ActionEnumerate))
-		call action_code_set_pointer(pointer)
+		callg action_code_set_pointer(pointer)
 	end
 end
 
@@ -509,7 +509,7 @@ function action_parse_left_holder(ss pointer,sd ac1,sd ac2)
         call action_code_set_pointer(pointer)
     else
         call action_code_set(ac2)
-        call action_code_member(pointer)
+	callg action_code_member(pointer)
     endelse
 endfunction
 #0/action
@@ -579,7 +579,7 @@ function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
     ss pointer
     setcall pointer str_expression_at_start(ac,"new")
     if pointer!=ac
-        setcall ac action_code_parse_new_or_call(pointer,(new_action))
+		setcall ac action_code_parse_new_or_call(pointer,(new_action),pointer)
         sd bool;setcall bool action_parse_utilEndTypes(ac#,p_op,endtype1,endtype2)
         if bool=(TRUE);inc ac;endif
         return ac
@@ -725,23 +725,28 @@ function action_code_take_main(ss ac,sv p_op,ss delims) #ss p_op will not clean 
 	#a string
 	ss pointer
 	setcall pointer action_code_str(ac)
-	if pointer!=0
+	if pointer!=(NULL)
 		set pointer spaces(pointer) ;#ffdec _text.message = \"Angle: \" +b
 		set p_op# pointer#;set pointer# 0
 		return pointer
 	endif
+
+	set pointer ac
+	char neg="-"
+	if pointer#=neg
+		inc pointer
+		set pointer spaces(pointer) #=- Math(8)
+	endif
+
 	#a function
-	setcall pointer action_code_parse_new_or_call(ac,(call_action_right))
-	if pointer!=ac
+	ss cursor;set cursor pointer
+	setcall pointer action_code_parse_new_or_call(cursor,(call_action_right),ac)
+	if pointer!=cursor
 		set pointer spaces(pointer) #ffdec
 		set p_op# pointer#;set pointer# 0
 		return pointer
 	endif
 	#a variable(a.b.c[1+d])
-	char neg="-"
-	if pointer#=neg
-		inc pointer
-	endif
 	sd pos
 	setcall pos strcspn(pointer,delims)
 
@@ -814,7 +819,7 @@ function action_code_take(ss ac)
 	if b=(TRUE)
 		ret
 	endif
-	call action_code_take_pointer(ac)
+	callg action_code_take_pointer(ac)
 endfunction
 function action_code_take_pointer(sd ac)
     ss test
@@ -824,9 +829,14 @@ function action_code_take_pointer(sd ac)
         call action_code_set_pointer(ac)
     else
         call action_code_set((ActionGetMember))
-        call action_code_member(ac)
+		callg action_code_member(ac)
     endelse
 endfunction
+function pointer_prefix()
+	call action_code_set((ap_Integer))
+	call action_code_set(0)
+	call action_code_set((ActionSubtract))
+end
 #bool
 function numeric_code_orConstruction(ss ac)
 	ss pointer;set pointer ac
@@ -847,9 +857,7 @@ function numeric_code_orConstruction(ss ac)
 					return (FALSE)
 				end
 				#here is -pointer
-				call action_code_set((ap_Integer))
-				call action_code_set(0)
-				call action_code_set((ActionSubtract))
+				call pointer_prefix()
 				set pointer spaces(pointer)
 				call action_code_take_pointer(pointer)
 				return (TRUE)
@@ -925,7 +933,7 @@ function action_code_member(ss ac)
         set ac pointer
     endwhile
     call action_code_set_pointer((no_pointer))
-    call action_code_set((member_end)) #to compare square brackets on same field with pointers
+	callg action_code_set((member_end)) #to compare square brackets on same field with pointers
 endfunction
 
 
@@ -1064,7 +1072,7 @@ function brace_blocks_remove_parse_else()
             endelse
         endwhile
         call action_code_set((block_else_end))
-        call action_code_set(else_number)
+		callg action_code_set(else_number)
     endif
 endfunction
 function brace_blocks_remove_parse() #else is at brace_blocks_remove_parse_else
@@ -1100,10 +1108,10 @@ function brace_blocks_end()
 endfunction
 #
 function brace_blocks_add_write()
-    call brace_blocks_add_write_offset((smallbackjump),(no_flag))
+	callg brace_blocks_add_write_offset((smallbackjump),(no_flag))
 endfunction
 function brace_blocks_add_write_current()
-    call brace_blocks_add_write_offset(0,(no_flag))
+	callg brace_blocks_add_write_offset(0,(no_flag))
 endfunction
 function brace_blocks_add_write_offset(sd offset,sd flag)
 	sd block
@@ -1246,7 +1254,7 @@ function add_dummy_jump()
     call actionrecordheader((ActionJump),(actionjump_contentsize))
     import "swf_actionblock_add" swf_actionblock_add
     sd dummy_size=0
-    call swf_actionblock_add(#dummy_size,(actionjump_contentsize))
+	callg swf_actionblock_add(#dummy_size,(actionjump_contentsize))
 endfunction
 function resolve_back_jump(sd jumpoffset)  #also at continue
 	sd memblock
@@ -1282,7 +1290,7 @@ function action_code_parse_leftfunction(ss ac)
         return pointer
     endif
     #a call
-    setcall ac action_code_parse_new_or_call(ac,(call_action_left))
+	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac)
     char end=";"
     if ac#=end
         inc ac
@@ -1290,7 +1298,7 @@ function action_code_parse_leftfunction(ss ac)
     return ac
 endfunction
 #pointer
-function action_code_parse_new_or_call(ss ac,sd type)
+function action_code_parse_new_or_call(ss ac,sd type,ss cursor)
     ss pointer
     set pointer ac
     import "part_of_variable" part_of_variable
@@ -1308,6 +1316,9 @@ function action_code_parse_new_or_call(ss ac,sd type)
                 set last_dot pointer
                 set bool (TRUE)
             elseif pointer#=(Openparenthesis)
+				if ac!=cursor ##example: negative
+					call pointer_prefix()
+				end
 				callret action_code_parse_function_detected(ac,last_dot,pointer,type)
             endelseif
         endif
