@@ -938,7 +938,7 @@ function action_code_member(ss pointer,sd full)
 	endwhile
 	if full!=0
 		if p_currentnr#=full
-			call action_code_set_pointer(pointer) #force a full member
+			call error("full member required")
 		end
 	end
 	call action_code_set_pointer((no_pointer))
