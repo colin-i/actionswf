@@ -88,7 +88,7 @@ endfunction
 
 #file
 function file_open(ss filepath,sd flags)
-    sd file
+	sdu file  ;#will int compare, sd will -1 on rax
     sd permission
     sd creat_test;set creat_test flags;and creat_test (flag_O_CREAT);if creat_test!=0
         set permission (flag_pmode);endif
