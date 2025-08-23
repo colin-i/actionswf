@@ -155,7 +155,7 @@ if [ -z "${skip_alternative}" ]; then
 							ainits_counter=$((ainits_counter+1))
 						fi
 					fi
-					doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}"_.*/`  #else is empty
+					doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}".*/`  #else is empty #note that only exported sprites are ...${p}_name/
 				fi
 				s=
 			else
