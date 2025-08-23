@@ -25,8 +25,8 @@ override_dh_auto_install:
 	#from otoc
 	echo dev/flags.h usr/include/actionswf/ >> debian/libactionswf-dev.install
 	echo dev/flagss.h usr/include/actionswf/ >> debian/libactionswf-dev.install
-	echo dev/actionswf.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
 	#not from otoc
+	echo dev/actionswf.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
 	echo dev/actionswf.h usr/include/actionswf/ >> debian/libactionswf-dev.install
 
 	#same as ocompiler, when adding another one, make install are useless

@@ -166,7 +166,6 @@ install-lib:
 	install -D ${libname} $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	if [ -e ../include_dev ]; then \
 		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flags.oh && \
-		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flagss.oh && \
 		install -D ../dev/importf.oh $(DESTDIR)$(prefix)/include/${projname}/importf.oh && \
 		install -D ../dev/import.oh $(DESTDIR)$(prefix)/include/${projname}/import.oh && \
 		install -D ../dev/actionswf.h $(DESTDIR)$(prefix)/include/${projname}/actionswf.h; \
@@ -178,7 +177,6 @@ uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 	-if [ -e ../include_dev ]; then \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/flags.oh; \
-		rm -f $(DESTDIR)$(prefix)/include/${projname}/flagss.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/importf.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/import.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/actionswf.h; \
