@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.147
+Version: 1.148
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -53,6 +53,17 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Aug 27 2025 Costin Botescu <costin.botescu@gmail.com> 1.148-0
+- fix related to constant unsigned at int c open return
+  (costin.botescu@gmail.com)
+- at oalt: for not exported sprites (costin.botescu@gmail.com)
+- flagss (costin.botescu@gmail.com)
+- avoid sigsev (costin.botescu@gmail.com)
+- another actionparse valid .x commit (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- another case for =- call() (costin.botescu@gmail.com)
+- spaces at = - x (costin.botescu@gmail.com)
+
 * Wed Aug 20 2025 Costin Botescu <costin.botescu@gmail.com> 1.147-0
 - read_done (costin.botescu@gmail.com)
 - must separate flag_pool_read from flag_pool_read_unlink for easiness at .xx
