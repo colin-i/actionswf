@@ -4,8 +4,9 @@ shift
 
 cd src && \
 ./makewin${ver} $@ && \
-cd .. && \
-cd oad && \
+cd ../dev && \
+make && \
+cd ../oad && \
 ./mw${ver}${s} $@ && \
 cd .. && \
 mkdir actionswf && \
@@ -14,8 +15,9 @@ mv oad/liboadbgdata.dll actionswf && \
 ln ${depend_dll_path}/libzlib1.dll actionswf && \
 cd src && \
 ./makewin${ver} clean && \
-cd .. && \
-cd oad && \
+cd ../dev && \
+make clean && \
+cd ../oad && \
 ./mw clean && \
 cd .. && \
 cp oaalternative.sh actionswf && \
