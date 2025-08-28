@@ -104,29 +104,16 @@ if [ -z "${skip_alternative}" ]; then
 		return 0 #no ainits
 	}
 	ainits_counter=1
-
-#	exposprite_ar_key=
-#	exposprite_ar_val=
-#	exposprite_ar_set () {
-#		exposprite_ar_key="${exposprite_ar_key} $1"
-#		exposprite_ar_val="${exposprite_ar_val} $2"
-#	}
-#	exposprite_ar_get () {
-#		i=0
-#		for a in ${exposprite_ar_key}; do
-#			if [ $a = $s ]; then
-#				j=0
-#				for exposprite_pre in ${exposprite_ar_val}; do
-#					if [ $i = $j ]; then
-#						return 1
-#					fi
-#					j=$((j+1))
-#				done
-#			fi
-#			i=$((i+1))
-#		done
-#		return 0
-#	}
+	ainit_anonymous () {
+		if [ ${ainits_counter} != 1 ]; then
+			ainits_file=_${ainits_counter}.as
+		else
+			ainits_file=.as
+		fi
+		#f=`find -name DoInitAction${ainits_file}`
+		move scripts/DoInitAction${ainits_file} ../"${out}"/$1
+		ainits_counter=$((ainits_counter+1))
+	}
 
 	s= #id
 	while read p; do
@@ -157,13 +144,20 @@ if [ -z "${skip_alternative}" ]; then
 					number_expected
 					if [ -n "${is_debug}" ]; then echo finalId = ${p}; fi
 
+					if [ -n "${remember_pre}" ]; then
+						ainit_anonymous ${remember_pre}
+						remember_pre=
+					fi
+
+					sprite_type=0
 					doaction ${s} `find -path ./scripts/DefineSprite_${p}_"*"/frame_"*"/DoAction.as`  #exported sprite
 					if [ $? = 0 ]; then
 						doaction ${s} `find -path ./scripts/DefineSprite_${p}/frame_"*"/DoAction.as`  #anonymous sprite
-						is_ano_sprite=$?
-						#else is empty
-					else
-						is_ano_sprite=0
+						if [ $? = 1 ]; then
+							sprite_type=1
+						else #undecided, and if having inits, must make a decision
+							sprite_type=2
+						fi
 					fi
 
 					ainits_ar_get; if [ $? = 1 ]; then #button or DoInitAction sprite
@@ -181,17 +175,16 @@ if [ -z "${skip_alternative}" ]; then
 							d=../"${out}"/${s}
 							move "${f}" ${d}
 							sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
-						elif [ ${is_ano_sprite} = 1 ]; then #anonymous sprite init
-							if [ ${ainits_counter} != 1 ]; then
-								ainits_file=_${ainits_counter}.as
-							else
-								ainits_file=.as
+						else
+							if [ ${sprite_type} = 0 ]; then #exported sprite with action_init
+								echo to do
+								exit 1
+#								ainit_exported $s `take export from existing folder`
+							elif [ ${sprite_type} = 1 ]; then #anonymous sprite init
+								ainit_anonymous $s
+							else # if [ ${sprite_type} = 2 ]; then #undecided, next must be the export and if not, say is anonym
+								remember_pre=$s
 							fi
-							#f=`find -name DoInitAction${ainits_file}`
-							move scripts/DoInitAction${ainits_file} ../"${out}"/${s}
-							ainits_counter=$((ainits_counter+1))
-#						else #exported sprite with action_init
-#							exposprite_ar_set $p $s
 						fi
 					fi
 #					s=
@@ -204,8 +197,8 @@ if [ -z "${skip_alternative}" ]; then
 #					fi
 #				else #export
 #					if [ -n "${is_debug}" ]; then echo $s is exported as $p; fi
-#					exposprite_ar_get $s; if [ $? = 1 ]; then
-#						move scripts/$p.as ../"${out}"/${exposprite_pre}
+#					if [ "${sprite_type}" = 2 ]; then
+#						ainit_exported $s $p
 #					fi
 #				fi
 #				s=
@@ -214,6 +207,10 @@ if [ -z "${skip_alternative}" ]; then
 			fi
 		fi
 	done <../"${log}"
+
+	if [ -n "${remember_pre}" ]; then #unclosed sprite
+		ainit_anonymous ${remember_pre} #remember_pre=
+	fi
 
 	doaction 0 `find -path ./scripts/frame_"*"/DoAction.as`
 	cd ..
