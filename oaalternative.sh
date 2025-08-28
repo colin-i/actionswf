@@ -148,7 +148,7 @@ if [ -z "${skip_alternative}" ]; then
 				fi
 			elif [ ${t} = 1 ]; then
 				if [ -z "${p}" ]; then
-#					t=3 
+#					t=3
 					if [ -n "${is_debug}" ]; then
 						echo show
 					fi
@@ -167,8 +167,17 @@ if [ -z "${skip_alternative}" ]; then
 					fi
 
 					ainits_ar_get; if [ $? = 1 ]; then #button or DoInitAction sprite
-						f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button
-						if [ -n "${f}" ]; then #is a button
+						f=scripts/DefineButton2_${p} #anonymous button
+						if [ ! -e ${f} ]; then
+							f=scripts/DefineButton2_${p}_* #exported button
+							if [ ! -e ${f} ]; then f=; fi
+						fi
+						if [ -n "${f}" ]; then
+							f=`echo -n ${f}`/BUTTONCONDACTION' 'on'('release')'.as
+						fi
+						#f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button with action
+
+						if [ -e "${f}" ]; then #is a button with action
 							d=../"${out}"/${s}
 							move "${f}" ${d}
 							sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
@@ -178,8 +187,8 @@ if [ -z "${skip_alternative}" ]; then
 							else
 								ainits_file=.as
 							fi
-							f=`find -name DoInitAction${ainits_file}`
-							move ${f} ../"${out}"/${s}
+							#f=`find -name DoInitAction${ainits_file}`
+							move scripts/DoInitAction${ainits_file} ../"${out}"/${s}
 							ainits_counter=$((ainits_counter+1))
 #						else #exported sprite with action_init
 #							exposprite_ar_set $p $s
@@ -196,8 +205,7 @@ if [ -z "${skip_alternative}" ]; then
 #				else #export
 #					if [ -n "${is_debug}" ]; then echo $s is exported as $p; fi
 #					exposprite_ar_get $s; if [ $? = 1 ]; then
-#						f=`find -name $p.as`
-#						move ${f} ../"${out}"/${exposprite_pre}
+#						move scripts/$p.as ../"${out}"/${exposprite_pre}
 #					fi
 #				fi
 #				s=
