@@ -63,7 +63,7 @@ if [ -z "${skip_alternative}" ]; then
 		to=${1}
 		shift
 		if [ ${#@} = 0 ]; then
-			return #is empty
+			return 0 #is empty
 		fi
 		for var in "${@}"; do
 			f=`echo ${var} | grep -o frame_.*/`   #/ is important to stop the search
@@ -73,6 +73,7 @@ if [ -z "${skip_alternative}" ]; then
 			#f=${to}_${f:6}
 			move ${var} ../"${out}"/${f}
 		done
+		return 1
 	}
 	number_expected () {
 		if [ -z "${no_number_check}" ]; then
@@ -89,29 +90,44 @@ if [ -z "${skip_alternative}" ]; then
 	}
 
 	ainits_ar_key=
-	ainits_ar_val=
 	ainits_ar_set () {
 		ainits_ar_key="${ainits_ar_key} $1"
-		ainits_ar_val="${ainits_ar_val} $2"
 	}
 	ainits_ar_get () {
 		i=0
 		for a in ${ainits_ar_key}; do
 			if [ $a = $s ]; then
-				break
+				return 1
 			fi
 			i=$((i+1))
 		done
-		j=0
-		for a in ${ainits_ar_val}; do
-			if [ $j = $i ]; then
-				return $a
-			fi
-			j=$((j+1))
-		done
+		return 0 #no ainits
 	}
-	#ainits=( )
 	ainits_counter=1
+
+#	exposprite_ar_key=
+#	exposprite_ar_val=
+#	exposprite_ar_set () {
+#		exposprite_ar_key="${exposprite_ar_key} $1"
+#		exposprite_ar_val="${exposprite_ar_val} $2"
+#	}
+#	exposprite_ar_get () {
+#		i=0
+#		for a in ${exposprite_ar_key}; do
+#			if [ $a = $s ]; then
+#				j=0
+#				for exposprite_pre in ${exposprite_ar_val}; do
+#					if [ $i = $j ]; then
+#						return 1
+#					fi
+#					j=$((j+1))
+#				done
+#			fi
+#			i=$((i+1))
+#		done
+#		return 0
+#	}
+
 	s= #id
 	while read p; do
 		if [ -z "${s}" ]; then
@@ -119,17 +135,20 @@ if [ -z "${skip_alternative}" ]; then
 		else
 			if [ -z "${t}" ]; then
 				if [ -z "${p}" ]; then
-					t=1 #can be show or done
+					t=1 #can be show/done/export
 				else
 					number_expected
 					t=2 #action
 					at=${p}
 					if [ -n "${is_debug}" ]; then echo at = ${at}; fi
-					ainits_ar_set ${s} ${at}
+					if [ ${at} = 1 ]; then
+						ainits_ar_set ${s}
+					fi
 					#ainits[${s}]=${at}
 				fi
 			elif [ ${t} = 1 ]; then
 				if [ -z "${p}" ]; then
+#					t=3 
 					if [ -n "${is_debug}" ]; then
 						echo show
 					fi
@@ -137,14 +156,23 @@ if [ -z "${skip_alternative}" ]; then
 				#done
 					number_expected
 					if [ -n "${is_debug}" ]; then echo finalId = ${p}; fi
-					ainits_ar_get ${s}; if [ $? = 1 ]; then #button or DoInitAction sprite
-					#if [ "${ainits[${s}]}" = 1 ]; then #button or DoInitAction sprite
-						f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep "DefineButton2_${p}"`
+
+					doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}"_`  #exported sprite
+					if [ $? = 0 ]; then
+						doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}"/`  #anonymous sprite
+						is_ano_sprite=$?
+						#else is empty
+					else
+						is_ano_sprite=0
+					fi
+
+					ainits_ar_get; if [ $? = 1 ]; then #button or DoInitAction sprite
+						f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button
 						if [ -n "${f}" ]; then #is a button
 							d=../"${out}"/${s}
 							move "${f}" ${d}
 							sed -e '1d' -e '$d' -i ${d}  #remove on(release){ ... }
-						else #sprite init
+						elif [ ${is_ano_sprite} = 1 ]; then #anonymous sprite init
 							if [ ${ainits_counter} != 1 ]; then
 								ainits_file=_${ainits_counter}.as
 							else
@@ -153,11 +181,26 @@ if [ -z "${skip_alternative}" ]; then
 							f=`find -name DoInitAction${ainits_file}`
 							move ${f} ../"${out}"/${s}
 							ainits_counter=$((ainits_counter+1))
+#						else #exported sprite with action_init
+#							exposprite_ar_set $p $s
 						fi
 					fi
-					doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}".*/`  #else is empty #note that only exported sprites are ...${p}_name/
+#					s=
 				fi
 				s=
+#			elif [ ${t} = 3 ]; then #show/export
+#				if [ -z "${p}" ]; then
+#					if [ -n "${is_debug}" ]; then
+#						echo show
+#					fi
+#				else #export
+#					if [ -n "${is_debug}" ]; then echo $s is exported as $p; fi
+#					exposprite_ar_get $s; if [ $? = 1 ]; then
+#						f=`find -name $p.as`
+#						move ${f} ../"${out}"/${exposprite_pre}
+#					fi
+#				fi
+#				s=
 			else
 				new_tag
 			fi
