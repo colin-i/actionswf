@@ -157,9 +157,9 @@ if [ -z "${skip_alternative}" ]; then
 					number_expected
 					if [ -n "${is_debug}" ]; then echo finalId = ${p}; fi
 
-					doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}"_`  #exported sprite
+					doaction ${s} `find -path ./scripts/DefineSprite_${p}_"*"/frame_"*"/DoAction.as`  #exported sprite
 					if [ $? = 0 ]; then
-						doaction ${s} `find -name DoAction.as | grep DefineSprite_"${p}"/`  #anonymous sprite
+						doaction ${s} `find -path ./scripts/DefineSprite_${p}/frame_"*"/DoAction.as`  #anonymous sprite
 						is_ano_sprite=$?
 						#else is empty
 					else
@@ -215,7 +215,7 @@ if [ -z "${skip_alternative}" ]; then
 		fi
 	done <../"${log}"
 
-	doaction 0 `find -maxdepth 3 -name DoAction.as`
+	doaction 0 `find -path ./scripts/frame_"*"/DoAction.as`
 	cd ..
 fi
 #part 2
