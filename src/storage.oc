@@ -105,7 +105,7 @@ function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for button
 	call free_sprite_id_actions(id)
 	call struct_ids((ids_free),id)
 	import "debug_spritedone" debug_spritedone
-	call debug_spritedone(id,finalId_or_containerId)
+	callg debug_spritedone(id,finalId_or_containerId)
 endfunction
 
 import "error" error

@@ -103,7 +103,10 @@ call action("return 1")
 
 sd id;set id swf_sprite_new()
 call action_init_sprite(id,"var a=a")
-call swf_sprite_done(id)
+set id swf_sprite_done(id);call swf_exports_add(id,"exported_sprite")
+set id swf_sprite_new()
+call action_init_sprite(id,"var a=b")
+call swf_sprite_done(id) #anonymous_sprite
 
 call swf_done()
 

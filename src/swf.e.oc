@@ -568,6 +568,8 @@ functionX swf_exports_add(sd id,ss name)
     call swf_mem_add(#id,(WORD))
     sd len
     setcall len strlen(name)
+	import "debug_export" debug_export
+	call debug_export(id,name,len)
     inc len
     call swf_mem_add(name,len)
     #

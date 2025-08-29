@@ -368,28 +368,44 @@ function debug_phase_code_flush_end()
 	end
 end
 
-function debug_printf(sd ix)
-	vstr u="%u\n"
-	call f_printf((fprintf_min+1),debug_data.file,u,ix)
+function alt_log()
 	if debug_data.file2!=(NULL)
-		callg f_printf((fprintf_min+1),debug_data.file2,u,ix)
+		return debug_data.file2
+	end
+	if log_init.prexx!=(prexx_flags)
+		return debug_data.file
+	end
+	return (NULL)
+end
+function logs_printf(sd log,sd nr)
+	vstr u="%u"^;char nl={xlog_nl,Nullchar}
+	callg f_printf((fprintf_min+1),log,u,nr)
+end
+function debug_printf(sd ix)
+	call logs_printf(debug_data.file,ix)
+	if debug_data.file2!=(NULL)
+		callg logs_printf(debug_data.file2,ix)
 	end
 end
-function debug_base_core(sd id)
-	callg debug_printf(id) #swf_button is calling action_sprite
-end
+#function debug_base_core(sd id)
+#	callg debug_printf(id) #swf_button is calling action_sprite
+#end
 function debug_base(sd id)
 	if debug_data.file!=(NULL)
-		call debug_base_core(id)
+		call debug_printf(id)
 		sd ai;set ai ainit()
 		callg debug_printf(ai)
 	end
 end
 function debug_show(sd id)
 	if debug_data.file!=(NULL)
-		call debug_base_core(id)
-		char a={xlog_nl,xlog_nl}
-		callg debug_write(#a,2)
+		call debug_printf(id)
+		char nls={xlog_nl,xlog_nl}
+		call debug_write(#nls,2)
+		sd alt;set alt alt_log()
+		if alt!=(NULL)
+			callg f_write(alt,#logs_printf.nl,1)
+		end
 	end
 end
 function debug_write(ss s,sd d)
@@ -400,10 +416,20 @@ function debug_write(ss s,sd d)
 end
 function debug_spritedone(sd p,sd i)
 	if debug_data.file!=(NULL)
-		call debug_base_core(p)
-		char a=xlog_nl
-		call debug_write(#a,1)
-		callg debug_base_core(i)
+		call debug_printf(p)
+		call debug_write(#logs_printf.nl,1)
+		callg debug_printf(i)
+	end
+end
+function debug_export(sd i,ss e,sd size)
+	if debug_data.file!=(NULL)
+		sd alt;set alt alt_log()
+		if alt!=(NULL)
+			call logs_printf(alt,i)
+			call f_write(alt,#debug_show.nls,2)
+			call f_write(alt,e,size)
+			callg debug_write(#logs_printf.nl,1)
+		end
 	end
 end
 
