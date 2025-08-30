@@ -63,30 +63,15 @@ if [ -z "${skip_alternative}" ]; then
 		fi
 	}
 	doaction () {
-		if [ -n "$5" ]; then
-			if [ $5 = 1 ]; then
-				f=`echo scripts/DefineSprite_${4}_*`
-				if [ ! -e "$f" ]; then
-					return 0 #empty or not a sprite
-				fi
-				expo="$(echo "${f}" | grep -o [^_]*$)"
-			else # 2
-				if [ ! -e scripts/DefineSprite_${4} ]; then
-					return 0 #empty or not a sprite
-				fi
-				expo=
-			fi
-		fi
 		find -path ./scripts/$2"*"$3 | while read var; do #if not this way, having problems with exported sprites with spaces
 			f=`echo "${var}" | grep -o frame_.*/`   #/ is important to stop the search
 			f=$(expr substr ${f} 1 $(echo $(echo -n ${f} | wc -m)-1 | bc))
 			#f=${f::-1}
 			f=$(expr substr ${f} 7 $(echo $(echo -n ${f} | wc -m)-6 | bc))
 			#f=${1}_${f:6}
-			move "${var}" ../"${out}"/${1}_${f} "${expo}"_$4_$f
+			move "${var}" ../"${out}"/${1}_${f} "$5"_$4_$f
 			#touch oaalternative_touch # export f=1 is not visible outside of this scope: echo q | while read var; do done
 		done
-		return 1
 	}
 	number_expected () {
 		if [ -z "${no_number_check}" ]; then
@@ -161,40 +146,40 @@ if [ -z "${skip_alternative}" ]; then
 						remember_pre=
 					fi
 
-					sprite_type=0
-					doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} 1 #exported sprite
-					if [ $? = 0 ]; then
-						doaction ${s} DefineSprite_${p}/frame_ /DoAction.as ${p} 2 #anonymous sprite
-						if [ $? = 1 ]; then
-							sprite_type=1
-						else #undecided, and if having inits and is a sprite, must make a decision
-							sprite_type=2
-						fi
+					fn=`echo scripts/DefineSprite_${p}_*`
+					if [ -e "${fn}" ]; then
+						doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} "$(echo "${fn}" | grep -o [^_]*$)" #exported sprite
+						sprite_type=0
+					elif [ -e scripts/DefineSprite_${p} ]; then
+						doaction ${s} DefineSprite_${p}/frame_ /DoAction.as ${p} # "" anonymous sprite
+						sprite_type=1
+					else  #undecided, and if having inits and is a sprite, must make a decision
+						sprite_type=2
 					fi
 
-					ainits_ar_get; if [ $? = 1 ]; then #button or DoInitAction sprite
-						f=scripts/DefineButton2_${p}_* #exported button
-						if [ ! -e ${f} ]; then # "" will write only *
-							f=scripts/DefineButton2_${p} #anonymous button
-							if [ ! -e ${f} ]; then
-								f=
+					ainits_ar_get; if [ $? = 1 ]; then #button action or DoInitAction sprite
+						f=
+						if [ ${sprite_type} = 2 ]; then #can be a button
+							f=scripts/DefineButton2_${p}_* #exported button
+							if [ ! -e ${f} ]; then # "" will write only *
+								f=scripts/DefineButton2_${p} #anonymous button
+								if [ ! -e ${f} ]; then
+									f=
+								else
+									expo=
+								fi
 							else
-								expo=
+								expo=`echo $f`
+								expo="$(echo "${expo}" | grep -o [^_]*$)"
 							fi
-						else
-							expo=`echo $f`
-							expo="$(echo "${expo}" | grep -o [^_]*$)"
+							if [ -n "${f}" ]; then #is a button
+								f=`echo ${f}`/BUTTONCONDACTION' 'on'('release')'.as
+								d=../"${out}"/${s}
+								move "${f}" "${d}" "${expo}"_$p
+								sed -e '1d' -e '$d' -i "${d}"  #delete on(release){ ... }
+							fi #f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button with action
 						fi
-						if [ -n "${f}" ]; then
-							f=`echo ${f}`/BUTTONCONDACTION' 'on'('release')'.as
-						fi
-						#f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button with action
-
-						if [ -n "${f}" ]; then #is a button with action
-							d=../"${out}"/${s}
-							move "${f}" "${d}" "${expo}"_$p
-							sed -e '1d' -e '$d' -i "${d}"  #delete on(release){ ... }
-						else
+						if [ -z "${f}" ]; then #DoInitAction sprite
 							if [ ${sprite_type} = 0 ]; then #exported sprite with action_init
 								f=`echo scripts/DefineSprite_${p}_*`
 								f="$(echo "${f}" | grep -o [^_]*$)"
@@ -233,7 +218,7 @@ if [ -z "${skip_alternative}" ]; then
 		ainit_anonymous ${remember_pre} ${remember_id} #remember_pre=
 	fi
 
-	doaction 0 frame_ /DoAction.as 0 # 0
+	doaction 0 frame_ /DoAction.as 0 # ""
 	cd ..
 fi
 #part 2
