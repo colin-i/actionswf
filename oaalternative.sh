@@ -179,11 +179,11 @@ if [ -z "${skip_alternative}" ]; then
 							if [ ! -e ${f} ]; then
 								f=
 							else
-								fb=
+								expo=
 							fi
 						else
-							fb=`echo $f`
-							fb="$(echo "${fb}" | grep -o [^_]*$)"
+							expo=`echo $f`
+							expo="$(echo "${expo}" | grep -o [^_]*$)"
 						fi
 						if [ -n "${f}" ]; then
 							f=`echo ${f}`/BUTTONCONDACTION' 'on'('release')'.as
@@ -192,7 +192,7 @@ if [ -z "${skip_alternative}" ]; then
 
 						if [ -n "${f}" ]; then #is a button with action
 							d=../"${out}"/${s}
-							move "${f}" "${d}" ${fb}_$p
+							move "${f}" "${d}" "${expo}"_$p
 							sed -e '1d' -e '$d' -i "${d}"  #delete on(release){ ... }
 						else
 							if [ ${sprite_type} = 0 ]; then #exported sprite with action_init
@@ -238,7 +238,7 @@ if [ -z "${skip_alternative}" ]; then
 fi
 #part 2
 if [ -n "${2}" ]; then
-	set -e #at alternative there are return 1 and !=0 grep returns
+	set -e #at alternative there are return 1 returns
 	mv ${v} "${bname}" "${bname}".orig
 	cd "${at_start}"
 	${2} || {
@@ -251,7 +251,7 @@ if [ -n "${2}" ]; then
 	cd "${dname}"
 	diff "${bname}" "${bname}".orig
 	if [ -z "${no_clean}" ]; then
-		rm -r ${v} "${out}"  #or rmdir if -n scripts
+		rm -r ${v} "${out}"
 		rm -r ${v} "${folder}"
 		rm "${bname}".orig
 	fi
