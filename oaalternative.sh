@@ -71,7 +71,7 @@ if [ -z "${skip_alternative}" ]; then
 			#f=${1}_${f:6}
 			move "${var}" ../"${out}"/${1}_${f} "$5"_$4_$f
 			#touch oaalternative_touch # export f=1 is not visible outside of this scope: echo q | while read var; do done
-		done
+		done || exit 1 # same reason like export
 	}
 	number_expected () {
 		if [ -z "${no_number_check}" ]; then
