@@ -63,20 +63,30 @@ if [ -z "${skip_alternative}" ]; then
 		fi
 	}
 	doaction () {
+		if [ -n "$5" ]; then
+			if [ $5 = 1 ]; then
+				f=`echo scripts/DefineSprite_${4}_*`
+				if [ ! -e "$f" ]; then
+					return 0 #empty or not a sprite
+				fi
+				expo="$(echo "${f}" | grep -o [^_]*$)"
+			else # 2
+				if [ ! -e scripts/DefineSprite_${4} ]; then
+					return 0 #empty or not a sprite
+				fi
+				expo=
+			fi
+		fi
 		find -path ./scripts/$2"*"$3 | while read var; do #if not this way, having problems with exported sprites with spaces
 			f=`echo "${var}" | grep -o frame_.*/`   #/ is important to stop the search
 			f=$(expr substr ${f} 1 $(echo $(echo -n ${f} | wc -m)-1 | bc))
 			#f=${f::-1}
 			f=$(expr substr ${f} 7 $(echo $(echo -n ${f} | wc -m)-6 | bc))
 			#f=${1}_${f:6}
-			move "${var}" ../"${out}"/${1}_${f} $4_$f
-			touch oaalternative_touch # export f=1 is not visible outside of this scope: echo q | while read var; do done
+			move "${var}" ../"${out}"/${1}_${f} "${expo}"_$4_$f
+			#touch oaalternative_touch # export f=1 is not visible outside of this scope: echo q | while read var; do done
 		done
-		if [ -e oaalternative_touch ]; then
-			rm oaalternative_touch
-			return 1
-		fi
-		return 0 #is empty
+		return 1
 	}
 	number_expected () {
 		if [ -z "${no_number_check}" ]; then
@@ -114,7 +124,7 @@ if [ -z "${skip_alternative}" ]; then
 			ainits_file=.as
 		fi
 		#f=`find -name DoInitAction${ainits_file}`
-		move scripts/DoInitAction${ainits_file} ../"${out}"/$1 $p
+		move scripts/DoInitAction${ainits_file} ../"${out}"/$1 _$2
 		ainits_counter=$((ainits_counter+1))
 	}
 	ainit_exported () {
@@ -147,14 +157,14 @@ if [ -z "${skip_alternative}" ]; then
 					if [ -n "${is_debug}" ]; then echo finalId = ${p}; fi
 
 					if [ -n "${remember_pre}" ]; then
-						ainit_anonymous ${remember_pre}
+						ainit_anonymous ${remember_pre} ${remember_id}
 						remember_pre=
 					fi
 
 					sprite_type=0
-					doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} #exported sprite
+					doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} 1 #exported sprite
 					if [ $? = 0 ]; then
-						doaction ${s} DefineSprite_${p}/frame_ /DoAction.as ${p} #anonymous sprite
+						doaction ${s} DefineSprite_${p}/frame_ /DoAction.as ${p} 2 #anonymous sprite
 						if [ $? = 1 ]; then
 							sprite_type=1
 						else #undecided, and if having inits and is a sprite, must make a decision
@@ -163,29 +173,37 @@ if [ -z "${skip_alternative}" ]; then
 					fi
 
 					ainits_ar_get; if [ $? = 1 ]; then #button or DoInitAction sprite
-						f=scripts/DefineButton2_${p} #anonymous button
-						if [ ! -e ${f} ]; then
-							f=scripts/DefineButton2_${p}_* #exported button
-							if [ ! -e ${f} ]; then f=; fi
+						f=scripts/DefineButton2_${p}_* #exported button
+						if [ ! -e ${f} ]; then # "" will write only *
+							f=scripts/DefineButton2_${p} #anonymous button
+							if [ ! -e ${f} ]; then
+								f=
+							else
+								fb=
+							fi
+						else
+							fb=`echo $f`
+							fb="$(echo "${fb}" | grep -o [^_]*$)"
 						fi
 						if [ -n "${f}" ]; then
-							f=`echo -n ${f}`/BUTTONCONDACTION' 'on'('release')'.as
+							f=`echo ${f}`/BUTTONCONDACTION' 'on'('release')'.as
 						fi
 						#f=`find -name BUTTONCONDACTION' 'on'('release')'.as | grep -P DefineButton2_"${p}(/|_)"` #anonymous/exported button with action
 
-						if [ -e "${f}" ]; then #is a button with action
+						if [ -n "${f}" ]; then #is a button with action
 							d=../"${out}"/${s}
-							move "${f}" ${d} $p
-							sed -e '1d' -e '$d' -i ${d}  #delete on(release){ ... }
+							move "${f}" "${d}" ${fb}_$p
+							sed -e '1d' -e '$d' -i "${d}"  #delete on(release){ ... }
 						else
 							if [ ${sprite_type} = 0 ]; then #exported sprite with action_init
-								f=`echo -n scripts/DefineSprite_${p}_*`
+								f=`echo scripts/DefineSprite_${p}_*`
 								f="$(echo "${f}" | grep -o [^_]*$)"
 								ainit_exported $s "$f" $p
 							elif [ ${sprite_type} = 1 ]; then #anonymous sprite init
-								ainit_anonymous $s
+								ainit_anonymous $s $p
 							else # if [ ${sprite_type} = 2 ]; then #undecided, next must be the export and if not, say is anonym
 								remember_pre=$s
+								remember_id=$p  #and for anonym
 							fi
 						fi
 					fi
@@ -212,10 +230,10 @@ if [ -z "${skip_alternative}" ]; then
 	done <../"${log}"
 
 	if [ -n "${remember_pre}" ]; then #unclosed sprite
-		ainit_anonymous ${remember_pre} #remember_pre=
+		ainit_anonymous ${remember_pre} ${remember_id} #remember_pre=
 	fi
 
-	doaction 0 frame_ /DoAction.as 0
+	doaction 0 frame_ /DoAction.as 0 # 0
 	cd ..
 fi
 #part 2
