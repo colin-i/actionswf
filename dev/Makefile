@@ -43,7 +43,8 @@ install:
 		install -D flags.h $(DESTDIR)$(prefix)/include/actionswf/flags.h && \
 		install -D flagss.h $(DESTDIR)$(prefix)/include/actionswf/flagss.h && \
 		install -D flagss.oh $(DESTDIR)$(prefix)/include/actionswf/flagss.oh && \
-		install -D actionswf.oh $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
+		install -D actionswf.oh $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh && \
+		install -D actionswf.h $(DESTDIR)$(prefix)/include/actionswf/actionswf.h; \
 	fi
 uninstall:
 	-if [ -e ../include_dev ]; then \
@@ -51,6 +52,7 @@ uninstall:
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/flagss.h; \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/flagss.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.h; \
 	fi
 
 .PHONY: all install clean distclean uninstall test

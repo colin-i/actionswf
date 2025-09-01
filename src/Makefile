@@ -167,8 +167,7 @@ install-lib:
 	if [ -e ../include_dev ]; then \
 		install -D ../dev/flags.oh $(DESTDIR)$(prefix)/include/${projname}/flags.oh && \
 		install -D ../dev/importf.oh $(DESTDIR)$(prefix)/include/${projname}/importf.oh && \
-		install -D ../dev/import.oh $(DESTDIR)$(prefix)/include/${projname}/import.oh && \
-		install -D ../dev/actionswf.h $(DESTDIR)$(prefix)/include/${projname}/actionswf.h; \
+		install -D ../dev/import.oh $(DESTDIR)$(prefix)/include/${projname}/import.oh; \
 	fi
 
 install: all install-lib
@@ -179,7 +178,6 @@ uninstall:
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/flags.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/importf.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/${projname}/import.oh; \
-		rm -f $(DESTDIR)$(prefix)/include/${projname}/actionswf.h; \
 	fi
 
 .PHONY: all compile ounused def install install-lib clean distclean uninstall test
