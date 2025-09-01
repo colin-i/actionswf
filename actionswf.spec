@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.148
+Version: 1.149
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -53,6 +53,19 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Sep 01 2025 Costin Botescu <costin.botescu@gmail.com> 1.149-0
+- exit from doaction step (costin.botescu@gmail.com)
+- oalt optimizations (costin.botescu@gmail.com)
+- button spaced export (costin.botescu@gmail.com)
+- oalt exports (costin.botescu@gmail.com)
+- oalt scripts exports 1/4 (costin.botescu@gmail.com)
+- exports at oalt (costin.botescu@gmail.com)
+- oalt export redefined (costin.botescu@gmail.com)
+- find optimization (costin.botescu@gmail.com)
+- filter no action buttons (costin.botescu@gmail.com)
+- fixes at oalt (costin.botescu@gmail.com)
+- flagss at makewin (costin.botescu@gmail.com)
+
 * Wed Aug 27 2025 Costin Botescu <costin.botescu@gmail.com> 1.148-0
 - fix related to constant unsigned at int c open return
   (costin.botescu@gmail.com)
