@@ -42,17 +42,23 @@ install:
 	if [ -e ../include_dev ]; then \
 		install -D flags.h $(DESTDIR)$(prefix)/include/actionswf/flags.h && \
 		install -D flagss.h $(DESTDIR)$(prefix)/include/actionswf/flagss.h && \
+		install -D actionswf.h $(DESTDIR)$(prefix)/include/actionswf/actionswf.h && \
+		install -D flags.oh $(DESTDIR)$(prefix)/include/actionswf/flags.oh && \
 		install -D flagss.oh $(DESTDIR)$(prefix)/include/actionswf/flagss.oh && \
-		install -D actionswf.oh $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh && \
-		install -D actionswf.h $(DESTDIR)$(prefix)/include/actionswf/actionswf.h; \
+		install -D importf.oh $(DESTDIR)$(prefix)/include/actionswf/importf.oh && \
+		install -D import.oh $(DESTDIR)$(prefix)/include/actionswf/import.oh && \
+		install -D actionswf.oh $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
 	fi
 uninstall:
 	-if [ -e ../include_dev ]; then \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/flags.h; \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/flagss.h; \
-		rm -f $(DESTDIR)$(prefix)/include/actionswf/flagss.oh; \
-		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.h; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/flags.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/flagss.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/importf.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/import.oh; \
+		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
 	fi
 
 .PHONY: all install clean distclean uninstall test
