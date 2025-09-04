@@ -158,8 +158,8 @@ endfunction
 
 #bool
 function is_numeric(sd char)
-    char min="0"
-    char max="9"
+    char min="0"^
+    char max="9"^
 	if char<min
         return (FALSE)
 	endif
@@ -168,33 +168,45 @@ function is_numeric(sd char)
 	endif
     return (FALSE)
 endfunction
-#bool
-function part_of_variable(sd value)
-    sd bool
-    setcall bool is_numeric(value)
-    if bool=(TRUE)
-        return (TRUE)
-    endif
+#0 1/2
+function part_of_variable(ss value)
+	sd bool
+	setcall bool is_numeric(value#)
+	if bool=(TRUE)
+		return 1
+	endif
 	callret is_letter(value)
 endfunction
-#bool
-function is_letter(sd value)
+#0 1/2
+function is_letter(ss str)
+	sd value;set value str#
 	if value<(A)
-        return (FALSE)
+		return 0
 	endif
 	if value<=(Z)
-        return (TRUE)
+		return 1
 	endif
 	if value=(_)
-        return (TRUE)
+		return 1
 	endif
 	if value<(a)
-        return (FALSE)
+		return 0
 	endif
 	if value<=(z)
-        return (TRUE)
+		return 1
 	endif
-    return (FALSE)
+	if value>=(control2_start) #https://www.fileformat.info/info/unicode/utf8.htm  more at ascii.oh
+		if value<=(control2_end)
+			inc str
+			set value str#
+			if str#>=(continuing_start)
+				if str#<=(continuing_end)
+					return 2
+				end
+			end
+		end
+	end
+	return 0
 endfunction
 
 #strings
@@ -242,18 +254,19 @@ endfunction
 
 #next/same
 function str_expression_at_start(ss string,ss expression)
-    sd bool
-    setcall bool str_at_str_start(string,expression)
-    if bool=(FALSE)
-        return string
-    endif
-    ss next
-    set next string
-    addcall next strlen(expression)
-    setcall bool part_of_variable(next#)
-    if bool=(TRUE)
-        return string
-    endif
+	sd bool
+	setcall bool str_at_str_start(string,expression)
+	if bool=(FALSE)
+		return string
+	endif
+	ss next
+	set next string
+	addcall next strlen(expression)
+	sd sz
+	setcall sz part_of_variable(next)
+	if sz!=0
+		return string
+	endif
 	callret spaces(next)
 endfunction
 #next/same

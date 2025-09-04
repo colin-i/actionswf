@@ -127,3 +127,12 @@ Const Verticalbar=0x7C
 Const Closingbrace=0x7D
 #Const Equivalencysign=0x7E
 #Const Delete=0x7F
+
+Const continuing_start=0x80
+Const control2_start=0xC2
+Const continuing_end=0xBF
+Const control2_end=0xDF
+#Const control3_start=0xE0
+#Const control3_end=0xEF
+#Const control4_start=0xF0
+#Const control4_end=0xFF

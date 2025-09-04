@@ -1308,31 +1308,31 @@ function action_code_parse_leftfunction(ss ac)
 endfunction
 #pointer
 function action_code_parse_new_or_call(ss ac,sd type,ss cursor)
-    ss pointer
-    set pointer ac
-    import "part_of_variable" part_of_variable
-    ss last_dot=0
-    sd bool
-    setcall bool part_of_variable(pointer#)
-    while bool=(TRUE)
-        inc pointer
-        setcall bool part_of_variable(pointer#)
-        if bool=(FALSE)
-            if pointer#=(Openingbracket)
-                setcall pointer brackets_test(pointer)
-            endif
-            if pointer#=(Period)
-                set last_dot pointer
-                set bool (TRUE)
-            elseif pointer#=(Openparenthesis)
+	ss pointer
+	set pointer ac
+	import "part_of_variable" part_of_variable
+	ss last_dot=0
+	sd sz
+	setcall sz part_of_variable(pointer)
+	while sz!=0
+		add pointer sz
+		setcall sz part_of_variable(pointer)
+		if sz=0
+			if pointer#=(Openingbracket)
+				setcall pointer brackets_test(pointer)
+			endif
+			if pointer#=(Period)
+				set last_dot pointer
+				set sz 1
+			elseif pointer#=(Openparenthesis)
 				if ac!=cursor ##example: negative
 					call pointer_prefix()
 				end
 				callret action_code_parse_function_detected(ac,last_dot,pointer,type)
-            endelseif
-        endif
-    endwhile
-    return ac
+			endelseif
+		endif
+	endwhile
+	return ac
 endfunction
 #pointer
 function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd type)
