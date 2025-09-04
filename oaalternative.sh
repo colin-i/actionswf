@@ -116,6 +116,10 @@ if [ -z "${skip_alternative}" ]; then
 		move scripts/"$2.as" ../"${out}"/$1 "$2"_$3
 	}
 
+	expo_name () {
+		echo "$1" | grep -oP '(?<=_).*' | grep -oP '(?<=_).*' #must take also a_b_c, [^_]*$ is only one _
+	}
+
 	s= #id
 	while read p; do
 		if [ -z "${s}" ]; then
@@ -148,7 +152,7 @@ if [ -z "${skip_alternative}" ]; then
 
 					fn=`echo scripts/DefineSprite_${p}_*`
 					if [ -e "${fn}" ]; then
-						doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} "$(echo "${fn}" | grep -o [^_]*$)" #exported sprite
+						doaction ${s} DefineSprite_${p}_ '/frame_*/DoAction.as' ${p} "$(expo_name "${fn}")" #exported sprite
 						sprite_type=0
 					elif [ -e scripts/DefineSprite_${p} ]; then
 						doaction ${s} DefineSprite_${p}/frame_ /DoAction.as ${p} # "" anonymous sprite
@@ -170,7 +174,7 @@ if [ -z "${skip_alternative}" ]; then
 								fi
 							else
 								expo=`echo $f`
-								expo="$(echo "${expo}" | grep -o [^_]*$)"
+								expo=$(expo_name "${expo}")
 							fi
 							if [ -n "${f}" ]; then #is a button
 								f=`echo ${f}`/BUTTONCONDACTION' 'on'('release')'.as
@@ -182,7 +186,7 @@ if [ -z "${skip_alternative}" ]; then
 						if [ -z "${f}" ]; then #DoInitAction sprite
 							if [ ${sprite_type} = 0 ]; then #exported sprite with action_init
 								f=`echo scripts/DefineSprite_${p}_*`
-								f="$(echo "${f}" | grep -o [^_]*$)"
+								f=`expo_name "$f"`
 								ainit_exported $s "$f" $p
 							elif [ ${sprite_type} = 1 ]; then #anonymous sprite init
 								ainit_anonymous $s $p
