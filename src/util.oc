@@ -199,8 +199,8 @@ function is_letter(ss str)
 		if value<=(control2_end)
 			inc str
 			set value str#
-			if str#>=(continuing_start)
-				if str#<=(continuing_end)
+			if value>=(continuing_start)
+				if value<=(continuing_end)
 					return 2
 				end
 			end
