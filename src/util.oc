@@ -244,12 +244,12 @@ function str_at_str_start(ss s1,ss s2)
     if l1<l2
         return (FALSE)
     endif
-    sd comp
-    setcall comp memcmp(s1,s2,l2)
-    if comp=0
-        return (TRUE)
-    endif
-    return (FALSE)
+	dataxu comp#1
+	setcall comp memcmp(s1,s2,l2)
+	if comp=0
+		return (TRUE)
+	endif
+	return (FALSE)
 endfunction
 
 #next/same

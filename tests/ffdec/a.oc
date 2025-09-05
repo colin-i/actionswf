@@ -96,7 +96,10 @@ for(i=0;i<2;i=1+i){
 	a=2+a;
 }
 
-for(a in b){c=1+c;}
+for(a in b){
+	if(a==2)break;
+	c=1+c;
+}
 ")
 #call actiond("for(a in b){c=1+c;}") will be ""b"" and here straight "b"
 call action("return 1")

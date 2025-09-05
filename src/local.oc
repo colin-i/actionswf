@@ -595,10 +595,10 @@ endfunction
 function swf_placeobject_local(sd refid,sd depth)
 #sd refid    the id
 #sd depth    depth value
-     call swf_placeobject_coords_local(refid,depth,0,0)
+     callg swf_placeobject_coords_local(refid,depth,0,0)
 endfunction
 #                                                  if not data here, then will conflict at c language where we talk about int
-function swf_placeobject_coords_local(sd refid,sd depth,dataxu x,dataxu y)
+function swf_placeobject_coords_local(sd refid,sd depth,datax x,datax y) #datax x/y they can be negative
 #sd refid
 #sd depth
 #sd x         x coordinate
@@ -624,13 +624,13 @@ const PlaceFlagHasCharacter=0x2
     #character id
     call swf_mem_add(#refid,2)
     #matrix
-    call swf_mem_add(matrix,matrixsz)
+    callg swf_mem_add(matrix,matrixsz)
 endfunction
 function swf_removeobject_local(sd depth)
 #sd depth        depth for the removeobject2 tag
     call swf_tag_recordheader_entry((RemoveObject2),2)
     #depth
-    call swf_mem_add(#depth,2)
+    callg swf_mem_add(#depth,2)
 endfunction
 
 function swf_exports_done_local()
