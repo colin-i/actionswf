@@ -8,7 +8,7 @@ import "mem_free" mem_free
 
 function x_data()
 	value f=NULL
-	datax size#1   #there was a debate on this
+	dataxu size#1   #there was a debate on this
 	#size here is on small mem xcode. but there are 2 sizes(at xx and at xstart) that are on large xcode. doaction is ui32
 	#anyway, totalvalues is ui16*4. expands? 32...left 32...right, right 0x8000*4=0x20000,left at i386 0x8000/4 parts, sum 0x40...., still a quarter of ui32
 	value mem=NULL
@@ -21,6 +21,12 @@ function x_data()
 			call f_close(#flog)
 		end
 	end
+end
+function is_x()
+	if x_data.mem=(NULL)
+		return (FALSE)
+	end
+	return (TRUE)
 end
 
 function x_pointer(sv pointer)

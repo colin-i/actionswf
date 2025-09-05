@@ -598,7 +598,7 @@ function swf_placeobject_local(sd refid,sd depth)
      call swf_placeobject_coords_local(refid,depth,0,0)
 endfunction
 #                                                  if not data here, then will conflict at c language where we talk about int
-function swf_placeobject_coords_local(sd refid,sd depth,datax x,datax y)
+function swf_placeobject_coords_local(sd refid,sd depth,dataxu x,dataxu y)
 #sd refid
 #sd depth
 #sd x         x coordinate
@@ -613,7 +613,7 @@ const PlaceFlagHasCharacter=0x2
 #const PlaceFlagMove=0x1
     sd flags=PlaceFlagHasMatrix|PlaceFlagHasCharacter
     sd matrix
-    datax matrixsz#1
+    dataxu matrixsz#1
     call matrix_translate(#matrix,#matrixsz,x,y)
 
     sd size=5

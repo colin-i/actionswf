@@ -9,8 +9,8 @@ import "mem_free" mem_free
 
 function push()
 	value mem=NULL
-	datax size#1    #same as debug_data, and here is from x values
-	datax allsize#1
+	dataxu size#1    #same as debug_data, and here is from x values, keeping a maxuint16 action code
+	dataxu allsize#1
 	if mem!=(NULL)
 		call mem_free(#mem)
 	end

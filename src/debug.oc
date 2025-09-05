@@ -46,9 +46,9 @@ function debug_data()
 	#mem_struct_size said is 8 first 4 all_size, and after mem_struct__size_off is the size and for ,ff(3 bytes here) there tag+len+u16len
 	#but all_size is growing +0x1000 from that limit, and the error is catched there, valuex?
 	#there is a limit on actions and on constant pool, so don't worry here
-	datax size#1
-	datax all_size#1
-	datax rows#1
+	dataxu size#1
+	dataxu all_size#1
+	dataxu rows#1
 
 	import "x_data" x_data
 	call x_data()
@@ -332,7 +332,7 @@ function debug_phase_code(sd codepointer)
 					sub rows a
 					div rows :
 					#do not write now, can be break;} or Not Not If  and need to truncate that
-					datax size#1;set size debug_data.size
+					dataxu size#1;set size debug_data.size
 					set debug_data.size 0
 					add debug_data.rows rows  ## add? is the case with break+ret and remove them and will be an empty row and that flush was skipped, below example
 					#example, add var q , at while break below example (at debug_phase_code_flush)
