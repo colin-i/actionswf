@@ -244,7 +244,7 @@ function str_at_str_start(ss s1,ss s2)
     if l1<l2
         return (FALSE)
     endif
-	dataxu comp#1
+	datax comp#1
 	setcall comp memcmp(s1,s2,l2)
 	if comp=0
 		return (TRUE)
@@ -303,7 +303,7 @@ function compat(ss pointer,sd max,ss against,sd rep)
 	sd start;set start pointer
 	sub max s
 	while pointer<^max  ## = ? will not be logical to end like "abc and"
-		sd c;set c memcmp(pointer,against,s)
+		datax c#1;set c memcmp(pointer,against,s)
 		if c=0
 			inc pointer
 

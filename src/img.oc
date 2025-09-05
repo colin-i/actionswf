@@ -41,8 +41,8 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 				char j="jpg"
 				char ms=Period
 				char m="msk"
-				dataxu cmp#1;set cmp memcmp(cr,#j,3)
-				dataxu cmp2#1;set cmp2 memcmp(cr,#m,3)
+				datax cmp#1;set cmp memcmp(cr,#j,3)
+				datax cmp2#1;set cmp2 memcmp(cr,#m,3)
 				whiletrue
 					if cmp!=0
 						if cmp2!=0

@@ -117,7 +117,7 @@ vstr actions#1
 
     sd noText=FALSE;sd text_id
     data t_null={0,0}
-	dataxu b#1;setcall b memcmp(#t_null,#text,:)
+	datax b#1;setcall b memcmp(#t_null,#text,:)
     if b=0
         set noText (TRUE)
         set bmem# noText

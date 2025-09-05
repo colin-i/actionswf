@@ -264,7 +264,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 				sd len
 				setcall len strlen(mem)
 				if len=newlen
-					dataxu comp#1
+					datax comp#1
 					setcall comp memcmp(mem,value,len)
 					if comp=0
 						sub nr count

@@ -72,7 +72,7 @@ endfunction
 function action_code_write_builtin_names(sv codepointer,sv p_action) #action is value only because is working with stack
 	sd name
 	set name x_pointer(codepointer)
-	dataxu compare#1
+	datax compare#1
 	vstr int="int"
 	setcall compare strcmp(name,int)
 	if compare=0
@@ -187,7 +187,7 @@ function infinite_loop_check(sd codepointer)
 	return test
 end
 function action_true_compare(ss command)
-	dataxu compare#1
+	datax compare#1
 	set compare strcmp("true",command) #int
 	return compare
 end
@@ -222,7 +222,7 @@ function forinbreak_check(sd codepointer)
 			end
 			incst codepointer
 		end
-		dataxu compare#1
+		datax compare#1
 		set compare strcmp("§§pop",name) #is memcmp unsafe? comparing from last to first?
 		if compare=0
 			if codepointer#=(compare_action)
@@ -264,7 +264,7 @@ function forinbreak_check(sd codepointer)
 	return start
 end
 function action_null_compare(ss command)
-	dataxu compare#1
+	datax compare#1
 	set compare strcmp("null",command) #int
 	return compare
 end
@@ -1050,7 +1050,7 @@ function action_code_right_number(sd codepointer)
     return codepointer
 endfunction
 function action_one_command(ss command)
-	dataxu compare#1
+	datax compare#1
 	#
 	setcall compare action_null_compare(command)
 	if compare=0
