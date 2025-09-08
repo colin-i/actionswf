@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.149
+Version: 1.150
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -53,6 +53,17 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Sep 08 2025 Costin Botescu <costin.botescu@gmail.com> 1.150-0
+- extern ffdec test (costin.botescu@gmail.com)
+- cmps (costin.botescu@gmail.com)
+- remove ffdec obfuscation (costin.botescu@gmail.com)
+- value (costin.botescu@gmail.com)
+- accepting utf8 2 bytes as variable (for alt for..in break recognition)
+  (costin.botescu@gmail.com)
+- oalt: exports when _ and another case when ' ' (costin.botescu@gmail.com)
+- rest of includes from src to dev (costin.botescu@gmail.com)
+- local .h (costin.botescu@gmail.com)
+
 * Mon Sep 01 2025 Costin Botescu <costin.botescu@gmail.com> 1.149-0
 - exit from doaction step (costin.botescu@gmail.com)
 - oalt optimizations (costin.botescu@gmail.com)
