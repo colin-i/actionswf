@@ -372,10 +372,11 @@ function action__code_row_ex(sd codepointer)
 		set action__code_row.rcb (ret_cont_break_something)
 		return codepointer
 	endif
+	ss p
 	if attrib=(if_marker) #block_end
 		add codepointer (DWORD)
 		if codepointer#=(else_marker)
-			ss p;set p ret_cont_break()
+			set p ret_cont_break()
 			if p#=(ret_cont_break_nothing)
 				call action_code_else_add()
 			else #dead jump after return/continue/break
@@ -418,9 +419,12 @@ function action__code_row_ex(sd codepointer)
 		return codepointer
 	endif
 	if attrib=(break_flag)
-		call action_code_break()
-		add codepointer (DWORD)
+		set p ret_cont_break()
+		if p#=(ret_cont_break_nothing) #why? for(var mc_name in drivers_container)return null is ok here but at ffdec an extra break is after return
+			call action_code_break()
+		end
 		set action__code_row.rcb (ret_cont_break_break)
+		add codepointer (DWORD)
 		return codepointer
 	endif
 	if attrib=(continue_flag)
