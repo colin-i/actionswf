@@ -45,7 +45,7 @@ function cc(a){
 }
 function ccc(a,b){
 }
-var a;
+var a;//line ending comment
 delete a;
 delete a.b;
 var a=2;
@@ -99,6 +99,9 @@ for(i=0;i<2;i=1+i){
 for(a in b){
 	if(a==2)break;
 	c=1+c;
+}
+for(a in b){
+	return null;
 }
 ")
 #call actiond("for(a in b){c=1+c;}") will be ""b"" and here straight "b"

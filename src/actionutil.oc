@@ -24,8 +24,24 @@ function row_termination(sv p_ac,sv p_row)
 	endif
 	return 1
 endfunction
+function row_termination_endcom(ss ac)
+	if ac#=(text_nl)
+		inc ac
+	elseif ac#=(text_cr)
+		inc ac
+		if ac#=(text_nl);inc ac;end
+	end
+	return ac
+end
+
+function endcom(ss c,ss p)
+	vstrx ac#1
+	vstrx pointer#1
+	set ac c;set pointer p
+end
+
 #error_row
-function escape_action(ss ac,ss pointer,ss stop_pointer)
+function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
     sd row=1
     #sd loop1=1
     sd error_row=0
@@ -67,12 +83,29 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 				return pointer
 			endif
 			if comments=0
-			    if pointer=stop_pointer
-			        set error_row row
-			    else
-			        set pointer# ac#
-			    endelse
-			    inc pointer
+				if pointer=stop_pointer
+					set error_row row
+				elseif line_term!=(NULL)
+					if line_term=pointer
+						whiletrue
+							inc ac;inc pointer
+							ss c;set c row_termination_endcom(ac)
+							if c=ac
+								if ac#=0
+									break
+								end
+							else
+								set endcom.ac ac
+								set endcom.pointer pointer
+								break
+							end
+						end
+						return pointer
+					end
+				else
+					set pointer# ac#
+				endelse
+				inc pointer
 			elseif comments=(multiLine_comment)
 			    if ac#=lines_com_c1
 			        set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
@@ -88,6 +121,10 @@ function escape_action(ss ac,ss pointer,ss stop_pointer)
 		return error_row
 	endif
     endwhile
+end
+#ac
+function escape_action_endcom(ss pointer)
+	callret escape_action(endcom.ac,endcom.pointer,(NULL),pointer)
 end
 #nr
 function escape_count(ss string,sd escape)
@@ -158,7 +195,7 @@ function action_error()
     sv p_c
     setcall p_c debug_code()
     sd row
-    setcall row escape_action(ac,mem,p_c#)
+    setcall row escape_action(ac,mem,p_c#,(NULL))
     import "string_nl_print" string_nl_print
     #a small reserve for a number like 2 000 000 000
     char row_nr#dword_to_string_char

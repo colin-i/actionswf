@@ -116,6 +116,7 @@ import "memtrailstrict" memtrailstrict
 import "compat" compat
 import "debug_phase_code_remove" debug_phase_code_remove
 import "mem_cmp_bool" mem_cmp_bool
+import "escape_action_endcom" escape_action_endcom
 
 #aftercallimport ebool
 
@@ -139,6 +140,19 @@ function action_code_row(ss ac,sd a_block_detected)
 endfunction
 #pointer
 function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
+	ss p;set p action_code_row_ex_wrap(ac,a_block_detected,else_index)
+	if p#=(Slash)
+		inc p
+		if p#=(Slash)
+			set p escape_action_endcom(p) #cannot inc p because //\n ending lines will not be recognized
+			return p
+		end
+		call error("not a right line end comment")
+	end
+	return p
+end
+#pointer
+function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
     sv p_c
     setcall p_c debug_code()
     set p_c# ac
