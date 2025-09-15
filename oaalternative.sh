@@ -41,20 +41,18 @@ if [ -z "${skip_ffdec}" ]; then
 		"${ffdec}" -export script "${folder}" "${bname}" || exit 1
 	fi
 fi
-mover () {
-	if [ -z "${no_clean}" ]; then
-		mv ${v} "${@}" || exit 1
-	else
-		cp ${v} "${@}" || exit 1
-	fi
-}
 if [ -z "${skip_alternative}" ]; then
 	mkdir -p "${out}"
 
 	cd "${folder}"
 
 	move () {
-		mover "${1}" $2
+		if [ -z "${no_clean}" ]; then
+			mv ${v} "${1}" $2 || exit 1
+		else
+			cp ${v} "${1}" $2 || exit 1
+		fi
+
 		if [ -n "${is_debug}" ]; then
 			cat ${2}
 		fi
