@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.150
+Version: 1.151
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -53,6 +53,12 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Thu Sep 18 2025 Costin Botescu <costin.botescu@gmail.com> 1.151-0
+- mover (costin.botescu@gmail.com)
+- line ending comments (costin.botescu@gmail.com)
+- extra break detection (costin.botescu@gmail.com)
+- info (costin.botescu@gmail.com)
+
 * Mon Sep 08 2025 Costin Botescu <costin.botescu@gmail.com> 1.150-0
 - extern ffdec test (costin.botescu@gmail.com)
 - cmps (costin.botescu@gmail.com)
