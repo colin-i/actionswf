@@ -103,6 +103,15 @@ for(a in b){
 for(a in b){
 	return null;
 }
+
+while(true){
+	if(a)if(b){
+		z=1;
+		break;
+	}
+	z=2;
+	break
+}
 ")
 #call actiond("for(a in b){c=1+c;}") will be ""b"" and here straight "b"
 call action("return 1")

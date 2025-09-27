@@ -3,16 +3,19 @@
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #is_debug no_clean
 #skip_ffdec ffdec
-#skip_alternative no_number_check
-#scripts
+#skip_alternative no_number_check scripts skip_deobfuscation expect_obfuscation
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
 
 dname=`dirname ${1}`
-if [ -n "${scripts}" ]; then
+bname=`basename ${1}`
+
+if [ -n "${scripts}" ]; then #this must be before the first cd
 	scripts=`readlink -f "${scripts}"`
 fi
-bname=`basename ${1}`
+if [ -n "${expect_obfuscation}" ]; then #same, before first cd
+	expect_obfuscation=`readlink -f "${expect_obfuscation}"`
+fi
 
 at_start=`pwd`
 cd "${dname}" || exit 1
@@ -42,6 +45,10 @@ if [ -z "${skip_ffdec}" ]; then
 	fi
 fi
 if [ -z "${skip_alternative}" ]; then
+	if [ -z "${skip_deobfuscation}" ]; then
+		deobfuscator=$(readlink -f `dirname $0`/oaalternative.py) #is not in start folder there
+	fi
+
 	mkdir -p "${out}"
 
 	cd "${folder}"
@@ -52,7 +59,17 @@ if [ -z "${skip_alternative}" ]; then
 		else
 			cp ${v} "${1}" $2 || exit 1
 		fi
-
+		if [ -z "${skip_deobfuscation}" ]; then
+			a=`${deobfuscator} $2` || exit 1
+			if [ -n "${is_debug}" ]; then
+				if [ -n "$a" ]; then
+					echo $a
+					if [ -n "${expect_obfuscation}" ]; then
+						touch "${expect_obfuscation}" #same reson like in doaction for not using a variable
+					fi
+				fi
+			fi
+		fi
 		if [ -n "${is_debug}" ]; then
 			cat ${2}
 		fi
@@ -222,6 +239,13 @@ if [ -z "${skip_alternative}" ]; then
 
 	doaction 0 frame_ /DoAction.as 0 # ""
 	cd ..
+
+	if [ -n "${expect_obfuscation}" ]; then
+		if [ ! -e "${expect_obfuscation}" ]; then
+			exit 1
+		fi
+		rm "${expect_obfuscation}"
+	fi
 fi
 #part 2
 if [ -n "${2}" ]; then
