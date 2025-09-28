@@ -8,6 +8,7 @@ Url: https://github.com/colin-i/actionswf
 Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: ocompiler make gcc
+Requires: python3
 
 %description
 ActionSwf compiler and dev files.
@@ -36,6 +37,7 @@ install_number=64 %make_install
 %attr(0644, root, root) "%{_libdir}/libactionswf.so"
 %attr(0644, root, root) "%{_libdir}/liboadbgdata.so"
 %attr(0755, root, root) "%{_bindir}/oaalternative.sh"
+%attr(0755, root, root) "%{_bindir}/oaalternative.py"
 
 %files devel
 %attr(0644, root, root) "%{_includedir}/%{name}/oadbgdatas.oh"
