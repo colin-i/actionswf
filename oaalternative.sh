@@ -60,7 +60,7 @@ if [ -z "${skip_alternative}" ]; then
 			cp ${v} "${1}" $2 || exit 1
 		fi
 		if [ -z "${skip_deobfuscation}" ]; then
-			a=`${deobfuscator} $2` || exit 1
+			a=`${deobfuscator} $2` || exit 1 #executable mode will not be represented in diff, but will be install -m0755 for /usr/bin
 			if [ -n "${is_debug}" ]; then
 				if [ -n "$a" ]; then
 					echo $a

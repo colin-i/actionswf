@@ -6,6 +6,9 @@ include "../include/prog.oh"
 function verbose(datax flag)
 	and flag (flag_verbose)
 end
+function verbose_get()
+	return verbose.flag
+end
 
 importx "strlen" strlen
 importx "memcmp" memcmp

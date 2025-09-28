@@ -75,11 +75,15 @@ end
 import "action_code_values" action_code_values
 import "action_code_get" action_code_get
 
+import "verbose_get" verbose_get
+
 importx "fwrite" fwrite
 importx "sprintf" sprintf
 importx "fseek" fseek
 importx "fread" fread
 importx "fclose" fclose
+
+importx "printf" printf
 
 
 #aftercallimport ebool
@@ -142,6 +146,9 @@ function x_init(sd flags,sd path)
 	elseif x_data.mem!=(NULL)
 		call error(err)
 	end
+
+	wordxu verb#1
+	set verb 0
 
 	sd test=flags_x
 	and test flags
@@ -247,6 +254,13 @@ function debug_x_base(sd mem,sd size)
 	add x_data.size size
 end
 function debug_x(sd mem,sd nr)
+	sd vb;set vb verbose_get()
+	if vb!=(flag_none)
+		if nr>x_init.verb
+			set x_init.verb nr
+			call printf("action .x peak: %hu\n",x_init.verb) # totalvalues = 0xffFF
+		end
+	end
 	if x_data.f!=(NULL)
 		mult nr (action_code_values_unit)
 		call debug_x_base(mem,nr)
