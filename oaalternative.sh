@@ -3,7 +3,7 @@
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #is_debug no_clean
 #skip_ffdec ffdec
-#skip_alternative no_number_check scripts skip_deobfuscation expect_obfuscation
+#skip_alternative no_number_check scripts skip_deobfuscation expect_obfuscation deobfuscator_launcher
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
 
@@ -46,7 +46,7 @@ if [ -z "${skip_ffdec}" ]; then
 fi
 if [ -z "${skip_alternative}" ]; then
 	if [ -z "${skip_deobfuscation}" ]; then
-		deobfuscator=$(readlink -f `dirname $0`/oaalternative.py) #is not in start folder there
+		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternative.py) #is not in start folder there
 	fi
 
 	mkdir -p "${out}"
@@ -60,7 +60,11 @@ if [ -z "${skip_alternative}" ]; then
 			cp ${v} "${1}" $2 || exit 1
 		fi
 		if [ -z "${skip_deobfuscation}" ]; then
-			a=`${deobfuscator} $2` || exit 1 #executable mode will not be represented in diff, but will be install -m0755 for /usr/bin
+			if [ -z "${deobfuscator_launcher}" ]; then #executable mode will not be represented in diff, but will be install -m0755 for /usr/bin
+				a=`"${deobfuscator}" $2` || exit 1
+			else #anyway deb test still need
+				a=`"${deobfuscator_launcher}" "${deobfuscator}" $2` || exit 1
+			fi
 			if [ -n "${is_debug}" ]; then
 				if [ -n "$a" ]; then
 					echo $a
