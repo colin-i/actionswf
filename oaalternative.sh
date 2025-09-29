@@ -65,12 +65,12 @@ if [ -z "${skip_alternative}" ]; then
 			else #anyway deb test still need
 				a=`"${deobfuscator_launcher}" "${deobfuscator}" $2` || exit 1
 			fi
-			if [ -n "${is_debug}" ]; then
-				if [ -n "$a" ]; then
+			if [ -n "$a" ]; then
+				if [ -n "${is_debug}" ]; then
 					echo $a
-					if [ -n "${expect_obfuscation}" ]; then
-						touch "${expect_obfuscation}" #same reson like in doaction for not using a variable
-					fi
+				fi
+				if [ -n "${expect_obfuscation}" ]; then
+					touch "${expect_obfuscation}" #same reson like in doaction for not using a variable
 				fi
 			fi
 		fi

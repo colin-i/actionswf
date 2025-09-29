@@ -5,7 +5,7 @@ default_tab=3
 import sys
 if len(sys.argv)!=2: exit(1)
 import os
-is_debug=os.environ.get("is_debug")
+verbose=os.environ.get("expect_obfuscation") or os.environ.get("is_debug")
 
 def ind_match(indt,b):
 	global n,ps
@@ -56,7 +56,7 @@ with open(sys.argv[1], encoding='utf-8') as f:
 
 			start+=len(goto)
 			addr='addr'+data[start:start+4]+':'
-			if is_debug:
+			if verbose:
 				print(addr)
 			start+=4
 			if data[start:start+3]!=');\n': exit(1)
