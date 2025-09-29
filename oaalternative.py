@@ -24,10 +24,13 @@ def ind_match(indt,b):
 		elif a>indt: exit(1)
 
 with open(sys.argv[1]) as f:
-	if data:=f.read(): #\r\n is translated to \n also at windows msys2, else data=data.replace('\r','')
+	data=f.read()  #\r\n is translated to \n also at windows msys2, else data=data.replace('\r','')
+	if data: # := only from 3.8
 		start=0
 		goto='§§goto(addr'
-		while (pos:=data.find(goto,start))!=-1:
+		while True:
+			pos=data.find(goto,start)
+			if pos==-1: break
 			start=pos
 
 			while True:
@@ -59,7 +62,8 @@ with open(sys.argv[1]) as f:
 			if data[start:start+3]!=');\n': exit(1)
 			start+=3                                          #start is D
 
-			if (bpos:=data.find(addr,ps,pos))==-1: exit(1)
+			bpos=data.find(addr,ps,pos)
+			if bpos==-1: exit(1)
 			apos=bpos-1
 			while data[apos]!='\n': apos-=1
 			ind2=bpos-apos
