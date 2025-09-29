@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.153
+Version: 1.154
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -55,6 +55,10 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Sep 29 2025 Costin Botescu <costin.botescu@gmail.com> 1.154-0
+- obfuscation exit code fix (costin.botescu@gmail.com)
+- encoding (costin.botescu@gmail.com)
+
 * Mon Sep 29 2025 Costin Botescu <costin.botescu@gmail.com> 1.153-0
 - python 3.6 (costin.botescu@gmail.com)
 
