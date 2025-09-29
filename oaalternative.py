@@ -23,7 +23,7 @@ def ind_match(indt,b):
 			if a<indt: exit(1)
 		elif a>indt: exit(1)
 
-with open(sys.argv[1]) as f:
+with open(sys.argv[1], encoding='utf-8') as f:
 	data=f.read()  #\r\n is translated to \n also at windows msys2, else data=data.replace('\r','')
 	if data: # := only from 3.8
 		start=0
@@ -148,7 +148,7 @@ with open(sys.argv[1]) as f:
 			data=text
 			start=a
 
-with open(sys.argv[1],"w") as f:
+with open(sys.argv[1],"w",encoding='utf-8') as f:
 	f.write(data)
 
 exit(0)
