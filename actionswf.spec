@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.152
+Version: 1.153
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -55,6 +55,16 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Sep 29 2025 Costin Botescu <costin.botescu@gmail.com> 1.153-0
+- python 3.6 (costin.botescu@gmail.com)
+- 1.152 (costin.b.84@gmail.com)
+- test at deb src (costin.botescu@gmail.com)
+- verbose .x peak (costin.botescu@gmail.com)
+- makes (costin.botescu@gmail.com)
+- deobfuscator at always break loop (costin.botescu@gmail.com)
+- while(true) deobfuscator (costin.botescu@gmail.com)
+- info (costin.botescu@gmail.com)
+
 * Mon Sep 29 2025 Costin Botescu <costin.botescu@gmail.com> 1.152-0
 - test at deb src (costin.botescu@gmail.com)
 - verbose .x peak (costin.botescu@gmail.com)
