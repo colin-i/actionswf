@@ -52,7 +52,7 @@ with open(sys.argv[1], encoding='utf-8') as f:
 			spos=n-1
 			while data[spos]!='\n':
 				spos-=1
-				if spos<0: exit(1)                          #spos is A
+				if spos<0: break                            #spos is A
 
 			start+=len(goto)
 			addr='addr'+data[start:start+4]+':'
