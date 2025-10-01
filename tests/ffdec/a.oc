@@ -49,7 +49,7 @@ var a;//line ending comment
 delete a;
 delete a.b;
 var a=2;
-a=3;
+q=3;
 a.b=4;
 a=ccc(1,2);
 b.ccc(1,2);
@@ -64,8 +64,8 @@ a=1+(1+1)+a+a.b-1*1/1%1&1|1^1<<1>>1>>>1&&1||1;
 
 a[0]=1;
 a[b]=1;
-a='b';
-a=1.1;
+w='b';
+e=1.1;
 
 //a++; will go to eval
 //a--; will go to eval
@@ -74,9 +74,9 @@ if(a==8){}
 if(a!=1){}
 if(a>1){}
 if(a<1){}
-if(a>=1){a=5;}
-else if(a<=1){a=3;}
-else{x=4;}
+if(a>=1){r=5;}
+else if(a<=1){t=3;}
+else{y=4;}
 
 while(a<9){a=eval('a')+1;}
 
