@@ -1,3 +1,9 @@
+actionswf (1-155) bionic; urgency=medium
+
+  * always break loop at top
+
+ -- bc <bc@bc-desktop>  Sat, 04 Oct 2025 13:07:31 +0300
+
 actionswf (1-154) bionic; urgency=medium
 
   * 1.154
