@@ -53,5 +53,6 @@ include ../src/rules
 
 clean:
 	-rm -f ${xfiles} ${cfiles}
+distclean: clean
 
-.PHONY: all clean
+.PHONY: all clean distclean
