@@ -3,3 +3,10 @@
 #	maybe is a 0x1000 .o size rule only from libexte.a
 items = actioncode actionparse actionutil bits character file storage util ${platform} actionpool debug faction alt dtitles x local actionpush img
 expitems = action swf tool ../shared/action_dllmain
+
+$(eval obs = )
+$(eval eobs = )
+$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.e.o))
+$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
+
+hreqs=../include/platform.oh ../include/platformhome.oh

@@ -164,7 +164,7 @@ importx "fclose" fclose
 const EOF=-1
 function user_flags(sw pflags)
 	ss h
-include "../include/linhome.oh" "../include/winhome.oh"
+include "../include/platformhome.oh" #"../include/linhome.oh" "../include/winhome.oh"
 	set h getenv(homefolder)
 	if h!=(NULL)
 		ss sz;set sz strlen(h)

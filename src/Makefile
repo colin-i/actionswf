@@ -27,10 +27,6 @@ ifndef OSTRIP
 OSTRIP=ostrip
 endif
 
-ifndef nobits_virtual
-nobits_virtual=1
-endif
-
 ifndef strippy
 strippy=ostriputil
 endif
@@ -38,9 +34,7 @@ endif
 #if modifying OFLAGS will lose inside data (at kinetic is reversed: first that def, then this def)
 OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
 
-ifeq (${nobits_virtual},0)
-OFLAGS+=nobits_virtual 0
-endif
+items_prefix=
 
 include ./items
 
@@ -51,21 +45,20 @@ restofname=lib
 projname=actionswf${debug}
 name = ${projname}.so
 defname = ${projname}.def
-items_prefix=
 prefname=${items_prefix}${name}
 libname=${restofname}${name}
 
-$(eval obs = )
-$(eval eobs = )
-$(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.e.o))
-$(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
 $(eval logs = )
 $(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.e.oc.log))
 $(foreach var,$(items),$(eval logs += ${items_prefix}${var}.oc.log))
 
 ifeq (${platform},win)
-OFLAGS += inplace_reloc 0 include_sec 1
+OFLAGS += inplace_reloc 0 # include_sec 1
 all: compile ounused link def
+compile: ${hreqs} ${obs} ${eobs}
+#noleadingunderscore for exporting symbols
+ounused:
+	${OLINK} ${logs}
 link:
 	if [ "${conv_64}" = "1" ]; then \
 		i686-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt ${L} -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
@@ -73,25 +66,38 @@ link:
 		x86_64-w64-mingw32-ld --no-leading-underscore ${linkerflags} ${eobs} ${obs} -shared -entry=DllMain -lmsvcrt ${L} -lzlib1 -o ${projname}.dll --exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
 #on 64 is mingw-w64-x86-64-dev
+def:
+	../fix/makedef ${defname}
 
 #next phony will += , tested
-.PHONY: link
-
+.PHONY: compile ounused link def
+#-win
 else
+#+lin
 OFLAGS += underscore_pref 1
 #else ifeq (${conv_64},1)
 
 all: ${libname}
 
 ifeq (${conv_64},1)
+#+32
 #this past that focal ld is not. the cc variant is linking but the result will be bad with binutils
 #ATLDCOM=$(CC) -m32 ${linkerflags} ${linkerflagsextra} ${eobs} -shared -shared -Wl,-entry=DllMain -o ${prefname} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} -Wl,--exclude-libs=${exte}
 #need to use LLVM lld for a solution, even then still getting relocation cannot be used against symbol, recompile with -fPIC
 ATLDCOM = $(LD) -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${linkerflags} ${eobs} -shared -entry DllMain -o ${prefname} ${Lc} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 ${libname}: ${name}
 	ln -f ${name} ${libname}
-
+#-32
 else
+#+64
+
+ifndef nobits_virtual
+nobits_virtual=1
+endif
+ifeq (${nobits_virtual},0)
+OFLAGS += nobits_virtual 0
+endif
+
 #same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
 ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L. -l:${exte} --build-id --exclude-libs ${exte}
 #and pkg-config for -lc? is not in libc6-dev. where is?
@@ -110,33 +116,23 @@ ${libname}: ${name}
 	${strippy} ${name} ${libname} ${anotherobjcopy}
 #if [ ! -e "./strip.py" ]; then wget https://raw.githubusercontent.com/colin-i/o/master/ostrip/strip.py; fi
 endif
-
+#-64
 endif
-${exte}: ${obs} ${eobs} #eobs here for ounused
+${exte}: ${hreqs} ${obs} ${eobs} #eobs here for ounused
 	${OLINK} ${logs}
 	$(AR) cr ${exte} ${obs}
 ${name}: ${exte}
 	${ATLDCOM} > 1
 # > 1 for ostrip
+#-lin
 endif
+
+include ./rules
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
-%.o: %.e.oc
-	${OCOMP} $< ${OFLAGS}
-
-ounused:
-	${OLINK} ${logs}
-
-compile: ${obs} ${eobs}
-
-#noleadingunderscore for exporting symbols
-
-#obs =   :in case it is called after an object (make bits link)
-#(make action link)
-
-def:
-	../fix/makedef ${defname}
+#%.o: %.e.oc #is already
+#	${OCOMP} $< ${OFLAGS}
 
 clean:
 	-rm -f ${logs}
@@ -153,6 +149,7 @@ clean:
 	-rm -f .rela.dyn
 	-rm -f .symtab
 	-rm -f .symtab_offset
+	-rm -f ../include/platform.oh ../include/platformhome.oh
 
 distclean: clean
 
@@ -167,7 +164,7 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 
-.PHONY: all compile ounused def install install-lib clean distclean uninstall test
+.PHONY: all install install-lib clean distclean uninstall test
 
 .NOTPARALLEL:
 

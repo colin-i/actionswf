@@ -1,6 +1,57 @@
 
+ifndef platform
+platform=lin
+endif
+ifndef OCOMP
+OCOMP=o
+endif
+ifndef OCONV
+OCONV=otoc
+endif
+ifndef linkerflags
+linkerflags=-O3 -s
+endif
+ifndef compilerflags
+compilerflags=${linkerflags}
+endif
+ifndef EXTRA_CFLAGS
+include ../oad/cflags
+endif
+
+items_prefix=../src/
 include ../src/items
 
-all:
+$(eval xfiles = )
+$(foreach var,$(expitems),$(eval xfiles += ${items_prefix}${var}.e.oc.x))
+$(foreach var,$(items),$(eval xfiles += ${items_prefix}${var}.oc.x))
+$(eval cfiles = )
+$(foreach var,$(expitems),$(eval cfiles += ${items_prefix}${var}.e.c))
+$(foreach var,$(items),$(eval cfiles += ${items_prefix}${var}.c))
 
-.PHONY: all
+ifeq (${conv_64},1) #to cross compile
+	ifneq ($(CC),arm-linux-gnueabihf-gcc)
+		model=-m32
+	endif
+else
+	ifeq (${platform},win) #to long long
+		OCONVFLAGS=-
+	endif
+endif
+
+OFLAGS=x_file 2
+
+all: libactionswf.so
+
+libactionswf.so: ${hreqs} ${obs} ${eobs}
+
+include ../src/rules
+
+%.o: %.oc
+	${OCOMP} $< ${OFLAGS}
+	${OCONV} ${OCONVFLAGS} $<.x import
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+
+clean:
+	-rm -f ${xfiles} ${cfiles}
+
+.PHONY: all clean
