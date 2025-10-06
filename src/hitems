@@ -1,0 +1,3 @@
+
+hreqs=platform platformhome
+$(foreach var,$(hreqs),$(eval ohreqs += ../include/${var}.oh))

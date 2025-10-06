@@ -32,11 +32,11 @@ strippy=ostriputil
 endif
 
 #if modifying OFLAGS will lose inside data (at kinetic is reversed: first that def, then this def)
-OFLAGS=conv_64 ${conv_64} ${OFLAGSEXTRA}
+OFLAGS=conv_64 ${conv_64} include_sec 1 ${OFLAGSEXTRA}
 
 items_prefix=
-
 include ./items
+include ./hitems
 
 exte=libexte.a
 
@@ -48,14 +48,11 @@ defname = ${projname}.def
 prefname=${items_prefix}${name}
 libname=${restofname}${name}
 
-$(eval logs = )
-$(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.e.oc.log))
-$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.oc.log))
-
 ifeq (${platform},win)
+#+win
 OFLAGS += inplace_reloc 0 # include_sec 1
 all: compile ounused link def
-compile: ${hreqs} ${obs} ${eobs}
+compile: ${ohreqs} ${obs} ${eobs}
 #noleadingunderscore for exporting symbols
 ounused:
 	${OLINK} ${logs}
@@ -119,7 +116,7 @@ ${libname}: ${name}
 endif
 #-64
 endif
-${exte}: ${hreqs} ${obs} ${eobs} #eobs here for ounused
+${exte}: ${ohreqs} ${obs} ${eobs} #eobs here for ounused
 	${OLINK} ${logs}
 	$(AR) cr ${exte} ${obs}
 ${name}: ${exte}
@@ -150,7 +147,7 @@ clean:
 	-rm -f .rela.dyn
 	-rm -f .symtab
 	-rm -f .symtab_offset
-	-rm -f ../include/platform.oh ../include/platformhome.oh
+	-rm -f ${ohreqs}
 
 distclean: clean
 

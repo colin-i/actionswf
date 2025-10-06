@@ -10,12 +10,13 @@ ifndef prefix
 prefix=/usr
 endif
 
-all: flags.h flagss.h flagss.oh actionswf.oh
+all: flags.h flagss.h action_swf.h flagss.oh actionswf.oh
+#                     this for csrc
 
 %.h: %.ohi
 	${OCOMP} $< x_file 2 logfile 0
 	${OCONV} $<.x
-flags.ohi: flags.oh
+%.ohi: %.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@
 	cat $< >> $@
@@ -35,7 +36,7 @@ actionswf.oh: action_swf.oh
 test:
 	echo dev
 clean:
-	-rm -f flags.ohi.x flagss.ohi.x flags.ohi flagss.ohi flags.h flagss.h  flagss.oh actionswf.oh
+	-rm -f flags.ohi.x flagss.ohi.x flags.ohi flagss.ohi flags.h flagss.h action_swf.ohi.x action_swf.ohi action_swf.h  flagss.oh actionswf.oh
 distclean: clean
 
 install:

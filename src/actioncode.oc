@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 #win32 with _
 importx "strcmp" strcmp

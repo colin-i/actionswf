@@ -42,17 +42,19 @@ OFLAGS=x_file 2
 
 all: libactionswf.so
 
-libactionswf.so: ${hreqs} ${obs} ${eobs}
+libactionswf.so: headers ${obs} ${eobs}
 
-include ../src/rules
+headers:
+	$(MAKE) -C ../include
 
 %.o: %.oc
-	${OCOMP} $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 
 clean:
-	-rm -f ${xfiles} ${cfiles}
+	$(MAKE) -C ../include clean
+	-rm -f ${xfiles} ${cfiles} ${logs}
 distclean: clean
 
-.PHONY: all clean distclean
+.PHONY: all headers clean distclean

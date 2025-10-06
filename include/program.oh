@@ -1,5 +1,5 @@
 
-include "ascii.oh"
+include "ascii.h" "ascii.oh"
 
 const TRUE=1
 const FALSE=0
@@ -73,11 +73,11 @@ const DefineFont2=48
 const ExportAssets=56
 const DoInitAction=59
 
-include "action.oh"
+include "action.h" "action.oh"
 
-include "../dev/action_swf.oh"
+include "../dev/action_swf.h" "../dev/action_swf.oh"
 
-include "platform.oh" #"lin.oh" "win.oh"
+include "platform.h" "platform.oh" #"lin.oh" "win.oh"
 
 Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
 Const _open_read=_O_RDONLY|flag_O_BINARY
@@ -119,7 +119,7 @@ const doubleH_sign=0x80000000
 const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
 
-include "xlog.oh"
+include "xlog.h" "xlog.oh"
 
 const dblsignature_major=3
 const dblsignature=dblsignature_major+1

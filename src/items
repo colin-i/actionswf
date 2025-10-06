@@ -8,5 +8,6 @@ $(eval obs = )
 $(eval eobs = )
 $(foreach var,$(expitems),$(eval eobs += ${items_prefix}${var}.e.o))
 $(foreach var,$(items),$(eval obs += ${items_prefix}${var}.o))
-
-hreqs=../include/platform.oh ../include/platformhome.oh
+$(eval logs = )
+$(foreach var,$(expitems),$(eval logs += ${items_prefix}${var}.e.oc.log))
+$(foreach var,$(items),$(eval logs += ${items_prefix}${var}.oc.log))
