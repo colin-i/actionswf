@@ -87,6 +87,7 @@ ifeq (${conv_64},1)
 ATLDCOM = $(LD) -melf_i386 --dynamic-linker=/lib/ld-linux.so.2 ${linkerflags} ${eobs} -shared -entry DllMain -o ${prefname} ${Lc} -lc ${L} `pkg-config --libs zlib` -L${items_prefix}. -l:${exte} --exclude-libs ${exte}
 ${libname}: ${name}
 	ln -f ${name} ${libname}
+#-f if updating
 #-32
 else
 #+64
@@ -105,7 +106,7 @@ ATLDCOM = $(LD) ${linkerflags} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eo
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	ln -f ${name} ${libname}
-#is not with ln -s because will be one file install
+#is not with ln -s because will be one file install. -f if updating
 else
 ${libname}: ${name}
 	$(eval strp = )

@@ -1,6 +1,6 @@
 
 #${hreqs}
 ../include/platform.oh: ../include/${platform}.oh
-	ln -sf $< $@
+	ln -s $< $@
 ../include/platformhome.oh: ../include/${platform}home.oh
-	ln -sf $< $@
+	ln -s $< $@
