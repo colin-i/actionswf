@@ -35,8 +35,12 @@ actionswf.oh: action_swf.oh
 
 test:
 	echo dev
-clean:
-	-rm -f flags.ohi.x flagss.ohi.x flags.ohi flagss.ohi flags.h flagss.h action_swf.ohi.x action_swf.ohi action_swf.h  flagss.oh actionswf.oh
+clean: clean-com
+	-rm -f flagss.ohi.x flagss.ohi flagss.h  flagss.oh actionswf.oh
+clean-com:
+	-rm -f flags.ohi.x flags.ohi flags.h
+clean-csrc: clean-com
+	-rm -f action_swf.ohi.x action_swf.ohi action_swf.h
 distclean: clean
 
 install:
@@ -62,4 +66,4 @@ uninstall:
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/actionswf.oh; \
 	fi
 
-.PHONY: all install clean distclean uninstall test
+.PHONY: all install clean clean-com clean-csrc distclean uninstall test

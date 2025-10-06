@@ -55,7 +55,7 @@ headers:
 
 clean:
 	$(MAKE) -C ../include clean
-	$(MAKE) -C ../dev clean
+	$(MAKE) -C ../dev clean-csrc
 	-rm -f ${xfiles} ${cfiles} ${logs}
 distclean: clean
 
