@@ -46,6 +46,7 @@ libactionswf.so: headers ${obs} ${eobs}
 
 headers:
 	$(MAKE) -C ../include
+	$(MAKE) -C ../dev flags.h action_swf.h
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
@@ -54,6 +55,7 @@ headers:
 
 clean:
 	$(MAKE) -C ../include clean
+	$(MAKE) -C ../dev clean
 	-rm -f ${xfiles} ${cfiles} ${logs}
 distclean: clean
 

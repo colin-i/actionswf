@@ -10,8 +10,8 @@ ifndef prefix
 prefix=/usr
 endif
 
-all: flags.h flagss.h action_swf.h flagss.oh actionswf.oh
-#                     this for csrc
+all: flags.h flagss.h  flagss.oh actionswf.oh
+# action_swf.h
 
 %.h: %.ohi
 	${OCOMP} $< x_file 2 logfile 0
