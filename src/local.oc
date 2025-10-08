@@ -483,8 +483,8 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh,sd verif)
 	endif
 	char hd_magic0={D,B,L,1};vdata magic0^hd_magic0
 	char hd_magic00={D,B,L,2};vdata magic00^hd_magic00
-	char hd_magic1={D,B,l,1};vdata magic1^hd_magic1
-	char hd_magic2={D,B,l,2};vdata magic2^hd_magic2
+	char hd_magic1={D,B,l_low,1};vdata magic1^hd_magic1
+	char hd_magic2={D,B,l_low,2};vdata magic2^hd_magic2
 	if mem#!=magic1#
 	if mem#!=magic2#
 	if mem#!=magic0#
@@ -496,7 +496,7 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh,sd verif)
 	add cursor 2
 	sd header
 	sd image_size
-	if cursor#s^=(l)
+	if cursor#s^=(l_low)
 		inc cursor
 		if cursor#s^=(1)
 			set header (DefineBitsLossless)

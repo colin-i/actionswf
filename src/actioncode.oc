@@ -2,6 +2,9 @@ Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
 
+#multithread unsafe
+dataxu nr#1
+
 #win32 with _
 importx "strcmp" strcmp
 importx "strlen" strlen
@@ -24,8 +27,7 @@ function action_code_values_free()
     if p#!=(NULL);call mem_free(p);endif
 endfunction
 function action_code_values_index()
-    data nr#1
-    return #nr
+	return #global.nr
 endfunction
 #pointer
 function action_code_get()
@@ -41,10 +43,10 @@ function action_code_get()
 endfunction
 
 function action_code_values_action()
-	set action_code_values_index.nr 0
+	set global.nr 0
 	valuexu is_else_next_mark#1
 	set is_else_next_mark (NULL)
-	return #action_code_values_index.nr
+	return #global.nr
 end
 
 import "brace_blocks_get_memblock" brace_blocks_get_memblock
@@ -73,11 +75,11 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 	sd name
 	set name x_pointer(codepointer)
 	datax compare#1
-	vstr int="int"
-	setcall compare strcmp(name,int)
+	vstr intstr="int"
+	setcall compare strcmp(name,intstr)
 	if compare=0
 		set p_action# (ActionToInteger)
-		return int
+		return intstr
 	endif
 	vstr rnd="random"
 	setcall compare strcmp(name,rnd)
@@ -128,13 +130,13 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 		set p_action# (ActionPreviousFrame)
 		return pframe
 	endif
-	vstr goto="gotoAndStop"
-	setcall compare strcmp(name,goto)
+	vstr gotos="gotoAndStop"
+	setcall compare strcmp(name,gotos)
 	if compare=0
 		set p_action# (ActionGotoFrame)
 		incst p_action
 		set p_action# (ActionEndFlag)   #even if it's playing, it will stop, no ActionStop here
-		return goto
+		return gotos
 	endif
 	vstr gotop="gotoAndPlay"
 	setcall compare strcmp(name,gotop)
@@ -197,14 +199,15 @@ function forinbreak_check(sd codepointer)
 	if codepointer#=(call_action_right)
 		add codepointer (DWORD)
 		sd name
+		sv pname;sv rules
 		sd x;set x is_x()
 		if x=(FALSE)
 			if codepointer#v!=(NULL)
 				return start
 			end
-			sv rules;set rules codepointer
+			set rules codepointer
 			incst codepointer
-			sv pname;set pname codepointer
+			set pname codepointer
 			set name codepointer#v
 			incst codepointer
 			if codepointer#!=(args_end)
@@ -350,7 +353,7 @@ function action__code_row(sd codepointer)
 endfunction
 import "debug_xlog_return" debug_xlog_return
 #position
-function action__code_row_ex(sd codepointer)
+function action__code_row_ex(sdu codepointer)
 	sd pointer
 	set pointer codepointer
 	setcall pointer action_code_write_conditions(codepointer)
@@ -361,7 +364,7 @@ function action__code_row_ex(sd codepointer)
 	if pointer!=codepointer
 		return pointer
 	endif
-	sd attrib
+	dataxu attrib#1
 	set attrib codepointer#
 	if attrib=(ActionReturn)
 		add codepointer (DWORD)
@@ -1169,3 +1172,5 @@ function action_deffunction(sv codepointer,sv debug_related)
     #
     return codepointer
 endfunction
+
+entryraw global()

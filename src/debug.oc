@@ -290,7 +290,7 @@ function debug_action_init(ss ac)
 			endwhile
 
 			#out rows\nac\n
-			char f={Percent,l,u,xlog_nl,Percent,s,xlog_nl,Nullchar}
+			char f={Percent,l_low,u_low,xlog_nl,Percent,s_low,xlog_nl,Nullchar}
 			call f_printf((fprintf_min+2),debug_data.file,#f,row,start)
 
 			mult row :

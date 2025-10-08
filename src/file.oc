@@ -291,7 +291,7 @@ function dbl_dim(ss imagepath,sd off)
 	#format? ming newSWFDBLBitmap_fromInput
 	dataxu size#1;charx t#1;#sw dim
 	sd file;set file dblsize_start(imagepath,#size,#t)
-	if t=(l)
+	if t=(l_low)
 		add off (dblsignature+dblsize+dblformat)
 	else
 		add off (dblsignature+dblsize16+dblformat)
