@@ -4,6 +4,8 @@ include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
 dataxu nr#1
+charx rcb#1
+valuexu is_else_next_mark#1
 
 #win32 with _
 importx "strcmp" strcmp
@@ -44,8 +46,7 @@ endfunction
 
 function action_code_values_action()
 	set global.nr 0
-	valuexu is_else_next_mark#1
-	set is_else_next_mark (NULL)
+	set global.is_else_next_mark (NULL)
 	return #global.nr
 end
 
@@ -342,13 +343,13 @@ import "debug_xlog_stepout" debug_xlog_stepout
 
 #position
 function action__code_row(sd codepointer)
-	charx rcb#1;set rcb (ret_cont_break_nothing)   #at definefunction is another collision with this but is not a problem now
+	set global.rcb (ret_cont_break_nothing)   #at definefunction is another collision with this but is not a problem now
 
 	setcall codepointer action__code_row_ex(codepointer)
 	call debug_phase_code(codepointer)
 
 	ss p;set p ret_cont_break()
-	set p# rcb
+	set p# global.rcb
 	return codepointer
 endfunction
 import "debug_xlog_return" debug_xlog_return
@@ -372,7 +373,7 @@ function action__code_row_ex(sdu codepointer)
 		setcall codepointer action_code_right_util(codepointer)
 		call action_one((ActionReturn))
 		call debug_xlog_return()
-		set action__code_row.rcb (ret_cont_break_something)
+		set global.rcb (ret_cont_break_something)
 		return codepointer
 	endif
 	ss p
@@ -390,7 +391,7 @@ function action__code_row_ex(sdu codepointer)
 		else
 			call brace_blocks_remove_write((FALSE))
 			call debug_xlog(codepointer) #simple if}[ but can also be the last if from elseif
-			set action_code_values_action.is_else_next_mark codepointer
+			set global.is_else_next_mark codepointer
 		endelse
 		return codepointer
 	endif
@@ -401,7 +402,7 @@ function action__code_row_ex(sdu codepointer)
 	end
 	if attrib=(block_else_end)
 		charx test#1
-		if codepointer=action_code_values_action.is_else_next_mark
+		if codepointer=global.is_else_next_mark
 			set test (FALSE)
 		else
 			set test (TRUE)
@@ -426,14 +427,14 @@ function action__code_row_ex(sdu codepointer)
 		if p#=(ret_cont_break_nothing) #why? for(var mc_name in drivers_container)return null is ok here but at ffdec an extra break is after return
 			call action_code_break()
 		end
-		set action__code_row.rcb (ret_cont_break_break)
+		set global.rcb (ret_cont_break_break)
 		add codepointer (DWORD)
 		return codepointer
 	endif
 	if attrib=(continue_flag)
 		call action_code_continue()
 		add codepointer (DWORD)
-		set action__code_row.rcb (ret_cont_break_something)
+		set global.rcb (ret_cont_break_something)
 		return codepointer
 	endif
 	if attrib=(else_marker)
@@ -441,8 +442,8 @@ function action__code_row_ex(sdu codepointer)
 	end
 	callret action_code_pack(codepointer)
 endfunction
-function action_code_pack(sd codepointer)
-	sd attrib
+function action_code_pack(sdu codepointer)
+	sdu ?attrib
 	set attrib codepointer#
 	add codepointer (DWORD)
 	#
@@ -462,9 +463,9 @@ function action_code_pack(sd codepointer)
 		set need_pop (TRUE)
 	endelseif
 	#else is ActionDefineLocal/ActionSetVariable
-	sd name
+	sd name;sdu member_codepointer_start
 	if is_member=(TRUE)
-		sd member_codepointer_start;set member_codepointer_start codepointer
+		set member_codepointer_start codepointer
 		setcall codepointer action_member_loop_left(codepointer)
 	else
 		#definelocal or setvariable or delete2
