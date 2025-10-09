@@ -10,6 +10,7 @@ import "escape_action" escape_action
 import "action_debug_free" action_debug_free
 import "debug_phase_parse_end" debug_phase_parse_end
 import "endcom" endcom
+import "action_parse_init" action_parse_init
 
 #aftercallimport ebool
 
@@ -34,6 +35,8 @@ function action_base(ss ac)
 	import "actionx" actionx
 	sd x;set x actionx()
 	if x=(FALSE) #if true, only action__code_row loop
+		call action_parse_init()
+
 		ss mem
 		setcall mem dupreserve_string(ac)
 

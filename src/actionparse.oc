@@ -16,14 +16,12 @@ import "spaces" spaces
 
 import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
 
-#operations str
-function get_operations()
-    const operations_begin=\
-    char operations="+-*/%&|^<>?"
-    #subtract 1 is for the string termination
-    const operations_size=\-operations_begin-1
-    return #operations
-endfunction
+#multithread unsafe
+char operations_base="+-*/%&|^<>?"
+#                     + - * / % & | ^ < > ? ( ! = e1e2
+char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
+datau operations_base_size=\globalp.operations_base-1
+datau operations_full_sz=\globalp.operations_full-2
 
 #bool
 function action_parse_utilEndTypes(sd op,ss p_op,sd endtype1,sd endtype2)
@@ -105,6 +103,13 @@ end
 function action_data()
 	call brace_blocks_counter_init()
 	set ret_cont_break.type (ret_cont_break_nothing)
+end
+function action_parse_init()
+	ss a;set a #globalp.operations_full
+	call memcpy(a,#globalp.operations_base,globalp.operations_base_size)
+	add a globalp.operations_base_size
+	char c={Openingbracket,Exclamationmark,Equals}
+	call memcpy(a,#c,3)
 end
 
 import "action_code_get" action_code_get
@@ -539,9 +544,8 @@ function action_parse_test_mixt_equal(ss start,sv p_ac)
 #		#0 can be set(qw['z']=x will be 00x) and at strchr will not be NULL
 #		return 0
 #	endif
-	ss operations;setcall operations get_operations()
 	sd op;set op ac#
-	ss p_op;setcall p_op strchr(operations,op)
+	ss p_op;setcall p_op strchr(#globalp.operations_base,op)
 	if p_op=(NULL);return 0;endif
 
 	ss pointer;set pointer ac
@@ -607,26 +611,22 @@ function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
 endfunction
 #pointer
 function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_bool)
-    sd bool
-    #can be on the stack but char is low value; ends are set again when recursivity
-    char oprs#operations_size
-    char *=Openingbracket
-    char *=Exclamationmark
-    char *=Equals
-    char end#1
-    char end2#1
-    char *term=0
+	sd bool
+	#can be on the stack but char is low value; ends are set again when recursivity
+	ss end2
+	set end2 #globalp.operations_full
+	add end2 globalp.operations_full_sz
+	ss end=-1
+	add end end2
     #
     sd is_compare_ptr
     setcall is_compare_ptr compare_bool_pointer()
     #
-    vstr op_set^oprs
-    ss ops;setcall ops get_operations();call memcpy(op_set,ops,(operations_size))
     whiletrue
 		set ac spaces(ac) #ffdec
 		sd op         ;#op can't be charx, is recursive stack variable, is cleared in two places, here and at sv p_op
-        sd was_parenthesis=0
-        if ac#=(Openparenthesis)
+		sd was_parenthesis=0
+		if ac#=(Openparenthesis)
 			call action_code_set((parenthesis_start))
 			inc ac
 			setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
@@ -634,13 +634,13 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 			set ac spaces(ac) #ffdec
 			set op ac#;set ac# 0
 			set was_parenthesis 1
-        endif
-        #set end: is static variable and can be mod again inside previous function
-        set end endtype1
-        set end2 endtype2
+		endif
+		#set end: is static variable and can be mod again inside previous function
+		set end# endtype1
+		set end2# endtype2
 		#
 		if was_parenthesis=0
-			setcall ac action_code_take_main(ac,#op,op_set)
+			setcall ac action_code_take_main(ac,#op,#globalp.operations_full)
 			if op=(ifElse_sign)
 				inc ac
 				call action_code_set((ifElse_start))
@@ -1504,3 +1504,5 @@ function action_code_parse_function_defarguments(ss ac)
 		call error("close the function arguments sign expected: )")
 	endwhile
 endfunction
+
+entryraw globalp()
