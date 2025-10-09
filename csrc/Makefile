@@ -51,7 +51,7 @@ headers:
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
-	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c -o $@
 
 clean:
 	$(MAKE) -C ../include clean

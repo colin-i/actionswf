@@ -5,6 +5,9 @@ include "../include/prog.oh"
 #win32 with _
 importx "memcpy" memcpy
 importx "sprintf" sprintf
+Importx "realloc" realloc
+Importx "malloc" malloc
+Importx "free" free
 
 import "spaces" spaces
 
@@ -126,33 +129,6 @@ end
 function escape_action_endcom(ss pointer)
 	callret escape_action(endcom.ac,endcom.pointer,(NULL),pointer)
 end
-#nr
-function escape_count(ss string,sd escape)
-    sd nr=0
-    sd escaped=0
-    while string#!=0
-        if string#=escape
-            xor escaped 1
-        elseif escaped=1
-		inc nr
-            set escaped 0
-
-		#this is not working nowadays, printf is searching for floats on xmm registers, kept as legacy
-		char l="l"
-		if string#=l
-			char f="f";
-			ss double_test=1
-			add double_test string
-			if double_test#=f
-				inc nr
-			endif
-		endif
-
-        endelseif
-        inc string
-    endwhile
-    return nr
-endfunction
 
 #debug
 
@@ -422,13 +398,12 @@ endfunction
 import "action_base" action_base
 
 function action_format(sv args)
-    sd args_nr=2
-    sv args_format
-    set args_format args;incst args_format
-    char e="%"
-    addcall args_nr escape_count(args_format#,e)
-    callex sprintf args args_nr
-    call action_base(args#)
+	sv args_format=:
+	add args_format args
+	sv elements=:
+	add elements args_format
+	call sprintf_manual(args#,args_format#,elements)
+	call action_base(args#)
 endfunction
 
 import "debug_base" debug_base
@@ -444,5 +419,62 @@ function action_sprite_base(sd sprite,ss actions,sd has_frames)
 			call file_get_content__resources_free()
 		end
 		call swf_actionblock((mem_exp_change_back))
+	end
+endfunction
+
+import "error" error
+
+function sprintf_manual(ss string,ss format,sv elements)
+	ss pointer;set pointer format
+	ss cursor;set cursor string
+	sd has_element=FALSE
+	sd escaped=0
+	valueu writable_size=1
+	ss writable;set writable malloc(1)
+	if writable=(NULL)
+		vstr er="malloc error at manual sprintf"
+		call error(er)
+	end
+	while pointer#!=(Nullchar)
+		if pointer#=(Percent)
+			xor escaped 1
+		elseif escaped=1
+			set escaped 0
+			#this is not working nowadays, printf is searching for floats on xmm registers. extract floats
+			#char l="l";if pointer#=l;char f="f";ss double_test=1;add double_test pointer;if double_test#=f;inc nr;endif;endif
+
+			if has_element=(FALSE)
+				set has_element (TRUE)
+			else
+				valueu size#1;set size pointer;sub size format
+				if size>^writable_size
+					ss mem;set mem realloc(writable,size)
+					if mem=(NULL)
+						call free(writable)
+						call error(er)
+					end
+					set writable mem
+				end
+
+				dec pointer
+				#c is giving no write access to strings #set pointer# (Nullchar)
+				dec size
+				call memcpy(writable,format,size)
+				ss marker;set marker writable;add marker size;set marker# (Nullchar)
+
+				add string sprintf(string,writable,elements#)
+
+				set format pointer;incst elements
+				#set pointer# (Percent)
+				inc pointer ##not adding 2 here and continue? or let for a pointer# >= unicode start condition?
+			end
+		endelseif
+		inc pointer
+	endwhile
+	call free(writable)
+	if has_element=(TRUE)
+		call sprintf(string,format,elements#)
+	else
+		call sprintf(string,format)
 	end
 endfunction

@@ -1,2 +1,2 @@
 
-linkerflags=-g make
+linkerflags=-g make $@
