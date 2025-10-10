@@ -24,7 +24,7 @@ datau operations_base_size=\globalp.operations_base-1
 datau operations_full_sz=\globalp.operations_full-2
 
 #bool
-function action_parse_utilEndTypes(sd op,ss p_op,sd endtype1,sd endtype2)
+function action_parse_utilEndTypes(ss ?op,ss p_op,sd endtype1,sd endtype2)
     #when p_op is set, is to store the multiple kind of endtypes
     if p_op!=0
         set p_op# op
@@ -436,7 +436,7 @@ function action_parse_pack(ss ac,sd endChar)
 			set pointer spaces(pointer) #ffdec
 		endelse
 	endelse
-	sd op   ;#this is recursive stack for future expands, now is simple
+	ss ?op   ;#this is recursive stack for future expands, now is simple
 	char set={Equals}
 	char secondChar#1
 	char *term=0
@@ -544,7 +544,7 @@ function action_parse_test_mixt_equal(ss start,sv p_ac)
 #		#0 can be set(qw['z']=x will be 00x) and at strchr will not be NULL
 #		return 0
 #	endif
-	sd op;set op ac#
+	ss ?op;set op ac#
 	ss p_op;setcall p_op strchr(#globalp.operations_base,op)
 	if p_op=(NULL);return 0;endif
 
@@ -589,7 +589,7 @@ function action_code_row_parse_tool(ss ac,sd endtype)
 endfunction
 
 #pointer
-function action_code_row_parse_tool_util(ss ac,sd p_op,sd endtype1,sd endtype2)
+function action_code_row_parse_tool_util(ss ac,ss p_op,sd endtype1,sd endtype2)
     if ac#=0
         call error("expeting a number, variables operations")
     endif
@@ -624,7 +624,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     #
     whiletrue
 		set ac spaces(ac) #ffdec
-		sd op         ;#op can't be charx, is recursive stack variable, is cleared in two places, here and at sv p_op
+		ss ?op         ;#op can't be charx, is recursive stack variable, is cleared in two places, here and at sv p_op
 		sd was_parenthesis=0
 		if ac#=(Openparenthesis)
 			call action_code_set((parenthesis_start))
@@ -640,6 +640,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 		set end2# endtype2
 		#
 		if was_parenthesis=0
+			!xor op op  ##or go with sv p_op to clean inside the function but then will pe problems at .c
 			setcall ac action_code_take_main(ac,#op,#globalp.operations_full)
 			if op=(ifElse_sign)
 				inc ac
@@ -668,7 +669,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
     endwhile
 endfunction
 #action
-function action_parse_take_action(sd op,ss ac)
+function action_parse_take_action(ss ?op,ss ac)
 	sd x
 	if op=(add);set x (ActionAdd2)
 	elseif op=(sub);set x (ActionSubtract)
@@ -694,7 +695,7 @@ function action_parse_take_action(sd op,ss ac)
 	return x
 endfunction
 #pointer
-function action_code_extended_operations(ss pointer,sd op)
+function action_code_extended_operations(ss pointer,ss ?op)
     #comparison
     sd compareaction
     setcall compareaction action_compare(op,(NULL))
@@ -735,7 +736,7 @@ function action_code_extended_operations(ss pointer,sd op)
     return pointer
 endfunction
 #pointer
-function action_code_take_main(ss ac,sv p_op,ss delims) #ss p_op will not clean the recursive stack variable
+function action_code_take_main(ss ac,ss p_op,ss delims)
 	#a string
 	ss pointer
 	setcall pointer action_code_str(ac)
@@ -1397,7 +1398,7 @@ function action_code_parse_function_arguments(ss pointer)
     sd sizepointer
     set sizepointer sizemark#
     #
-    sd op=0
+    ss ?op=0
     while op!=close
         setcall pointer action_code_row_parse_tool_util(pointer,#op,comma,close)
         if op=0
