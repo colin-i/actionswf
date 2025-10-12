@@ -56,7 +56,8 @@ headers:
 clean:
 	$(MAKE) -C ../include clean
 	$(MAKE) -C ../dev clean-csrc
-	-rm -f ${xfiles} ${cfiles} ${logs}
+	-rm -f ${obs} ${eobs} ${logs}
+	-rm -f ${xfiles} ${cfiles}
 distclean: clean
 
 .PHONY: all headers clean distclean

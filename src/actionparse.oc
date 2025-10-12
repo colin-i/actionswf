@@ -1,6 +1,10 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+dataxu flag#1
+charx type#1
 
 #win32 with _
 importx "strcspn" strcspn
@@ -88,21 +92,21 @@ function brace_blocks_get_memblock()
 	callret swf_actionblock((mem_exp_get_block))
 endfunction
 
-function for_in(datax flag)
-	and flag (flag_forin1)
+function for_in(sdu ?f)
+	set globalp.flag f
+	and globalp.flag (flag_forin1)
 end
 function for_in_ptr()
-	return #for_in.flag
+	return #globalp.flag
 end
 
 function ret_cont_break()
-	charx type#1
-	return #type
+	return #globalp.type
 end
 
 function action_data()
 	call brace_blocks_counter_init()
-	set ret_cont_break.type (ret_cont_break_nothing)
+	set globalp.type (ret_cont_break_nothing)
 end
 function action_parse_init()
 	ss a;set a #globalp.operations_full
@@ -163,7 +167,7 @@ function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
     set p_c# ac
     ss atstart=NULL
     while atstart!=ac
-        sd flags
+        sd ?flags
         sd for_detected=0
         set atstart ac
         setcall ac action_parse_conditions(ac,#flags,#for_detected)
@@ -197,7 +201,7 @@ endfunction
 
 function forin(sd pointer)
 	#getvar/member/enumerate is not overlapping for_three
-	if for_in.flag!=(flag_forin1)
+	if globalp.flag!=(flag_forin1)
 		#ActionEnumerate2 will use an object
 		call action_code_take_pointer(pointer)
 	else
@@ -463,7 +467,8 @@ function action_parse_pack(ss ac,sd endChar)
 			return ac
 		endelse
 	elseif isdelete=(FALSE)
-		sd inc_dec
+		sd ?inc_dec
+		sd ?mixt_action
 		if op!=set
 			set inc_dec 0
 			ss test
@@ -496,7 +501,7 @@ function action_parse_pack(ss ac,sd endChar)
 			endif
 		else
 			#test for += .. |= ..
-			sd mixt_action;setcall mixt_action action_parse_test_mixt_equal(pointer,#marker)
+			setcall mixt_action action_parse_test_mixt_equal(pointer,#marker)
 			#trail pointer at marker, after mixt shift
 			call memtrail(marker)
 		endelse
@@ -598,8 +603,8 @@ function action_code_row_parse_tool_util(ss ac,ss p_op,sd endtype1,sd endtype2)
     setcall pointer str_expression_at_start(ac,"new")
     if pointer!=ac
 		setcall ac action_code_parse_new_or_call(pointer,(new_action),pointer)
-        sd bool;setcall bool action_parse_utilEndTypes(ac#,p_op,endtype1,endtype2)
-        if bool=(TRUE);inc ac;endif
+        sd ?bl;setcall bl action_parse_utilEndTypes(ac#,p_op,endtype1,endtype2)
+        if bl=(TRUE);inc ac;endif
         return ac
     endif
     sd ifElse_bool=FALSE
@@ -611,7 +616,7 @@ function action_code_row_parse_tool_util(ss ac,ss p_op,sd endtype1,sd endtype2)
 endfunction
 #pointer
 function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_bool)
-	sd bool
+	sd ?bl
 	#can be on the stack but char is low value; ends are set again when recursivity
 	ss end2
 	set end2 #globalp.operations_full
@@ -661,8 +666,8 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 				endif
 				return ac
 			endif
-			setcall bool action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
-			if bool=(TRUE);return ac;endif
+			setcall bl action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
+			if bl=(TRUE);return ac;endif
 			sd x;setcall x action_parse_take_action(op,ac)
 			call action_code_set(x)
 		endelse
@@ -859,9 +864,9 @@ function numeric_code_orConstruction(ss ac)
 	if pointer#=neg
 		inc pointer
 	endif
-	sd bool
-	setcall bool is_numeric(pointer#)
-	if bool!=(TRUE)
+	sd ?bl
+	setcall bl is_numeric(pointer#)
+	if bl!=(TRUE)
 		char i="Infinity"
 		sd c;set c mem_cmp_bool(pointer,#i,\.i) #versus a string
 		if c=(FALSE)
@@ -928,8 +933,8 @@ function action_code_member(ss pointer,sd full)
 	sd pos
 	setcall pos strcspn(pointer,delims)
 	add pointer pos
+	sd p_currentnr
 	if full!=0
-		sd p_currentnr
 		setcall p_currentnr action_code_values_index()
 		set full p_currentnr#
 	end
@@ -1065,7 +1070,7 @@ function brace_blocks_counter_dec()
     dec c#
 endfunction
 #
-function brace_blocks_add_parse(sd type)
+function brace_blocks_add_parse(sd ?type)
     sd block
     setcall block cond_blocks()
     set block# type
@@ -1215,7 +1220,7 @@ function check_whilefor(sd _skip_jump,sd _ifs)
 		if blocks#=(top_marker) #healty while/for
 			sub blocks (DWORD)
 			if blocks#!=(forin_marker)
-				if ret_cont_break.type=(ret_cont_break_break) #jump 0 there?
+				if globalp.type=(ret_cont_break_break) #jump 0 there?
 					set _skip_jump# (actionrecordheader_size+actionjump_contentsize)
 					#also need to remove from debug
 					call debug_phase_code_remove(_skip_jump#,(action_debug_recordlength))
@@ -1233,7 +1238,7 @@ function check_whilefor(sd _skip_jump,sd _ifs)
 	callg error("x is broken")
 end
 function brace_blocks_remove_write_jump() #here is only from endwhile (at while and fors)
-	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
+	if globalp.type=(ret_cont_break_nothing)  #skip dead code
 		call add_dummy_jump()
 	end
 	sd skip_jump=0 ;#look to see top_marker and if is not forin, that has a different break than for3/while
@@ -1262,7 +1267,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	end
 
 	sub c# 2
-	if ret_cont_break.type=(ret_cont_break_nothing)  #skip dead code
+	if globalp.type=(ret_cont_break_nothing)  #skip dead code
 		sub blocks (2*DWORD)
 		call resolve_back_jump(blocks#)  #jump back
 	elseif skip_jump!=0
