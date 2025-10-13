@@ -18,7 +18,7 @@ importx "compress" compress
 importx "free" free
 
 #this is throwless here
-import "struct_ids" struct_ids
+^import "struct_ids" struct_ids 2
 import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
 
 #
@@ -107,15 +107,15 @@ function identifiers_get()
 	return id#
 endfunction
 
+import "debug_spritedone" debug_spritedone
 function free_sprite_id(sd id,sd finalId_or_containerId) #containerId for buttons
 	call free_sprite_id_actions(id)
 	call struct_ids((ids_free),id)
-	import "debug_spritedone" debug_spritedone
 	callg debug_spritedone(id,finalId_or_containerId)
 endfunction
 
 import "error" error
-import "struct_ids_actionpool" struct_ids_actionpool
+^import "struct_ids_actionpool" struct_ids_actionpool 2
 import "struct_ids_action" struct_ids_action
 import "struct_ids_action_set" struct_ids_action_set
 import "mem_block_add" mem_block_add
@@ -123,6 +123,12 @@ import "def_mem" def_mem
 import "debug_show" debug_show
 import "memalloc" memalloc
 
+import "pool_savepath_init" pool_savepath_init
+import "action_code_values_init" action_code_values_init
+import "push_init" push_init
+import "file_open" file_open
+import "file_write" file_write
+import "file_write_mem" file_write_mem
 function swf_mem(sd proc,sd arg,sd len,sd flags)
 	vdata path_mem=NULL
 	#4-7 is 0
@@ -164,7 +170,6 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		setcall path_size strlen_of(arg,1)
 		setcall path_mem memalloc(path_size)
 		call memcpy(path_mem,arg,path_size)
-		import "pool_savepath_init" pool_savepath_init
 		call pool_savepath_init(path_mem)
 		#1
 		setcall globals.main_id def_mem()
@@ -174,10 +179,8 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		#2
 		call exports_init()
 		#3
-		import "action_code_values_init" action_code_values_init
 		call action_code_values_init()
 		#4
-		import "push_init" push_init
 		call push_init()
 		#
 		sd test=flagpre_write_no;and test flags
@@ -243,10 +246,8 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 			add pointer filelength_offseted
 			set pointer# size
 
-			import "file_open" file_open
 			setcall file_out file_open(path_mem,(_open_write))
 
-			import "file_write" file_write
 			if globals.is_compress=(TRUE)
 				set mem# (C)
 				add filelength_offseted (DWORD)
@@ -259,7 +260,6 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 				add pointer (DWORD)
 				sd er;set er compress(dest,#destsize,pointer,size)
 				if er=(Z_OK)
-					import "file_write_mem" file_write_mem
 					callret file_write_mem(file_out,dest,destsize) #will compress at least a RECT,ui16,ui16 + a tag(9) with the background colors
 				end
 				call free(dest)
@@ -330,6 +330,7 @@ function done_action(sd id,sd frames)
 	end
 	return size
 end
+import "write_action_one" write_action_one
 function done_action_one(sd id,sd finalid)
 	sv p_block
 	setcall p_block struct_ids_action((ids_get_pointer),id)
@@ -344,11 +345,10 @@ function done_action_one(sd id,sd finalid)
 		add tagsz (WORD)
 		call swf_tag_recordheader_entry((DoInitAction),tagsz)
 		call swf_mem_add(#finalid,(WORD))
-		import "write_action_one" write_action_one
 		callg write_action_one(id)
 	end
 end
-#
+import "pool_read" pool_read
 function swf_actionblock(sd proc,sd arg,sd arg2)
     data id#1
     data id_back#1
@@ -379,7 +379,6 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 		sd p_poolrootid;setcall p_poolrootid actionpoolid_root();set p_poolrootid# id
 
 		call struct_ids_action_set(id,(xlog_ainit_false)) #see at part_done call struct_ids_action_set(id,(TRUE))
-		import "pool_read" pool_read
 		callg pool_read(id,0)
 
 		ret
@@ -428,6 +427,7 @@ endfunction
 function swf_actionblock_add(sd value,sd size)
     call swf_actionblock((mem_exp_add),value,size)
 endfunction
+import "debug_phase_code_add_if" debug_phase_code_add_if
 function actionrecordheader_core(sd ?tag,sd ?size)
 	char ar#actionrecordheader_size;ss arh^ar
 	set arh# tag
@@ -435,12 +435,11 @@ function actionrecordheader_core(sd ?tag,sd ?size)
 	add psz arh
 	call stack_to_word_arg(size,psz)
 	call swf_actionblock_add(arh,(actionrecordheader_size))
-	import "debug_phase_code_add_if" debug_phase_code_add_if
 	callg debug_phase_code_add_if((TRUE),psz)
 end
+import "actionpush" actionpush
 function actionrecordheader(sd tag,sd size)
 #push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
-	import "actionpush" actionpush
 	call actionpush()
 	call actionrecordheader_core(tag,size)
 endfunction
