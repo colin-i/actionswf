@@ -1,6 +1,16 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+data file=fd_none;vdata mem=NULL
+
+vstr fprintf_er="fprintf error"
+vstr file_write_er="File write error"
+vstr f_open_err="fopen error"
+vstr f_tell_er="ftell error"
+vstr f_size_er="f_size error"
+vstr f_open_rb="rb"
 
 importx "_open" open
 importx "_read" read
@@ -11,23 +21,14 @@ importx "_close" close
 
 import "printEr" printEr
 
-function file_get_content__resources(sd trueIsSet_falseIsFree,sd fileIn,sd memIn)
-    data file=fd_none;vdata mem=NULL
-    if trueIsSet_falseIsFree=(TRUE)
-        if fileIn!=(fd_none);set file fileIn
-        else;set mem memIn;endelse
-    else
-        if file!=(fd_none)
-            call file_close(#file)
-            if mem!=(NULL)
-                import "mem_free" mem_free
-                call mem_free(#mem)
-            endif
-        endif
-    endelse
-endfunction
 function file_get_content__resources_free()
-    call file_get_content__resources((FALSE))
+	if globalf.file!=(fd_none)
+		call file_close(#globalf.file)
+		if globalf.mem!=(NULL)
+			import "mem_free" mem_free
+			call mem_free(#globalf.mem)
+		endif
+	endif
 endfunction
 
 #close
@@ -46,10 +47,6 @@ endfunction
 
 importx "fprintf" fprintf
 
-function f_printf_in(sd p,sd nr)
-	callex fprintf p nr ##callexret
-end
-
 importx "fwrite" fwrite
 importx "ftell" ftell
 importx "fseek" fseek
@@ -65,8 +62,7 @@ import "error" error
 function f_open(sd path,sd format)
 	sd f;setcall f fopen(path,format)
 	if f=(NULL)
-		vstr err="fopen error"
-		call error(err)
+		call error(globalf.f_open_err)
 	end
 	return f
 end
@@ -81,7 +77,7 @@ function f_open_mem_ex(sd path,sd format)
 	sd f;setcall f fopen(path,format)
 	if f=(NULL)
 		call free(path)
-		call error(f_open.err)
+		call error(globalf.f_open_err)
 	endif
 	return f
 endfunction
@@ -113,7 +109,7 @@ function file_seek(sd file,sd off,sd method)
 endfunction
 #offset
 function file__seek(sd file,sd method)
-	callg file_seek(file,0,method) #here return is what file_seek is returning
+	callret file_seek(file,0,method) #here return is what file_seek is returning
 endfunction
 #size
 function filesize(sd file)
@@ -129,7 +125,7 @@ import "memalloc" memalloc
 function file_get_content(ss filepath,sv p_size)  #size is a stack variable
 	sd file
 	setcall file file_open(filepath,(_open_read))
-	call file_get_content__resources((TRUE),file)
+	set globalf.file file
 	sd mem; ss size
 	set size filesize(file)
 	if p_size!=(NULL)
@@ -140,7 +136,7 @@ function file_get_content(ss filepath,sv p_size)  #size is a stack variable
 		setcall mem memalloc(size)
 		dec size
 	end
-	call file_get_content__resources((TRUE),(fd_none),mem)
+	set globalf.mem mem
 	call read(file,mem,size)
 	if p_size=(NULL)
 		add size mem
@@ -164,8 +160,7 @@ function file_write(sd file,sd buffer,sd size)
 	if len=size
 		ret
 	endif
-	vstr er="File write error"
-	callg error(er)
+	callg error(globalf.file_write_er)
 endfunction
 function file_write_mem(sd file,sd buffer,sd size)
 	sd len
@@ -174,13 +169,19 @@ function file_write_mem(sd file,sd buffer,sd size)
 	if len=size
 		ret
 	endif
-	callg error(file_write.er)
+	callg error(globalf.file_write_er)
 endfunction
 
-function f_printf(sd nr,sd file) #,sd *format,sd a1...,sd aN
-	sd r;set r f_printf_in(#file,nr)
+function f_printf1(sd file,ss format,svu a1)
+	sd ?r;set r fprintf(file,format,a1)
 	if r=-1
-		callg error("fprintf error")
+		callg error(globalf.fprintf_er)
+	endif
+endfunction
+function f_printf2(sd file,ss format,svu a1,svu a2)
+	sd ?r;set r fprintf(file,format,a1,a2)
+	if r=-1
+		callg error(globalf.fprintf_er)
 	endif
 endfunction
 
@@ -194,8 +195,7 @@ endfunction
 function f_tell(sd f)
 	sd r;set r ftell(f)
 	if r=-1
-		vstr er="ftell error"
-		call error(er)
+		call error(globalf.f_tell_er)
 	end
 	return r
 endfunction
@@ -205,12 +205,11 @@ function f_tell_errors(sd f)
 		return r
 	end
 	call fclose(f)
-	callg error(f_tell.er)
+	callg error(globalf.f_tell_er)
 endfunction
 
 function f_size(sd path)
-	vstr rb="rb"
-	sd f;set f fopen(path,rb)
+	sd f;set f fopen(path,globalf.f_open_rb)
 	if f!=(NULL)
 		call fseek(f,0,(SEEK_END))
 		sd size
@@ -220,11 +219,10 @@ function f_size(sd path)
 			return size
 		end
 	end
-	vstr er="f_size error"
-	callg error(er)
+	callg error(globalf.f_size_er)
 end
 function f_size_errors(sd path)
-	sd f;set f fopen(path,f_size.rb)
+	sd f;set f fopen(path,globalf.f_open_rb)
 	if f!=(NULL)
 		call fseek(f,0,(SEEK_END))
 		sd size
@@ -235,7 +233,7 @@ function f_size_errors(sd path)
 		end
 	end
 	call free(f)
-	callg error(f_size.er)
+	callg error(globalf.f_size_er)
 end
 
 import "file_resources_set" file_resources_set
@@ -298,3 +296,5 @@ function dbl_dim(ss imagepath,sd off)
 	end
 	callret dblsize_end(file,size,off)
 end
+
+entryraw globalf()

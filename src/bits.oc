@@ -1,12 +1,12 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
-function bits_packs(ss dest,sd packs)
-    sd i=0
+functionV bits_packs(ss dest,sd ?packs)
+    sd ?i=0
     sd pos=0x80
-    sd value
-    sd size
+    sd ?value
+    sd ?size
     sd src^packs
     while i<packs
         incst src
@@ -108,11 +108,11 @@ function rect_prepare(sv p_out,sv p_size,sd width,sd height)  #p_size is a stack
     set p_size# size
 endfunction
 function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
-    char matrix#1+4+4
+	char matrix#1+4+4;ss p_matrix^matrix
     set p_dest# #matrix
     if x=0
         if y=0
-            set matrix 0
+            set p_matrix# 0
             set p_size# 1
             ret
         endif

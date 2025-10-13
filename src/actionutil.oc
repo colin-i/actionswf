@@ -1,6 +1,10 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+vstrx ac#1
+vstrx pointer#1
 
 #win32 with _
 importx "memcpy" memcpy
@@ -38,9 +42,7 @@ function row_termination_endcom(ss ac)
 end
 
 function endcom(ss c,ss p)
-	vstrx ac#1
-	vstrx pointer#1
-	set ac c;set pointer p
+	set globalu.ac c;set globalu.pointer p
 end
 
 #error_row
@@ -98,8 +100,8 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
 									break
 								end
 							else
-								set endcom.ac ac
-								set endcom.pointer pointer
+								set globalu.ac ac
+								set globalu.pointer pointer
 								break
 							end
 						end
@@ -127,7 +129,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
 end
 #ac
 function escape_action_endcom(ss pointer)
-	callret escape_action(endcom.ac,endcom.pointer,(NULL),pointer)
+	callret escape_action(globalu.ac,globalu.pointer,(NULL),pointer)
 end
 
 #debug
@@ -146,7 +148,7 @@ function action_debug(sd type)
 	import "mem_free" mem_free
 	if m!=(NULL);call mem_free(#m);endif
 endfunction
-function action_debug_free()
+function action_debug_free_macro()
     call action_debug((action_debug_free))
 endfunction
 
@@ -431,8 +433,8 @@ function sprintf_manual(ss string,ss format,sv elements)
 	sd escaped=0
 	valueu writable_size=1
 	ss writable;set writable malloc(1)
+	vstr er="malloc error at manual sprintf"
 	if writable=(NULL)
-		vstr er="malloc error at manual sprintf"
 		call error(er)
 	end
 	while pointer#!=(Nullchar)
@@ -478,3 +480,5 @@ function sprintf_manual(ss string,ss format,sv elements)
 		call sprintf(string,format)
 	end
 endfunction
+
+entryraw globalu()

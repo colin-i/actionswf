@@ -1,6 +1,13 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+datax main_id#1
+value reg#1
+datax flag_shows#1
+charx is_compress#1
+charx is_file_write#1
 
 #win32 with _
 importx "memcpy" memcpy
@@ -32,31 +39,30 @@ function exportsId()
 endfunction
 
 function swf_frames_reg()
-	data main_id#1
 #set reg for later
-	value reg#1
 	sd block
-	set block struct_ids((ids_get),main_id)
-	set reg block_get_size(block)
-	sub reg (WORD)
+	set block struct_ids((ids_get),globals.main_id)
+	set globals.reg block_get_size(block)
+	sub globals.reg (WORD)
 end
 #p
 function swf_sprite_frames_pointer(sd spriteid)
 	sd block
-	if spriteid!=swf_frames_reg.main_id
+	if spriteid!=globals.main_id
 		setcall block struct_ids((ids_get),spriteid)
 		setcall block block_get_mem(block)
 		add block (WORD)
 	else
-		set block struct_ids((ids_get),swf_frames_reg.main_id) #0
+		set block struct_ids((ids_get),globals.main_id) #0
 		set block block_get_mem(block)
-		add block swf_frames_reg.reg
+		add block globals.reg
 	end
 	return block
 end
 
-function frames_as_shows(datax flag)
-	and flag (flag_framesAsShows)
+function frames_as_shows(sd ?f)
+	set globals.flag_shows f
+	and globals.flag_shows (flag_framesAsShows)
 end
 
 function free_sprite_id_actions(sd id)
@@ -130,7 +136,7 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 	data id_stack#1
 
 	if proc=(mem_exp_change_back)
-		set id swf_frames_reg.main_id
+		set id globals.main_id
 		set call_struct c_main
 		ret
 	endif
@@ -161,9 +167,9 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		import "pool_savepath_init" pool_savepath_init
 		call pool_savepath_init(path_mem)
 		#1
-		setcall swf_frames_reg.main_id def_mem()
-		set id swf_frames_reg.main_id
-		call swf_actionblock((mem_exp_init),swf_frames_reg.main_id)
+		setcall globals.main_id def_mem()
+		set id globals.main_id
+		call swf_actionblock((mem_exp_init),globals.main_id)
 		set call_struct c_main
 		#2
 		call exports_init()
@@ -175,19 +181,17 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		call push_init()
 		#
 		sd test=flagpre_write_no;and test flags
-		charx is_file_write#1
 		if test=0
 			set filelength_offseted len
-			set is_file_write (TRUE)
+			set globals.is_file_write (TRUE)
 			and flags (flag_compress)
-			charx is_compress#1
 			if flags!=0
-				set is_compress (TRUE)
+				set globals.is_compress (TRUE)
 			else
-				set is_compress (FALSE)
+				set globals.is_compress (FALSE)
 			end
 		else
-			set is_file_write (FALSE)
+			set globals.is_file_write (FALSE)
 		end
 		#
 		ret
@@ -227,11 +231,11 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		set call_struct c_main
 	else
 	#if proc==(mem_exp_done)
-		if is_file_write=(TRUE)
+		if globals.is_file_write=(TRUE)
 			call swf_tag_end()
 
 			sd block
-			setcall block call_struct((ids_get),swf_frames_reg.main_id)
+			setcall block call_struct((ids_get),globals.main_id)
 			ss mem;sd size;call block_get_mem_size(block,#mem,#size)
 
 			sd pointer
@@ -243,7 +247,7 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 			setcall file_out file_open(path_mem,(_open_write))
 
 			import "file_write" file_write
-			if is_compress=(TRUE)
+			if globals.is_compress=(TRUE)
 				set mem# (C)
 				add filelength_offseted (DWORD)
 				call file_write(file_out,mem,filelength_offseted)
@@ -405,7 +409,7 @@ function swf_actionblock(sd proc,sd arg,sd arg2)
 				inc frames
 				call pool_read(id,frames)
 			end
-		elseif frames_as_shows.flag=0
+		elseif globals.flag_shows=0
 			if sz!=0
 				set pframes swf_sprite_frames_pointer(id)
 				call swf_frames_inc(frames,pframes)
@@ -424,14 +428,15 @@ endfunction
 function swf_actionblock_add(sd value,sd size)
     call swf_actionblock((mem_exp_add),value,size)
 endfunction
-function actionrecordheader_core(sd tag,sd size)
-	char t#actionrecordheader_tag_size
-	char length#actionrecordheader_length_size
-	set t tag
-	call stack_to_word_arg(size,#length)
-	call swf_actionblock_add(#t,(actionrecordheader_size))
+function actionrecordheader_core(sd ?tag,sd ?size)
+	char ar#actionrecordheader_size;ss arh^ar
+	set arh# tag
+	ss psz=actionrecordheader_tag_size
+	add psz arh
+	call stack_to_word_arg(size,psz)
+	call swf_actionblock_add(arh,(actionrecordheader_size))
 	import "debug_phase_code_add_if" debug_phase_code_add_if
-	callg debug_phase_code_add_if((TRUE),#length)
+	callg debug_phase_code_add_if((TRUE),psz)
 end
 function actionrecordheader(sd tag,sd size)
 #push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
@@ -476,3 +481,5 @@ function swf_showframe_base() #sd frames_pointer
 	call swf_actionblock((mem_exp_part_done),(from_show)) #,frames_pointer
 	call swf_tag_recordheader_entry((ShowFrame),0)
 endfunction
+
+entryraw globals()

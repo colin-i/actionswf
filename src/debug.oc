@@ -273,7 +273,8 @@ function log_init(sd flags,sd path)
 	return flags
 end
 
-import "f_printf" f_printf
+import "f_printf1" f_printf1
+import "f_printf2" f_printf2
 import "f_write" f_write
 import "f_tell" f_tell
 
@@ -291,7 +292,7 @@ function debug_action_init(ss ac)
 
 			#out rows\nac\n
 			char f={Percent,l_low,u_low,xlog_nl,Percent,s_low,xlog_nl,Nullchar}
-			call f_printf((fprintf_min+2),debug_data.file,#f,row,start)
+			call f_printf2(debug_data.file,#f,row,start)
 
 			mult row :
 			import "memrealloc" memrealloc
@@ -354,7 +355,7 @@ function debug_phase_code_flush()
 			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
 			#will not bother concludefunction where is asking with ftell
 			char format=xlog_actions;char *="%lu"
-			call f_printf((fprintf_min+1),debug_data.file,#format,debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
+			call f_printf1(debug_data.file,#format,debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
 			call debug_phase_code_flush_part(debug_phase_code.size)
 			set debug_data.rows 0
 		end
@@ -379,7 +380,7 @@ function alt_log()
 end
 function logs_printf(sd log,sd nr)
 	vstr u="%u"^;char nl={xlog_nl,Nullchar}
-	callg f_printf((fprintf_min+1),log,u,nr)
+	callg f_printf1(log,u,nr)
 end
 function debug_printf(sd ix)
 	call logs_printf(debug_data.file,ix)

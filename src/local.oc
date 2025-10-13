@@ -10,6 +10,7 @@ import "dword_swap" dword_swap
 import "args_advance" args_advance
 import "bits_packs" bits_packs
 import "NumFill_NumLin" NumFill_NumLin
+import "NumFill_NumLin_get" NumFill_NumLin_get
 import "shapewithstyle_records" shapewithstyle_records
 import "printEr" printEr
 import "word_arg_to_stack" word_arg_to_stack
@@ -384,8 +385,8 @@ function swf_shape_local(sd width,sd height,sd args)
     endif
     add shape_size linestyles_size
     #NumFillBits/NumLineBits
-    call NumFill_NumLin(0,FillStyleCount,LineStyleCount)
-    sd NFill_NLin;setcall NFill_NLin NumFill_NumLin(1,(TRUE));mult NFill_NLin 0x10;orcall NFill_NLin NumFill_NumLin(1,(FALSE))
+    call NumFill_NumLin(FillStyleCount,LineStyleCount)
+    sd ?NFill_NLin;setcall NFill_NLin NumFill_NumLin_get((TRUE));mult NFill_NLin 0x10;orcall NFill_NLin NumFill_NumLin_get((FALSE))
     inc shape_size
     #shaperecord[n]
     sd shapewithstyle_record_start

@@ -346,7 +346,7 @@ endfunction
 
 function freelater()
     #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
-    call action_debug_free()
+    call action_debug_free_macro()
     #
     call file_get_content__resources_free()
 
@@ -403,7 +403,7 @@ importx "fclose" fclose
 
 import "action_error" action_error
 import "freereset" freereset   #..x with no args
-import "action_debug_free" action_debug_free
+import "action_debug_free_macro" action_debug_free_macro
 import "file_get_content__resources_free" file_get_content__resources_free
 import "pool_data" pool_data
 

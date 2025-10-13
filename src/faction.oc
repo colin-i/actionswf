@@ -7,7 +7,7 @@ import "action_data" action_data
 import "action_code_values" action_code_values
 import "action_code_values_action" action_code_values_action
 import "escape_action" escape_action
-import "action_debug_free" action_debug_free
+import "action_debug_free_macro" action_debug_free_macro
 import "debug_phase_parse_end" debug_phase_parse_end
 import "endcom" endcom
 import "action_parse_init" action_parse_init
@@ -75,6 +75,6 @@ function action_base(ss ac)
 		call debug_x(stored,nr#) #need to be after, to modify pointers inside
 
 		#free mem ok,another free is at errors
-		call action_debug_free()
+		call action_debug_free_macro()
 	end
 endfunction

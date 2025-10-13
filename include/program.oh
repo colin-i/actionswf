@@ -79,12 +79,14 @@ include "../dev/action_swf.h" "../dev/action_swf.oh"
 
 include "platform.h" "platform.oh" #"lin.oh" "win.oh"
 
-Const _O_RDONLY=0;Const _O_WRONLY=0x0001;Const _O_TRUNC=0x0200
+Const _O_RDONLY=0
+Const _O_WRONLY=0x0001
+Const _O_TRUNC=0x0200
 Const _open_read=_O_RDONLY|flag_O_BINARY
 Const _open_write_base=_O_WRONLY|flag_O_BINARY|flag_O_CREAT
 Const _open_write=_open_write_base|_O_TRUNC
 
-const fprintf_min=2  #file,format plus ...
+#const fprintf_min=2  #file,format plus ...
 
 const from_show=0
 const from_done=1
