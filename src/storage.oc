@@ -8,6 +8,11 @@ value reg#1
 datax flag_shows#1
 charx is_compress#1
 charx is_file_write#1
+#
+datax id_sel#1
+#valuexu call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
+datax id_stack#1
+charx call_struct_bool#1
 
 #win32 with _
 importx "memcpy" memcpy
@@ -135,27 +140,20 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 	charx filelength_offseted#1
 	data file_out=fd_error
 
-	data id#1
-	#data main_id#1 #was moved to a throwless location
-	value call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
-
-	data id_stack#1
-
 	if proc=(mem_exp_change_back)
-		set id globals.main_id
-		set call_struct c_main
+		set globals.id_sel globals.main_id
 		ret
 	endif
 	if proc=(mem_exp_change_pool)  #this can be stackable, at debug titles, at normal usage is back at the main id
 	#is after action_code_values_init
-		set id_stack id
-		set id arg
-		set call_struct c_pool
+		set globals.id_stack globals.id_sel
+		set globals.id_sel arg
+		set globals.call_struct_bool (TRUE)
 		ret
 	endif
 	if proc=(mem_exp_change_back_pool)
-		set id id_stack
-		set call_struct c_main
+		set globals.id_sel globals.id_stack
+		set globals.call_struct_bool (FALSE)
 		ret
 	endif
 	if proc=(mem_exp_init)
@@ -173,9 +171,9 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		call pool_savepath_init(path_mem)
 		#1
 		setcall globals.main_id def_mem()
-		set id globals.main_id
+		set globals.id_sel globals.main_id
 		call swf_actionblock((mem_exp_init),globals.main_id)
-		set call_struct c_main
+		set globals.call_struct_bool (FALSE)
 		#2
 		call exports_init()
 		#3
@@ -227,18 +225,21 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 	if proc=(mem_exp_add)
 		#blockMain blockPool
 		sv p_block
-		setcall p_block call_struct((ids_get_pointer),id)
+		if globals.call_struct_bool=(FALSE)
+			setcall p_block struct_ids((ids_get_pointer),globals.id_sel)
+		else
+			setcall p_block struct_ids_actionpool((ids_get_pointer),globals.id_sel)
+		end
 		call mem_block_add(p_block,arg,len)
 	elseif proc=(mem_exp_change)
-		set id arg
-		set call_struct c_main
+		set globals.id_sel arg
 	else
 	#if proc==(mem_exp_done)
 		if globals.is_file_write=(TRUE)
 			call swf_tag_end()
 
 			sd block
-			setcall block call_struct((ids_get),globals.main_id)
+			setcall block struct_ids((ids_get),globals.main_id)
 			ss mem;sd size;call block_get_mem_size(block,#mem,#size)
 
 			sd pointer

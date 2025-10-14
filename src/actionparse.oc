@@ -5,6 +5,10 @@ include "../include/prog.h" "../include/prog.oh"
 #multithread unsafe
 dataxu flag#1
 charx type#1
+#
+char operations_base="+-*/%&|^<>?"
+#                     + - * / % & | ^ < > ? ( ! = e1e2
+char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
 
 #win32 with _
 importx "strcspn" strcspn
@@ -19,13 +23,6 @@ import "debug_code" debug_code
 import "spaces" spaces
 
 import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
-
-#multithread unsafe
-char operations_base="+-*/%&|^<>?"
-#                     + - * / % & | ^ < > ? ( ! = e1e2
-char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
-datau operations_base_size=\globalp.operations_base-1
-datau operations_full_sz=\globalp.operations_full-2
 
 #bool
 function action_parse_utilEndTypes(ss ?op,ss p_op,sd endtype1,sd endtype2)
@@ -110,8 +107,9 @@ function action_data()
 end
 function action_parse_init()
 	ss a;set a #globalp.operations_full
-	call memcpy(a,#globalp.operations_base,globalp.operations_base_size)
-	add a globalp.operations_base_size
+	sdu ?operations_base_size=\globalp.operations_base-1
+	call memcpy(a,#globalp.operations_base,operations_base_size)
+	add a operations_base_size
 	char c={Openingbracket,Exclamationmark,Equals}
 	call memcpy(a,#c,3)
 end
@@ -160,6 +158,7 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
 	end
 	return p
 end
+import "debug_phase_parse" debug_phase_parse
 #pointer
 function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
     sv p_c
@@ -193,7 +192,6 @@ function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
         endif
     endwhile
     setcall ac action_code_row_parse(ac,a_block_detected,else_index)
-	import "debug_phase_parse" debug_phase_parse
 	#around: else if(2==2){return 2;}else{return 3;}, 4 breakpoints, with \n-s,this here and not at action_code_row,1 breakpoint
 	call debug_phase_parse(ac)
     return ac
@@ -620,7 +618,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 	#can be on the stack but char is low value; ends are set again when recursivity
 	ss end2
 	set end2 #globalp.operations_full
-	add end2 globalp.operations_full_sz
+	add end2 \globalp.operations_full-2
 	ss end=-1
 	add end end2
     #
@@ -1181,6 +1179,8 @@ end
 function write_forward_offset(sd offset,sd skip_xlog)
 	callg write_forward_offset_base(offset,skip_xlog,(xlog_jumpif))
 end
+import "stack_to_word_arg" stack_to_word_arg
+import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
 function write_forward_offset_base(sd offset,sd skip_xlog,sd xlog_j)
 	sd mem
 	sd size
@@ -1196,10 +1196,8 @@ function write_forward_offset_base(sd offset,sd skip_xlog,sd xlog_j)
 		call error("offset>(signed word size) error")
 	endif
 	#
-	import "stack_to_word_arg" stack_to_word_arg
 	call stack_to_word_arg(size,mem)
 	if skip_xlog=(FALSE)
-		import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
 		callg debug_phase_code_add_jump_if(mem,xlog_j)
 	end
 endfunction
@@ -1278,13 +1276,14 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		callg write_forward_offset_cond(offset,#ifs)
 	end
 endfunction
+import "actionrecordheader" actionrecordheader
+import "swf_actionblock_add" swf_actionblock_add
 function add_dummy_jump()
-    import "actionrecordheader" actionrecordheader
     call actionrecordheader((ActionJump),(actionjump_contentsize))
-    import "swf_actionblock_add" swf_actionblock_add
     sd dummy_size=0
 	callg swf_actionblock_add(#dummy_size,(actionjump_contentsize))
 endfunction
+import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
 function resolve_back_jump(sd jumpoffset)  #also at continue
 	sd memblock
 	ss mem
@@ -1298,7 +1297,6 @@ function resolve_back_jump(sd jumpoffset)  #also at continue
 		call error("offset>(signed word size) error (at jump back)")
 	end
 
-	import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
 	call debug_phase_code_add_jumpback_if(#size)
 
 	mult size -1
@@ -1326,11 +1324,11 @@ function action_code_parse_leftfunction(ss ac)
     endif
     return ac
 endfunction
+import "part_of_variable" part_of_variable
 #pointer
 function action_code_parse_new_or_call(ss ac,sd type,ss cursor)
 	ss pointer
 	set pointer ac
-	import "part_of_variable" part_of_variable
 	ss last_dot=0
 	sd sz
 	setcall sz part_of_variable(pointer)

@@ -45,6 +45,7 @@ function endcom(ss c,ss p)
 	set globalu.ac c;set globalu.pointer p
 end
 
+import "debug_phase_init" debug_phase_init
 #error_row
 function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
     sd row=1
@@ -75,7 +76,6 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
             endif
         endif
         #
-	import "debug_phase_init" debug_phase_init
         while loop2=1
 		setcall loop2 row_termination(#ac,#row)
 		if loop2=1
@@ -134,6 +134,7 @@ end
 
 #debug
 
+import "mem_free" mem_free
 function action_debug(sd type)
 	vstr orig=NULL
 	vstr m=NULL
@@ -145,7 +146,6 @@ function action_debug(sd type)
 	end
 	# action_debug_free
 	set orig (NULL)
-	import "mem_free" mem_free
 	if m!=(NULL);call mem_free(#m);endif
 endfunction
 function action_debug_free_macro()
@@ -157,6 +157,8 @@ function debug_code()
     return #code
 endfunction
 
+import "printEr" printEr
+import "string_nl_print" string_nl_print
 function action_error()
     sv p_action_errors
     setcall p_action_errors action_debug((action_debug_get))
@@ -168,13 +170,11 @@ function action_error()
     vstr mem#1
     call memcpy(#ac,p_action_errors,(2*:))
 
-    import "printEr" printEr
     call printEr("Row: ")
     sv p_c
     setcall p_c debug_code()
     sd row
     setcall row escape_action(ac,mem,p_c#,(NULL))
-    import "string_nl_print" string_nl_print
     #a small reserve for a number like 2 000 000 000
     char row_nr#dword_to_string_char
     call sprintf(#row_nr,"%u",row)
@@ -230,20 +230,21 @@ import "action_push" action_push
 
 #tags
 
+import "actionpush" actionpush
+import "debug_phase_code_add_if" debug_phase_code_add_if
 function action_one(sd tag)
-	import "actionpush" actionpush
 	call actionpush()
 	call swf_actionblock_add(#tag,(actionrecordheader_tag_size))
-	import "debug_phase_code_add_if" debug_phase_code_add_if
 	callg debug_phase_code_add_if((FALSE),(xlog_act))
 endfunction
 
 import "action_code_right_util" action_code_right_util
+import "debug_x_preexpand_inter" debug_x_preexpand_inter
+import "debug_x_expand" debug_x_expand
 #codepointer
 function action_caller(ss member,sv pfname,sd codepointer)
 	set codepointer action_caller_right(pfname,codepointer)
 
-	import "debug_x_preexpand_inter" debug_x_preexpand_inter
 	call debug_x_preexpand_inter(codepointer)
 	if member!=0
 		sd currentnr
@@ -256,7 +257,6 @@ function action_caller(ss member,sv pfname,sd codepointer)
 		call action_code_member(member,0)
 		call action_member_loop_right(values)
 
-		import "debug_x_expand" debug_x_expand
 		call debug_x_expand(values)
 
 		set p_currentnr# currentnr
@@ -371,14 +371,14 @@ function write_action_base(sd id)
 	data end=0
 	callg swf_mem_add(#end,1)
 end
+import "pool_done" pool_done
 function write_action(sd id,sd frame)
 	call write_action_base(id)
-	import "pool_done" pool_done
 	callg pool_done(id,frame)
 endfunction
+import "pool_done_one" pool_done_one
 function write_action_one(sd id)
 	call write_action_base(id)
-	import "pool_done_one" pool_done_one
 	callg pool_done_one(id)
 endfunction
 #void

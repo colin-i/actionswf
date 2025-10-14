@@ -21,11 +21,11 @@ importx "_close" close
 
 import "printEr" printEr
 
+import "mem_free" mem_free
 function file_get_content__resources_free()
 	if globalf.file!=(fd_none)
 		call file_close(#globalf.file)
 		if globalf.mem!=(NULL)
-			import "mem_free" mem_free
 			call mem_free(#globalf.mem)
 		endif
 	endif

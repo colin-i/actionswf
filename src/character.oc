@@ -354,6 +354,10 @@ endfunction
 import "identifiers_get" identifiers_get
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "swf_mem_add" swf_mem_add
+import "new_sprite_id" new_sprite_id
+import "pool_read" pool_read
+import "dtitles_frame_one" dtitles_frame_one
+import "write_action_one" write_action_one
 #id
 function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd noText,sd text_id,sd y,ss actions)
     sd size=2+1+2;#ButtonId,TrackAsMenu,ActionOffset
@@ -372,17 +376,14 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     char *CondOverDownToOverUp={8,0}
     const BUTTONCONDACTION_header_size=2+2
     #is action,pool and sprite, it's more code to get action,pool only
-    import "new_sprite_id" new_sprite_id
     sd ?id
     setcall id new_sprite_id()
-	import "pool_read" pool_read
 	call pool_read(id,-1)
 
     call action_sprite_base(id,actions,(FALSE))
 
 	sd ButtonId
 	setcall ButtonId identifiers_get()  #is final at buttons
-	import "dtitles_frame_one" dtitles_frame_one
 	call dtitles_frame_one(id,ButtonId)
 
     add size (BUTTONCONDACTION_header_size)
@@ -404,7 +405,6 @@ function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd no
     char CharacterEndFlag=0
     call swf_mem_add(#CharacterEndFlag,1)
     call swf_mem_add(#BUTTONCONDACTION,(BUTTONCONDACTION_header_size))
-	import "write_action_one" write_action_one
 	call write_action_one(id)
 
 	call free_sprite_id(id,ButtonId)
