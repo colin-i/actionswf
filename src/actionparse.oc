@@ -5,7 +5,7 @@ include "../include/prog.h" "../include/prog.oh"
 #multithread unsafe
 dataxu flag#1
 charx type#1
-#
+
 char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
 char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref

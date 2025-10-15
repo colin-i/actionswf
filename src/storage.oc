@@ -13,6 +13,11 @@ datax id_sel#1
 #valuexu call_struct#1;vdata c_main^struct_ids;vdata c_pool^struct_ids_actionpool
 datax id_stack#1
 charx call_struct_bool#1
+#
+vdata path_mem=NULL
+#4-7 is 0
+charx filelength_offseted#1
+data file_out=fd_error
 
 #win32 with _
 importx "memcpy" memcpy
@@ -135,11 +140,6 @@ import "file_open" file_open
 import "file_write" file_write
 import "file_write_mem" file_write_mem
 function swf_mem(sd proc,sd arg,sd len,sd flags)
-	vdata path_mem=NULL
-	#4-7 is 0
-	charx filelength_offseted#1
-	data file_out=fd_error
-
 	if proc=(mem_exp_change_back)
 		set globals.id_sel globals.main_id
 		ret
@@ -160,15 +160,15 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		#arg is file
 		#len is filelength offset
 		#flags
-		if path_mem!=(NULL)
+		if globals.path_mem!=(NULL)
 			call error("The previous swf was not ended.")
 		endif
 		#0
 		svu path_size
 		setcall path_size strlen_of(arg,1)
-		setcall path_mem memalloc(path_size)
-		call memcpy(path_mem,arg,path_size)
-		call pool_savepath_init(path_mem)
+		setcall globals.path_mem memalloc(path_size)
+		call memcpy(globals.path_mem,arg,path_size)
+		call pool_savepath_init(globals.path_mem)
 		#1
 		setcall globals.main_id def_mem()
 		set globals.id_sel globals.main_id
@@ -183,7 +183,7 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 		#
 		sd test=flagpre_write_no;and test flags
 		if test=0
-			set filelength_offseted len
+			set globals.filelength_offseted len
 			set globals.is_file_write (TRUE)
 			and flags (flag_compress)
 			if flags!=0
@@ -200,9 +200,9 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 	if proc=(mem_exp_free)
 		#0 freeing all ids(main(exports,root+sprites),acs,pools) #also new sprite on error and change here will free here
 		call struct_ids((ids_all_free))
-		if path_mem!=(NULL)
+		if globals.path_mem!=(NULL)
 			#1
-			call mem_free(#path_mem)
+			call mem_free(#globals.path_mem)
 			#2 exports
 			sd exports
 			setcall exports exportsId()
@@ -212,13 +212,13 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 			#$
 			call push()
 			#file
-			if file_out!=(fd_error)
-				call file_close(#file_out)
+			if globals.file_out!=(fd_error)
+				call file_close(#globals.file_out)
 			endif
 		endif
 		ret
 	endif
-	if path_mem=(NULL)
+	if globals.path_mem=(NULL)
 	#swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
 		call error("there isn't a swf started")
 	endif
@@ -244,16 +244,16 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 
 			sd pointer
 			set pointer mem
-			add pointer filelength_offseted
+			add pointer globals.filelength_offseted
 			set pointer# size
 
-			setcall file_out file_open(path_mem,(_open_write))
+			setcall globals.file_out file_open(globals.path_mem,(_open_write))
 
 			if globals.is_compress=(TRUE)
 				set mem# (C)
-				add filelength_offseted (DWORD)
-				call file_write(file_out,mem,filelength_offseted)
-				sub size filelength_offseted
+				add globals.filelength_offseted (DWORD)
+				call file_write(globals.file_out,mem,globals.filelength_offseted)
+				sub size globals.filelength_offseted
 				ss dest
 				sv destsize
 				set destsize compressBound(size)
@@ -261,12 +261,12 @@ function swf_mem(sd proc,sd arg,sd len,sd flags)
 				add pointer (DWORD)
 				sd er;set er compress(dest,#destsize,pointer,size)
 				if er=(Z_OK)
-					callret file_write_mem(file_out,dest,destsize) #will compress at least a RECT,ui16,ui16 + a tag(9) with the background colors
+					callret file_write_mem(globals.file_out,dest,destsize) #will compress at least a RECT,ui16,ui16 + a tag(9) with the background colors
 				end
 				call free(dest)
 				call error("compress error")
 			else
-				call file_write(file_out,mem,size)
+				call file_write(globals.file_out,mem,size)
 			end
 		end
 	endelse
