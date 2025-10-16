@@ -12,6 +12,10 @@ import "platform_iob" platform_iob
 
 include "../include/prog.oh"
 
+#multithread unsafe
+vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
+data counter=0
+
 function printEr(ss msg)
     sd len;setcall len strlen(msg)
     call printEr_func(msg,(BYTE),len)
@@ -518,46 +522,44 @@ endfunction
 
 #structure ids
 
-function struct_ids(sd proc,sd id)
-	vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
-	vdata strct^structures
-	data counter=0
+function struct_ids_free_all()
 	sv pointer
+	#starting with ids_all_free:
+	#                #counter increment#, then null at ac,pools
+	#   can have errors at any point and here all are verified
+	set pointer :;mult pointer globalt.counter
+	add pointer #globalt.structures  ##is ok at .c, and globalt.structures is same as #globalt.structures at .c
+	while #globalt.structures!=pointer
+		dec globalt.counter
+		sub pointer :
+		if pointer#!=(NULL)
+			call free(pointer#)
+			call is_ainit((xlog_ainit_false)) #at root is the only one
+			call struct_ids_free(globalt.counter)
+			call is_ainit((xlog_ainit_true))  #at button is the only one
+			call struct_ids_free(globalt.counter)
+		endif
+	endwhile
+end
+function struct_ids(sd proc,sd id)
 	if proc=(ids_counter)
-		return counter
-	endif
-	if proc=(ids_all_free)
-		#starting with ids_all_free:
-		#                #counter increment#, then null at ac,pools
-		#   can have errors at any point and here all are verified
-		set pointer :;mult pointer counter;add pointer strct
-		while strct!=pointer
-			dec counter
-			sub pointer :
-			if pointer#!=(NULL)
-				call free(pointer#)
-				call is_ainit((xlog_ainit_false)) #at root is the only one
-				call struct_ids_free(counter)
-				call is_ainit((xlog_ainit_true))  #at button is the only one
-				call struct_ids_free(counter)
-			endif
-		endwhile
-		ret
+		return globalt.counter
 	endif
 
 	sd ident
 	if proc!=(ids_set)
 		set ident id
 	else
-		set ident counter
+		set ident globalt.counter
 	endelse
-	setcall pointer move_to_n_pointer(strct,ident)
+	sv pointer
+	setcall pointer move_to_n_pointer(#globalt.structures,ident)
 	if proc=(ids_get)
 		return pointer#
 	endif
 	if proc=(ids_set)
 	#id
-		if counter=(max_structures)
+		if globalt.counter=(max_structures)
 			call error("too many objects")
 		endif
 		sd newblock
@@ -577,14 +579,14 @@ function struct_ids(sd proc,sd id)
 		#	endwhile
 		set pointer# newblock
 		#counter increment#
-		sd c;set c counter;inc counter
+		sd c;set c globalt.counter;inc globalt.counter
 		sv ac_ptr
 		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)  #required for example at exports and free all
 		#counter increment#
 		return ident
 	endif
 	if proc=(ids_get_pointer)
-		if ident>=counter;call error("Unexistent input id.");endif
+		if ident>=globalt.counter;call error("Unexistent input id.");endif
 		return pointer
 	endif
 	#else
@@ -722,3 +724,5 @@ function str_escape(ss src,ss dest,sd delim)
     inc src
     return src
 endfunction
+
+entryraw globalt()

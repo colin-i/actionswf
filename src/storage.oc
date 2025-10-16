@@ -31,6 +31,7 @@ importx "free" free
 
 #this is throwless here
 ^import "struct_ids" struct_ids 2
+import "struct_ids_free_all" struct_ids_free_all
 import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
 
 #
@@ -98,7 +99,7 @@ function swf_mem_change_back_pool()
 end
 function swf_mem_free()
 	#0 freeing all ids(main(exports,root+sprites),acs,pools) #also new sprite on error and change here will free here
-	call struct_ids((ids_all_free))
+	call struct_ids_free_all()
 	if globals.path_mem!=(NULL)
 		#1
 		call mem_free(#globals.path_mem)
