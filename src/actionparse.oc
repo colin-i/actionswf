@@ -84,11 +84,6 @@ function cond_blocks_at_index(sd i)
     return blocks
 endfunction
 
-import "swf_actionblock" swf_actionblock
-function brace_blocks_get_memblock()
-	callret swf_actionblock((mem_exp_get_block))
-endfunction
-
 function for_in(sdu ?f)
 	set globalp.flag f
 	and globalp.flag (flag_forin1)
@@ -124,6 +119,7 @@ import "compat" compat
 import "debug_phase_code_remove" debug_phase_code_remove
 import "mem_cmp_bool" mem_cmp_bool
 import "escape_action_endcom" escape_action_endcom
+import "swf_actionblock_get" swf_actionblock_get
 
 #aftercallimport ebool
 
@@ -1144,7 +1140,7 @@ function brace_blocks_add_write_offset(sd offset,sd flag)
 	sd block
 	setcall block cond_blocks()
 	sd memblock
-	setcall memblock brace_blocks_get_memblock()
+	setcall memblock swf_actionblock_get()
 	setcall block# block_get_size(memblock)
 	add block# offset
 	or block# flag
@@ -1185,7 +1181,7 @@ function write_forward_offset_base(sd offset,sd skip_xlog,sd xlog_j)
 	sd mem
 	sd size
 	sd memblock
-	setcall memblock brace_blocks_get_memblock()
+	setcall memblock swf_actionblock_get()
 	call block_get_mem_size(memblock,#mem,#size)
 	#
 	add mem offset
@@ -1288,7 +1284,7 @@ function resolve_back_jump(sd jumpoffset)  #also at continue
 	sd memblock
 	ss mem
 	sd size
-	setcall memblock brace_blocks_get_memblock()
+	setcall memblock swf_actionblock_get()
 	call block_get_mem_size(memblock,#mem,#size)
 	add mem size;sub mem (WORD)
 	#

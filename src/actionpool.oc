@@ -82,7 +82,8 @@ importx "ftell" ftell
 
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack
-import "swf_mem" swf_mem
+import "swf_mem_change_pool" swf_mem_change_pool
+import "swf_mem_change_back_pool" swf_mem_change_back_pool
 import "block_get_mem" block_get_mem
 import "block_get_size" block_get_size
 import "block_reset_size" block_reset_size
@@ -216,9 +217,9 @@ function actionpool_value_ex(ss value,sd force)
     sd poolid
     setcall poolid actionpoolid_get()
     sd nr
-    call swf_mem((mem_exp_change_pool),poolid)
+	call swf_mem_change_pool(poolid)
     setcall nr actionpool_getvalue_ex(value,force)
-    call swf_mem((mem_exp_change_back_pool))
+	call swf_mem_change_back_pool()
     return nr
 endfunction
 #pool id

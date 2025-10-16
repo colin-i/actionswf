@@ -22,8 +22,7 @@ import "block_get_mem" block_get_mem
 import "block_reset_size" block_reset_size
 
 import "alt_action" alt_action
-#this has throws but for mem_exp_change and back are not required
-import "swf_actionblock" swf_actionblock
+import "swf_actionblock_change_back" swf_actionblock_change_back
 
 import "deprecation" deprecation
 import "user_flags" user_flags
@@ -35,7 +34,8 @@ importx "fclose" fclose
 
 #aftercalli
 
-import "swf_mem" swf_mem
+import "swf_actionblock_change" swf_actionblock_change
+import "swf_mem_init" swf_mem_init
 import "swf_mem_add" swf_mem_add
 import "rect_add" rect_add
 import "swf_frames_reg" swf_frames_reg
@@ -73,7 +73,7 @@ vdata hd_pack2%hd2
 	import "flags_init" flags_init
 	call user_flags(#flags)
 	call flags_init(flags,path)
-	call swf_mem((mem_exp_init),path,(file_sz_off-hd_start),flags)
+	call swf_mem_init(path,(file_sz_off-hd_start),flags)
 
     #identifiers for swf
     call identifiers_set(0);#font with id 0 isn't visible in the placements
@@ -684,13 +684,13 @@ function actionf_sprite_local(sd sprite,sv pbuffer)
 	sd alt_ac;set alt_ac alt_action(pbuffer#,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
-		call swf_actionblock((mem_exp_change),sprite)   #alt action is not using actionblock, is using swfblock
+		call swf_actionblock_change(sprite)
 		if pbuffer#=alt_ac
 			call action_format(pbuffer)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
 		end
-		call swf_actionblock((mem_exp_change_back))
+		call swf_actionblock_change_back()
 	end
 end

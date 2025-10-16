@@ -195,7 +195,7 @@ include "../include/platformhome.oh" #"../include/linhome.oh" "../include/winhom
 end
 
 import "row_termination" row_termination
-import "brace_blocks_get_memblock" brace_blocks_get_memblock
+import "swf_actionblock_get" swf_actionblock_get
 import "block_get_size" block_get_size
 import "block_get_psize" block_get_psize
 import "block_get_mem" block_get_mem
@@ -492,7 +492,7 @@ function debug_phase_code_add_if(sd is_long,ss arg2)
 	endif
 endfunction
 function debug_phase_code_remove(sd swflength,sd length)
-	sd memblock;set memblock brace_blocks_get_memblock()
+	sd memblock;set memblock swf_actionblock_get()
 	sd p;set p block_get_psize(memblock)
 	sub p# swflength
 
@@ -511,7 +511,7 @@ function debug_definefunction(sv pointers)
 		set pointers# f_tell(debug_data.file)
 		incst pointers
 
-		sd memblock;setcall memblock brace_blocks_get_memblock()
+		sd memblock;setcall memblock swf_actionblock_get()
 		set pointers#d^ block_get_size(memblock)
 		incst pointers
 
@@ -530,7 +530,7 @@ function debug_concludefunction(sv pointers)
 		sd now;set now f_tell(debug_data.file)
 		incst pointers
 
-		sd block;setcall block brace_blocks_get_memblock()
+		sd block;setcall block swf_actionblock_get()
 		sd blockmem;set blockmem block_get_mem(block)
 		add blockmem pointers#d^
 		sd size;set size word_arg_to_stack(blockmem)

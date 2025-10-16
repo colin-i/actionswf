@@ -50,7 +50,7 @@ function action_code_values_action()
 	return #global.nr
 end
 
-import "brace_blocks_get_memblock" brace_blocks_get_memblock
+import "swf_actionblock_get" swf_actionblock_get
 import "block_get_size" block_get_size
 
 import "brace_blocks_counter" brace_blocks_counter
@@ -610,7 +610,7 @@ function action_code_write_conditions(sd codepointer)
 		sd sizeOff
 		if codepointer#!=(inter_for) #else is JUMP 0
 			call add_dummy_jump()
-			sd memblock;setcall memblock brace_blocks_get_memblock()
+			sd memblock;setcall memblock swf_actionblock_get()
 			setcall sizeOff block_get_size(memblock)
 		end
 		#
@@ -705,7 +705,7 @@ function action_code_break()
 	call debug_xlog_break()
 	#
 	sd memblock
-	setcall memblock brace_blocks_get_memblock()
+	setcall memblock swf_actionblock_get()
 	setcall c_block# block_get_size(memblock);sub c_block# (WORD)
 	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
 	if p_type#=(forin_marker)

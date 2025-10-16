@@ -28,16 +28,9 @@ const mem_struct__size_off=4
 const mem_struct__size_size=4
 const mem_struct_size=mem_struct__size_off+mem_struct__size_size
 
-const mem_exp_init=0
-const mem_exp_add=1
+const mem_exp_add=0
+const mem_exp_change=1
 const mem_exp_done=2
-const mem_exp_part_done=3
-const mem_exp_change=4
-const mem_exp_change_back=5
-const mem_exp_change_pool=6
-const mem_exp_change_back_pool=7
-const mem_exp_get_block=8
-const mem_exp_free=9
 
 const NBits_size=5
 

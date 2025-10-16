@@ -22,13 +22,16 @@ import "freereset" freereset   #..x with no args
 import "dtitles_conclude" dtitles_conclude
 import "free_sprite_id_actions" free_sprite_id_actions
 import "is_ainit" is_ainit
+import "swf_mem_change_back" swf_mem_change_back
+import "swf_actionblock_change_back" swf_actionblock_change_back
+import "swf_actionblock_change" swf_actionblock_change #here id is verify first at swf_mem
 
 import "ebase" ebase
 #aftercallimport ebool
 
 import "swf_mem" swf_mem
 import "swf_mem_add" swf_mem_add
-import "swf_actionblock" swf_actionblock
+import "swf_actionblock_done" swf_actionblock_done
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "error" error
 import "swf_shape_simple" swf_shape_simple
@@ -395,7 +398,7 @@ functionX swf_done()
 	call swf_exports_done_local();#remaining exports?
 
 #	sd p;set p swf_frames_pointer()
-	call swf_actionblock((mem_exp_part_done),(from_done)) #,p in case there are remaining actions
+	call swf_actionblock_done((from_done)) #,p in case there are remaining actions
 
 #the swf is done and the total length is wrote and the memory is freed
 	call swf_mem((mem_exp_done))
@@ -443,13 +446,13 @@ functionX swf_sprite_done(sd spriteid)
 #sd spriteid        pre-id created with swf_sprite_new
     call swf_mem((mem_exp_change),spriteid)
 
-    call swf_actionblock((mem_exp_change),spriteid)
-	call swf_actionblock((mem_exp_part_done),(from_done)) # in case there are remaining actions
-    call swf_actionblock((mem_exp_change_back))
+	call swf_actionblock_change(spriteid)
+	call swf_actionblock_done((from_done)) # in case there are remaining actions
+	call swf_actionblock_change_back()
 
     import "swf_tag_end" swf_tag_end
     call swf_tag_end()
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
 
 	sd id
 	setcall id identifiers_get()
@@ -498,7 +501,7 @@ functionX swf_sprite_new()
     call swf_mem_add(#reserve,2)
     sd frames=0
     call swf_mem_add(#frames,2)
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
     return id
 endfunction
 functionX swf_sprite_placeobject(sd spriteid,sd object,sd depth)
@@ -507,7 +510,7 @@ functionX swf_sprite_placeobject(sd spriteid,sd object,sd depth)
 #sd object,sd depth   same as swf_placeobject
     call swf_mem((mem_exp_change),spriteid)
     call swf_placeobject_local(object,depth)
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
 endfunction
 functionX swf_sprite_placeobject_coords(sd spriteid,sd object,sd depth,sd x,sd y)
 	base swf_new.bp;call ebase(swf_new.bp)
@@ -515,7 +518,7 @@ functionX swf_sprite_placeobject_coords(sd spriteid,sd object,sd depth,sd x,sd y
 #sd object,sd depth,sd x,sd y  same as swf_placeobject_coords
     call swf_mem((mem_exp_change),spriteid)
     call swf_placeobject_coords_local(object,depth,x,y)
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
 endfunction
 functionX swf_sprite_removeobject(sd spriteid,sd depth)
 	base swf_new.bp;call ebase(swf_new.bp)
@@ -523,17 +526,17 @@ functionX swf_sprite_removeobject(sd spriteid,sd depth)
 #sd depth      same as swf_removeobject
     call swf_mem((mem_exp_change),spriteid)
     call swf_removeobject_local(depth)
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
 endfunction
 functionX swf_sprite_showframe(sd spriteid)
 	base swf_new.bp;call ebase(swf_new.bp)
 #sd spriteid   pre-id
     call swf_mem((mem_exp_change),spriteid)
-    call swf_actionblock((mem_exp_change),spriteid)
+	call swf_actionblock_change(spriteid)
 #	sd p;setcall p swf_sprite_frames_pointer(spriteid)
 	call swf_showframe_base() #p
-    call swf_actionblock((mem_exp_change_back))
-    call swf_mem((mem_exp_change_back))
+	call swf_actionblock_change_back()
+	call swf_mem_change_back()
 endfunction
 
 ######################
@@ -573,7 +576,7 @@ functionX swf_exports_add(sd id,ss name)
     inc len
     call swf_mem_add(name,len)
     #
-    call swf_mem((mem_exp_change_back))
+	call swf_mem_change_back()
 endfunction
 import "swf_exports_done_local" swf_exports_done_local
 functionX swf_exports_done()

@@ -214,8 +214,7 @@ function pool_size(sd id)
     return poolsize
 endfunction
 
-#this has throws but for mem_exp_change and back are not required
-import "swf_actionblock" swf_actionblock
+import "swf_actionblock_change_back" swf_actionblock_change_back
 import "file_get_content__resources_free" file_get_content__resources_free
 
 import "action_code_get_pointer" action_code_get_pointer
@@ -225,6 +224,7 @@ import "action_code_get" action_code_get
 
 #aftercallimport ebool
 
+import "swf_actionblock_change" swf_actionblock_change
 import "swf_actionblock_add" swf_actionblock_add
 import "action_push" action_push
 
@@ -415,12 +415,12 @@ function action_sprite_base(sd sprite,ss actions,sd has_frames)
 	sd alt_ac;set alt_ac alt_action_base(actions,sprite,has_frames)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
-		call swf_actionblock((mem_exp_change),sprite)  #alt action is not using actionblock, is using swfblock
+		call swf_actionblock_change(sprite)
 		call action_base(alt_ac)
 		if alt_ac!=actions
 			call file_get_content__resources_free()
 		end
-		call swf_actionblock((mem_exp_change_back))
+		call swf_actionblock_change_back()
 	end
 endfunction
 

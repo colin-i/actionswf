@@ -13,14 +13,14 @@ endfunction
 
 include "../include/prog.oh"
 
+import "swf_mem_free" swf_mem_free
 functionx freereset()
 #this is called by user only if want to abort after some calls
 #               and at some frees
 	import "debug_data" debug_data
 	call debug_data()
 	#free and set initial null/-1.....
-	import "swf_mem" swf_mem
-	call swf_mem((mem_exp_free))
+	call swf_mem_free()
 endfunction
 
 functionx xlog_pad_get()
