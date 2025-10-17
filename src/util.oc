@@ -15,6 +15,9 @@ include "../include/prog.oh"
 #multithread unsafe
 vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
 data counter=0
+char throwless=FALSE
+charx ainit_bool#1
+data fileRes=fd_none
 
 function printEr(ss msg)
     sd len;setcall len strlen(msg)
@@ -280,7 +283,7 @@ function str_expression_at_start_withEndCare(ss ac,ss expression)
     if pointer=ac
         return ac
     endif
-    char term=";"
+    char term=";"^
     if pointer#=term
         inc pointer
     endif
@@ -330,12 +333,11 @@ end
 
 import "file_close" file_close
 function file_resources(sd trueIsSet_falseIsFree,sd fileIn)
-    data file=fd_none
     if trueIsSet_falseIsFree=(TRUE)
-        set file fileIn
+        set globalt.fileRes fileIn
     else
-        if file!=(fd_none)
-            call file_close(#file)
+        if globalt.fileRes!=(fd_none)
+            call file_close(#globalt.fileRes)
         endif
     endelse
 endfunction
@@ -371,13 +373,12 @@ function mem_cmp_bool(ss a,ss b,sd n)
 end
 
 function mem_block_add_throwless(sv p_block,ss newblock,sd newblock_size)
-	char throwless=FALSE
-	set throwless (TRUE)
+	set globalt.throwless (TRUE)
 	call mem_block_add(p_block,newblock,newblock_size)
-	if throwless=(FALSE)
+	if globalt.throwless=(FALSE)
 		return (FALSE)
 	end
-	set throwless (FALSE)
+	set globalt.throwless (FALSE)
 	return (TRUE)
 end
 
@@ -394,12 +395,11 @@ function struct_ids_free(sd id)
 	endif
 end
 
-function is_ainit(sd a)
-	charx b#1
-	set b a
+function is_ainit(ss ?a)
+	set globalt.ainit_bool a
 end
 function ainit()
-	return is_ainit.b
+	return globalt.ainit_bool
 end
 
 importx "malloc" malloc
@@ -485,8 +485,8 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 	add sz_test newblock_size
 
 	if sz_test>^0x7fFFffFF
-		if mem_block_add_throwless.throwless=(TRUE)
-			set mem_block_add_throwless.throwless (FALSE)
+		if globalt.throwless=(TRUE)
+			set globalt.throwless (FALSE)
 			ret
 		end
 		call error("size error") #easy to test, call multiple action(...)
@@ -500,8 +500,8 @@ function mem_block_add(sv p_block,ss newblock,sd newblock_size)
 		#set allsize sz_test
 		setcall block realloc(block,sz_test)  #allsize
 		if block=(NULL)
-			if mem_block_add_throwless.throwless=(TRUE)
-				set mem_block_add_throwless.throwless (FALSE)
+			if globalt.throwless=(TRUE)
+				set globalt.throwless (FALSE)
 				ret
 			end
 			call error("realloc error at add")
@@ -542,10 +542,6 @@ function struct_ids_free_all()
 	endwhile
 end
 function struct_ids(sd proc,sd id)
-	if proc=(ids_counter)
-		return globalt.counter
-	endif
-
 	sd ident
 	if proc!=(ids_set)
 		set ident id
@@ -598,7 +594,7 @@ function struct_ids_action(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(xlog_ainit_false)
+	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)
@@ -609,7 +605,7 @@ function struct_ids_actionpool(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(xlog_ainit_false)
+	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)
@@ -620,7 +616,7 @@ function struct_ids_actionpool_filter(sd proc,sd id)
 	sd v
 	vdatax action_structures#max_structures
 	vdatax action_structures_init#max_structures
-	if is_ainit.b=(xlog_ainit_false)
+	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#action_structures)
 	else
 		set v struct_ids_expand(proc,id,#action_structures_init)
@@ -637,8 +633,7 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 		setcall pointer# def_data()
 	elseif proc=(ids_get_pointer)
 		#call to verify if the user input has a wrong id
-		sd c;setcall c struct_ids((ids_counter))
-		if id>=c;call error("Unregistered input id.");endif
+		if id>=globalt.counter;call error("Unregistered input id.");endif
 		#
 		return pointer
 	else

@@ -3,6 +3,8 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
+datax identifiers#1
+data exports=not_an_id
 datax main_id#1
 value reg#1
 datax flag_shows#1
@@ -34,21 +36,8 @@ importx "free" free
 import "struct_ids_free_all" struct_ids_free_all
 import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
 
-#
-function identifiers()
-    data id#1
-    return #id
-endfunction
 function identifiers_set(sd value)
-    sd id
-    setcall id identifiers()
-    set id# value
-endfunction
-
-#p
-function exportsId()
-    data exports=not_an_id
-    return #exports
+    set globals.identifiers value
 endfunction
 
 function swf_frames_reg()
@@ -104,9 +93,7 @@ function swf_mem_free()
 		#1
 		call mem_free(#globals.path_mem)
 		#2 exports
-		sd exports
-		setcall exports exportsId()
-		set exports# (not_an_id)
+		set globals.exports (not_an_id)
 		#3 set of values
 		call action_code_values_free()
 		#4
@@ -160,13 +147,11 @@ import "strlen_of" strlen_of
 
 #id
 function identifiers_get()
-	sd id
-	setcall id identifiers()
-	if id#=(maxuint16) #from swf specitifactions, example, id field for a DefineSprite
+	if globals.identifiers=(maxuint16) #from swf specitifactions, example, id field for a DefineSprite
 		call error("max uint16 at identifiers")
 	end
-	inc id#
-	return id#
+	inc globals.identifiers
+	return globals.identifiers
 endfunction
 
 import "debug_spritedone" debug_spritedone
@@ -451,18 +436,14 @@ endfunction
 
 #
 function exports_init()
-    sd exports
-    setcall exports exportsId()
     sd id
     setcall id def_mem()
-    set exports# id
+    set globals.exports id
 endfunction
 #id
 function exportsId_get()
-    sd e
-    setcall e exportsId()
-    if e#=(not_an_id);call error("Do not call the exports at this moment.");endif
-    return e#
+    if globals.exports=(not_an_id);call error("Do not call the exports at this moment.");endif
+    return globals.exports
 endfunction
 
 function swf_showframe_base() #sd frames_pointer

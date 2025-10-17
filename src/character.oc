@@ -1,9 +1,48 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
+const max_char_records=256
+const sim64pointer_size=:-DWORD
+const sim64pointer_unit=sim64pointer_size/DWORD
 
 #multithread unsafe
 dataxu NFill_NLin#1
+charx shapewithstyle_record#max_char_records
+#
+datax edittext_struct#11+sim64pointer_unit+sim64pointer_unit
+#function edittext_struct()
+#   data fontid#1
+#    data *font_height#1
+#    str *fontclassname#1;char *sim64pointer#sim64pointerSize
+#    data *rgba#1
+#    data *maxlength#1
+#    str *initialtext#1;char *sim64pointer_reserved#sim64pointerSize
+#    data *layout_align#1
+#    data *layout_leftmargin#1
+#    data *layout_rightmargin#1
+#    data *layout_indent#1
+#    data *layout_leading#1
+#    return #fontid
+#endfunction
+#
+datax button_mem_struct#10
+
+function button_mem()
+#	data up#1
+#	data *over#1
+#	data *hit#1
+
+#	data *width#1
+#	data *height#1
+
+#	data *no_text#1
+#	data *font_id#1
+#	data *font_height#1
+#	data *y#1
+#	data *font_color#1
+
+	return #globalc.button_mem_struct
+endfunction
 
 import "stack_to_word_arg" stack_to_word_arg
 
@@ -14,10 +53,8 @@ function args_advance(sv p_args)
     add p_args# (DWORD)
     return value#
 endfunction
-const max_char_records=256
 function shapewithstyle_records()
-    charx shapewithstyle_record#max_char_records
-    return #shapewithstyle_record
+    return #globalc.shapewithstyle_record
 endfunction
 
 import "bits_bigendian" bits_bigendian
@@ -43,38 +80,22 @@ end
 
 #edittext
 
-const sim64pointerSize=:-DWORD
-#struct
-function edittext_struct()
-    data fontid#1
-    data *font_height#1
-    str *fontclassname#1;char *sim64pointer#sim64pointerSize
-    data *rgba#1
-    data *maxlength#1
-    str *initialtext#1;char *sim64pointer_reserved#sim64pointerSize
-    data *layout_align#1
-    data *layout_leftmargin#1
-    data *layout_rightmargin#1
-    data *layout_indent#1
-    data *layout_leading#1
-    return #fontid
-endfunction
 function edittext_font(sd fontid,sd fontheight)
     sd s
-    setcall s edittext_struct()
+    set s #globalc.edittext_struct
     set s# fontid
     add s (DWORD)
     set s# fontheight
 endfunction
 function edittext_rgba(sd val)
     sd ed_str
-    setcall ed_str edittext_struct()
-    add ed_str (3*DWORD+sim64pointerSize);set ed_str# val
+    set ed_str #globalc.edittext_struct
+    add ed_str (3*DWORD+sim64pointer_size);set ed_str# val
 endfunction
 function edittext_layout(sd in_args)
     sd s
-    setcall s edittext_struct()
-    add s (6*DWORD+sim64pointerSize+sim64pointerSize)
+    set s #globalc.edittext_struct
+    add s (6*DWORD+sim64pointer_size+sim64pointer_size)
     set s# in_args#
     add s (DWORD);add in_args (DWORD);set s# in_args#
     add s (DWORD);add in_args (DWORD);set s# in_args#
@@ -83,26 +104,9 @@ function edittext_layout(sd in_args)
 endfunction
 function edittext_text(ss text)
     sv s
-    setcall s edittext_struct()
-    add s (5*DWORD+sim64pointerSize)
+    set s #globalc.edittext_struct
+    add s (5*DWORD+sim64pointer_size)
     set s# text
-endfunction
-
-function button_mem()
-    data up#1
-    data *over#1
-	data *hit#1
-
-    data *width#1
-    data *height#1
-
-    data *no_text#1
-    data *font_id#1
-    data *font_height#1
-    data *y#1
-    data *font_color#1
-
-    return #up
 endfunction
 
 import "free_sprite_id" free_sprite_id
@@ -121,22 +125,22 @@ import "action_sprite_base" action_sprite_base
 
 import "error" error
 function shape_records_bits(sd value,sd size,sv p_dest_pos)
-    #why was this here? data start#1
-    #and this, this is called through shape_records_add    if p_dest_pos==0
-    #	set start value
-    #	return (void)
-    #endif
-    sd pointer
-    set pointer p_dest_pos#
-    subcall pointer shapewithstyle_records()
-    if pointer=(max_char_records)
-    #was >=
-        call error("too many arguments at shape")
-    endif
-    sd p_pos
-    set p_pos p_dest_pos
-    add p_pos :
-    call bits_bigendian(value,size,p_dest_pos,p_pos)
+	#why was this here? data start#1
+	#and this, this is called through shape_records_add    if p_dest_pos==0
+	#	set start value
+	#	return (void)
+	#endif
+	sd pointer
+	set pointer p_dest_pos#
+	sub pointer #globalc.shapewithstyle_record
+	if pointer=(max_char_records)
+		#was >=
+		call error("too many arguments at shape")
+	endif
+	sd p_pos
+	set p_pos p_dest_pos
+	add p_pos :
+	call bits_bigendian(value,size,p_dest_pos,p_pos)
 endfunction
 function shape_records_add(sd p_dest_pos,sd p_args)
     sd edge
@@ -344,9 +348,7 @@ function swf_text_initial_font_centered(sd width,sd height,ss text,sd font_id,sd
     data layout={layout_align_center,0,0,0,0}
     call edittext_layout(#layout)
     call edittext_text(text)
-    sd e_struct
-    setcall e_struct edittext_struct()
-	callret swf_text_local(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),e_struct)
+	callret swf_text_local(width,height,"",(HasFont|HasText|HasTextColor|HasLayout|ReadOnly|NoSelect),#globalc.edittext_struct)
 endfunction
 
 #button

@@ -1,10 +1,15 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
+const cond_block_size=DWORD
+const brace_blocks_max=100*cond_block_size
 
 #multithread unsafe
 dataxu flag#1
 charx type#1
+data compare_bool=FALSE
+datax counter#1
+datax blocks_mem#brace_blocks_max
 
 char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
@@ -41,47 +46,28 @@ import "is_numeric" is_numeric
 
 #strpbrk
 function action_code_membersplit(ss ac)
-    char delims=".["
+	char delims=".["
 	callret strpbrk(ac,#delims) #pointer
 endfunction
 
-#str
-function compares_signs()
-    return "<>=!"
-endfunction
-function compare_bool_pointer()
-    data compare_bool=FALSE;return #compare_bool
-endfunction
-
-const cond_block_size=DWORD
-const brace_blocks_max=100*cond_block_size
 function brace_blocks_counter()
-    data counter#1
-    return #counter
-endfunction
+	return globalp.counter
+end
 function brace_blocks_counter_init()
-    sd c
-    setcall c brace_blocks_counter()
-    set c# 0
+	set globalp.counter 0
 endfunction
 function brace_blocks_counter_inc()
-    sd c
-    setcall c brace_blocks_counter()
-    inc c#
+	inc globalp.counter
 endfunction
 function cond_blocks_noerror()
-    sd c
-    setcall c brace_blocks_counter()
-	callret cond_blocks_at_index(c#)
+	callret cond_blocks_at_index(globalp.counter)
 endfunction
 
 function cond_blocks_at_index(sd i)
-    datax blocks_mem#brace_blocks_max
-    sd blocks^blocks_mem
-    #
-    mult i (cond_block_size)
-    add blocks i
-    return blocks
+	sd blocks;set blocks #globalp.blocks_mem
+	mult i (cond_block_size)
+	add blocks i
+	return blocks
 endfunction
 
 function for_in(sdu ?f)
@@ -327,54 +313,46 @@ function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
 endfunction
 #pointer
 function else_verify(ss ac,sd else_index)
-    sd p_ind
-    sd c_ind
+	#this condition for: else >expression<
+	if globalp.counter>else_index
+		call brace_blocks_remove_parse()
+	endif
+	#opened else index same with current index: return at else
+	if else_index=globalp.counter
+		return ac
+	endif
 
-    setcall p_ind brace_blocks_counter()
-    set c_ind p_ind#
-    #this condition for: else >expression<
-    if c_ind>else_index
-        call brace_blocks_remove_parse()
-    endif
-    setcall p_ind brace_blocks_counter()
-    set c_ind p_ind#
-    #opened else index same with current index: return at else
-    if else_index=c_ind
-        return ac
-    endif
+	sd ?bool_is_elseif
 
-    sd bool_is_elseif
-
-    ss pointer
-    setcall pointer else_elseif_expression(ac,#bool_is_elseif)
-    if ac=pointer
-        return ac
-    endif
-    while pointer!=ac
-        call action_code_set((else_marker))
-        call brace_blocks_add_parse((else_marker))
-        sd ind
-        setcall p_ind brace_blocks_counter()
-        set ind p_ind#
-        #c_ind is lower
-        while ind!=c_ind
+	ss pointer
+	!xor bool_is_elseif bool_is_elseif ##same problems with recursive vars at .o
+	setcall pointer else_elseif_expression(ac,#bool_is_elseif)
+	if ac=pointer
+		return ac
+	endif
+	sd ?c_ind;set c_ind globalp.counter
+	while pointer!=ac
+		call action_code_set((else_marker))
+		call brace_blocks_add_parse((else_marker))
+		#c_ind is lower
+		sd ?ind;set ind globalp.counter
+		while c_ind!=ind
 			ss the_new_pointer;set the_new_pointer pointer
 			setcall the_new_pointer action_code_row_ex(pointer,(FALSE),ind)
 			if the_new_pointer=pointer;call error("Else not closed");endif
 			set pointer the_new_pointer
-            #
-            setcall p_ind brace_blocks_counter()
-            set c_ind p_ind#
-        endwhile
-        set ac pointer
-        sd prev_else_elseif;set prev_else_elseif bool_is_elseif
-        setcall pointer else_elseif_expression(ac,#bool_is_elseif)
-        if prev_else_elseif=(FALSE);if bool_is_elseif=(TRUE)
-            call error("not expecting Else and then Else If")
-        endif;endif
-    endwhile
-    call brace_blocks_remove_parse_else()
-    return ac
+			#
+			set c_ind globalp.counter
+		endwhile
+		set ac pointer
+		sd ?prev_else_elseif;set prev_else_elseif bool_is_elseif
+		setcall pointer else_elseif_expression(ac,#bool_is_elseif)
+		if prev_else_elseif=(FALSE);if bool_is_elseif=(TRUE)
+			call error("not expecting Else and then Else If")
+		endif;endif
+	endwhile
+	call brace_blocks_remove_parse_else()
+	return ac
 endfunction
 #next/same
 function else_elseif_expression(ss ac,sd p_elseif)
@@ -618,9 +596,6 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 	ss end=-1
 	add end end2
     #
-    sd is_compare_ptr
-    setcall is_compare_ptr compare_bool_pointer()
-    #
     whiletrue
 		set ac spaces(ac) #ffdec
 		ss ?op         ;#op can't be charx, is recursive stack variable, is cleared in two places, here and at sv p_op
@@ -651,8 +626,8 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 		endif
 		#
 		setcall ac action_code_extended_operations(ac,op)
-		if is_compare_ptr#=(TRUE)
-			set is_compare_ptr# (FALSE)
+		if globalp.compare_bool=(TRUE)
+			set globalp.compare_bool (FALSE)
 		else
 			if op=0
 				if p_op!=0
@@ -703,10 +678,10 @@ function action_code_extended_operations(ss pointer,ss ?op)
         sd oneSign_two_or_noCompare;setcall oneSign_two_or_noCompare action_compare(pointer#,compareaction)
         dec pointer
         if oneSign_two_or_noCompare!=2
-            sd compare_bool_ptr;setcall compare_bool_ptr compare_bool_pointer();set compare_bool_ptr# (TRUE)
-            add pointer oneSign_two_or_noCompare
-            inc pointer
-            return pointer
+		set globalp.compare_bool (TRUE)
+		add pointer oneSign_two_or_noCompare
+		inc pointer
+		return pointer
         endif
     endif
 
@@ -964,67 +939,61 @@ endfunction
 
 
 #firstcompare==NULL:action code/NULL;else oneSign_two_or_noCompare 0/1/2
-function action_compare(sd value,sd firstcompare)
-    #
-    ss compares
-    setcall compares compares_signs()
-    #<
-    if compares#=value
+function action_compare(ss ?value,sd firstcompare)
+	#<
+	if value=(Lessthan)
         if firstcompare!=(NULL)
                                            #is shl
 		if firstcompare=(ActionLess2);return 2;endif
 		call error("not expeting < here")
         endif
         return (ActionLess2)
-    endif
-    #>
-    inc compares
-    if compares#=value
+	endif
+	#>
+	if value=(Greaterthan)
         if firstcompare!=(NULL)
                                              #is sar_shr
 		if firstcompare=(ActionGreater);return 2;endif
 		call error("not expeting > here")
         endif
         return (ActionGreater)
-    endif
-    #
-    if firstcompare!=(NULL)
+	endif
+	#
+	if firstcompare!=(NULL)
         call action_code_set((compare_action))
-    endif
-    #=
-    inc compares
-    if compares#=value
-	if firstcompare=(ActionLess2)
-            call action_code_set((ActionGreater))
-            call action_code_set((ActionNot))
-            return 1
 	endif
-	if firstcompare=(ActionGreater)
-            call action_code_set((ActionLess2))
-            call action_code_set((ActionNot))
-            return 1
+	#=
+	if value=(Equals)
+		if firstcompare=(ActionLess2)
+			call action_code_set((ActionGreater))
+			call action_code_set((ActionNot))
+			return 1
+		endif
+		if firstcompare=(ActionGreater)
+			call action_code_set((ActionLess2))
+			call action_code_set((ActionNot))
+			return 1
+		endif
+		if firstcompare=(ActionEquals2)
+			call action_code_set((ActionEquals2))
+			call action_code_set(0)
+			return 1
+		endif
+		if firstcompare=(ActionNot)
+			call action_code_set((ActionEquals2))
+			call action_code_set((ActionNot))
+			return 1
+		endif
+		return (ActionEquals2)
 	endif
-	if firstcompare=(ActionEquals2)
-            call action_code_set((ActionEquals2))
-            call action_code_set(0)
-            return 1
-	endif
-	if firstcompare=(ActionNot)
-            call action_code_set((ActionEquals2))
-            call action_code_set((ActionNot))
-            return 1
-	endif
-        return (ActionEquals2)
-    endif
-    # !
-    inc compares
-    if compares#=value
+	# !
+	if value=(Exclamationmark)
         if firstcompare!=(NULL)
             call error("not expecting ! here")
         endif
         return (ActionNot)
-    endif
-    #another char
+	endif
+	#another char
 	if firstcompare=(NULL)
         #call error("expecting a comparison")
         return (NULL)
@@ -1048,20 +1017,16 @@ endfunction
 #{} blocks
 
 function cond_blocks()
-    sd c
-    setcall c brace_blocks_counter()
-    if c#=(brace_blocks_max)
+	if globalp.counter=(brace_blocks_max)
         call error("too many blocks: {}")
-    endif
-	callret cond_blocks_at_index(c#)
+	endif
+	callret cond_blocks_at_index(globalp.counter)
 endfunction
 function brace_blocks_counter_dec()
-    sd c
-    setcall c brace_blocks_counter()
-    if c#=0
+	if globalp.counter=0
         call error("unexpected end block: }")
-    endif
-    dec c#
+	endif
+	dec globalp.counter
 endfunction
 #
 function brace_blocks_add_parse(sd ?type)
@@ -1074,18 +1039,16 @@ function brace_blocks_remove_parse_else()
     sd p_type
     sd type
     #
-    sd p_i
-    setcall p_i brace_blocks_counter()
-    sd i
-    set i p_i#
-    dec i
+	sd i
+	set i globalp.counter
+	dec i
     setcall p_type cond_blocks_at_index(i)
     set type p_type#
     if type=(else_marker)
         sd else_number=0
         while type=(else_marker)
             inc else_number
-            dec p_i#
+            dec globalp.counter
             if i!=0
                 dec i
                 setcall p_type cond_blocks_at_index(i)
@@ -1123,11 +1086,9 @@ function type_consecutive(sd type,sd p_consecutive)
     return type
 endfunction
 function brace_blocks_end()
-    sd c
-    setcall c brace_blocks_counter()
-    if c#!=0
+	if globalp.counter!=0
         call error("unclosed block(s): {}")
-    endif
+	endif
 endfunction
 #
 function brace_blocks_add_write()
@@ -1238,16 +1199,14 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	sd skip_jump=0 ;#look to see top_marker and if is not forin, that has a different break than for3/while
 	sd ifs=0
 	call check_whilefor(#skip_jump,#ifs)
-	sd c
-	set c brace_blocks_counter()
 	sd blocks
 	set blocks cond_blocks_noerror()
-	dec c#
+	dec globalp.counter
 	sub blocks (DWORD)
 	sd offset;set offset blocks#
 	if offset!=(top_marker) #can be whiletrue with no breaks (a return in a branch)
 		whiletrue
-			dec c#
+			dec globalp.counter
 			sub blocks (DWORD)
 			if blocks#=(top_marker)
 				#here is last jump (loopjump or a moved break)
@@ -1260,7 +1219,7 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 		#remove type,top offset
 	end
 
-	sub c# 2
+	sub globalp.counter 2
 	if globalp.type=(ret_cont_break_nothing)  #skip dead code
 		sub blocks (2*DWORD)
 		call resolve_back_jump(blocks#)  #jump back
@@ -1452,20 +1411,14 @@ function action_code_parse_deffunction(ss ac)
     call brace_blocks_add_parse((function_marker))
     #loop until the function code is over
     sd index_atstart
-    setcall index_atstart brace_blocks_counter()
-    set index_atstart index_atstart#
+    set index_atstart globalp.counter
     #
     setcall pointer action_code_row(pointer,(TRUE))
-    sd index_current
-    setcall index_current brace_blocks_counter()
-    set index_current index_current#
-    while index_atstart<=index_current
+    while index_atstart<=globalp.counter
         if pointer#=0
             call error("A define function was unclosed")
         endif
         setcall pointer action_code_row(pointer,(FALSE))
-        setcall index_current brace_blocks_counter()
-        set index_current index_current#
     endwhile
     return pointer
 endfunction

@@ -6,27 +6,20 @@ include "../include/prog.h" "../include/prog.oh"
 dataxu nr#1
 charx rcb#1
 valuexu is_else_next_mark#1
+valueu values_container=NULL
 
 #win32 with _
 importx "strcmp" strcmp
 importx "strlen" strlen
 
-function action_code_values_container()
-    value setofvalues=NULL
-    return #setofvalues
-endfunction
 function action_code_values()
-    sv m
-    setcall m action_code_values_container()
-    return m#
+	return global.values_container
 endfunction
 
 import "mem_free" mem_free
 
 function action_code_values_free()
-    sv p
-    setcall p action_code_values_container()
-    if p#!=(NULL);call mem_free(p);endif
+    if global.values_container!=(NULL);call mem_free(#global.values_container);endif
 endfunction
 function action_code_values_index()
 	return #global.nr
@@ -190,9 +183,7 @@ function infinite_loop_check(sd codepointer)
 	return test
 end
 function action_true_compare(ss command)
-	datax compare#1
-	set compare strcmp("true",command) #int
-	return compare
+	callret strcmp("true",command) #int datax compare#1
 end
 import "is_x" is_x
 function forinbreak_check(sd codepointer)
@@ -268,9 +259,7 @@ function forinbreak_check(sd codepointer)
 	return start
 end
 function action_null_compare(ss command)
-	datax compare#1
-	set compare strcmp("null",command) #int
-	return compare
+	callret strcmp("null",command) #int datax compare#1
 end
 
 import "ret_cont_break" ret_cont_break
@@ -293,9 +282,7 @@ import "error" error
 
 import "memalloc" memalloc
 function action_code_values_init()
-    sv m
-    setcall m action_code_values_container()
-    setcall m# memalloc((totalvalues*action_code_values_unit))
+	setcall global.values_container memalloc((totalvalues*action_code_values_unit))
 endfunction
 function action_code_set(sd value)
 	callg action_code_set_ex(value,1)
@@ -1109,16 +1096,14 @@ function action_definefunction(sd codepointer)
 	#
 	call brace_blocks_add_write()
 	#
-	sd index_atstart
+	sd ?index_atstart
 	setcall index_atstart brace_blocks_counter()
-	set index_atstart index_atstart#
-	sd index_current=0xffFFffFF
+	sd ?index_current=0xffFFffFF
 	#
 	call dtitles_func()
 	while index_atstart<=^index_current
 		setcall codepointer action__code_row(codepointer)
 		setcall index_current brace_blocks_counter()
-		set index_current index_current#
 	endwhile
 	#close function marker for return and for..in case
 	call brace_blocks_counter_dec()

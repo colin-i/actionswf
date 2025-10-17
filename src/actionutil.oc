@@ -5,6 +5,9 @@ include "../include/prog.h" "../include/prog.oh"
 #multithread unsafe
 vstrx ac#1
 vstrx pointer#1
+vstr orig=NULL
+vstr memorig=NULL
+value dcode#1
 
 #win32 with _
 importx "memcpy" memcpy
@@ -16,6 +19,10 @@ Importx "free" free
 import "spaces" spaces
 
 #strings
+
+function debug_code()
+	return #globalu.dcode
+end
 
 #0 yes  1 no
 function row_termination(sv p_ac,sv p_row)
@@ -136,25 +143,18 @@ end
 
 import "mem_free" mem_free
 function action_debug(sd type)
-	vstr orig=NULL
-	vstr m=NULL
 	if type=(action_debug_get_mem)
-		return m
+		return globalu.memorig
 	endif
 	if type=(action_debug_get)
-		return #orig
+		return #globalu.orig
 	end
 	# action_debug_free
-	set orig (NULL)
-	if m!=(NULL);call mem_free(#m);endif
+	set globalu.orig (NULL)
+	if globalu.memorig!=(NULL);call mem_free(#globalu.memorig);endif
 endfunction
 function action_debug_free_macro()
     call action_debug((action_debug_free))
-endfunction
-
-function debug_code()
-    value code#1
-    return #code
 endfunction
 
 import "printEr" printEr
@@ -171,15 +171,13 @@ function action_error()
     call memcpy(#ac,p_action_errors,(2*:))
 
     call printEr("Row: ")
-    sv p_c
-    setcall p_c debug_code()
     sd row
-    setcall row escape_action(ac,mem,p_c#,(NULL))
+    setcall row escape_action(ac,mem,globalu.dcode,(NULL))
     #a small reserve for a number like 2 000 000 000
     char row_nr#dword_to_string_char
     call sprintf(#row_nr,"%u",row)
     call string_nl_print(#row_nr)
-    call string_nl_print(p_c#)
+    call string_nl_print(globalu.dcode)
 endfunction
 
 import "block_get_size" block_get_size

@@ -155,9 +155,9 @@ function swf_text_local(sd bound_width,sd bound_height,ss variablename,sd flags,
     #CharacterID
     sd size=2
     #RECT
-    sd rect
-    sd rectsz
-    call rect_prepare(#rect,#rectsz,bound_width,bound_height)
+	sd rect
+	datax rectsz#1
+	call rect_prepare(#rect,#rectsz,bound_width,bound_height)
     add size rectsz
     #flags
     add size 2
@@ -325,11 +325,11 @@ function swf_shape_local(sd width,sd height,sd args)
     setcall shape_id identifiers_get()
     set shape_size (WORD)
 
-    #rect
-    sd rect
-    sd rect_size
-    call rect_prepare(#rect,#rect_size,width,height)
-    add shape_size rect_size
+	#rect
+	sd rect
+	datax rect_size#1
+	call rect_prepare(#rect,#rect_size,width,height)
+	add shape_size rect_size
 
 	#SHAPEWITHSTYLE
 	char FillStyleCount#1
