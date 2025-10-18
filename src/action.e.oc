@@ -1,6 +1,7 @@
 Format ElfObj64
 
 include "../include/prog.oh"
+include "../include/throw.h" "../include/throw.oh"
 
 import "for_in_ptr" for_in_ptr
 import "is_ainit" is_ainit
@@ -14,14 +15,14 @@ import "action_local" action_local
 import "actionf_local" actionf_local
 
 functionX action(ss ac)
-valuex bp#1;base bp;call ebase(bp)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 #ss ac       actionscript string to be parsed
 	call is_ainit((xlog_ainit_false))
 	callg action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
 functionXv actionf(ss buffer,ss *format)
-base action.bp;call ebase(action.bp)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
@@ -42,19 +43,20 @@ end
 import "action_sprite_base" action_sprite_base
 
 functionX action_sprite(sd sprite,ss actions)
-base action.bp;call ebase(action.bp)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 #sd sprite    sprite id
 #ss actions   same as action
 	call is_ainit((xlog_ainit_false))
 	callg action_sprite_base(sprite,actions,(TRUE))
 endfunction
 functionX action_init_sprite(sd sprite,ss actions)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 	call is_ainit((xlog_ainit_true))
 	callg action_sprite_base(sprite,actions,(TRUE))
 end
 import "actionf_sprite_local" actionf_sprite_local
 functionXv actionf_sprite(sd sprite,ss buffer,ss *format)
-base action.bp;call ebase(action.bp)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
@@ -62,6 +64,9 @@ base action.bp;call ebase(action.bp)
 	callg actionf_sprite_local(sprite,#buffer)
 endfunction
 functionXv actionf_init_sprite(sd sprite,ss buffer,ss *format)
+	base globala.jmp_data;call ebase(globala.jmp_data)
 	call is_ainit((xlog_ainit_true))
 	callg actionf_sprite_local(sprite,#buffer)
 end
+
+entryraw globala()

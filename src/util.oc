@@ -18,6 +18,7 @@ data counter=0
 char throwless=FALSE
 charx ainit_bool#1
 data fileRes=fd_none
+valueu basepointer#1
 
 function printEr(ss msg)
 	sv ?len;setcall len strlen(msg)
@@ -326,21 +327,14 @@ end
 
 #closings
 
-import "file_close" file_close
-function file_resources(sd trueIsSet_falseIsFree,sd fileIn)
-    if trueIsSet_falseIsFree=(TRUE)
-        set globalt.fileRes fileIn
-    else
-        if globalt.fileRes!=(fd_none)
-            call file_close(#globalt.fileRes)
-        endif
-    endelse
-endfunction
 function file_resources_set(sd file)
-    call file_resources((TRUE),file)
+	set globalt.fileRes file
 endfunction
+import "file_close" file_close
 function file_resources_free()
-    call file_resources((FALSE))
+	if globalt.fileRes!=(fd_none)
+		call file_close(#globalt.fileRes)
+	endif
 endfunction
 
 #
@@ -406,11 +400,12 @@ import "action_debug_free_macro" action_debug_free_macro
 import "file_get_content__resources_free" file_get_content__resources_free
 import "pool_data" pool_data
 
-function ebase(valuex bp)
+function ebase(sv bp)
+	set globalt.basepointer bp
 end
 
 function erbool()
-	#aftercall ebool #still needed at flashalizer at aftecall_get and _reset
+	#aftercall ebool #still needed at flashalizer at aftecall_get and _reset, and at imgx
 	char ebool=0
 	return #ebool
 endfunction
@@ -424,8 +419,8 @@ function error(ss msg)
 	call freereset()
 	call freelater()
 
-	ss p;setcall p erbool();set p# 1
-	leave ebase.bp
+	ss ?p;setcall p erbool();set p# 1
+	leave globalt.basepointer
 endfunction
 
 #
@@ -454,7 +449,7 @@ endfunction
 
 #id
 function def_mem()
-	callret struct_ids((ids_set))
+	callret struct_ids((ids_set),globalt.counter)
 endfunction
 #mem
 function def_data()
@@ -536,13 +531,7 @@ function struct_ids_free_all()
 		endif
 	endwhile
 end
-function struct_ids(sd proc,sd id)
-	sd ident
-	if proc!=(ids_set)
-		set ident id
-	else
-		set ident globalt.counter
-	endelse
+function struct_ids(sd proc,sd ?ident)
 	sv pointer
 	setcall pointer move_to_n_pointer(#globalt.structures,ident)
 	if proc=(ids_get)

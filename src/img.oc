@@ -2,6 +2,7 @@
 format elfobj64
 
 include "../include/prog.oh"
+include "../include/throw.h" "../include/throw.oh"
 
 function verbose(datax flag)
 	and flag (flag_verbose)
@@ -19,6 +20,7 @@ importx "free" free
 importx "printf" printf
 
 import "ebase" ebase
+import "erbool" erbool
 
 #aftercalli
 
@@ -73,7 +75,7 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 	add cr sz
 	call memcpy(cr,#ms,5)
 
-	sd id; sd jpgsize
+	sd ?id; sd jpgsize
 	sd acs;set acs access(f1,(F_OK))
 	if acs!=0 #opac
 		call memcpy(cr,#jp,5)
@@ -99,30 +101,32 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 		end
 	end
 	call free(f1)
-	if verbose.flag!=(flag_none)
-		add dblsize 2 #again, ui32 tags
-		add jpgsize 2
-		sd c
-		if dblsize<^jpgsize
-			set c (Lessthan)
-		else
-			set c (Greaterthan)
+	ss ?p;setcall p erbool();if p#=0
+		if verbose.flag!=(flag_none)
+			add dblsize 2 #again, ui32 tags
+			add jpgsize 2
+			ss ?c
+			if dblsize<^jpgsize
+				set c (Lessthan)
+			else
+				set c (Greaterthan)
+			end
+			ss plus
+			if acs!=0
+				set plus ""
+			else
+				set plus "+msk"
+			end
+			call printf("dbl 0x%lx %c jpg%s 0x%lx",dblsize,c,plus,jpgsize)
+			if p_wh!=(NULL)
+				sd w;set w p_wh#
+				add p_wh (DWORD)
+				call printf(" %hux%hu",w,p_wh#)
+			end
+			call printf(" %s\n",dbl)
 		end
-		ss plus
-		if acs!=0
-			set plus ""
-		else
-			set plus "+msk"
-		end
-		call printf("dbl 0x%lx %c jpg%s 0x%lx",dblsize,c,plus,jpgsize)
-		if p_wh!=(NULL)
-			sd w;set w p_wh#
-			add p_wh (DWORD)
-			call printf(" %hux%hu",w,p_wh#)
-		end
-		call printf(" %s\n",dbl)
+		return id
 	end
-	return id
 end
 
 import "swf_dbl_ex_local" swf_dbl_ex_local
@@ -132,7 +136,7 @@ import "dbl_dim" dbl_dim
 import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
 
 function imgx_decision(sd dblsize,sd jpgsize,ss dbl,ss jpg,ss msk,sd p_wh,sd is_image) #,sd is_clipped
-	valuex bp#1;base bp;call ebase(bp)
+	base globali.jmp_data;call ebase(globali.jmp_data)
 	if dblsize<^jpgsize
 		if is_image=(FALSE)
 			callret swf_dbl_ex_local(dbl,p_wh,(TRUE))
@@ -143,7 +147,7 @@ function imgx_decision(sd dblsize,sd jpgsize,ss dbl,ss jpg,ss msk,sd p_wh,sd is_
 		end
 		callret swf_image_ex_local(dbl,p_wh,(TRUE))
 	end
-	sd id
+	sd ?id
 	if msk=(NULL)
 		set id swf_jpeg_local(jpg,(DefineBitsJPEG2))
 	else
@@ -161,3 +165,5 @@ function imgx_decision(sd dblsize,sd jpgsize,ss dbl,ss jpg,ss msk,sd p_wh,sd is_
 	end
 	callret swf_shape_bitmap_local_clipped(id,width,height)
 end
+
+entryraw globali()
