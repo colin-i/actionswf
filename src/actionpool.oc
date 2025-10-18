@@ -231,7 +231,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 	swu ?nr
 	sd newlen
 	setcall newlen strlen(value)
-	ss testboolid
+	sss ?testboolid
 	if size=0
 	#is first value, add the pools header and count=1 , # before: actionpool_getvalue(the pool mem is already selected when it comes from the second  at push)
 		if force=(FALSE)
