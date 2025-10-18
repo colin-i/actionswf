@@ -20,15 +20,10 @@ charx ainit_bool#1
 data fileRes=fd_none
 
 function printEr(ss msg)
-    sd len;setcall len strlen(msg)
-    call printEr_func(msg,(BYTE),len)
-endfunction
-#p
-function printEr_func(ss msg,sd *item_size,sd *count,sd stderr)
-#                                                    this argument is not passed, is structure last part
-    setcall stderr platform_iob()
-    callex fwrite #msg 4
-    #bytes written,error:sz!=return
+	sv ?len;setcall len strlen(msg)
+	sv ?stderr;setcall stderr platform_iob()
+	call fwrite(msg,(BYTE),len,stderr)
+	#callret
 endfunction
 
 function word_swap_arg(ss word)
