@@ -1,9 +1,9 @@
 
 format elfobj64
 
-Importx "stderr" stderr
+^Importx "stderr" stderr
 
 function platform_iob()
-	sv a^stderr
+	svu a^stderr
 	return a#
 endfunction

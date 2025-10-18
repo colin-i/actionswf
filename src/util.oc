@@ -18,7 +18,7 @@ data counter=0
 char throwless=FALSE
 charx ainit_bool#1
 data fileRes=fd_none
-valueu basepointer#1
+valuexu basepointer#1
 
 function printEr(ss msg)
 	sv ?len;setcall len strlen(msg)
@@ -419,7 +419,7 @@ function error(ss msg)
 	call freereset()
 	call freelater()
 
-	ss ?p;setcall p erbool();set p# 1
+	ss p;setcall p erbool();set p# 1
 	leave globalt.basepointer
 endfunction
 

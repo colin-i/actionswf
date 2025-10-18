@@ -17,7 +17,7 @@ include ../src/items
 include ../src/hitems
 $(foreach var,$(hreqs),$(eval chreqs += ../include/${var}.h))
 
-all: ${ohreqs} ${chreqs} ${headers}
+all: ${ohreqs} ${chreqs} ${headers} throw.h
 
 include ../src/rules
 
@@ -36,8 +36,16 @@ lin.ohi: lin.oh
 ${chreqs}:
 	ln -s `echo $* | sed s/platform/${platform}/`.h $@
 
+throw.h:
+	a='int main(){printf("%lu",sizeof(jmp_buf));return 0;}'; \
+	printf '#include <setjmp.h>\n#include <stdio.h>\n%s' "$${a}" | gcc -x c -
+	echo -n 'char jmp_data[' > $@
+	./a.out >> $@
+	echo -n '];' >> $@
+	rm a.out
+
 clean:
-	-rm -f ${xfiles} lin.ohi ${headers} ${ohreqs} ${chreqs}
+	-rm -f ${xfiles} lin.ohi ${headers} ${ohreqs} ${chreqs} throw.h
 distclean: clean
 
 .PHONY: all clean distclean

@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 function debug_mark()
 	valuex row#1
@@ -37,6 +37,8 @@ endfunction
 import "mem_free" mem_free
 import "f_close" f_close
 
+import "x_data" x_data
+import "alt_free" alt_free
 function debug_data()
 	value file=NULL
 	value file2=NULL
@@ -50,7 +52,6 @@ function debug_data()
 	dataxu all_size#1
 	dataxu rows#1
 
-	import "x_data" x_data
 	call x_data()
 
 	if file!=(NULL)
@@ -65,7 +66,6 @@ function debug_data()
 			end
 		end
 	endif
-	import "alt_free" alt_free
 	call alt_free()
 endfunction
 
@@ -76,6 +76,9 @@ function debug_phase_init(ss pointer)
 		call debug_mark_add()
 	endif
 endfunction
+
+import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
+
 function debug_phase_parse(ss pointer)
 	if debug_mark_get.offsets!=(NULL)
 		sv a
@@ -95,7 +98,6 @@ function debug_phase_parse(ss pointer)
 		if pointer<^a#
 			ret
 		endif
-		import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
 		sd x;setcall x action_code_get()
 		while start#<^pointer   #or a
 			set start# x
@@ -277,6 +279,7 @@ import "f_printf1" f_printf1
 import "f_printf2" f_printf2
 import "f_write" f_write
 import "f_tell" f_tell
+import "memrealloc" memrealloc
 
 function debug_action_init(ss ac)
 	if debug_data.file!=(NULL)
@@ -295,7 +298,6 @@ function debug_action_init(ss ac)
 			call f_printf2(debug_data.file,#f,row,start)
 
 			mult row :
-			import "memrealloc" memrealloc
 			setcall debug_mark_get.offsets memrealloc(debug_mark_get.offsets,row)
 
 			call debug_mark_start()  #prepare for first iteration
@@ -354,7 +356,7 @@ function debug_phase_code_flush()
 		#there are rows with only one action_one, example in tests/ffdec
 			#out rows,[action1,action2]\n   #is not reaching here at "     " at no actions
 			#will not bother concludefunction where is asking with ftell
-			char format=xlog_actions;char *="%lu"
+			char format={xlog_actions,Percent,l_low,u_low,Nullchar}
 			call f_printf1(debug_data.file,#format,debug_data.rows) #add a * because still can be row like a preid start row, example: while break}
 			call debug_phase_code_flush_part(debug_phase_code.size)
 			set debug_data.rows 0
@@ -379,8 +381,8 @@ function alt_log()
 	return (NULL)
 end
 function logs_printf(sd log,sd nr)
-	vstr u="%u"^;char nl={xlog_nl,Nullchar}
-	callg f_printf1(log,u,nr)
+	char u={Percent,u_low,xlog_nl,Nullchar}
+	callg f_printf1(log,#u,nr)
 end
 function debug_printf(sd ix)
 	call logs_printf(debug_data.file,ix)
@@ -405,7 +407,7 @@ function debug_show(sd id)
 		call debug_write(#nls,2)
 		sd alt;set alt alt_log()
 		if alt!=(NULL)
-			callg f_write(alt,#logs_printf.nl,1)
+			callg f_write(alt,#nls,1)
 		end
 	end
 end
@@ -418,7 +420,8 @@ end
 function debug_spritedone(sd p,sd i)
 	if debug_data.file!=(NULL)
 		call debug_printf(p)
-		call debug_write(#logs_printf.nl,1)
+		char nl=xlog_nl
+		call debug_write(#nl,1)
 		callg debug_printf(i)
 	end
 end
@@ -429,7 +432,8 @@ function debug_export(sd i,ss e,sd size)
 			call logs_printf(alt,i)
 			call f_write(alt,#debug_show.nls,2)
 			call f_write(alt,e,size)
-			callg debug_write(#logs_printf.nl,1)
+			char nl=xlog_nl
+			callg debug_write(#nl,1)
 		end
 	end
 end
