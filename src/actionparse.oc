@@ -322,7 +322,7 @@ function else_verify(ss ac,sd else_index)
 		return ac
 	endif
 
-	sd ?bool_is_elseif
+	ss ?bool_is_elseif
 
 	ss pointer
 	!xor bool_is_elseif bool_is_elseif ##same problems with recursive vars at .o
@@ -345,7 +345,7 @@ function else_verify(ss ac,sd else_index)
 			set c_ind globalp.counter
 		endwhile
 		set ac pointer
-		sd ?prev_else_elseif;set prev_else_elseif bool_is_elseif
+		ss ?prev_else_elseif;set prev_else_elseif bool_is_elseif
 		setcall pointer else_elseif_expression(ac,#bool_is_elseif)
 		if prev_else_elseif=(FALSE);if bool_is_elseif=(TRUE)
 			call error("not expecting Else and then Else If")
@@ -355,7 +355,7 @@ function else_verify(ss ac,sd else_index)
 	return ac
 endfunction
 #next/same
-function else_elseif_expression(ss ac,sd p_elseif)
+function else_elseif_expression(ss ac,ss p_elseif)
     set p_elseif# (FALSE)
     ss pointer
     setcall pointer str_expression_at_start(ac,"else")
