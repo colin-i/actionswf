@@ -10,7 +10,7 @@ importx "memcmp" memcmp
 
 import "platform_iob" platform_iob
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
 vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
@@ -36,11 +36,11 @@ function word_swap_arg(ss word)
     set dest# word#
     set word# aux#
 endfunction
-function stack_to_word_arg(sd int,ss arg)
-    set arg# int
+function stack_to_word_arg(sd intarg,ss arg)
+    set arg# intarg
     inc arg
-    divu int 0x100
-    set arg# int
+    divu intarg 0x100
+    set arg# intarg
 endfunction
 function word_arg_to_stack(ss arg)
     inc arg
@@ -94,9 +94,9 @@ function dword_swap(sd value)
     #
     return res
 endfunction
-function struct_off(sd struct,sd off)
-    add struct off
-    return struct#
+function struct_off(sd struct_of_ints,sd off)
+    add struct_of_ints off
+    return struct_of_ints#
 endfunction
 
 #util
@@ -159,22 +159,22 @@ endfunction
 #chars
 
 #bool
-function is_numeric(sd char)
-    char min="0"^
-    char max="9"^
-	if char<min
-        return (FALSE)
+function is_numeric(ss ?charvar)
+	char min="0"^
+	char max="9"^
+	if charvar<min
+		return (FALSE)
 	endif
-	if char<=max
-        return (TRUE)
+	if charvar<=max
+		return (TRUE)
 	endif
-    return (FALSE)
+	return (FALSE)
 endfunction
 #0 1/2
 function part_of_variable(ss value)
-	sd bool
-	setcall bool is_numeric(value#)
-	if bool=(TRUE)
+	ss ?boolval
+	setcall boolval is_numeric(value#)
+	if boolval=(TRUE)
 		return 1
 	endif
 	callret is_letter(value)
@@ -256,9 +256,9 @@ endfunction
 
 #next/same
 function str_expression_at_start(ss string,ss expression)
-	sd bool
-	setcall bool str_at_str_start(string,expression)
-	if bool=(FALSE)
+	ss ?boolval
+	setcall boolval str_at_str_start(string,expression)
+	if boolval=(FALSE)
 		return string
 	endif
 	ss next
@@ -300,7 +300,7 @@ endfunction
 #newpos
 function compat(ss pointer,sd max,ss against,sd rep)
 	sd s;set s strlen(against)
-	sd return;set return max
+	ss returnval;set returnval max
 	add max pointer
 	sd start;set start pointer
 	sub max s
@@ -321,7 +321,7 @@ function compat(ss pointer,sd max,ss against,sd rep)
 		end
 		inc pointer
 	end
-	return return
+	return returnval
 end
 
 #closings
@@ -673,46 +673,46 @@ endfunction
 
 #pointer after "abc"
 function str_escape(ss src,ss dest,sd delim)
-    sd loop=1
-    sd escapes=0
-    inc src
-    while loop=1
-    if src#=delim
-        set loop 0
-    #elseif src#==delim2
-    #    set loop 0
-    else
-        char escape="\\"
-        while src#=escape
-            if escapes=0
-                set escapes 1
-            else
-                set dest# src#
-                inc dest
-                set escapes 0
-            endelse
-            inc src
-        endwhile
-        if src#=0
-            call error("end string expected")
-        endif
-        if escapes=1
-            set dest# src#
-            inc src
-            inc dest
-            set escapes 0
-        elseif src#!=delim
-            #if src#!=delim2
-                set dest# src#
-                inc src
-                inc dest
-            #endif
-        endelseif
-    endelse
-    endwhile
-    set dest# 0
-    inc src
-    return src
+	sd loop=1
+	sd escapes=0
+	inc src
+	while loop=1
+		if src#=delim
+			set loop 0
+		#elseif src#==delim2
+		#    set loop 0
+		else
+			char esc="\\"^
+			while src#=esc
+				if escapes=0
+					set escapes 1
+				else
+					set dest# src#
+					inc dest
+					set escapes 0
+				endelse
+				inc src
+			endwhile
+			if src#=0
+				call error("end string expected")
+			endif
+			if escapes=1
+				set dest# src#
+				inc src
+				inc dest
+				set escapes 0
+			elseif src#!=delim
+				#if src#!=delim2
+				set dest# src#
+				inc src
+				inc dest
+				#endif
+			endelseif
+		endelse
+	endwhile
+	set dest# 0
+	inc src
+	return src
 endfunction
 
 entryraw globalt()
