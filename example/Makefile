@@ -12,6 +12,10 @@ ifndef conv_64
 conv_64=0
 endif
 
+ifndef ffdec
+ffdec=ffdec
+endif
+
 name=example
 sfile=${name}.swf
 OFLAGS=conv_64 ${conv_64}
@@ -110,7 +114,7 @@ uninstall:
 
 expected.swf:
 	base64 -d expected.c.swf.txt > expected.c.swf
-	ffdec -decompress expected.c.swf $@
+	${ffdec} -decompress expected.c.swf $@
 test: all expected.swf
 	diff ${sfile} expected.swf && echo $$?
 expected.c.swf: build

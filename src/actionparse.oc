@@ -593,7 +593,7 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 	ss end2
 	set end2 #globalp.operations_full
 	add end2 \globalp.operations_full-2
-	ss end=-1
+	sss end=-1
 	add end end2
     #
     whiletrue
