@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.156
+Version: 1.157
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -55,6 +55,38 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Oct 20 2025 Costin Botescu <costin.botescu@gmail.com> 1.157-0
+- ss fix (costin.botescu@gmail.com)
+- fix elsif error, img check, and more (costin.b.84@gmail.com)
+- throw (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- at csrc debug (costin.botescu@gmail.com)
+- throw adjusted for csrc, and fix at img. (costin.botescu@gmail.com)
+- at util csrc (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- callex not for .c (costin.botescu@gmail.com)
+- csrc changes. fix at else else if error. (costin.botescu@gmail.com)
+- storage at csrc (costin.botescu@gmail.com)
+- at csrc migrations (costin.botescu@gmail.com)
+- swf_mem globals, storage, csrc (costin.botescu@gmail.com)
+- function variable migration to csrc at storage (costin.botescu@gmail.com)
+- csrc at storage (costin.botescu@gmail.com)
+- until storage.oc at csrc (costin.botescu@gmail.com)
+- csrc actionparse (costin.botescu@gmail.com)
+- op reset in a way to peace with .c (costin.botescu@gmail.com)
+- action parse operations for csrc (costin.botescu@gmail.com)
+- manual sprintf (costin.botescu@gmail.com)
+- actioncode almost done at csrc (costin.botescu@gmail.com)
+- csrc: part of actioncode (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- csrc two more requirements (costin.botescu@gmail.com)
+- forking at csrc headers (costin.botescu@gmail.com)
+- sym link to with force (costin.botescu@gmail.com)
+- include rules (costin.botescu@gmail.com)
+- some csrc rules (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+
 * Sun Oct 19 2025 Costin Botescu <costin.botescu@gmail.com> 1.156-0
 - throw (costin.botescu@gmail.com)
 - "up" (costin.botescu@gmail.com)
