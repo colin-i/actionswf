@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 import "f_close" f_close
 import "mem_free" mem_free
@@ -29,12 +29,12 @@ function is_x()
 	return (TRUE)
 end
 
+import "action_debug" action_debug
 function x_pointer(sv pointer)
 	sd value
 	set value pointer#
 	if x_data.f!=(NULL)
 		charx twice#1 #since noDuplicate flag for no duplication for members, is reserved, are witings at file when is used, touchless is only at infiniteCheck or defFuncArgsTest
-		import "action_debug" action_debug
 		sd mem;set mem action_debug((action_debug_get_mem))
 		if twice=(FALSE)
 			sub pointer# mem
@@ -190,6 +190,7 @@ function x_init(sd flags,sd path)
 	return flags
 end
 
+import "xlog_pad_get" xlog_pad_get #this is a functionx, but no args, then, no aligns at pass_call for this
 function debug_x_pointers(valuex start,valuex size)
 	valuex mark#1
 	if x_data.f!=(NULL)
@@ -211,7 +212,6 @@ function debug_x_pointers(valuex start,valuex size)
 
 			sd aux
 			set aux mark
-			import "xlog_pad_get" xlog_pad_get #this is a functionx, but no args, then, no aligns at pass_call for this
 			sd pad_value#1;set pad_value xlog_pad_get()
 			divu aux pad_value
 			mult aux pad_value
@@ -312,11 +312,11 @@ function debug_x_expand(sd values)
 	end
 end
 
+import "action_caller_right" action_caller_right
+import "action_member_loop_right" action_member_loop_right
 #codepointer
 function x_call(sv pmember,sv pfname,sv codepointer)
 	if x_data.mem!=(NULL)
-		import "action_caller_right" action_caller_right
-		import "action_member_loop_right" action_member_loop_right
 		set codepointer action_caller_right(pfname,codepointer)
 		set pmember# codepointer#
 		if pmember#=(no_pointer)

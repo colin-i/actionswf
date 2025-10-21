@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 import "action_debug" action_debug
 import "action_data" action_data
@@ -21,18 +21,23 @@ import "action_code_set" action_code_set
 import "action_code_row" action_code_row
 import "dupreserve_string" dupreserve_string
 import "brace_blocks_end" brace_blocks_end
+import "error" error
+import "actionx" actionx
+import "debug_action_init" debug_action_init
+import "debug_x_pointers" debug_x_pointers
+import "debug_action_phase" debug_action_phase
+import "debug_phase_code_flush_end" debug_phase_code_flush_end
+import "debug_x" debug_x
 function action_base(ss ac)
 #ss ac       actionscript string to be parsed
 	sd p_values
 	setcall p_values action_code_values()
-	import "error" error
 	if p_values=(NULL);call error("Don't call the action now.");endif
 	#
 	sd nr
 	setcall nr action_code_values_action()
 	call action_data()
 
-	import "actionx" actionx
 	sd x;set x actionx()
 	if x=(FALSE) #if true, only action__code_row loop
 		call action_parse_init()
@@ -40,12 +45,9 @@ function action_base(ss ac)
 		ss mem
 		setcall mem dupreserve_string(ac)
 
-		import "debug_action_init" debug_action_init
 		call debug_action_init(ac)
 		sd last;set last escape_action(ac,mem,(NULL),(NULL))
-		import "debug_x_pointers" debug_x_pointers
 		call debug_x_pointers(mem,last)
-		import "debug_action_phase" debug_action_phase
 		call debug_action_phase()
 
 		sv p_action_errors
@@ -69,9 +71,7 @@ function action_base(ss ac)
 		while p_values#!=(math_end)
 			setcall p_values action__code_row(p_values)  #also at actionx
 		endwhile
-		import "debug_phase_code_flush_end" debug_phase_code_flush_end
 		call debug_phase_code_flush_end()
-		import "debug_x" debug_x
 		call debug_x(stored,nr#) #need to be after, to modify pointers inside
 
 		#free mem ok,another free is at errors

@@ -1,7 +1,11 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+char dtbool#1
+dataxu func#1 #like ui32 swf size
 
 importx "sprintf" sprintf
 importx "memcpy" memcpy
@@ -10,8 +14,7 @@ import "word_arg_to_stack" word_arg_to_stack
 
 #here iterates swf tags in the sprite, enters DoAction tags, first tag is the pool with the format from dtitles_frame, goes at last string, overwrites 0000 with the final id
 function dtitles_conclude(sd finalid,sd mem)
-	char bool#1
-	if bool=(TRUE)
+	if globale.dtbool=(TRUE)
 		#finalid is u16
 		char store#5
 		call sprintf(#store,"%04X",finalid)
@@ -65,12 +68,11 @@ end
 function dtitles_init(sd flags)
 	and flags (flag_titles)
 	if flags!=0
-		set dtitles_conclude.bool (TRUE)
-		dataxu func#1 #like ui32 swf size
-		set func 0
+		set globale.dtbool (TRUE)
+		set globale.func 0
 		ret
 	end
-	set dtitles_conclude.bool (FALSE)
+	set globale.dtbool (FALSE)
 end
 
 import "swf_actionblock_change" swf_actionblock_change #is a good id because is called at done, there are id verif until that, and at button is internal not from user
@@ -82,7 +84,7 @@ import "actionpool_value_ex" actionpool_value_ex
 
 #here adds 0000X[X[X[X]]], if is root 0000 will be final, else is dummy now and will be sprite final id at conclude function
 function dtitles_frame(sd index)
-	if dtitles_conclude.bool=(TRUE)
+	if globale.dtbool=(TRUE)
 		char format={_0,_0,_0,_0} #id
 		char frame_index#4+1      #index is uword here, is checked
 		call sprintf(#frame_index,"%X",index)
@@ -90,7 +92,7 @@ function dtitles_frame(sd index)
 	end
 end
 function dtitles_frame_one(sd preid,sd finalid) #is called at swf_sprite_done and swf_button
-	if dtitles_conclude.bool=(TRUE)
+	if globale.dtbool=(TRUE)
 		#finalid is u16
 		char store#5
 		call sprintf(#store,"%X",finalid)
@@ -106,11 +108,13 @@ import "actionpush" actionpush
 import "action_one" action_one
 
 function dtitles_func()
-	if dtitles_conclude.bool=(TRUE)
+	if globale.dtbool=(TRUE)
 		#this will not be sync'ed with prev log @ & if on xx_flags
-		call action_push((ap_Integer),dtitles_init.func)
+		call action_push((ap_Integer),globale.func)
 		call actionpush()
-		inc dtitles_init.func
+		inc globale.func
 		callg action_one((ActionPop))
 	end
 end
+
+entryraw globale()

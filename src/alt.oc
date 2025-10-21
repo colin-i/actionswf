@@ -1,7 +1,12 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+value folder=NULL
+vstrx concat_point#1
+datax flag_dup#1
 
 importx "strrchr" strrchr
 importx "strcpy" strcpy
@@ -12,24 +17,23 @@ import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
 import "word_arg_to_stack" word_arg_to_stack
 import "mem_free" mem_free
 
-function alt_join(vstr concat_point)
-	value folder=NULL
-	add concat_point folder
-	call strcpy(concat_point,".dbg")
-	add concat_point 4;set concat_point# (path_separator)
-	inc concat_point
+function alt_join(ss p)
+	set globall.concat_point p
+	add globall.concat_point globall.folder
+	call strcpy(globall.concat_point,".dbg")
+	add globall.concat_point 4;set globall.concat_point# (path_separator)
+	inc globall.concat_point
 end
 function alt_free()
-	if alt_join.folder!=(NULL)
-		#set alt_join.concat_point# (Nullchar)
-		#call rmdir(alt_join.folder)
-		call mem_free(#alt_join.folder)
+	if globall.folder!=(NULL)
+		#set globall.concat_point# (Nullchar)
+		#call rmdir(globall.folder)
+		call mem_free(#globall.folder)
 	end
 end
 
 function flag_noDup_get()
-	datax flag_dup#1
-	return flag_dup
+	return globall.flag_dup
 end
 
 import "ainit" ainit
@@ -43,12 +47,12 @@ import "error" error
 import "len_of" len_of
 
 function alt_init(sd flags,sd path)
-	if alt_join.folder!=(NULL)
+	if globall.folder!=(NULL)
 		call error("swf started, alt not closed")
 	end
 
-	set flag_noDup_get.flag_dup flags
-	and flag_noDup_get.flag_dup (flag_noDuplicate) #needed at ffdec reproducible
+	set globall.flag_dup flags
+	and globall.flag_dup (flag_noDuplicate) #needed at ffdec reproducible
 
 	and flags (flag_alt)
 	if flags=(flag_alt)
@@ -60,8 +64,8 @@ function alt_init(sd flags,sd path)
 		end
 		sd finalsize;set finalsize len_of(size,4+ext_str_len) #ext+...
 
-		setcall alt_join.folder memalloc(finalsize)
-		call memcpy(alt_join.folder,path,size)
+		setcall globall.folder memalloc(finalsize)
+		call memcpy(globall.folder,path,size)
 		call alt_join(size)
 		ret
 	end
@@ -72,14 +76,14 @@ import "file_get_content" file_get_content
 function alt_action(sd orig_action,sd preid)
 	call alt_action_base(orig_action,preid,(TRUE))
 end
+import "struct_ids_action" struct_ids_action
+import "block_get_size" block_get_size
 function alt_action_base(sd orig_action,sd preid,sd has_frames)
-	if alt_join.folder!=(NULL)
+	if globall.folder!=(NULL)
 		if orig_action!=(NULL) #this to filter a button with no swf actions for example
-			import "struct_ids_action" struct_ids_action
 			sd block
 			setcall block struct_ids_action((ids_get),preid)
 			sd size
-			import "block_get_size" block_get_size
 			setcall size block_get_size(block)
 			if size=0 #at alt, first action from the frame is with all
 				whiletrue
@@ -92,19 +96,19 @@ function alt_action_base(sd orig_action,sd preid,sd has_frames)
 							#else #set p swf_frames_pointer()#end
 							sd f;set f word_arg_to_stack(p)
 							inc f  ##index 0 is frame 1 at ffdec
-							call sprintf(alt_join.concat_point,"%u_%u",preid,f)
+							call sprintf(globall.concat_point,"%u_%u",preid,f)
 							break
 						end
 					end
-					call sprintf(alt_join.concat_point,"%u",preid)
+					call sprintf(globall.concat_point,"%u",preid)
 					break
 				end
 
-				#datax int#1;set int access(alt_join.folder,(R_OK))
+				#datax int#1;set int access(globall.folder,(R_OK))
 				#if int=0
 				sd mem
-				set mem file_get_content(alt_join.folder,(NULL))
-				#call unlink(alt_join.folder) #if there are two action() at one frame, the second one must not see this
+				set mem file_get_content(globall.folder,(NULL))
+				#call unlink(globall.folder) #if there are two action() at one frame, the second one must not see this
 				return mem
 			end
 		end
@@ -112,3 +116,5 @@ function alt_action_base(sd orig_action,sd preid,sd has_frames)
 	end
 	return orig_action
 end
+
+entryraw globall()
