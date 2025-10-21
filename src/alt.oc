@@ -17,8 +17,7 @@ import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
 import "word_arg_to_stack" word_arg_to_stack
 import "mem_free" mem_free
 
-function alt_join(ss p)
-	set globall.concat_point p
+function alt_join()
 	add globall.concat_point globall.folder
 	call strcpy(globall.concat_point,".dbg")
 	add globall.concat_point 4;set globall.concat_point# (path_separator)
@@ -66,7 +65,8 @@ function alt_init(sd flags,sd path)
 
 		setcall globall.folder memalloc(finalsize)
 		call memcpy(globall.folder,path,size)
-		call alt_join(size)
+		set globall.concat_point size
+		call alt_join()
 		ret
 	end
 end
