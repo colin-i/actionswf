@@ -96,8 +96,8 @@ const file_sz_off=4
 #	char blue#1
 	charx bg#5;ss cursor^bg
 	add cursor 4;set cursor# backgroundcolor
-	dec cursor;swu ?g_color=0xff00;and g_color backgroundcolor;divu g_color 0x100;set cursor# g_color
-	dec cursor;sd ?r_color=0xff0000;and r_color backgroundcolor;divu r_color (0x100*0x100);set cursor# r_color
+	dec cursor;divu backgroundcolor 0x100;set cursor# backgroundcolor
+	dec cursor;divu backgroundcolor 0x100;set cursor# backgroundcolor
 	callg swf_tag(#bg,(SetBackGroundColor),3)
 endfunction
 
