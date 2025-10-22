@@ -38,7 +38,7 @@ import "error" error
 import "swf_shape_simple" swf_shape_simple
 import "identifiers_get" identifiers_get
 
-functionX swf_new(ss path,sd width,sd height,sd backgroundcolor,sd fps)
+functionX swf_new(ss path,sd ?width,sd ?height,sd ?backgroundcolor,ss ?fps)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callg swf_new_ex_local(path,width,height,backgroundcolor,fps,(flag_none))
 endfunction
@@ -407,7 +407,7 @@ functionX swf_done()
 endfunction
 
 import "swf_new_ex_local" swf_new_ex_local
-functionX swf_new_ex(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd flags)
+functionX swf_new_ex(ss path,sd ?width,sd ?height,sd ?backgroundcolor,ss ?fps,sd ?flags)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_new_ex_local(path,width,height,backgroundcolor,fps,flags)
 endfunction

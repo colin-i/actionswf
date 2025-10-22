@@ -3,27 +3,45 @@ format elfobj64
 
 include "../include/prog.h" "../include/prog.oh"
 
+#multithread unsafe
+valueu xfile=NULL
+dataxu xsize#1   #there was a debate on this
+#size here is on small mem xcode. but there are 2 sizes(at xx and at xstart) that are on large xcode. doaction is ui32
+#anyway, totalvalues is ui16*4. expands? 32...left 32...right, right 0x8000*4=0x20000,left at i386 0x8000/4 parts, sum 0x40...., still a quarter of ui32
+valueu xmem=NULL
+valueu xflog=NULL
+#
+charx twice#1 #since noDuplicate flag for no duplication for members, is reserved, are witings at file when is used, touchless is only at infiniteCheck or defFuncArgsTest
+vstrx xbase#1
+#
+valuexu xlogbase#1
+#
+vdataxu xpointer#1
+valuexu xend#1
+#
+wordxu verb#1
+datax xflag#1
+#
+valuexu dbxstart#1
+valuexu dbxsize#1
+valuexu mark#1
+valuexu xmark#1
+
 import "f_close" f_close
 import "mem_free" mem_free
 
 function x_data()
-	value f=NULL
-	dataxu size#1   #there was a debate on this
-	#size here is on small mem xcode. but there are 2 sizes(at xx and at xstart) that are on large xcode. doaction is ui32
-	#anyway, totalvalues is ui16*4. expands? 32...left 32...right, right 0x8000*4=0x20000,left at i386 0x8000/4 parts, sum 0x40...., still a quarter of ui32
-	value mem=NULL
-	value flog=NULL
-	if f!=(NULL)
-		call f_close(#f)
-	elseif mem!=(NULL)
-		call mem_free(#mem)
-		if flog!=(NULL)
-			call f_close(#flog)
+	if globalx.xfile!=(NULL)
+		call f_close(#globalx.xfile)
+	elseif globalx.xmem!=(NULL)
+		call mem_free(#globalx.xmem)
+		if globalx.xflog!=(NULL)
+			call f_close(#globalx.xflog)
 		end
 	end
 end
 function is_x()
-	if x_data.mem=(NULL)
+	if globalx.xmem=(NULL)
 		return (FALSE)
 	end
 	return (TRUE)
@@ -33,19 +51,17 @@ import "action_debug" action_debug
 function x_pointer(sv pointer)
 	sd value
 	set value pointer#
-	if x_data.f!=(NULL)
-		charx twice#1 #since noDuplicate flag for no duplication for members, is reserved, are witings at file when is used, touchless is only at infiniteCheck or defFuncArgsTest
+	if globalx.xfile!=(NULL)
 		sd mem;set mem action_debug((action_debug_get_mem))
-		if twice=(FALSE)
+		if globalx.twice=(FALSE)
 			sub pointer# mem
 			inc pointer#  ##only to not be comparable with (no_pointer)
 		else
 			add value mem
 			dec value
 		end
-	elseif x_data.mem!=(NULL) #flag_x
-		vstrx base#1
-		add value base ##reverse
+	elseif globalx.xmem!=(NULL) #flag_x
+		add value globalx.xbase ##reverse
 		dec value      ##same
 	end
 	return value
@@ -53,20 +69,20 @@ end
 function x_pointer_touchless(sv pointer)
 	sd value
 	set value pointer#
-	if x_data.mem!=(NULL)
-		add value x_pointer.base
+	if globalx.xmem!=(NULL)
+		add value globalx.xbase
 		dec value
 	end
 	return value
 end
 function x_pointer_twice_set()
-	set x_pointer.twice (TRUE)
+	set globalx.twice (TRUE)
 end
 function x_pointer_twice_unset()
-	set x_pointer.twice (FALSE)
+	set globalx.twice (FALSE)
 end
 #function x_pointer_x(sv pointer) #same as x_pointer
-#	if x_data.f!=(NULL)
+#	if globalx.xfile!=(NULL)
 #		sub pointer# action_debug((action_debug_get_mem))
 #		inc pointer#
 #	end
@@ -91,13 +107,12 @@ importx "printf" printf
 import "f_write" f_write
 
 function x_log(sd codepointer)
-	valuex base#1
-	if x_data.flog!=(NULL)
+	if globalx.xflog!=(NULL)
 #before: is visible that var a is 6 bytes in swf and 12 in x ; divu test 0x10000;call debug_phase_code_add((TRUE),#test)
 #there are more calculations if write at .log, expands comes from member(compressed)/fn/args to fn/args/member(uncompressed)
-		sub codepointer base
+		sub codepointer globalx.xlogbase
 		#callg x_log_val((xlog_code),(DWORD),codepointer) #is parallel, to add a type is extra
-		callg f_write(x_data.flog,#codepointer,(xlog_code_size)) #DWORD like x_data.size
+		callg f_write(globalx.xflog,#codepointer,(xlog_code_size)) #DWORD like globalx.xsize
 	end
 end
 
@@ -106,26 +121,24 @@ import "strlen_of" strlen_of
 
 #is not x or x?
 function actionx()
-	vdatax pointer#1
-	valuex end#1
-	if x_data.mem!=(NULL)
+	if globalx.xmem!=(NULL)
 	#flag_x log(xx) | log, alt, flagpre_x|flagpre_x_pad
-		if end<=^pointer
+		if globalx.xend<=^globalx.xpointer
 			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
 		sd size
-		set size pointer#v            ;#size of escaped block that was at parse + pad if flagpre_x_pad flag . xlog_strings_size
-		incst pointer                 ##here at parse was the escaped mem
-		set x_pointer.base pointer    ##for x_pointer function
-		add pointer size              ##and add DWORD since liboadata read size without parse
-		add pointer (xlog_xcode_size) ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
-		if x_data.flog!=(NULL)
-			set x_log.base pointer
+		set size globalx.xpointer#v            ;#size of escaped block that was at parse + pad if flagpre_x_pad flag . xlog_strings_size
+		incst globalx.xpointer                 ##here at parse was the escaped mem
+		set globalx.xbase globalx.xpointer     ##for x_pointer function
+		add globalx.xpointer size              ##and add DWORD since liboadata read size without parse
+		add globalx.xpointer (xlog_xcode_size) ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		if globalx.xflog!=(NULL)
+			set globalx.xlogbase globalx.xpointer
 		end
-		while pointer#!=(math_end)
-			set pointer action__code_row(pointer)
+		while globalx.xpointer#!=(math_end)
+			set globalx.xpointer action__code_row(globalx.xpointer)
 		endwhile
-		add pointer (DWORD) #this will continue at next actionx
+		add globalx.xpointer (DWORD) #this will continue at next actionx
 		return (TRUE)
 	end
 	return (FALSE)
@@ -139,18 +152,17 @@ import "f_tell" f_tell
 import "f_tell_errors" f_tell_errors
 import "memalloc_errors" memalloc_errors
 
-function x_init(sd flags,sd path)
+function x_init(sd ?flags,sd path)
 	vstr err="swf started, x not closed"
-	if x_data.f!=(NULL)
+	if globalx.xfile!=(NULL)
 		call error(err)
-	elseif x_data.mem!=(NULL)
+	elseif globalx.xmem!=(NULL)
 		call error(err)
 	end
 
-	wordxu verb#1
-	set verb 0
+	set globalx.verb 0
 
-	sd test=flags_x
+	sd ?test=flags_x
 	and test flags
 	if test!=0
 		sd size;setcall size strlen_of(path,2+1)
@@ -159,22 +171,21 @@ function x_init(sd flags,sd path)
 
 		and test (flag_x)
 		if test=0 #save
-			set x_data.f f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
-			datax flag#1
-			set flag (flagpre_x_pad)
-			and flag flags
+			set globalx.xfile f_open_mem(b,"wb") #'b' on windows is not 't' that can change line ends and is working more there
+			set globalx.xflag (flagpre_x_pad)
+			and globalx.xflag flags
 
-			set x_pointer.twice (FALSE)
+			set globalx.twice (FALSE)
 		else #restore ,no parse, no log/alt
 			sd file;set file f_open_mem(b,"rb")
 			call fseek(file,0,(SEEK_END))
-			set actionx.end f_tell_errors(file)
+			set globalx.xend f_tell_errors(file)
 			call fseek(file,0,(SEEK_SET))
-			set x_data.mem memalloc_errors(actionx.end,file)
-			call fread(x_data.mem,actionx.end,1,file)
+			set globalx.xmem memalloc_errors(globalx.xend,file)
+			call fread(globalx.xmem,globalx.xend,1,file)
 			call fclose(file)
-			set actionx.pointer x_data.mem
-			add actionx.end actionx.pointer
+			set globalx.xpointer globalx.xmem
+			add globalx.xend globalx.xpointer
 
 			sd xx=flags_xx
 			and xx flags
@@ -182,7 +193,7 @@ function x_init(sd flags,sd path)
 				inc size
 				set b memalloc(size)
 				call sprintf(b,"%s.xx",path)
-				set x_data.flog f_open_mem(b,"wb")
+				set globalx.xflog f_open_mem(b,"wb")
 			end
 			and flags (~antix_read)
 		end
@@ -191,33 +202,35 @@ function x_init(sd flags,sd path)
 end
 
 import "xlog_pad_get" xlog_pad_get #this is a functionx, but no args, then, no aligns at pass_call for this
-function debug_x_pointers(valuex start,valuex size)
-	valuex mark#1
-	if x_data.f!=(NULL)
-		set x_data.size 0
+function debug_x_pointers(svu strt,svu sz)
+	if globalx.xfile!=(NULL)
+		set globalx.xsize 0
+		set globalx.dbxstart strt
+		set globalx.dbxsize sz
 
-		inc size  ##is on last \0
-		sub size start
-		if x_init.flag=(flagpre_x_pad)
-			set mark f_tell(x_data.f) #long
-			add mark (xlog_strings_size)
-			add mark size    ##overflow is same
+		ss ?pad
+		sub globalx.dbxsize globalx.dbxstart
+		inc globalx.dbxsize  ##is on last \0
+		if globalx.xflag=(flagpre_x_pad)
+			set globalx.mark f_tell(globalx.xfile) #long
+			add globalx.mark (xlog_strings_size)
+			add globalx.mark globalx.dbxsize    ##overflow is same
 
-			sd pad;sd all
+			sd all
 			#this in case pad is straight: 0xf 0x1f, but best pad for 1920x1080 is xxd -c 48 -g 4 . 48 is 0x30, 0x3f will be too much
 			#set pad 0xf
-			#xor pad mark
+			#xor pad globalx.mark
 			#inc pad
 			#and pad 0xf
 
 			sd aux
-			set aux mark
-			sd pad_value#1;set pad_value xlog_pad_get()
+			set aux globalx.mark
+			ss ?pad_value#1;set pad_value xlog_pad_get()
 			divu aux pad_value
 			mult aux pad_value
-			if aux!=mark
+			if aux!=globalx.mark
 				sd aux2
-				set aux2 mark
+				set aux2 globalx.mark
 				sub aux2 aux
 				set pad pad_value
 				sub pad aux2
@@ -225,89 +238,88 @@ function debug_x_pointers(valuex start,valuex size)
 				set pad 0
 			end
 
-			set all size; add all pad
-			call f_write(x_data.f,#all,(xlog_strings_size))
+			set all globalx.dbxsize; add all pad
+			call f_write(globalx.xfile,#all,(xlog_strings_size))
 		else
-			call f_write(x_data.f,#size,(xlog_strings_size))
+			call f_write(globalx.xfile,#globalx.dbxsize,(xlog_strings_size))
 		end
-		set mark f_tell(x_data.f)
-		call f_write(x_data.f,start,size)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
-		if x_init.flag=(flagpre_x_pad)
+		set globalx.mark f_tell(globalx.xfile)
+		call f_write(globalx.xfile,globalx.dbxstart,globalx.dbxsize)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
+		char zero={0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #47 pad is maximum
+		if globalx.xflag=(flagpre_x_pad)
 			if pad!=0
-				char zero={0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #47 pad is maximum
-				call f_write(x_data.f,#zero,pad)
+				call f_write(globalx.xfile,#zero,pad)
 			end
 		end
 		#and need to write x size to fast grab at liboadata branches without x parse
-		valuex xmark#1
-		call f_write(x_data.f,#zero,(xlog_xcode_size)) #write something dummy here, size is DWORD like like x_data.size
-		set xmark f_tell(x_data.f)
+		call f_write(globalx.xfile,#zero,(xlog_xcode_size)) #write something dummy here, size is DWORD like like globalx.xsize
+		set globalx.xmark f_tell(globalx.xfile)
 	end
 end
 
 function debug_x_base(sd mem,sd size)
 	#already wrote
-	sub size x_data.size
-	add mem x_data.size
+	sub size globalx.xsize
+	add mem globalx.xsize
 
-	call f_write(x_data.f,mem,size)
-	add x_data.size size
+	call f_write(globalx.xfile,mem,size)
+	add globalx.xsize size
 end
 function debug_x(sd mem,sd nr)
 	sd vb;set vb verbose_get()
 	if vb!=(flag_none)
-		if nr>x_init.verb
-			set x_init.verb nr
-			call printf("action .x peak: %hu\n",x_init.verb) # totalvalues = 0xffFF
+		if nr>globalx.verb
+			set globalx.verb nr
+			call printf("action .x peak: %hu\n",globalx.verb) # totalvalues = 0xffFF
 		end
 	end
-	if x_data.f!=(NULL)
+	if globalx.xfile!=(NULL)
 		mult nr (action_code_values_unit)
 		call debug_x_base(mem,nr)
 
-		valuex current#1
-		set current f_tell(x_data.f)
-		sub current debug_x_pointers.xmark
-		sub debug_x_pointers.xmark (xlog_xcode_size)
+		sv current
+		set current f_tell(globalx.xfile)
+		sub current globalx.xmark
+		sub globalx.xmark (xlog_xcode_size)
 
-		call fseek(x_data.f,debug_x_pointers.mark,(SEEK_SET))
-		call fwrite(debug_x_pointers.start,debug_x_pointers.size,1,x_data.f)
+		call fseek(globalx.xfile,globalx.mark,(SEEK_SET))
+		call fwrite(globalx.dbxstart,globalx.dbxsize,1,globalx.xfile)
 
-		call fseek(x_data.f,debug_x_pointers.xmark,(SEEK_SET))
-		call fwrite(#current,(xlog_xcode_size),1,x_data.f)
+		call fseek(globalx.xfile,globalx.xmark,(SEEK_SET))
+		call fwrite(#current,(xlog_xcode_size),1,globalx.xfile)
 
-		call fseek(x_data.f,0,(SEEK_END)) #for next writes
+		call fseek(globalx.xfile,0,(SEEK_END)) #for next writes
 	end
 end
 
 function debug_x_preexpand(sv p_codepointer)
 	sv codepointer;set codepointer p_codepointer#
 	sd value;set value codepointer#
-	if x_data.f!=(NULL)
+	if globalx.xfile!=(NULL)
 		sd values;set values action_code_values()
 		sub codepointer values
 		call debug_x_base(values,codepointer)
-		incst x_data.size  ##will skip unexpanded member string at next write
+		incst globalx.xsize  ##will skip unexpanded member string at next write
 	end
 	incst p_codepointer#
 	return value
 end
 function debug_x_preexpand_inter(sd codepointer)
-	if x_data.f!=(NULL)
+	if globalx.xfile!=(NULL)
 		sd values;set values action_code_values()
 		sub codepointer values
 		call debug_x_base(values,codepointer)
 	end
 end
 function debug_x_expand(sd values)
-	if x_data.f!=(NULL)
+	if globalx.xfile!=(NULL)
 		if values!=(NULL)
 			sd size;set size action_code_get()
 			sub size values
-			call f_write(x_data.f,values,size)
+			call f_write(globalx.xfile,values,size)
 		else
 			value n=NULL
-			call f_write(x_data.f,#n,:)
+			call f_write(globalx.xfile,#n,:)
 		end
 	end
 end
@@ -316,7 +328,7 @@ import "action_caller_right" action_caller_right
 import "action_member_loop_right" action_member_loop_right
 #codepointer
 function x_call(sv pmember,sv pfname,sv codepointer)
-	if x_data.mem!=(NULL)
+	if globalx.xmem!=(NULL)
 		set codepointer action_caller_right(pfname,codepointer)
 		set pmember# codepointer#
 		if pmember#=(no_pointer)
@@ -329,13 +341,13 @@ function x_call(sv pmember,sv pfname,sv codepointer)
 end
 
 function x_log_val(sd type,sd size,sd val)
-	call f_write(x_data.flog,#type,(xlog_type_size))
+	call f_write(globalx.xflog,#type,(xlog_type_size))
 	if size!=0
-		callg f_write(x_data.flog,#val,size)
+		callg f_write(globalx.xflog,#val,size)
 	end
 end
 function x_log_id(sd type,sd val)
-	if x_data.flog!=(NULL)
+	if globalx.xflog!=(NULL)
 		callg x_log_val(type,(xlog_id_size),val)
 	end
 end
@@ -343,8 +355,10 @@ function x_log_const(sd offset)
 	callg x_log_string((xlog_new),offset)
 end
 function x_log_string(sd type,sd offset)
-	if x_data.flog!=(NULL) #flag_pool_read is already tested
-		sub offset x_pointer.base
+	if globalx.xflog!=(NULL) #flag_pool_read is already tested
+		sub offset globalx.xbase
 		callg x_log_val(type,(xlog_unique_new_size),offset)
 	end
 end
+
+entryraw globalx()

@@ -1,7 +1,7 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 
 import "identifiers_set" identifiers_set
 import "stack_to_word_arg" stack_to_word_arg
@@ -46,7 +46,8 @@ import "error" error
 import "file_get_content" file_get_content
 import "exportsId_get" exportsId_get
 
-function swf_new_ex_local(ss path,sd width,sd height,sd backgroundcolor,sd fps,sd flags)
+import "flags_init" flags_init
+function swf_new_ex_local(ss path,sd ?width,sd ?height,sd ?backgroundcolor,ss ?fps,sd ?flags)
 #ss path             file out pathname
 #sd width
 #sd height
@@ -54,48 +55,50 @@ function swf_new_ex_local(ss path,sd width,sd height,sd backgroundcolor,sd fps,s
 #sd fps              swf frames per second
 #sd flags            see flags.oh
     #F=uncompressed, C=ZLib
-const hd_start=\
-    char *=F
-    char *={W,S}
-    char *version=8
-const file_sz_off=\
-    data *FileLength#1
-data size=\-hd_start
-vdata hd_pack%hd_start
-    #rect
-const hd2=\
-    char *FrameRate=0
-        char FrameRate#1
-    char *FrameCount={0,0}  #will be incremented at least once
-data size2=\-hd2
-vdata hd_pack2%hd2
+#const hd_start=\
+#    char *=F
+#    char *={W,S}
+#    char *version=8
+const file_sz_off=4
+#    data *FileLength#1
+#data size=\-hd_start
+#vdata hd_pack%hd_start
 
-	import "flags_init" flags_init
 	call user_flags(#flags)
 	call flags_init(flags,path)
-	call swf_mem_init(path,(file_sz_off-hd_start),flags)
+	call swf_mem_init(path,(file_sz_off),flags)
+	#identifiers for swf
+	call identifiers_set(0);#font with id 0 isn't visible in the placements
 
-    #identifiers for swf
-    call identifiers_set(0);#font with id 0 isn't visible in the placements
+	char hd1={F,W,S,8,0,0,0,0}
+	call swf_mem_add(#hd1,8)
 
-    call swf_mem_add(hd_pack,size)
-    call rect_add(width,height)
-    #x.x format
-    set FrameRate fps
-    call swf_mem_add(hd_pack2,size2)
-    #
+	#rect
+	call rect_add(width,height)
+
+#const hd2=\
+#    char *FrameRate=0
+#        char FrameRate#1
+#    char *FrameCount={0,0}  #will be incremented at least once
+#data size2=\-hd2
+#vdata hd_pack2%hd2
+	#x.x format
+#	set FrameRate fps
+	char hd2={0,0,0,0};ss pointer^hd2
+	inc pointer;set pointer# fps
+	call swf_mem_add(#hd2,4)
 
 	call swf_frames_reg() #is a rect with nbits above, ..., faster here
 
-    char setbackgroundtag#2
-    char red#1
-    char green#1
-    char blue#1
-
-    set blue backgroundcolor
-    sd g_color=0xff00;and g_color backgroundcolor;div g_color 0x100;set green g_color
-    sd r_color=0xff0000;and r_color backgroundcolor;div r_color (0x100*0x100);set red r_color
-    call swf_tag(#setbackgroundtag,(SetBackGroundColor),3)
+#	char setbackgroundtag#2
+#	char red#1
+#	char green#1
+#	char blue#1
+	charx bg#5;ss cursor^bg
+	add cursor 4;set cursor# backgroundcolor
+	dec cursor;swu ?g_color=0xff00;and g_color backgroundcolor;divu g_color 0x100;set cursor# g_color
+	dec cursor;sd ?r_color=0xff0000;and r_color backgroundcolor;divu r_color (0x100*0x100);set cursor# r_color
+	callg swf_tag(#bg,(SetBackGroundColor),3)
 endfunction
 
 #id
