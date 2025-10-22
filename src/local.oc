@@ -102,50 +102,47 @@ const file_sz_off=4
 endfunction
 
 #id
-function swf_font_local(ss fontname,sd font_flags)
+function swf_font_local(ss fontname,ss ?font_flags)
 #ss fontname    = a string with the browser font, for example "_sans"
 #sd font_flags  = prog.oh file is with the flags
-    const font_hd_start=\
+#    const font_hd_start=\
+#    char id#2
+#   char Flags#1
+#    char *Language=0
+#    char FontNameLen#1
+	const font_hd_start_size=5
+#    vdata font_hd_start^id
+	char data={0,0,0,0,0};ss pointer^data
 
-    char id#2
-    char Flags#1
-    char *Language=0
-    char FontNameLen#1
+	data NumGlyphs=0
 
-    const font_hd_start_size=\-font_hd_start
-    vdata font_hd_start^id
+	sd fontid
+	setcall fontid identifiers_get()
+	call stack_to_word_arg(fontid,#data)
+	add pointer (WORD);set pointer# font_flags
+	add pointer (BYTE+BYTE);set pointer# strlen(fontname)
 
-    data NumGlyphs=0
+	sw ?size=font_hd_start_size+2
 
-    sd fontid
-    setcall fontid identifiers_get()
-    call stack_to_word_arg(fontid,#id)
+	ss ?has_layout=FontFlagsHasLayout
+	and has_layout font_flags
+	add size pointer#
+	if has_layout!=0
+		add size (2+2+2+2)
+	endif
 
-    set Flags font_flags
-
-    setcall FontNameLen strlen(fontname)
-
-    sd size=font_hd_start_size+2
-
-    sd has_layout=FontFlagsHasLayout
-    and has_layout font_flags
-    add size FontNameLen
-    if has_layout!=0
-        add size (2+2+2+2)
-    endif
-
-    call swf_tag_recordheader_entry((DefineFont2),size)
-    call swf_mem_add(font_hd_start,(font_hd_start_size))
-    call swf_mem_add(fontname,FontNameLen)
-    call swf_mem_add(#NumGlyphs,2)
-    if has_layout!=0
-        char FontAscent={0,0}
-        char *FontDescent={0,0}
-        char *FontLeading={0,0}
-        char *KerningCount={0,0}
-        call swf_mem_add(#FontAscent,(2+2+2+2))
-    endif
-    return fontid
+	call swf_tag_recordheader_entry((DefineFont2),size)
+	call swf_mem_add(#data,(font_hd_start_size))
+	call swf_mem_add(fontname,pointer#)
+	call swf_mem_add(#NumGlyphs,2)
+	if has_layout!=0
+		char FontAscent={0,0}
+		char *FontDescent={0,0}
+		char *FontLeading={0,0}
+		char *KerningCount={0,0}
+		call swf_mem_add(#FontAscent,(2+2+2+2))
+	endif
+	return fontid
 endfunction
 
 #id

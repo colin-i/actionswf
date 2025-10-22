@@ -111,7 +111,7 @@ int swf_button_last(char* newtext,char* actions);
 //font
 
 //id
-int swf_font(char* fontname,int font_flags);
+int swf_font(char* fontname,char font_flags);
 //id
 int swf_font_basic(char* fontname);
 
@@ -181,8 +181,8 @@ int swf_img_ex(char* imagepath,int wh[2]);
 //back at generic swf functions
 
 void swf_done();
-void swf_new(char* path,int width,int height,int backgroundcolor,int fps);
-void swf_new_ex(char* path,int width,int height,int backgroundcolor,int fps,int is_debug);
+void swf_new(char* path,int width,int height,int backgroundcolor,char fps);
+void swf_new_ex(char* path,int width,int height,int backgroundcolor,char fps,int flags);
 void swf_placeobject(int refid,int depth);
 void swf_placeobject_coords(int refid,int depth,int x,int y);
 void swf_removeobject(int depth);

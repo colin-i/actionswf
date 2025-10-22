@@ -174,7 +174,7 @@ endfunction
 
 #id
 import "swf_font_local" swf_font_local
-functionX swf_font(ss fontname,sd font_flags)
+functionX swf_font(ss fontname,ss ?font_flags)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callret swf_font_local(fontname,font_flags)
 endfunction
