@@ -42,7 +42,13 @@ with open(sys.argv[1], encoding='utf-8') as f:
 			if pos<1: exit(1)
 			if data[pos]!='\n': exit(1)
 			pos-=1
-			if data[pos]!='}': exit(1)
+
+			start+=len(goto)
+			if data[pos]!='}':
+				#allow other goto constructions
+				#continue
+				exit(1)
+
 			pos-=ind
 			if pos<0: exit(1)
 			if data[pos]!='\n': exit(1)
@@ -54,7 +60,6 @@ with open(sys.argv[1], encoding='utf-8') as f:
 				spos-=1
 				if spos<0: break                            #spos is A
 
-			start+=len(goto)
 			addr='addr'+data[start:start+4]+':'
 			if verbose:
 				print(addr)
