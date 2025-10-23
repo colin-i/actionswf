@@ -409,7 +409,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set branch_item#:branch.offset_break prefr#:preframe.size
 				set branch_item#:branch.action_break prefr#:preframe.action_last
 				inc inlog
-			else #xlog_forin
+			elseif inlog#=(xlog_forin)
 				inc inlog
 				set act actions
 				sub act 4*\action\
@@ -419,6 +419,9 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 					set act#:action.nextif prefr#:preframe.action_last
 				end
 				inc inlog
+			else
+				call printe("unimplemented goto asm")
+				return (EXIT_FAILURE)
 			end
 		end
 		return (EXIT_SUCCESS)

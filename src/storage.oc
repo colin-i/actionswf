@@ -110,6 +110,11 @@ function swf_actionblock_get()
 	setcall p_block struct_ids_action((ids_get_pointer),globals.action_id)
 	return p_block#
 endfunction
+#size
+function swf_actionblock_get_size()
+	sd memblock;setcall memblock swf_actionblock_get()
+	callret block_get_size(memblock)
+end
 function swf_actionblock_change_back()
 	sd poolid
 	set globals.action_id globals.main_id

@@ -1,3 +1,2 @@
 
-cd dev && make && cd ../tests && ./a && ./c 1 && cd ffdec && ./ff && cd ../data && ./a && cd ../../ && \
-cd example && ./rtest
+cd dev && make && cd ../example && ./rtest && cd ../tests && ./a && ./c 1 && cd ffdec && ./ff && cd ../data && ./test && cd ../../ && \

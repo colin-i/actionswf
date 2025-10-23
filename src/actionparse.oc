@@ -98,7 +98,6 @@ end
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
 import "block_get_mem_size" block_get_mem_size
-import "block_get_size" block_get_size
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
@@ -106,6 +105,7 @@ import "debug_phase_code_remove" debug_phase_code_remove
 import "mem_cmp_bool" mem_cmp_bool
 import "escape_action_endcom" escape_action_endcom
 import "swf_actionblock_get" swf_actionblock_get
+import "swf_actionblock_get_size" swf_actionblock_get_size
 
 #aftercallimport ebool
 
@@ -409,11 +409,11 @@ function action_parse_pack(ss ac,sd endChar)
 		if pointer!=ac
 			set isdelete (TRUE)
 		else
-			set pointer spaces(pointer) #ffdec
+			set pointer spaces(pointer) #ffdec, /tests/ffdec/ff
 		endelse
 	endelse
 	ss ?op   ;#this is recursive stack for future expands, now is simple
-	char set={Equals}
+	char set={Equals,Colon}
 	char secondChar#1
 	char *term=0
 	set secondChar endChar
@@ -422,6 +422,9 @@ function action_parse_pack(ss ac,sd endChar)
 	set ac strcspn(pointer,delims)
 	add ac pointer
 	set op ac#
+	if op=(Colon) #since goto markers, this is the label
+		inc ac;return ac
+	end
 	ss marker;set marker ac
 	if ac#!=(Nullchar)
 	#	set ac# (Nullchar) let this at memtrail or at test for inc_dec
@@ -1100,9 +1103,7 @@ endfunction
 function brace_blocks_add_write_offset(sd offset,sd flag)
 	sd block
 	setcall block cond_blocks()
-	sd memblock
-	setcall memblock swf_actionblock_get()
-	setcall block# block_get_size(memblock)
+	setcall block# swf_actionblock_get_size()
 	add block# offset
 	or block# flag
 	call brace_blocks_counter_inc()
@@ -1114,15 +1115,15 @@ function brace_blocks_remove_write(sd skip_xlog)
 	callg write_forward_offset(offset,skip_xlog)
 endfunction
 function brace_blocks_remove_write_ex()
-	sd offset
+	sdu ?offset
 	setcall offset brace_blocks_remove_write_offset()
-	sd test=skip_flag
+	sdu ?test=skip_flag
 	and test offset
 	if test=0
 		callg write_forward_offset_jump(offset)
 	end
 endfunction
-function write_forward_offset_cond(sd offset,sd _ifs)
+function write_forward_offset_cond(sdu ?offset,sd _ifs)
 	if _ifs#!=0
 		call write_forward_offset_base(offset,(FALSE),(xlog_jumpif))
 		dec _ifs#
@@ -1130,17 +1131,17 @@ function write_forward_offset_cond(sd offset,sd _ifs)
 		callg write_forward_offset_jump(offset)
 	end
 end
-function write_forward_offset_jump(sd offset)
+function write_forward_offset_jump(sdu ?offset)
 	callg write_forward_offset_base(offset,(FALSE),(xlog_jump))
 end
-function write_forward_offset(sd offset,sd skip_xlog)
+function write_forward_offset(sdu ?offset,ss ?skip_xlog)
 	callg write_forward_offset_base(offset,skip_xlog,(xlog_jumpif))
 end
 import "stack_to_word_arg" stack_to_word_arg
 import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
-function write_forward_offset_base(sd offset,sd skip_xlog,sd xlog_j)
+function write_forward_offset_base(sdu ?offset,ss ?skip_xlog,ss ?xlog_j)
 	sd mem
-	sd size
+	sdu ?size
 	sd memblock
 	setcall memblock swf_actionblock_get()
 	call block_get_mem_size(memblock,#mem,#size)
@@ -1176,7 +1177,7 @@ function check_whilefor(sd _skip_jump,sd _ifs)
 			sub blocks (DWORD)
 			if blocks#!=(forin_marker)
 				if globalp.type=(ret_cont_break_break) #jump 0 there?
-					set _skip_jump# (actionrecordheader_size+actionjump_contentsize)
+					set _skip_jump# (actionrecord_jump_size)
 					#also need to remove from debug
 					call debug_phase_code_remove(_skip_jump#,(action_debug_recordlength))
 				end
@@ -1235,14 +1236,14 @@ import "actionrecordheader" actionrecordheader
 import "swf_actionblock_add" swf_actionblock_add
 function add_dummy_jump()
     call actionrecordheader((ActionJump),(actionjump_contentsize))
-    sd dummy_size=0
+    sw ?dummy_size=0 #SI16
 	callg swf_actionblock_add(#dummy_size,(actionjump_contentsize))
 endfunction
 import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
-function resolve_back_jump(sd jumpoffset)  #also at continue
+function resolve_back_jump(sdu ?jumpoffset)  #also at continue
 	sd memblock
 	ss mem
-	sd size
+	sdu ?size
 	setcall memblock swf_actionblock_get()
 	call block_get_mem_size(memblock,#mem,#size)
 	add mem size;sub mem (WORD)

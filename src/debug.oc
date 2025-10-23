@@ -423,7 +423,7 @@ function debug_export(sd i,ss e,sd size)
 	end
 end
 
-function debug_phase_code_add(sd is_long,ss arg2,sd delim)
+function debug_phase_code_add(ss ?is_long,ss arg2,ss ?delim)
 	call debug_phase_code_flush()  #since Slash, function c(){\n} , will also add empty row but with one .
 	sd sz;set sz globald.dsize
 	if is_long=(TRUE)
@@ -459,10 +459,10 @@ function debug_phase_code_add(sd is_long,ss arg2,sd delim)
 	end
 	set globald.dsize sz
 end
-function debug_phase_code_add_long(ss arg2,sd delim)
+function debug_phase_code_add_long(ss arg2,ss ?delim)
 	callg debug_phase_code_add((TRUE),arg2,delim)
 end
-function debug_phase_code_add_jump_if(ss arg2,sd xlog_j)
+function debug_phase_code_add_jump_if(ss arg2,ss ?xlog_j)
 	if globald.prexx=(prexx_flags)
 		callg debug_phase_code_add_long(arg2,xlog_j)
 	end
@@ -475,7 +475,7 @@ end
 function debug_phase_code_add_one(ss arg2)
 	callg debug_phase_code_add((FALSE),arg2,(xlog_act))
 endfunction
-function debug_phase_code_add_if(sd is_long,ss arg2)
+function debug_phase_code_add_if(ss ?is_long,ss arg2)
 	if globald.prexx=(prexx_flags) #at oalt no action sizes
 		callg debug_phase_code_add(is_long,arg2,(xlog_act))
 	endif
@@ -614,6 +614,11 @@ end
 function debug_xlog_call()
 	if globald.prexx=(prexx_flags)
 		callg debug_phase_code_add_one((xlog_call))
+	end
+end
+function debug_xlog_unimplemented()
+	if globald.prexx=(prexx_flags)
+		callg debug_phase_code_add_one((xlog_unimplemented))
 	end
 end
 

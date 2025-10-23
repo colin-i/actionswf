@@ -11,6 +11,7 @@ valueu values_container=NULL
 #win32 with _
 importx "strcmp" strcmp
 importx "strlen" strlen
+importx "sscanf" sscanf
 
 function action_code_values()
 	return global.values_container
@@ -43,8 +44,7 @@ function action_code_values_action()
 	return #global.nr
 end
 
-import "swf_actionblock_get" swf_actionblock_get
-import "block_get_size" block_get_size
+import "swf_actionblock_get_size" swf_actionblock_get_size
 
 import "brace_blocks_counter" brace_blocks_counter
 
@@ -145,6 +145,12 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 	if compare=0
 		set p_action# (ActionTrace)
 		return trace
+	endif
+	vstr goto="§§goto"
+	setcall compare strcmp(name,goto)
+	if compare=0
+		set p_action# (ActionJump)
+		return goto
 	endif
 	return (NULL)
 endfunction
@@ -594,11 +600,10 @@ function action_code_write_conditions(sd codepointer)
 		if codepointer#!=(inter_for);setcall codepointer action_code_pack(codepointer);endif
 		add codepointer (DWORD)
 		#
-		sd sizeOff
+		sdu ?sizeOff
 		if codepointer#!=(inter_for) #else is JUMP 0
 			call add_dummy_jump()
-			sd memblock;setcall memblock swf_actionblock_get()
-			setcall sizeOff block_get_size(memblock)
+			setcall sizeOff swf_actionblock_get_size()
 		end
 		#
 		call add_while_top_off((while_marker))
@@ -691,12 +696,10 @@ function action_code_break()
 	endelse
 	call debug_xlog_break()
 	#
-	sd memblock
-	setcall memblock swf_actionblock_get()
-	setcall c_block# block_get_size(memblock);sub c_block# (WORD)
+	setcall c_block# swf_actionblock_get_size();sub c_block# (WORD)
 	#this is a forin end, it is looping at the remaining values until NULL from ActionEnumerate/2 behaviour
 	if p_type#=(forin_marker)
-		call write_jump((-actionjump_contentsize-actionrecordheader_size-forIn_ifBreak_size))
+		call write_jump((-actionrecord_jump_size-forIn_ifBreak_size))
 		call debug_xlog_forin((xlog_forin_break-_0))
 	endif
 	#
@@ -806,7 +809,7 @@ function action_code_write_function(sd codepointer)
 	if codepointer#!=(call_action_left)
 		return codepointer
 	endif
-	sd want_return=FALSE
+	ss ?want_return=FALSE
 	setcall codepointer action_code_write_function_call(codepointer,#want_return)
 	if want_return=(FALSE)  #can be modified inside
 		call action_one((ActionPop))
@@ -816,7 +819,7 @@ endfunction
 
 import "debug_xlog_call" debug_xlog_call
 #codepointer
-function action_code_write_function_call(sv codepointer,sd pwant_return)
+function action_code_write_function_call(sv codepointer,ss pwant_return)
 	add codepointer (DWORD)
 	sd pointer
 	setcall pointer action_code_write_builtin_function(codepointer,pwant_return)
@@ -834,7 +837,7 @@ function action_code_write_function_call(sv codepointer,sd pwant_return)
 	return codepointer
 endfunction
 #codepointer
-function action_code_write_builtin_function(sv codepointer,sd pwant_return)
+function action_code_write_builtin_function(sv codepointer,ss pwant_return)
 	sv pointer
 	set pointer codepointer
 	if pointer#!=(no_pointer)
@@ -853,8 +856,9 @@ function action_code_write_builtin_function(sv codepointer,sd pwant_return)
 	#moved above: call x_pointer_x(pointer) #in case is to .x, must trim pointer
 	return cursor
 endfunction
+import "debug_xlog_unimplemented" debug_xlog_unimplemented
 #codepointer
-function action_code_write_builtin_set(sv codepointer,sd pwant_return)
+function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 	ss name
 	#these acts must stay on stack, can be builtin inside builtin
 	sd act
@@ -865,17 +869,49 @@ function action_code_write_builtin_set(sv codepointer,sd pwant_return)
 		add test :   #to pass the pointer
 		if test#!=(args_end)
 			if act!=(ActionGotoFrame)
-				if act=(ActionTrace)
-					if pwant_return#=(TRUE)  #same like at gotoAndStop
-						return codepointer
-					endif
-				endif
-				setcall test action_code_right_util(test)
-				if test#=(args_end)
-					call action_one(act)
+				ss addr
+				if act=(ActionJump)
+					if test#=(ActionGetVariable)
+						add test (DWORD)
+						set addr x_pointer(test)
+						add test :
+						if test#=(math_end)
+							add test (DWORD)
+						else
+							call error("simple address expected at goto")
+						end
+					else
+						call error("ActionGetVariable expected at goto")
+					end
+				else
 					if act=(ActionTrace)
-						set pwant_return# (TRUE)  #to skip pop
-					endif
+						if pwant_return#=(TRUE)  #same like at gotoAndStop
+							return codepointer
+						endif
+					end
+					setcall test action_code_right_util(test)
+				end
+				if test#=(args_end)
+					if act=(ActionJump)
+						sdu ?addres ;#at ffdec are only short addresses?
+						sd ?scan;set scan sscanf(addr,"addr%x",#addres)
+						if scan=1
+							call debug_xlog_unimplemented() #must branch at label and for forward also writeJump, for forward like elseClosing, for backward another way, at the moment label is 100% ignored
+							sdu ?offset;set offset swf_actionblock_get_size()
+							add offset (actionrecord_jump_size)
+							sub addres offset
+							call write_jump(addres)
+							set pwant_return# (TRUE)   #no ActionPop required, if is at right side can error here if wanting
+							set global.rcb (ret_cont_break_something)
+						else
+							call error("goto addr sscanf error")
+						end
+					else
+						call action_one(act)
+						if act=(ActionTrace)
+							set pwant_return# (TRUE)  #to skip pop
+						endif
+					end
 					add test (DWORD)
 					return test
 				endif
@@ -1018,8 +1054,7 @@ function action_code_right_number(sd codepointer)
 		callret action_code_right_util(codepointer)
     endif
     if codepointer#=(call_action_right)
-		sd want_return=TRUE
-		callret action_code_write_function_call(codepointer,#want_return)
+		callret action_code_write_function_call(codepointer,(TRUE))
     endif
     sd attrib;sd var
     set attrib codepointer#

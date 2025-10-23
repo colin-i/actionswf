@@ -113,6 +113,7 @@ const F_OK=0  # 0 2 4 6 are same as windows
 const R_OK=4
 
 include "xlog.h" "xlog.oh"
+const actionrecord_jump_size=actionrecordheader_size+actionjump_contentsize
 
 const dblsignature_major=3
 const dblsignature=dblsignature_major+1
