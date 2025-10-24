@@ -11,6 +11,7 @@ import "action_debug_free_macro" action_debug_free_macro
 import "debug_phase_parse_end" debug_phase_parse_end
 import "endcom" endcom
 import "action_parse_init" action_parse_init
+import "label_init" label_init
 
 #aftercallimport ebool
 
@@ -37,6 +38,7 @@ function action_base(ss ac)
 	sd nr
 	setcall nr action_code_values_action()
 	call action_data()
+	call label_init()
 
 	sd x;set x actionx()
 	if x=(FALSE) #if true, only action__code_row loop

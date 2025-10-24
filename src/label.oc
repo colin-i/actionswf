@@ -10,6 +10,10 @@ const stepsize=DWORD+DWORD
 vdataxu gotos#label_max
 charx pos#1
 
+function label_init()
+	set globalg.pos 0 #at .x read label constant will have nothing to resolve
+end
+
 import "stack_to_word_arg" stack_to_word_arg
 import "swf_actionblock_get_mem_size" swf_actionblock_get_mem_size
 
