@@ -46,8 +46,8 @@ with open(sys.argv[1], encoding='utf-8') as f:
 			start+=len(goto)
 			if data[pos]!='}':
 				#allow other goto constructions
-				#continue
-				exit(1)
+				continue
+				#exit(1)
 
 			pos-=ind
 			if pos<0: exit(1)
