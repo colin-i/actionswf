@@ -33,6 +33,7 @@ const for_three=0xfb0BB0b0            #FR
 const inter_for=0xfc0CC0c0            #FR
 const ifElse_start=0xfd0DD0d0         #RG
 const for=0xfe0EE0e0                  #1
+const label=0xff0FF0f0                #L
 
 const no_flag=0                        #code only
 const consecutive_flag=0x80<<24        #parse only

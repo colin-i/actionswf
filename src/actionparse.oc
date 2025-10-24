@@ -97,15 +97,15 @@ end
 
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
-import "block_get_mem_size" block_get_mem_size
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
 import "debug_phase_code_remove" debug_phase_code_remove
 import "mem_cmp_bool" mem_cmp_bool
 import "escape_action_endcom" escape_action_endcom
-import "swf_actionblock_get" swf_actionblock_get
 import "swf_actionblock_get_size" swf_actionblock_get_size
+import "label_add" label_add
+import "swf_actionblock_get_mem_size" swf_actionblock_get_mem_size
 
 #aftercallimport ebool
 
@@ -396,34 +396,41 @@ function action_code_row_parse_instrument(ss ac)
 	callret action_parse_pack(ac,(Semicolon))
 endfunction
 #pointer
-function action_parse_pack(ss ac,sd endChar)
+function action_parse_pack(ss ac,ss ?endChar)
+	ss ?op   ;#this is recursive stack for future expands, now is simple
+	char set={Equals}
+	char secondChar#1
+	char thirdChar#1
+	char *term=0
+	set secondChar endChar
+
 	ss pointer
 	sd isnewvar=FALSE
 	sd isdelete
 	setcall pointer str_expression_at_start(ac,"var")
 	if pointer!=ac
 		set isnewvar (TRUE)
+		set thirdChar (Nullchar)
 	else
 		set isdelete (FALSE)
 		setcall pointer str_expression_at_start(ac,"delete")
 		if pointer!=ac
 			set isdelete (TRUE)
+			set thirdChar (Nullchar)
 		else
 			set pointer spaces(pointer) #ffdec, /tests/ffdec/ff
+			set thirdChar (Colon)
 		endelse
 	endelse
-	ss ?op   ;#this is recursive stack for future expands, now is simple
-	char set={Equals,Colon}
-	char secondChar#1
-	char *term=0
-	set secondChar endChar
-	ss delims^set
 
+	ss delims^set
 	set ac strcspn(pointer,delims)
 	add ac pointer
 	set op ac#
 	if op=(Colon) #since goto markers, this is the label
-		inc ac;return ac
+		call label_add(pointer)
+		inc ac
+		return ac
 	end
 	ss marker;set marker ac
 	if ac#!=(Nullchar)
@@ -1142,9 +1149,7 @@ import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
 function write_forward_offset_base(sdu ?offset,ss ?skip_xlog,ss ?xlog_j)
 	sd mem
 	sdu ?size
-	sd memblock
-	setcall memblock swf_actionblock_get()
-	call block_get_mem_size(memblock,#mem,#size)
+	call swf_actionblock_get_mem_size(#mem,#size)
 	#
 	add mem offset
 	add offset (WORD)
@@ -1241,11 +1246,9 @@ function add_dummy_jump()
 endfunction
 import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
 function resolve_back_jump(sdu ?jumpoffset)  #also at continue
-	sd memblock
 	ss mem
 	sdu ?size
-	setcall memblock swf_actionblock_get()
-	call block_get_mem_size(memblock,#mem,#size)
+	call swf_actionblock_get_mem_size(#mem,#size)
 	add mem size;sub mem (WORD)
 	#
 	sub size jumpoffset

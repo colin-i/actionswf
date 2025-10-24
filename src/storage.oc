@@ -115,6 +115,11 @@ function swf_actionblock_get_size()
 	sd memblock;setcall memblock swf_actionblock_get()
 	callret block_get_size(memblock)
 end
+#mem
+function swf_actionblock_get_mem_size(sv pmem,sd psize)
+	sd memblock;setcall memblock swf_actionblock_get()
+	call block_get_mem_size(memblock,pmem,psize)
+end
 function swf_actionblock_change_back()
 	sd poolid
 	set globals.action_id globals.main_id
@@ -243,7 +248,7 @@ function swf_mem(sd proc,sd arg,sd len)
 
 			sd block
 			setcall block struct_ids((ids_get),globals.main_id)
-			ss mem;sd size;call block_get_mem_size(block,#mem,#size)
+			ss mem;sd ?size;call block_get_mem_size(block,#mem,#size)
 
 			sd pointer
 			set pointer mem

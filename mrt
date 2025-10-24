@@ -1,2 +1,2 @@
 
-cd dev && make && cd ../example && ./rtest && cd ../tests && ./a && ./c 1 && cd ffdec && ./ff && cd ../data && ./test && cd ../../ && \
+cd dev && make && cd ../example && ./rtest && cd ../tests && ./a && ./c 1 && cd ffdec && ./ff && cd ../data && ./test && echo ok

@@ -277,6 +277,7 @@ import "debug_phase_code_remove" debug_phase_code_remove
 import "flag_noDup_get" flag_noDup_get
 import "x_pointer_twice_set" x_pointer_twice_set
 import "x_pointer_twice_unset" x_pointer_twice_unset
+import "label_resolve" label_resolve
 
 #aftercallimport ebool
 
@@ -454,6 +455,10 @@ function action_code_pack(sdu codepointer)
 	elseif attrib=(ActionDelete2)
 		set need_right (FALSE)
 		set need_pop (TRUE)
+	elseif attrib=(label)
+		call label_resolve(codepointer#)
+		add codepointer (DWORD)
+		return codepointer
 	endelseif
 	#else is ActionDefineLocal/ActionSetVariable
 	sd name;sdu member_codepointer_start
@@ -857,6 +862,7 @@ function action_code_write_builtin_function(sv codepointer,ss pwant_return)
 	return cursor
 endfunction
 import "debug_xlog_unimplemented" debug_xlog_unimplemented
+import "goto_add" goto_add
 #codepointer
 function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 	ss name
@@ -893,12 +899,14 @@ function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 				end
 				if test#=(args_end)
 					if act=(ActionJump)
-						sdu ?addres ;#at ffdec are only short addresses?
+						sdu ?addres ;#at ffdec are only short addresses? anyway, allow full address
 						sd ?scan;set scan sscanf(addr,"addr%x",#addres)
 						if scan=1
 							call debug_xlog_unimplemented() #must branch at label and for forward also writeJump, for forward like elseClosing, for backward another way, at the moment label is 100% ignored
 							sdu ?offset;set offset swf_actionblock_get_size()
-							add offset (actionrecord_jump_size)
+							add offset (actionrecordheader_size)
+							call goto_add(addres,offset)
+							add offset (actionjump_contentsize)
 							sub addres offset
 							call write_jump(addres)
 							set pwant_return# (TRUE)   #no ActionPop required, if is at right side can error here if wanting
