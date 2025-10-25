@@ -69,6 +69,7 @@ function label_resolve(sdu ?label)
 			ss a;set a mem
 			add a off
 			sdu ?sz;set sz size
+			add off (actionjump_contentsize)
 			sub sz off
 			call forward_jump_check(sz)
 			call stack_to_word_arg(sz,a)
