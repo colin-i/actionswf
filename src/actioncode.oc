@@ -905,9 +905,7 @@ function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 							call debug_xlog_unimplemented() #must branch at label and for forward also writeJump, for forward like elseClosing, for backward another way, at the moment label is 100% ignored
 							sdu ?offset;set offset swf_actionblock_get_size()
 							add offset (actionrecordheader_size)
-							call goto_add(addres,offset)
-							add offset (actionjump_contentsize)
-							sub addres offset
+							set addres goto_add(addres,offset)
 							call write_jump(addres)
 							set pwant_return# (TRUE)   #no ActionPop required, if is at right side can error here if wanting
 							set global.rcb (ret_cont_break_something)

@@ -9,13 +9,49 @@ const stepsize=DWORD+DWORD
 #multithread unsafe
 vdataxu gotos#label_max
 charx pos#1
+vdataxu labels#label_max
+charx apos#1
 
 function label_init()
-	set globalg.pos 0 #at .x read label constant will have nothing to resolve
+	set globalg.pos 0
+	set globalg.apos 0
 end
+
+import "swf_actionblock_get" swf_actionblock_get
+import "block_get_mem" block_get_mem
 
 import "stack_to_word_arg" stack_to_word_arg
 import "swf_actionblock_get_mem_size" swf_actionblock_get_mem_size
+
+importx "sscanf" sscanf
+
+#aftercallimport ebool
+
+import "backward_jump_check" backward_jump_check
+
+function goto_resolve(sdu ?label,sd ?off)
+	sdu pointer
+	set pointer globalg.apos
+	mult pointer (stepsize)
+	add pointer #globalg.labels
+	while #globalg.labels!=pointer
+		sub pointer (DWORD)
+		sdu ?labeloff;set labeloff pointer#
+		sub pointer (DWORD)
+		if pointer#=label
+			ss mem;set mem swf_actionblock_get()
+			set mem block_get_mem(mem)
+			add mem off
+			add off (actionjump_contentsize)
+			sub labeloff off
+			call backward_jump_check(labeloff)
+			return labeloff
+		end
+	end
+	return 0
+end
+
+import "forward_jump_check" forward_jump_check
 
 function label_resolve(sdu ?label)
 	sdu pointer
@@ -34,6 +70,7 @@ function label_resolve(sdu ?label)
 			add a off
 			sdu ?sz;set sz size
 			sub sz off
+			call forward_jump_check(sz)
 			call stack_to_word_arg(sz,a)
 
 			sdu cursor=stepsize
@@ -49,28 +86,39 @@ function label_resolve(sdu ?label)
 			dec globalg.pos
 		end
 	end
+	call alabel_add(label,size)
 end
-
-importx "sscanf" sscanf
-
-#aftercallimport ebool
 
 import "error" error
 
 function goto_add(sdu ?label,sdu ?off)
-	if globalg.pos=(label_max)
-		call error("too many goto")
+	sw ?resolved;set resolved goto_resolve(label,off)
+	if resolved=0
+		call marker_add(label,off,#globalg.pos,#globalg.gotos)
+		add off (actionjump_contentsize)
+		sub label off
+		#cannot error check here, maybe is a true label, can extra code later if wanting
+		return label
+	end
+	return resolved
+end
+function alabel_add(sdu ?label,sdu ?off)
+	call marker_add(label,off,#globalg.apos,#globalg.labels)
+end
+function marker_add(sdu ?label,sdu ?off,ss ppos,sdu start)
+	if ppos#=(label_max)
+		call error("too many markers")
 	end
 	sd pointer
-	set pointer globalg.pos
+	set pointer ppos#
 	mult pointer (stepsize)
-	add pointer #globalg.gotos
+	add pointer start
 
 	set pointer# label
 	add pointer (DWORD)
 	set pointer# off
 
-	inc globalg.pos
+	inc ppos#
 end
 
 import "action_code_set" action_code_set

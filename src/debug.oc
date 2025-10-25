@@ -186,7 +186,7 @@ end
 
 import "row_termination" row_termination
 import "swf_actionblock_get" swf_actionblock_get
-import "block_get_size" block_get_size
+import "swf_actionblock_get_size" swf_actionblock_get_size
 import "block_get_psize" block_get_psize
 import "block_get_mem" block_get_mem
 import "word_arg_to_stack" word_arg_to_stack
@@ -500,8 +500,7 @@ function debug_definefunction(sv pointers)
 		set pointers# f_tell(globald.dfile)
 		incst pointers
 
-		sd memblock;setcall memblock swf_actionblock_get()
-		set pointers#d^ block_get_size(memblock)
+		set pointers#d^ swf_actionblock_get_size()
 		incst pointers
 
 		sd offset

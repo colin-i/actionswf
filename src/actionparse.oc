@@ -1155,15 +1155,17 @@ function write_forward_offset_base(sdu ?offset,ss ?skip_xlog,ss ?xlog_j)
 	add offset (WORD)
 	sub size offset
 	#
-	if size>^0x7fFF
-		call error("offset>(signed word size) error")
-	endif
-	#
+	call forward_jump_check(size)
 	call stack_to_word_arg(size,mem)
 	if skip_xlog=(FALSE)
 		callg debug_phase_code_add_jump_if(mem,xlog_j)
 	end
 endfunction
+function forward_jump_check(swu ?size) #is short is swf<x related to totalvalues
+	if size>^0x7fFF
+		call error("offset>(signed word size) error")
+	endif
+end
 #offset
 function brace_blocks_remove_write_offset()
     call brace_blocks_counter_dec()
@@ -1247,23 +1249,27 @@ endfunction
 import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
 function resolve_back_jump(sdu ?jumpoffset)  #also at continue
 	ss mem
-	sdu ?size
+	sd ?size ;#will *-1
 	call swf_actionblock_get_mem_size(#mem,#size)
 	add mem size;sub mem (WORD)
 	#
 	sub size jumpoffset
-	if size>=^0x8000
-		call error("offset>(signed word size) error (at jump back)")
-	end
+	#call backward_jump_check(size) was moved since goto check
 
 	call debug_phase_code_add_jumpback_if(#size)
 
 	mult size -1
-	#if size<=0xFFff8000   # 0x8000 or minus 1
+	call backward_jump_check(size)
 	set mem# size
 	sd byte=0x0000ff00;and byte size;div byte 0x100
 	inc mem;set mem# byte
 endfunction
+function backward_jump_check(swu ?size) #for short same as forward check
+	if size<^0xFFff8000
+	#if size>^0x8000
+		call error("offset>(signed word size) error (at jump back)")
+	end
+end
 
 #function
 
