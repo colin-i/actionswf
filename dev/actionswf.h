@@ -29,23 +29,23 @@ extern "C" {
 
 #pragma pack(push,4)
 typedef struct ButtonData_str{
-    unsigned int def_fill;
-    int def_line_sz;
+	unsigned int def_fill;
+	int def_line_sz;
 	unsigned int def_line;
 	unsigned int ov_fill;
-    int ov_line_sz;
+	int ov_line_sz;
 	unsigned int ov_line;
 	unsigned int dn_fill;
 	int dn_line_sz;
 	unsigned int dn_line;
-    int xcurve;
-    int ycurve;
-    char* text;
-    int font_id;
-    int font_height;
-    int font_vertical_offset;
-    int font_color;
-    char* actions;
+	int xcurve;
+	int ycurve;
+	char* text;
+	int font_id;
+	int font_height;
+	int font_vertical_offset;
+	int font_color;
+	char* actions;
 }ButtonData;
 #pragma pack(pop)
 
@@ -118,7 +118,7 @@ int swf_font_basic(char* fontname);
 //text
 
 //id
-int swf_text(int bound_width,int bound_height,char* variablename,int flags,EditText* structure);
+int swf_text(int bound_width,int bound_height,char* variablename,short flags,EditText* structure);
 
 //shape
 

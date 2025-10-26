@@ -146,11 +146,11 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 		set p_action# (ActionTrace)
 		return trace
 	endif
-	vstr goto="§§goto"
-	setcall compare strcmp(name,goto)
+	vstr jump="§§goto"
+	setcall compare strcmp(name,jump)
 	if compare=0
 		set p_action# (ActionJump)
-		return goto
+		return jump
 	endif
 	return (NULL)
 endfunction

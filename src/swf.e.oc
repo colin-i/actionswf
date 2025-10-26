@@ -189,7 +189,7 @@ endfunction
 
 #id
 import "swf_text_local" swf_text_local
-functionX swf_text(sd bound_width,sd bound_height,ss variablename,sd flags,sv structure)
+functionX swf_text(sd ?bound_width,sd ?bound_height,ss variablename,sw ?flags,sv structure)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callret swf_text_local(bound_width,bound_height,variablename,flags,structure)
 endfunction

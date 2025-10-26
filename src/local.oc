@@ -295,7 +295,7 @@ endfunction
 
 import "shape_records_add" shape_records_add
 #id
-function swf_shape_local(sd width,sd height,sd args)
+function swf_shape_local(sd ?width,sd ?height,sd args)
 #sd width
 #sd height
 #sd args        see swf_shape_basic or swf_image(last part) for example, or see shape_records_add and it's sub-functions to see how the swf SHAPERECORD is added
@@ -304,10 +304,10 @@ function swf_shape_local(sd width,sd height,sd args)
     elseif height=0
         call error("shape height 0 not allowed")
     endelseif
-    sd fillstyle
-    sd fillarg
-    sd linewidth
-    sd linecolor
+    sd ?fillstyle
+    sd ?fillarg
+    sd ?linewidth
+    sd ?linecolor
 
     setcall fillstyle args_advance(#args)
     if fillstyle!=(no_fill)
@@ -318,10 +318,10 @@ function swf_shape_local(sd width,sd height,sd args)
         setcall linecolor args_advance(#args)
     endif
     ########
-    sd shape_size
+    sd ?shape_size
 
     #id
-    sd shape_id
+    sd ?shape_id
     setcall shape_id identifiers_get()
     set shape_size (WORD)
 
@@ -332,27 +332,29 @@ function swf_shape_local(sd width,sd height,sd args)
 	add shape_size rect_size
 
 	#SHAPEWITHSTYLE
-	char FillStyleCount#1
-	char FillStyleType#1
-	#
-	data data#3
-	vdata fillstyles^FillStyleCount
-	set FillStyleCount 0
-	sd fillstyles_size=1
+
+#	char FillStyleCount#1
+#	char FillStyleType#1
+#	data data#3
+#	vdata fillstyles^FillStyleCount
+	charx filldata#14;ss pfilldata^filldata
+	sd ?fillstyles_size=1
 	if fillstyle!=(no_fill)
-		set FillStyleCount 1
-		set FillStyleType fillstyle
+#		set FillStyleCount 1
+		set pfilldata# 1
+#		set FillStyleType fillstyle
+		inc pfilldata;set pfilldata# fillstyle
 		add fillstyles_size 1
+		inc pfilldata
 		if fillstyle=(solid_fill)
-			setcall data dword_swap(fillarg)
+			setcall pfilldata#d dword_swap(fillarg)
 			add fillstyles_size (DWORD)
 		#elseif linear gradient fill,radial gradient fill or focal radial gradient fill
 		else
 		#if fillstyle==(repeating_bitmap_fill)
 		#clipped bitmap fill,non-smoothed repeating bitmap or non-smoothed clipped bitmap
-			call stack_to_word_arg(fillarg,#data)
-			sd fill_pointer^data
-			add fill_pointer (WORD)
+			call stack_to_word_arg(fillarg,pfilldata)
+			add pfilldata (WORD)
 			#matrix,scaleX=20,scaleY=20,translateX=0,translateY=0
 			#first bit: scaleX 0 and Y 0;or 1;=>0;else is 1
 			#const FIXEDBITS=16
@@ -362,58 +364,73 @@ function swf_shape_local(sd width,sd height,sd args)
 			const predef_XYscale=0x00140000
 			#rotate is 0
 			#translate nbits is 0
-			call bits_packs(fill_pointer,6,1,1,(predef_nbits),(NBits_size),(predef_XYscale),(predef_nbits),(predef_XYscale),(predef_nbits),0,1,0,(NBits_size))
+			call bits_packs(pfilldata,6,1,1,(predef_nbits),(NBits_size),(predef_XYscale),(predef_nbits),(predef_XYscale),(predef_nbits),0,1,0,(NBits_size))
 			#char ref_id#2
 			#char matrix#7
 			add fillstyles_size (2+7)
 		endelse
-	endif
+	else
+#		set FillStyleCount 0
+		set pfilldata# 0
+	end
 	add shape_size fillstyles_size
-    #
-    char LineStyleCount#1
-    char line_points#2
-    data color#1
-    vdata linestyles^LineStyleCount
-    sd linestyles_size=1
-    set LineStyleCount 0
-    if linewidth!=0
-        set LineStyleCount 1
-        mult linewidth 20
-        call stack_to_word_arg(linewidth,#line_points)
-        setcall color dword_swap(linecolor)
-        add linestyles_size (WORD+DWORD)
-    endif
-    add shape_size linestyles_size
-    #NumFillBits/NumLineBits
-    call NumFill_NumLin(FillStyleCount,LineStyleCount)
-    sd ?NFill_NLin;setcall NFill_NLin NumFill_NumLin_get((TRUE));mult NFill_NLin 0x10;orcall NFill_NLin NumFill_NumLin_get((FALSE))
-    inc shape_size
-    #shaperecord[n]
-    sd shapewithstyle_record_start
-    setcall shapewithstyle_record_start shapewithstyle_records()
-    value pointer#1;data pos#1
-    set pos 0x80
-    set pointer shapewithstyle_record_start
-    sd p_dest_pos^pointer
-    while args#!=-1
-        call shape_records_add(p_dest_pos,#args)
-    endwhile
-    data end={0,0}
-    sd end_record^end
-    call shape_records_add(p_dest_pos,#end_record)
-    if pos!=0x80
-        inc pointer
-    endif
-    sd records_sz
-    set records_sz pointer
-    sub records_sz shapewithstyle_record_start
-    add shape_size records_sz
+	set pfilldata #filldata
+
+#	char LineStyleCount#1
+#	char line_points#2
+#	data color#1
+#	vdata linestyles^LineStyleCount
+	charx linedata#7;ss plinedata^linedata
+	sd ?linestyles_size=1
+
+#	set LineStyleCount 0
+	if linewidth!=0
+#		set LineStyleCount 1
+		set plinedata# 1
+		inc plinedata
+		mult linewidth 20
+		call stack_to_word_arg(linewidth,plinedata)
+		add plinedata (WORD)
+		setcall plinedata#d dword_swap(linecolor)
+		add linestyles_size (WORD+DWORD)
+	else
+		set plinedata# 0
+	end
+	add shape_size linestyles_size
+	set plinedata #linedata
+
+	#NumFillBits/NumLineBits
+	call NumFill_NumLin(pfilldata#,plinedata#)
+	ss ?NFill_NLin;setcall NFill_NLin NumFill_NumLin_get((TRUE));mult NFill_NLin 0x10;orcall NFill_NLin NumFill_NumLin_get((FALSE))
+	inc shape_size
+
+	#shaperecord[n]
+	sd shapewithstyle_record_start
+	setcall shapewithstyle_record_start shapewithstyle_records()
+#	value pointer#1;data pos#1
+	datax dest_pos#(:/DWORD)+1;sv ppointer^dest_pos
+	sd ppos=:;add ppos ppointer
+#	set pos 0x80
+	set ppos# 0x80
+	set ppointer# shapewithstyle_record_start
+	while args#!=-1
+		call shape_records_add(ppointer,#args)
+	endwhile
+	data end={0,0};sd end_record^end
+	call shape_records_add(ppointer,#end_record)
+	if ppos#!=0x80
+		inc ppointer# #on suffix inc is ok
+	endif
+	sd records_sz
+	set records_sz ppointer#
+	sub records_sz shapewithstyle_record_start
+	add shape_size records_sz
 
     call swf_tag_recordheader_entry((DefineShape3),shape_size)
     call swf_mem_add(#shape_id,2)
     call swf_mem_add(rect,rect_size)
-    call swf_mem_add(fillstyles,fillstyles_size)
-    call swf_mem_add(linestyles,linestyles_size)
+    call swf_mem_add(pfilldata,fillstyles_size)
+    call swf_mem_add(plinedata,linestyles_size)
     call swf_mem_add(#NFill_NLin,1)
     call swf_mem_add(shapewithstyle_record_start,records_sz)
 
@@ -421,51 +438,63 @@ function swf_shape_local(sd width,sd height,sd args)
 endfunction
 
 #id
-function swf_shape_bitmap_local_repeating(sd bitmapId,sd width,sd height)
+function swf_shape_bitmap_local_repeating(sd ?bitmapId,sd ?width,sd ?height)
 	callret swf_shape_bitmap_local(bitmapId,width,height,(repeating_bitmap_fill))
 end
-function swf_shape_bitmap_local_clipped(sd bitmapId,sd width,sd height)
+function swf_shape_bitmap_local_clipped(sd ?bitmapId,sd ?width,sd ?height)
 	callret swf_shape_bitmap_local(bitmapId,width,height,(clipped_bitmap_fill))
 end
-function swf_shape_bitmap_local(sd bitmapId,sd width,sd height,sd bitmap_fill)
+const re=0
+function swf_shape_bitmap_local(sd ?bitmapId,sd ?width,sd ?height,sd ?bitmap_fill)
 #                                                                 ruffle will extra pixel at repeating image and at transparent is annoying
 #sd bitmapId    id, e.g.: from swf_dbl
-	sd width_variable
-	set width_variable width
-	sd height_variable
-	set height_variable height
-	data struct#1
-	set struct bitmap_fill
-        data refid#1
-        set refid bitmapId
-    data *=0
-    data *={0,StateFillStyle0}
-    data *={1,1}
-        data w1#1;data *=0
-        set w1 width_variable
-    data *={1,1}
-        data *=0;data h1#1
-        set h1 height_variable
-    data *={1,1}
-        data w2#1;data *=0
-        mult width_variable -1
-        set w2 width_variable
-    data *={1,1}
-        data *=0;data h2#1
-        mult height_variable -1
-        set h2 height_variable
-    data *=-1
-	callret swf_shape_local(width,height,#struct)
+	sd ?width_variable=-1
+	mult width_variable width
+	sd ?height_variable=-1
+	mult height_variable height
+
+	data strct={re,re,0,0,StateFillStyle0,1,1,re,0,1,1,0,re,1,1,re,0,1,1,0,re,-1};sd pstruct^strct
+#	data struct#1
+#	set struct bitmap_fill
+	set pstruct# bitmap_fill
+#	data refid#1
+#	set refid bitmapId
+	add pstruct (DWORD);set pstruct# bitmapId
+#	data *=0
+#		data *={0,StateFillStyle0}
+
+#	data *={1,1}
+#		data w1#1;data *=0
+#	set w1 width
+	add pstruct (6*DWORD);set pstruct# width
+
+#	data *={1,1}
+#		data *=0;data h1#1
+#	set h1 height
+	add pstruct (5*DWORD);set pstruct# height
+
+#	data *={1,1}
+#		data w2#1;data *=0
+#	set w2 width_variable
+	add pstruct (3*DWORD);set pstruct# width_variable
+
+#	data *={1,1}
+#		data *=0;data h2#1
+#	set h2 height_variable
+	add pstruct (5*DWORD);set pstruct# height_variable
+
+#	data *=-1
+	callret swf_shape_local(width,height,#strct)
 endfunction
 
 #id
 function swf_image_ex_local(ss imagepath,sd p_wh,sd verif)
 #ss imagepath = path name for the dbl image
 #sd p_wh      = pointer width height
-    sd dbl_id
-    setcall dbl_id swf_dbl_ex_local(imagepath,p_wh,verif)
-    #add dbl to a shape
-    sd width;set width p_wh#;add p_wh (DWORD)
+	sd ?dbl_id
+	setcall dbl_id swf_dbl_ex_local(imagepath,p_wh,verif)
+	#add dbl to a shape
+	sd ?width;set width p_wh#;add p_wh (DWORD)
 	callret swf_shape_bitmap_local_clipped(dbl_id,width,p_wh#)
 endfunction
 import "swf_tag_recordheader_long_entry" swf_tag_recordheader_long_entry
@@ -553,18 +582,19 @@ endfunction
 import "f_open" f_open
 import "f_tell_errors" f_tell_errors
 #id
-function swf_jpeg_local(ss imagepath,sd tag,ss alphapath)
+function swf_jpeg_local(ss imagepath,ss ?tag,ss alphapath)
 #ss imagepath = path name for the image
-#sd tag = jpeg 2 or 3
+#char tag = jpeg 2 or 3
 #ss alphapath = path name for the image alpha
 	sd mem
 	sd size
+	sd size2
 	setcall mem file_get_content(imagepath,#size)
 	sd allsize;set allsize size
 	if tag=(DefineBitsJPEG3)
 		sd file;set file f_open(alphapath,"rb")
 		call fseek(file,0,(SEEK_END))
-		sd size2;set size2 f_tell_errors(file)
+		set size2 f_tell_errors(file)
 		call fclose(file) #i m closing it because i don't want to hardcode error(), but that means to add another little check here, in the meantime, another prog can fast modify everything and here no held at resources
 		add allsize size2
 		if allsize<0 #going to sign bit
@@ -617,7 +647,7 @@ const PlaceFlagHasCharacter=0x2
     dataxu matrixsz#1
     call matrix_translate(#matrix,#matrixsz,x,y)
 
-    sd size=5
+    sd ?size=5
     add size matrixsz
     call swf_tag_recordheader_entry((PlaceObject2),size)
     call swf_mem_add(#flags,1)
