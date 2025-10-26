@@ -1,14 +1,18 @@
 
 format elfobj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
 
-function verbose(datax flag)
-	and flag (flag_verbose)
+#multithread unsafe
+datax flag#1
+
+function verbose(sd ?f)
+	set globali.flag (flag_verbose)
+	and globali.flag f
 end
 function verbose_get()
-	return verbose.flag
+	return globali.flag
 end
 
 importx "strlen" strlen
@@ -29,12 +33,14 @@ import "f_size_errors" f_size_errors
 import "error" error
 import "memalloc" memalloc
 
-function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
+function imgx(ss dbl,sd p_wh,ss ?is_image) #,sd is_clipped
 	sd len;set len strlen(dbl)
 	ss cr;set cr dbl
 	add cr len
 	sd sz;set sz cr
 	sd size;set size cr
+	char jp=".jpg"
+	char ms=".msk"
 	while dbl!=cr
 		dec cr
 		if cr#=(Period)
@@ -42,12 +48,12 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 			inc cr
 			sub sz cr
 			if sz=3
-				char jp=Period
-				char j="jpg"
-				char ms=Period
-				char m="msk"
-				datax cmp#1;set cmp memcmp(cr,#j,3)
-				datax cmp2#1;set cmp2 memcmp(cr,#m,3)
+				ss jj=1
+				add jj #jp
+				datax cmp#1;set cmp memcmp(cr,jj,3)
+				ss mm=1
+				add mm #ms
+				datax cmp2#1;set cmp2 memcmp(cr,mm,3)
 				whiletrue
 					if cmp!=0
 						if cmp2!=0
@@ -62,8 +68,8 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 		end
 	end
 
-	sd dblsize;set dblsize f_size(dbl)
-	sub dblsize 4+4  #is unsigned compared to stay in ui32 tags, if short overflow will fail at dbl checks anyway
+	sd dbl_size;set dbl_size f_size(dbl)
+	sub dbl_size 4+4  #is unsigned compared to stay in ui32 tags, if short overflow will fail at dbl checks anyway
 
 	sub size dbl
 	set sz size
@@ -75,14 +81,14 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 	add cr sz
 	call memcpy(cr,#ms,5)
 
-	sd ?id; sd jpgsize
+	sd ?id; sd jpg_size
 	sd acs;set acs access(f1,(F_OK))
 	if acs!=0 #opac
 		call memcpy(cr,#jp,5)
-		set jpgsize f_size_errors(f1)
-		set id imgx_decision(dblsize,jpgsize,dbl,f1,(NULL),p_wh,is_image)
+		set jpg_size f_size_errors(f1)
+		set id imgx_decision(dbl_size,jpg_size,dbl,f1,(NULL),p_wh,is_image)
 	else #transparent
-		set jpgsize f_size_errors(f1) #is msk size
+		set jpg_size f_size_errors(f1) #is msk size
 		sd jpg;set jpg malloc(size)
 		if jpg!=(NULL)
 			call memcpy(jpg,dbl,sz)
@@ -90,23 +96,23 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 			add cr sz
 			call memcpy(cr,#jp,5)
 
-			add jpgsize f_size_errors(jpg)
-			#if jpgsize>0 #overflow can't make in swf, ui32tags
-			add jpgsize 4
-			#if jpgsize>0 #same
-			set id imgx_decision(dblsize,jpgsize,dbl,jpg,f1,p_wh,is_image)
+			add jpg_size f_size_errors(jpg)
+			#if jpg_size>0 #overflow can't make in swf, ui32tags
+			add jpg_size 4
+			#if jpg_size>0 #same
+			set id imgx_decision(dbl_size,jpg_size,dbl,jpg,f1,p_wh,is_image)
 			#end
 			#end
 			call free(jpg)
 		end
 	end
 	call free(f1)
-	ss ?p;setcall p erbool();if p#=0
-		if verbose.flag!=(flag_none)
-			add dblsize 2 #again, ui32 tags
-			add jpgsize 2
+	ss p;setcall p erbool();if p#=0
+		if globali.flag!=(flag_none)
+			add dbl_size 2 #again, ui32 tags
+			add jpg_size 2
 			ss ?c
-			if dblsize<^jpgsize
+			if dbl_size<^jpg_size
 				set c (Lessthan)
 			else
 				set c (Greaterthan)
@@ -117,7 +123,7 @@ function imgx(ss dbl,sd p_wh,sd is_image) #,sd is_clipped
 			else
 				set plus "+msk"
 			end
-			call printf("dbl 0x%lx %c jpg%s 0x%lx",dblsize,c,plus,jpgsize)
+			call printf("dbl 0x%lx %c jpg%s 0x%lx",dbl_size,c,plus,jpg_size)
 			if p_wh!=(NULL)
 				sd w;set w p_wh#
 				add p_wh (DWORD)
@@ -135,14 +141,14 @@ import "swf_jpeg_local" swf_jpeg_local
 import "dbl_dim" dbl_dim
 import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
 
-function imgx_decision(sd dblsize,sd jpgsize,ss dbl,ss jpg,ss msk,sd p_wh,sd is_image) #,sd is_clipped
+function imgx_decision(sd dbl_size,sd jpg_size,ss dbl,ss jpg,ss msk,sd p_wh,ss ?is_image) #,sd is_clipped
 	base globali.jmp_data;call ebase(globali.jmp_data)
-	if dblsize<^jpgsize
+	datax width#1;datax height#1
+	if dbl_size<^jpg_size
 		if is_image=(FALSE)
 			callret swf_dbl_ex_local(dbl,p_wh,(TRUE))
 		end
 		if p_wh=(NULL)
-			datax width#1;datax height#1
 			callret swf_image_ex_local(dbl,#width,(TRUE))
 		end
 		callret swf_image_ex_local(dbl,p_wh,(TRUE))

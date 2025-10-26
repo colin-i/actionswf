@@ -37,12 +37,16 @@ function word_swap_arg(ss word)
     set dest# word#
     set word# aux#
 endfunction
-function stack_to_word_arg(sd intarg,ss arg)
+function stack_to_word_arg(sw ?intarg,ss arg)
     set arg# intarg
     inc arg
     divu intarg 0x100
     set arg# intarg
 endfunction
+function stack_to_word_arg_twips(sw ?a,sw dest)
+	mult a 20
+	call stack_to_word_arg(a,dest)
+end
 function word_arg_to_stack(ss arg)
     inc arg
     sd value

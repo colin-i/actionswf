@@ -1,7 +1,9 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
+
+vstr err="invalid gif file"
 
 #win32 with _
 importx "memcpy" memcpy
@@ -46,7 +48,7 @@ endfunction
 import "swf_button_base" swf_button_base
 import "swf_text_initial_font_centered" swf_text_initial_font_centered
 #id
-functionX swf_button(sd width,sd height,sd ButtonData)
+functionX swf_button(sd ?width,sd ?height,sd ButtonData)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 data def_fill#1
 data def_line_h#1;#no pad
@@ -122,11 +124,11 @@ vstr actions#1
     sd noText=FALSE;sd text_id
     data t_null={0,0}
 	datax b#1;setcall b memcmp(#t_null,#text,:)
+	sd text_y
     if b=0
         set noText (TRUE)
         set bmem# noText
     else
-        sd text_y
         set text_y height
         sub text_y font_height
         div text_y 2
@@ -162,8 +164,8 @@ functionX swf_button_last(ss newtext,ss actions)
     setcall bmem button_mem()
     call memcpy(#shape_up,bmem,(9*DWORD))
 
+	sd newtext_id
     if noText=(FALSE)
-        sd newtext_id
         setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,font_color)
     endif
 
@@ -196,70 +198,76 @@ endfunction
 
 #id
 import "swf_shape_local" swf_shape_local
-functionX swf_shape(sd width,sd height,sd args)
+functionX swf_shape(sd ?width,sd ?height,sd args)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callret swf_shape_local(width,height,args)
 endfunction
 
 #id
-functionX swf_shape_basic(sd width,sd height,sd fillcolor,sd linecolor)
+functionX swf_shape_basic(sd ?width,sd ?height,sd ?fillcolor,sd ?linecolor)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd width
 #sd height
 #sd fillcolor       RGBA color to fill the shape
 #sd linecolor       RGBA line color around the shape
-	sd xcurve_value;set xcurve_value width;div xcurve_value 6
-	sd ycurve_value;set ycurve_value height;div ycurve_value 6
-	sd lineheight;set lineheight width;if lineheight>height;set lineheight height;endif;div lineheight 20
+	sd ?xcurve_value;set xcurve_value width;div xcurve_value 6
+	sd ?ycurve_value;set ycurve_value height;div ycurve_value 6
+	sd ?lineheight;set lineheight width;if lineheight>^height;set lineheight height;endif;divu lineheight 20
 	#xc width/6;yc..hg..;lh (min(w,h))/20
 	callret swf_shape_simple(width,height,fillcolor,lineheight,linecolor,xcurve_value,ycurve_value)
 endfunction
 
 #id
 import "swf_shape_bitmap_local_repeating" swf_shape_bitmap_local_repeating
-functionX swf_shape_bitmap(sd bitmapId,sd width,sd height)
+functionX swf_shape_bitmap(sd ?bitmapId,sd ?width,sd ?height)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callret swf_shape_bitmap_local_repeating(bitmapId,width,height)
 endfunction
 import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
-functionX swf_shape_bitmap_clipped(sd bitmapId,sd width,sd height)
+functionX swf_shape_bitmap_clipped(sd ?bitmapId,sd ?width,sd ?height)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	callret swf_shape_bitmap_local_clipped(bitmapId,width,height)
 endfunction
 #id
-functionX swf_shape_border(sd width,sd height,sd linesize,sd linecolor)
+functionX swf_shape_border(sd ?width,sd ?height,sd ?linesize,sd ?linecolor)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd width      border width
 #sd height     border height
 #sd linesize  line size
 #sd linecolor  0xRGBA color
-    sd neg_w=-1
-    sd neg_h=-1
-    mult neg_w width
-    mult neg_h height
-    #
-    if linesize=0;call error("is useless to call shape_border with linesize=0");endif
-    data border=no_fill
-    data l_w#1
-        set l_w linesize
-    data color#1;#linesize!=0
-        set color linecolor
-    #
-    data *={0,StateLineStyle}
-    data *={1,1}
-    data est#1;data *=0
-        set est width
-    data *={1,1}
-    data *=0;data sud#1
-        set sud height
-    data *={1,1}
-    data west#1;data *=0
-        set west neg_w
-    data *={1,1}
-    data *=0;data nord#1
-        set nord neg_h
-    data *=-1
-	callret swf_shape_local(width,height,#border)
+	if linesize=0;call error("is useless to call shape_border with linesize=0");endif
+	data data={no_fill,re,re,0,StateLineStyle,1,1,re,0,1,1,0,re,1,1,re,0,1,1,0,re,-1};sd p_data^data
+#	data border=no_fill
+#	data l_w#1
+#	set l_w linesize
+	add p_data (DWORD);set p_data# linesize
+#	data color#1;#linesize!=0
+#	set color linecolor
+	add p_data (DWORD);set p_data# linecolor
+	#
+#	data *={0,StateLineStyle}
+#	data *={1,1}
+#	data est#1;data *=0
+#	set est width
+	add p_data (5*DWORD);set p_data# width
+#	data *={1,1}
+#	data *=0;data sud#1
+#	set sud height
+	add p_data (5*DWORD);set p_data# height
+#	data *={1,1}
+#	data west#1;data *=0
+#	set west neg_w
+	sd ?neg_w=-1
+	mult neg_w width
+	add p_data (3*DWORD);set p_data# neg_w
+#	data *={1,1}
+#	data *=0;data nord#1
+#	set nord neg_h
+	sd ?neg_h=-1
+	mult neg_h height
+	add p_data (5*DWORD);set p_data# neg_h
+#	data *=-1
+	callret swf_shape_local(width,height,#data)
 endfunction
 
 ######################dbl
@@ -310,23 +318,23 @@ endfunction
 
 import "swf_jpeg_local" swf_jpeg_local
 #id
-functionX swf_imagej(ss imagepath,sd width,sd height)
+functionX swf_imagej(ss imagepath,sd ?width,sd ?height)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
 	callret swf_shape_bitmap_local_repeating(id,width,height)
 endfunction
-functionX swf_imagej_alpha(ss imagepath,sd width,sd height,ss alphapath)
+functionX swf_imagej_alpha(ss imagepath,sd ?width,sd ?height,ss alphapath)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #ss imagepath, width, height, alpha
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
 	callret swf_shape_bitmap_local_repeating(id,width,height)
 endfunction
-functionX swf_imagej_clipped(ss imagepath,sd width,sd height)
+functionX swf_imagej_clipped(ss imagepath,sd ?width,sd ?height)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG2))
 	callret swf_shape_bitmap_local_clipped(id,width,height)
 endfunction
-functionX swf_imagej_alpha_clipped(ss imagepath,sd width,sd height,ss alphapath)
+functionX swf_imagej_alpha_clipped(ss imagepath,sd ?width,sd ?height,ss alphapath)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	sd id;setcall id swf_jpeg_local(imagepath,(DefineBitsJPEG3),alphapath)
 	callret swf_shape_bitmap_local_clipped(id,width,height)
@@ -358,16 +366,15 @@ const gifsignature=6 #GIF89a
 functionX swf_gif_width(ss imagepath)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #ss imagepath = path name for the gif image
-	vstr err="invalid gif file"
 	#sw dim
-	callret filepath_get_word(imagepath,(gifsignature),err)
+	callret filepath_get_word(imagepath,(gifsignature),globalw.err)
 endfunction
 #height
 functionX swf_gif_height(ss imagepath)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #ss imagepath = path name for the gif image
 	#sw dim
-	callret filepath_get_word(imagepath,(gifsignature+WORD),swf_gif_width.err)
+	callret filepath_get_word(imagepath,(gifsignature+WORD),globalw.err)
 endfunction
 
 #both
@@ -413,18 +420,18 @@ functionX swf_new_ex(ss path,sd ?width,sd ?height,sd ?backgroundcolor,ss ?fps,sd
 endfunction
 
 import "swf_placeobject_local" swf_placeobject_local
-functionX swf_placeobject(sd refid,sd depth)
+functionX swf_placeobject(sd ?refid,sd ?depth)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_placeobject_local(refid,depth)
 endfunction
-#                                                  if not data here, then will conflict at c language where we talk about int
+#                                                       if not data here, then will conflict at c language where we talk about int
 import "swf_placeobject_coords_local" swf_placeobject_coords_local
-functionX swf_placeobject_coords(sd refid,sd depth,datax x,datax y)
+functionX swf_placeobject_coords(sd ?refid,sd ?depth,sd ?x,sd ?y)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_placeobject_coords_local(refid,depth,x,y)
 endfunction
 import "swf_removeobject_local" swf_removeobject_local
-functionX swf_removeobject(sd depth)
+functionX swf_removeobject(sd ?depth)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_removeobject_local(depth)
 endfunction
@@ -441,8 +448,10 @@ endfunction
 
 #sprite
 
+import "swf_tag_end" swf_tag_end
+import "done_action_one" done_action_one
 #id
-functionX swf_sprite_done(sd spriteid)
+functionX swf_sprite_done(sd ?spriteid)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid        pre-id created with swf_sprite_new
     call swf_mem((mem_exp_change),spriteid)
@@ -451,8 +460,7 @@ functionX swf_sprite_done(sd spriteid)
 	call swf_actionblock_done((from_done)) # in case there are remaining actions
 	call swf_actionblock_change_back()
 
-    import "swf_tag_end" swf_tag_end
-    call swf_tag_end()
+	call swf_tag_end()
 	call swf_mem_change_back()
 
 	sd id
@@ -476,7 +484,6 @@ functionX swf_sprite_done(sd spriteid)
 
 	#if is, add DoInitAction in timeline
 	call is_ainit((xlog_ainit_true))
-	import "done_action_one" done_action_one
 	call done_action_one(spriteid,id)
 	call free_sprite_id_actions(spriteid)
 
@@ -486,26 +493,26 @@ functionX swf_sprite_done(sd spriteid)
     return id
 endfunction
 import "new_sprite_id" new_sprite_id
+import "pool_read" pool_read
+import "struct_ids_action_set" struct_ids_action_set
 #pre-id
 functionX swf_sprite_new()
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #a pre-id to be used
-    sd id
-    setcall id new_sprite_id()
-	import "pool_read" pool_read
+	sd ?id
+	setcall id new_sprite_id()
 	call pool_read(id,-1)
-	import "struct_ids_action_set" struct_ids_action_set
 	call struct_ids_action_set(id,(xlog_ainit_false))
 	call pool_read(id,0)
-    call swf_mem((mem_exp_change),id)
-    sd reserve;#set later
-    call swf_mem_add(#reserve,2)
-    sd frames=0
-    call swf_mem_add(#frames,2)
+	call swf_mem((mem_exp_change),id)
+	sw ?reserve;#set later
+	call swf_mem_add(#reserve,2)
+	sw ?frames=0
+	call swf_mem_add(#frames,2)
 	call swf_mem_change_back()
     return id
 endfunction
-functionX swf_sprite_placeobject(sd spriteid,sd object,sd depth)
+functionX swf_sprite_placeobject(sd ?spriteid,sd ?object,sd ?depth)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid          pre-id
 #sd object,sd depth   same as swf_placeobject
@@ -513,7 +520,7 @@ functionX swf_sprite_placeobject(sd spriteid,sd object,sd depth)
     call swf_placeobject_local(object,depth)
 	call swf_mem_change_back()
 endfunction
-functionX swf_sprite_placeobject_coords(sd spriteid,sd object,sd depth,sd x,sd y)
+functionX swf_sprite_placeobject_coords(sd ?spriteid,sd ?object,sd ?depth,sd ?x,sd ?y)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid                   pre-id
 #sd object,sd depth,sd x,sd y  same as swf_placeobject_coords
@@ -521,7 +528,7 @@ functionX swf_sprite_placeobject_coords(sd spriteid,sd object,sd depth,sd x,sd y
     call swf_placeobject_coords_local(object,depth,x,y)
 	call swf_mem_change_back()
 endfunction
-functionX swf_sprite_removeobject(sd spriteid,sd depth)
+functionX swf_sprite_removeobject(sd ?spriteid,sd ?depth)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid   pre-id
 #sd depth      same as swf_removeobject
@@ -529,7 +536,7 @@ functionX swf_sprite_removeobject(sd spriteid,sd depth)
     call swf_removeobject_local(depth)
 	call swf_mem_change_back()
 endfunction
-functionX swf_sprite_showframe(sd spriteid)
+functionX swf_sprite_showframe(sd ?spriteid)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid   pre-id
     call swf_mem((mem_exp_change),spriteid)
@@ -544,7 +551,8 @@ endfunction
 
 #exports
 
-functionX swf_exports_add(sd id,ss name)
+import "debug_export" debug_export
+functionX swf_exports_add(sd ?id,ss name)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd id
 #ss name       name to be used at the actionscript
@@ -572,7 +580,6 @@ functionX swf_exports_add(sd id,ss name)
     call swf_mem_add(#id,(WORD))
     sd len
     setcall len strlen(name)
-	import "debug_export" debug_export
 	call debug_export(id,name,len)
     inc len
     call swf_mem_add(name,len)

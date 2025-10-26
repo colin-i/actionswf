@@ -1,6 +1,6 @@
 Format ElfObj64
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
 
 import "for_in_ptr" for_in_ptr

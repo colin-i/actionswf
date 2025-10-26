@@ -29,7 +29,7 @@ importx "sscanf" sscanf
 
 import "backward_jump_check" backward_jump_check
 
-function goto_resolve(sdu ?label,sd ?off)
+function goto_resolve(sdu ?lab,sd ?off)
 	sdu pointer
 	set pointer globalg.apos
 	mult pointer (stepsize)
@@ -38,7 +38,7 @@ function goto_resolve(sdu ?label,sd ?off)
 		sub pointer (DWORD)
 		sdu ?labeloff;set labeloff pointer#
 		sub pointer (DWORD)
-		if pointer#=label
+		if pointer#=lab
 			ss mem;set mem swf_actionblock_get()
 			set mem block_get_mem(mem)
 			add mem off
@@ -53,7 +53,7 @@ end
 
 import "forward_jump_check" forward_jump_check
 
-function label_resolve(sdu ?label)
+function label_resolve(sdu ?lab)
 	sdu pointer
 	set pointer globalg.pos
 	mult pointer (stepsize)
@@ -65,7 +65,7 @@ function label_resolve(sdu ?label)
 		sub pointer (DWORD)
 		sdu ?off;set off pointer#
 		sub pointer (DWORD)
-		if pointer#=label
+		if pointer#=lab
 			ss a;set a mem
 			add a off
 			sdu ?sz;set sz size
@@ -87,26 +87,26 @@ function label_resolve(sdu ?label)
 			dec globalg.pos
 		end
 	end
-	call alabel_add(label,size)
+	call alabel_add(lab,size)
 end
 
 import "error" error
 
-function goto_add(sdu ?label,sdu ?off)
-	sw ?resolved;set resolved goto_resolve(label,off)
+function goto_add(sdu ?lab,sdu ?off)
+	sw ?resolved;set resolved goto_resolve(lab,off)
 	if resolved=0
-		call marker_add(label,off,#globalg.pos,#globalg.gotos)
+		call marker_add(lab,off,#globalg.pos,#globalg.gotos)
 		add off (actionjump_contentsize)
-		sub label off
+		sub lab off
 		#cannot error check here, maybe is a true label, can extra code later if wanting
-		return label
+		return lab
 	end
 	return resolved
 end
-function alabel_add(sdu ?label,sdu ?off)
-	call marker_add(label,off,#globalg.apos,#globalg.labels)
+function alabel_add(sdu ?lab,sdu ?off)
+	call marker_add(lab,off,#globalg.apos,#globalg.labels)
 end
-function marker_add(sdu ?label,sdu ?off,ss ppos,sdu start)
+function marker_add(sdu ?lab,sdu ?off,ss ppos,sdu start)
 	if ppos#=(label_max)
 		call error("too many markers")
 	end
@@ -115,7 +115,7 @@ function marker_add(sdu ?label,sdu ?off,ss ppos,sdu start)
 	mult pointer (stepsize)
 	add pointer start
 
-	set pointer# label
+	set pointer# lab
 	add pointer (DWORD)
 	set pointer# off
 
