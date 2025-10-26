@@ -22,9 +22,9 @@ elseif argc=3
 else
 	importx "sscanf" sscanf
 	call sscanf(a1,"%x",#f)  #long is only to test
-	importx "printf" printf
-	call printf("profiler %x\n",f)  #long is only to test
 end
+importx "printf" printf
+call printf("%x\n",f)  #long is only to test
 
 call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 
@@ -37,6 +37,9 @@ data vert_off=-5
 data *font_color=0xff
 vstr ButtonData_d#1;set ButtonData_d "var a;a=1"
 call swf_button(150,50,#ButtonData)
+
+#a test for button_last
+#call swf_button_last("Qubmit","var a;a=1")
 
 call action("
 //this is the same a&&b example plus e=1 to trick oaalternative.py

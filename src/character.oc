@@ -342,7 +342,7 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
 endfunction
 
 #id
-function swf_text_initial_font_centered(sd width,sd height,ss text,sd font_id,sd font_height,sd font_color)
+function swf_text_initial_font_centered(sd ?width,sd ?height,ss text,sd ?font_id,sd ?font_height,sd ?font_color)
     call edittext_font(font_id,font_height)
     call edittext_rgba(font_color)
     data layout={layout_align_center,0,0,0,0}
@@ -361,8 +361,8 @@ import "pool_read" pool_read
 import "dtitles_frame_one" dtitles_frame_one
 import "write_action_one" write_action_one
 #id
-function swf_button_base(sd state_def_id,sd state_over_id,sd state_down_id,sd noText,sd text_id,sd y,ss actions)
-    sd size=2+1+2;#ButtonId,TrackAsMenu,ActionOffset
+function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,sd ?noText,sd ?text_id,sd ?y,ss actions)
+    sd ?size=2+1+2;#ButtonId,TrackAsMenu,ActionOffset
 
     sd Characters_CharacterEndFlag_size
     setcall Characters_CharacterEndFlag_size buttonrecord_size(0,0)

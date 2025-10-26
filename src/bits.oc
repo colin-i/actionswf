@@ -95,7 +95,7 @@ function numbitsMax(sd width,sd height)
     return NBits
 endfunction
 
-function rect_prepare(sv p_out,sd p_size,sd width,sd height)
+function rect_prepare(sv p_out,sd p_size,sd ?width,sd ?height)
 	sd NBits
 	mult width 20
 	mult height 20
@@ -110,7 +110,7 @@ function rect_prepare(sv p_out,sd p_size,sd width,sd height)
 	set p_out# #globalb.rect
 	set p_size# size
 endfunction
-function matrix_translate(sv p_dest,sd p_size,sd x,sd y)
+function matrix_translate(sv p_dest,sd p_size,sd ?x,sd ?y)
 	ss p_matrix
 	set p_matrix #globalb.matrix
 	set p_dest# p_matrix

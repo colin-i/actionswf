@@ -150,26 +150,39 @@ functionX swf_button_last(ss newtext,ss actions)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #ss newtext  is the new text for a new button with the attributes from the previous swf_button call
 #ss actions  button actions
-    data shape_up#1
-    data shape_over#1
+	data shape_up#1
+	data shape_over#1
 	data shape_down#1
-    data width#1
-    data height#1
-    data noText#1
-    data font_id#1
-    data font_height#1
-    data text_y#1
-    data font_color#1
-    sd bmem
-    setcall bmem button_mem()
-    call memcpy(#shape_up,bmem,(9*DWORD))
+	data width#1
+	data height#1
+	data noText#1
+	data font_id#1
+	data font_height#1
+#	data text_y#1
+#	data font_color#1
+	sd bmem
+	setcall bmem button_mem()
+	data data#10;sd p_data^data
+	call memcpy(p_data,bmem,(10*DWORD)) #from here can also use structures like at oad
+	set shape_up p_data#
+	add p_data (DWORD);set shape_over p_data#
+	add p_data (DWORD);set shape_down p_data#
+	add p_data (3*DWORD);set noText p_data#
 
-	sd newtext_id
-    if noText=(FALSE)
-        setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,font_color)
-    endif
+	sd ?newtext_id
+	if noText=(FALSE)
+		sub p_data (DWORD);set height p_data#
+		sub p_data (DWORD);set width p_data#
+		add p_data (3*DWORD);set font_id p_data#
+		add p_data (DWORD);set font_height p_data#
+		add p_data (2*DWORD)
+		setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,p_data#)
+		sub p_data (DWORD)
+	else
+		add p_data (3*DWORD)
+	end
 
-	callret swf_button_base(shape_up,shape_over,shape_down,noText,newtext_id,text_y,actions)
+	callret swf_button_base(shape_up,shape_over,shape_down,noText,newtext_id,p_data#,actions)
 endfunction
 
 #font
@@ -424,9 +437,9 @@ functionX swf_placeobject(sd ?refid,sd ?depth)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_placeobject_local(refid,depth)
 endfunction
-#                                                       if not data here, then will conflict at c language where we talk about int
+#                                                       if not data here, then will conflict at c language where we talk about int, there is =0 comparison
 import "swf_placeobject_coords_local" swf_placeobject_coords_local
-functionX swf_placeobject_coords(sd ?refid,sd ?depth,sd ?x,sd ?y)
+functionX swf_placeobject_coords(sd ?refid,sd ?depth,datax x,datax y)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 	call swf_placeobject_coords_local(refid,depth,x,y)
 endfunction
@@ -520,7 +533,8 @@ functionX swf_sprite_placeobject(sd ?spriteid,sd ?object,sd ?depth)
     call swf_placeobject_local(object,depth)
 	call swf_mem_change_back()
 endfunction
-functionX swf_sprite_placeobject_coords(sd ?spriteid,sd ?object,sd ?depth,sd ?x,sd ?y)
+#                                                                         same
+functionX swf_sprite_placeobject_coords(sd ?spriteid,sd ?object,sd ?depth,datax x,data y)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd spriteid                   pre-id
 #sd object,sd depth,sd x,sd y  same as swf_placeobject_coords

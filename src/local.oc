@@ -616,13 +616,12 @@ function swf_jpeg_local(ss imagepath,ss ?tag,ss alphapath)
 	return id
 endfunction
 
-function swf_placeobject_local(sd refid,sd depth)
+function swf_placeobject_local(sd ?refid,sd ?depth)
 #sd refid    the id
 #sd depth    depth value
      callg swf_placeobject_coords_local(refid,depth,0,0)
 endfunction
-#                                                  if not data here, then will conflict at c language where we talk about int
-function swf_placeobject_coords_local(sd refid,sd depth,datax x,datax y) #datax x/y they can be negative
+function swf_placeobject_coords_local(sd ?refid,sd ?depth,sd ?x,sd ?y) #x/y can be negative
 #sd refid
 #sd depth
 #sd x         x coordinate
