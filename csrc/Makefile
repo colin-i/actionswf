@@ -18,6 +18,7 @@ endif
 items_prefix=../src/
 include ../src/items
 exte=libexte.a
+proj=libactionswf.so
 
 $(eval xfiles = )
 $(foreach var,$(expitems),$(eval xfiles += ${items_prefix}${var}.e.oc.x))
@@ -38,9 +39,9 @@ endif
 
 OFLAGS=x_file 2
 
-all: libactionswf.so
-
-libactionswf.so: headers ${exte} ${eobs}
+all: headers ${proj}
+#can't put headers at proj, will phony libactionswf.so
+${proj}: ${exte} ${eobs}
 	${OLINK} ${logs}
 	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ -L. -l:${exte} -e DllMain -Wl,--exclude-libs=${exte}
 ${exte}: ${obs}
@@ -58,7 +59,7 @@ headers:
 clean:
 	$(MAKE) -C ../include clean
 	$(MAKE) -C ../dev clean-csrc
-	-rm -f ${obs} ${eobs} ${logs} ${exte}
+	-rm -f ${obs} ${eobs} ${logs} ${exte} ${proj}
 	-rm -f ${xfiles} ${cfiles}
 distclean: clean
 
