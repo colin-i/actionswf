@@ -11,7 +11,7 @@ einclude "../../dev/import.oh"
 dataxu f#1
 importx "puts" puts
 if argc=1
-	call puts("prexx_flags flagpre_mix flagpre_write_no")
+	call puts("prexx_flags flagpre_mix flagpre_write_no") # 0x41509
 	set f (prexx_flags|flagpre_mix|flagpre_write_no) #xx to test also at ffdec
 elseif argc=2
 	call puts("xx_flags flag_compress")
@@ -39,7 +39,7 @@ vstr ButtonData_d#1;set ButtonData_d "var a;a=1"
 call swf_button(150,50,#ButtonData)
 
 #a test for button_last
-#call swf_button_last("Qubmit","var a;a=1")
+#call swf_button_last("var a;a=1","Qubmit")
 
 call action("
 //this is the same a&&b example plus e=1 to trick oaalternative.py

@@ -106,7 +106,7 @@ typedef struct EditText_str
 //id
 int swf_button(int width,int height,ButtonData* b);
 //id
-int swf_button_last(char* newtext,char* actions);
+int swf_button_last(char* actions,char* newtext);
 
 //font
 

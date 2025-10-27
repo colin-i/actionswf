@@ -6,9 +6,7 @@ include "../include/throw.h" "../include/throw.oh"
 vstr err="invalid gif file"
 
 #win32 with _
-importx "memcpy" memcpy
 importx "strlen" strlen
-importx "memcmp" memcmp
 
 #import "swf_frames_pointer" swf_frames_pointer
 #import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
@@ -50,26 +48,33 @@ import "swf_text_initial_font_centered" swf_text_initial_font_centered
 #id
 functionX swf_button(sd ?width,sd ?height,sd ButtonData)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
-data def_fill#1
-data def_line_h#1;#no pad
-data def_line#1
+#data def_fill#1
+#data def_line_h#1;#no pad
+#data def_line#1
 
-data ov_fill#1;#no pad
-data ov_line_h#1
-data ov_line#1;#no pad
+#data ov_fill#1;#no pad
+#data ov_line_h#1
+#data ov_line#1;#no pad
 
-data dn_fill#1;#no pad
-data dn_line_h#1
-data dn_line#1;#no pad
+#data dn_fill#1;#no pad
+#data dn_line_h#1
+#data dn_line#1;#no pad
 
-data xcurve#1
-data ycurve#1;#no pad
+#data xcurve#1
+#data ycurve#1;#no pad
 
-vstr text#1
-data font_id#1;data font_height#1;#no pad
-data font_vertical_offset#1;data font_color#1;#no pad
+#vstr text#1
+#data font_id#1;data font_height#1;#no pad
+#data font_vertical_offset#1;data font_color#1;#no pad
 
-vstr actions#1
+#vstr actions#1
+
+#    const button_top_args=11*DWORD
+#    call memcpy(#def_fill,ButtonData,(button_top_args))
+#    add ButtonData (button_top_args);call memcpy(#text,ButtonData,:)
+#    const button_font_args=4*DWORD
+#    add ButtonData :;call memcpy(#font_id,ButtonData,(button_font_args))
+#    add ButtonData (button_font_args);call memcpy(#actions,ButtonData,:)
 
 #width                  is the button width
 #height                 is the button height
@@ -92,61 +97,85 @@ vstr actions#1
 #font_color             font RGBA
 #actions                is a string with actionscript
 
-    const button_top_args=11*DWORD
-    call memcpy(#def_fill,ButtonData,(button_top_args))
-    add ButtonData (button_top_args);call memcpy(#text,ButtonData,:)
-    const button_font_args=4*DWORD
-    add ButtonData :;call memcpy(#font_id,ButtonData,(button_font_args))
-    add ButtonData (button_font_args);call memcpy(#actions,ButtonData,:)
-#
-    if font_height>height;call error("font_height>height error at button");endif
-    #
-    sd bmem
-    setcall bmem button_mem()
-    #
-    sd shape_up
-    sd shape_over
-	sd shape_down
-    setcall shape_up swf_shape_simple(width,height,def_fill,def_line_h,def_line,xcurve,ycurve)
-    setcall shape_over swf_shape_simple(width,height,ov_fill,ov_line_h,ov_line,xcurve,ycurve)
-	setcall shape_down swf_shape_simple(width,height,dn_fill,dn_line_h,dn_line,xcurve,ycurve)
+	sd bmem
+	setcall bmem button_mem()
+	#
+	sd ?shape_up
+	sd ?shape_over
+	sd ?shape_down
+	sd ?fill
+	sd ?line_h
+#	sd ?line
+	sd ?xcurve
+	sd ?ycurve
 
-    set bmem# shape_up
-    add bmem (DWORD)
-    set bmem# shape_over
-    add bmem (DWORD)
+	set fill ButtonData#
+	add ButtonData (DWORD);set line_h ButtonData#
+	add ButtonData (8*DWORD);set xcurve ButtonData#
+	add ButtonData (DWORD);set ycurve ButtonData#
+	sub ButtonData (8*DWORD)
+	setcall shape_up swf_shape_simple(width,height,fill,line_h,ButtonData#,xcurve,ycurve)
+	add ButtonData (DWORD);set fill ButtonData#
+	add ButtonData (DWORD);set line_h ButtonData#
+	add ButtonData (DWORD)
+	setcall shape_over swf_shape_simple(width,height,fill,line_h,ButtonData#,xcurve,ycurve)
+	add ButtonData (DWORD);set fill ButtonData#
+	add ButtonData (DWORD);set line_h ButtonData#
+	add ButtonData (DWORD)
+	setcall shape_down swf_shape_simple(width,height,fill,line_h,ButtonData#,xcurve,ycurve)
+
+	set bmem# shape_up
+	add bmem (DWORD)
+	set bmem# shape_over
+	add bmem (DWORD)
 	set bmem# shape_down
 	add bmem (DWORD)
 
-    set bmem# width;add bmem (DWORD)
-    set bmem# height;add bmem (DWORD)
+	set bmem# width;add bmem (DWORD)
+	set bmem# height;add bmem (DWORD)
 
-    sd noText=FALSE;sd text_id
-    data t_null={0,0}
-	datax b#1;setcall b memcmp(#t_null,#text,:)
-	sd text_y
-    if b=0
-        set noText (TRUE)
-        set bmem# noText
-    else
-        set text_y height
-        sub text_y font_height
-        div text_y 2
-        add text_y font_vertical_offset
+	ss text
+	add ButtonData (3*DWORD);set text ButtonData#v
+	if text!=0
+		set bmem# (FALSE)
 
-        set bmem# noText;add bmem (DWORD)
-        set bmem# font_id;add bmem (DWORD)
-        set bmem# font_height;add bmem (DWORD)
-        set bmem# text_y;add bmem (DWORD)
-        set bmem# font_color
+		sd ?font_id
+		add ButtonData :;add bmem (DWORD)
+		set font_id ButtonData#
+		set bmem# font_id
 
-        setcall text_id swf_text_initial_font_centered(width,height,text,font_id,font_height,font_color)
-    endelse
+		sd ?font_height
+		add ButtonData (DWORD);add bmem (DWORD)
+		set font_height ButtonData#
+		if font_height>^height;call error("font_height>height error at button");endif
+		set bmem# font_height
 
-	callret swf_button_base(shape_up,shape_over,shape_down,noText,text_id,text_y,actions)
+		sd ?text_y
+		set text_y height
+		sub text_y font_height
+		div text_y 2
+
+		add ButtonData (DWORD);add bmem (DWORD)
+		add text_y ButtonData#                  #font_vertical_offset
+		set bmem# text_y
+
+		sd ?font_color
+		add ButtonData (DWORD);add bmem (DWORD)
+		set font_color ButtonData#
+		set bmem# font_color
+
+		sd ?text_id
+		setcall text_id swf_text_initial_font_centered(width,height,text,font_id,font_height,font_color)
+
+		add ButtonData (DWORD) #actions
+		callret swf_button_base(shape_up,shape_over,shape_down,ButtonData#v,(FALSE),text_id,text_y)
+	end
+	set bmem# (TRUE)
+	add ButtonData (:+(4*DWORD)) #actions
+	callret swf_button_base(shape_up,shape_over,shape_down,ButtonData#v,(TRUE))
 endfunction
 #id
-functionX swf_button_last(ss newtext,ss actions)
+functionX swf_button_last(ss actions,ss newtext)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #ss newtext  is the new text for a new button with the attributes from the previous swf_button call
 #ss actions  button actions
@@ -155,34 +184,30 @@ functionX swf_button_last(ss newtext,ss actions)
 	data shape_down#1
 	data width#1
 	data height#1
-	data noText#1
+#	data noText#1
 	data font_id#1
 	data font_height#1
 #	data text_y#1
 #	data font_color#1
-	sd bmem
-	setcall bmem button_mem()
-	data data#10;sd p_data^data
-	call memcpy(p_data,bmem,(10*DWORD)) #from here can also use structures like at oad
+	sd p_data
+	setcall p_data button_mem() #from here can also use structures like at oad
 	set shape_up p_data#
 	add p_data (DWORD);set shape_over p_data#
 	add p_data (DWORD);set shape_down p_data#
-	add p_data (3*DWORD);set noText p_data#
+	add p_data (3*DWORD) #set noText p_data#
 
-	sd ?newtext_id
-	if noText=(FALSE)
+	if p_data#=(FALSE)
+		sd ?newtext_id
 		sub p_data (DWORD);set height p_data#
 		sub p_data (DWORD);set width p_data#
 		add p_data (3*DWORD);set font_id p_data#
 		add p_data (DWORD);set font_height p_data#
 		add p_data (2*DWORD)
 		setcall newtext_id swf_text_initial_font_centered(width,height,newtext,font_id,font_height,p_data#)
-		sub p_data (DWORD)
-	else
-		add p_data (3*DWORD)
+		sub p_data (DWORD) #text_y
+		callret swf_button_base(shape_up,shape_over,shape_down,actions,(FALSE),newtext_id,p_data#)
 	end
-
-	callret swf_button_base(shape_up,shape_over,shape_down,noText,newtext_id,p_data#,actions)
+	callret swf_button_base(shape_up,shape_over,shape_down,actions,(TRUE))
 endfunction
 
 #font
