@@ -361,7 +361,7 @@ import "pool_read" pool_read
 import "dtitles_frame_one" dtitles_frame_one
 import "write_action_one" write_action_one
 #id
-function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,sd ?noText,sd ?text_id,sd ?y,ss actions)
+function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,ss actions,sd ?noText,sd ?text_id,sd ?y)
     sd ?size=2+1+2;#ButtonId,TrackAsMenu,ActionOffset
 
     sd Characters_CharacterEndFlag_size
