@@ -2,9 +2,6 @@
 ifndef platform
 platform=lin
 endif
-ifndef OCOMP
-OCOMP=o
-endif
 ifndef OCONV
 OCONV=otoc
 endif
@@ -20,6 +17,7 @@ endif
 
 items_prefix=../src/
 include ../src/items
+exte=libexte.a
 
 $(eval xfiles = )
 $(foreach var,$(expitems),$(eval xfiles += ${items_prefix}${var}.e.oc.x))
@@ -32,17 +30,21 @@ ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
 		model=-m32
 	endif
-else
-	ifeq (${platform},win) #to long long
-		OCONVFLAGS=-
-	endif
+#else
+#	ifeq (${platform},win) #to long long
+#		OCONVFLAGS=-
+#	endif
 endif
 
 OFLAGS=x_file 2
 
 all: libactionswf.so
 
-libactionswf.so: headers ${obs} ${eobs}
+libactionswf.so: headers ${exte} ${eobs}
+	${OLINK} ${logs}
+	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ -L. -l:${exte} -e DllMain -Wl,--exclude-libs=${exte}
+${exte}: ${obs}
+	$(AR) cr ${exte} $^
 
 headers:
 	$(MAKE) -C ../include
@@ -56,7 +58,7 @@ headers:
 clean:
 	$(MAKE) -C ../include clean
 	$(MAKE) -C ../dev clean-csrc
-	-rm -f ${obs} ${eobs} ${logs}
+	-rm -f ${obs} ${eobs} ${logs} ${exte}
 	-rm -f ${xfiles} ${cfiles}
 distclean: clean
 

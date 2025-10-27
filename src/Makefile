@@ -3,16 +3,8 @@ ifndef platform
 platform=lin
 endif
 
-ifndef OCOMP
-OCOMP=o
-endif
-
 ifndef conv_64
 conv_64=0
-endif
-
-ifndef OLINK
-OLINK=ounused
 endif
 
 ifndef linkerflags

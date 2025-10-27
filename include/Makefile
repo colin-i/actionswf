@@ -39,7 +39,7 @@ ${chreqs}:
 throw.h:
 	a='int main(){printf("%lu",sizeof(jmp_buf));return 0;}'; \
 	printf '#include <setjmp.h>\n#include <stdio.h>\n%s' "$${a}" | gcc -x c -
-	echo -n 'char jmp_data[' > $@
+	echo -n 'static char jmp_data[' > $@
 	./a.out >> $@
 	echo -n '];' >> $@
 	rm a.out

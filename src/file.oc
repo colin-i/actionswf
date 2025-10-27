@@ -3,7 +3,7 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
-data file=fd_none;vdata mem=NULL
+data file=fd_none;vdata fmem=NULL
 
 vstr fprintf_er="fprintf error"
 vstr file_write_er="File write error"
@@ -25,8 +25,8 @@ import "mem_free" mem_free
 function file_get_content__resources_free()
 	if globalf.file!=(fd_none)
 		call file_close(#globalf.file)
-		if globalf.mem!=(NULL)
-			call mem_free(#globalf.mem)
+		if globalf.fmem!=(NULL)
+			call mem_free(#globalf.fmem)
 		endif
 	endif
 endfunction
@@ -136,7 +136,7 @@ function file_get_content(ss filepath,sv p_size)  #size is a stack variable
 		setcall mem memalloc(size)
 		dec size
 	end
-	set globalf.mem mem
+	set globalf.fmem mem
 	call read(file,mem,size)
 	if p_size=(NULL)
 		add size mem

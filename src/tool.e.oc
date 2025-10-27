@@ -11,26 +11,30 @@ functionx erbool_reset()
     set p# 0
 endfunction
 
-include "../include/prog.oh"
+include "../include/prog.h" "../include/prog.oh"
+
+#multithread unsafe
+char pad=xlog_pad_default
 
 import "swf_mem_free" swf_mem_free
+import "debug_data" debug_data
 functionx freereset()
 #this is called by user only if want to abort after some calls
 #               and at some frees
-	import "debug_data" debug_data
 	call debug_data()
 	#free and set initial null/-1.....
 	call swf_mem_free()
 endfunction
 
 functionx xlog_pad_get()
-	char pad=xlog_pad_default
-	return pad
+	return globalr.pad
 endfunction
-functionx xlog_pad_set(sd new_pad)
+functionx xlog_pad_set(ss ?new_pad)
 	if new_pad!=0
-		set xlog_pad_get.pad new_pad
+		set globalr.pad new_pad
 	else #it is div mult and at 1 is equal at 0 is bad
-		set xlog_pad_get.pad 1
+		set globalr.pad 1
 	end
 endfunction
+
+entryraw globalr() # abcdefghiloprstuwx

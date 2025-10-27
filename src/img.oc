@@ -5,14 +5,14 @@ include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
 
 #multithread unsafe
-datax flag#1
+datax vflag#1
 
 function verbose(sd ?f)
-	set globali.flag (flag_verbose)
-	and globali.flag f
+	set globali.vflag (flag_verbose)
+	and globali.vflag f
 end
 function verbose_get()
-	return globali.flag
+	return globali.vflag
 end
 
 importx "strlen" strlen
@@ -108,7 +108,7 @@ function imgx(ss dbl,sd p_wh,ss ?is_image) #,sd is_clipped
 	end
 	call free(f1)
 	ss p;setcall p erbool();if p#=0
-		if globali.flag!=(flag_none)
+		if globali.vflag!=(flag_none)
 			add dbl_size 2 #again, ui32 tags
 			add jpg_size 2
 			ss ?c

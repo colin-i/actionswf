@@ -14,7 +14,7 @@ include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
 vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
-data counter=0
+data index=0
 char throwless=FALSE
 charx ainit_bool#1
 data fileRes=fd_none
@@ -453,7 +453,7 @@ endfunction
 
 #id
 function def_mem()
-	callret struct_ids((ids_set),globalt.counter)
+	callret struct_ids((ids_set),globalt.index)
 endfunction
 #mem
 function def_data()
@@ -521,17 +521,17 @@ function struct_ids_free_all()
 	#starting with ids_all_free:
 	#                #counter increment#, then null at ac,pools
 	#   can have errors at any point and here all are verified
-	set pointer :;mult pointer globalt.counter
+	set pointer :;mult pointer globalt.index
 	add pointer #globalt.structures  ##is ok at .c, and globalt.structures is same as #globalt.structures at .c
 	while #globalt.structures!=pointer
-		dec globalt.counter
+		dec globalt.index
 		sub pointer :
 		if pointer#!=(NULL)
 			call free(pointer#)
 			call is_ainit((xlog_ainit_false)) #at root is the only one
-			call struct_ids_free(globalt.counter)
+			call struct_ids_free(globalt.index)
 			call is_ainit((xlog_ainit_true))  #at button is the only one
-			call struct_ids_free(globalt.counter)
+			call struct_ids_free(globalt.index)
 		endif
 	endwhile
 end
@@ -543,7 +543,7 @@ function struct_ids(sd proc,sd ?ident)
 	endif
 	if proc=(ids_set)
 	#id
-		if globalt.counter=(max_structures)
+		if globalt.index=(max_structures)
 			call error("too many objects")
 		endif
 		sd newblock
@@ -563,14 +563,14 @@ function struct_ids(sd proc,sd ?ident)
 		#	endwhile
 		set pointer# newblock
 		#counter increment#
-		sd c;set c globalt.counter;inc globalt.counter
+		sd c;set c globalt.index;inc globalt.index
 		sv ac_ptr
 		setcall ac_ptr struct_ids_action((ids_get_pointer),c);set ac_ptr# (NULL)  #required for example at exports and free all
 		#counter increment#
 		return ident
 	endif
 	if proc=(ids_get_pointer)
-		if ident>=globalt.counter;call error("Unexistent input id.");endif
+		if ident>=globalt.index;call error("Unexistent input id.");endif
 		return pointer
 	endif
 	#else
@@ -621,7 +621,7 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 		setcall pointer# def_data()
 	elseif proc=(ids_get_pointer)
 		#call to verify if the user input has a wrong id
-		if id>=globalt.counter;call error("Unregistered input id.");endif
+		if id>=globalt.index;call error("Unregistered input id.");endif
 		#
 		return pointer
 	else
