@@ -647,14 +647,14 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 			endif
 			setcall bl action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
 			if bl=(TRUE);return ac;endif
-			sd x;setcall x action_parse_take_action(op,ac)
+			sd ?x;setcall x action_parse_take_action(op,ac)
 			call action_code_set(x)
 		endelse
     endwhile
 endfunction
 #action
 function action_parse_take_action(ss ?op,ss ac)
-	sd x
+	sd ?x
 	if op=(add);set x (ActionAdd2)
 	elseif op=(sub);set x (ActionSubtract)
 	elseif op=(mlt);set x (ActionMultiply)
@@ -681,11 +681,11 @@ endfunction
 #pointer
 function action_code_extended_operations(ss pointer,ss ?op)
     #comparison
-    sd compareaction
+    sd ?compareaction
     setcall compareaction action_compare(op,(NULL))
     if compareaction!=(NULL)
         inc pointer
-        sd oneSign_two_or_noCompare;setcall oneSign_two_or_noCompare action_compare(pointer#,compareaction)
+        sd ?oneSign_two_or_noCompare;setcall oneSign_two_or_noCompare action_compare(pointer#,compareaction)
         dec pointer
         if oneSign_two_or_noCompare!=2
 		set globalp.compare_bool (TRUE)
@@ -731,11 +731,18 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 	endif
 
 	set pointer ac
-	char neg="-"
+	char neg="-"^
 	if pointer#=neg
 		inc pointer
 		set pointer spaces(pointer) #=- Math(8)
 	endif
+	ss excla
+	if pointer#=(Exclamationmark)
+		inc pointer
+		set excla pointer
+	else
+		set excla (NULL)
+	end
 
 	#a function
 	ss cursor;set cursor pointer
@@ -745,6 +752,7 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 		set p_op# pointer#;set pointer# 0
 		return pointer
 	endif
+
 	#a variable(a.b.c[1+d])
 	sd pos
 	setcall pos strcspn(pointer,delims)
@@ -765,7 +773,12 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 	endwhile
 	call memtrailstrict(pointer)
 	set p_op# pointer#;set pointer# 0
-	call action_code_take(ac)
+	if excla=(NULL)
+		call action_code_take(ac)
+	else
+		call action_code_take(excla)
+		call action_code_set((ActionNot))
+	end
 	return pointer
 endfunction
 #pointer
@@ -839,7 +852,7 @@ end
 #bool
 function numeric_code_orConstruction(ss ac)
 	ss pointer;set pointer ac
-	char neg="-"
+	char neg="-"^
 	if pointer#=neg
 		inc pointer
 	endif
@@ -968,12 +981,11 @@ function action_compare(ss ?value,sd firstcompare)
         endif
         return (ActionGreater)
 	endif
-	#
-	if firstcompare!=(NULL)
-        call action_code_set((compare_action))
-	endif
 	#=
 	if value=(Equals)
+		if firstcompare!=(NULL)
+			call action_code_set((compare_action))
+		end
 		if firstcompare=(ActionLess2)
 			call action_code_set((ActionGreater))
 			call action_code_set((ActionNot))
@@ -998,30 +1010,31 @@ function action_compare(ss ?value,sd firstcompare)
 	endif
 	# !
 	if value=(Exclamationmark)
-        if firstcompare!=(NULL)
-            call error("not expecting ! here")
-        endif
-        return (ActionNot)
+		if firstcompare!=(NULL)
+			call error("not expecting ! here")
+		endif
+		return (ActionNot)
 	endif
 	#another char
 	if firstcompare=(NULL)
-        #call error("expecting a comparison")
-        return (NULL)
+		#call error("expecting a comparison")
+		return (NULL)
 	endif
 	if firstcompare=(ActionEquals2)
-        call error("expecting a == comparison")
+		call error("expecting a == comparison")
 	elseif firstcompare=(ActionNot)
-        call error("expecting a != comparison")
+		call error("expecting a != comparison")
 	endelseif
-    if firstcompare=(ActionLess2)
-        call action_code_set((ActionLess2))
-        call action_code_set(0)
-    else
-    #if firstcompare==(ActionGreater)
-        call action_code_set((ActionGreater))
-        call action_code_set(0)
-    endelse
-    return 0
+	call action_code_set((compare_action))
+	if firstcompare=(ActionLess2)
+		call action_code_set((ActionLess2))
+		call action_code_set(0)
+	else
+		#if firstcompare==(ActionGreater)
+		call action_code_set((ActionGreater))
+		call action_code_set(0)
+	endelse
+	return 0
 endfunction
 
 #{} blocks

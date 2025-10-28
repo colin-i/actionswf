@@ -653,7 +653,7 @@ function action_code_write_conditions(sd codepointer)
 	endelse
 	if infinite_guard=codepointer
 		#using the operations function
-		sd c2=0
+		sd ?c2=0
 		setcall codepointer action_code_right_util_ex(codepointer,#c2)
 		call write_ifjump_withNot(c2)
 	end
@@ -664,7 +664,7 @@ function action_code_write_conditions(sd codepointer)
 	#return the current pointer
 	return codepointer
 endfunction
-function write_ifjump_withNot(sd c2)
+function write_ifjump_withNot(sd ?c2)
 	#set to be not for entering the block
 	if c2!=(ActionNot)
 		call action_one((ActionNot))
@@ -993,7 +993,7 @@ function action_code_right_util(sd codepointer)
 	callret action_code_right_util_ex(codepointer,(NULL))
 end
 import "actionpush" actionpush
-function action_code_right_util_ex(sd codepointer,sd outside_compare2)
+function action_code_right_util_ex(sd codepointer,sd ?outside_compare2)
 	if codepointer#=(new_action)
 		add codepointer (DWORD)
 		sd member
@@ -1005,12 +1005,12 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 		endelse
 		return codepointer
 	endif
-	sd compare_op_1
-	sd compare_op_2
+	sd ?compare_op_1
+	sd ?compare_op_2
 	setcall codepointer action_code_right_number(codepointer)
-	sd was_operation=no_action
+	sd ?was_operation=no_action
 	while codepointer#!=(math_end)
-		sd operation
+		sd ?operation
 		set operation codepointer#
 		add codepointer (DWORD)
 		if operation=(compare_action)
@@ -1034,6 +1034,10 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 			call brace_blocks_remove_write((TRUE))
 			call debug_xlog_stepout(codepointer) #and continue after :]|
 			return codepointer
+		elseif operation=(ActionNot)
+			call action_one((ActionNot))
+			set was_operation (ActionNot)
+			continue
 		endelseif
 		setcall codepointer action_code_right_number(codepointer)
 		if operation!=(compare_action)
@@ -1047,6 +1051,8 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 	if outside_compare2!=(NULL)
 		if was_operation=(compare_action)
 			set outside_compare2# compare_op_2
+		elseif was_operation=(ActionNot)
+			set outside_compare2# (ActionNot)
 		end
 	end
 	add codepointer (DWORD)
