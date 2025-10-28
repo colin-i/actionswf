@@ -736,13 +736,6 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 		inc pointer
 		set pointer spaces(pointer) #=- Math(8)
 	endif
-	ss excla
-	if pointer#=(Exclamationmark)
-		inc pointer
-		set excla pointer
-	else
-		set excla (NULL)
-	end
 
 	#a function
 	ss cursor;set cursor pointer
@@ -752,6 +745,14 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 		set p_op# pointer#;set pointer# 0
 		return pointer
 	endif
+
+	ss excla
+	if pointer#=(Exclamationmark)
+		inc pointer
+		set excla pointer
+	else
+		set excla (NULL)
+	end
 
 	#a variable(a.b.c[1+d])
 	sd pos

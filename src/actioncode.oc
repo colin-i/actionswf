@@ -993,7 +993,7 @@ function action_code_right_util(sd codepointer)
 	callret action_code_right_util_ex(codepointer,(NULL))
 end
 import "actionpush" actionpush
-function action_code_right_util_ex(sd codepointer,sd ?outside_compare2)
+function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 	if codepointer#=(new_action)
 		add codepointer (DWORD)
 		sd member
