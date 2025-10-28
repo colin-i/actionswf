@@ -584,7 +584,7 @@ function action_code_row_parse_tool_util(ss ac,ss p_op,sd endtype1,sd endtype2)
     ss pointer
     setcall pointer str_expression_at_start(ac,"new")
     if pointer!=ac
-		setcall ac action_code_parse_new_or_call(pointer,(new_action),pointer,(FALSE))
+		setcall ac action_code_parse_new_or_call(pointer,(new_action),pointer)
         sd ?bl;setcall bl action_parse_utilEndTypes(ac#,p_op,endtype1,endtype2)
         if bl=(TRUE);inc ac;endif
         return ac
@@ -748,8 +748,11 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 
 	#a function
 	ss cursor;set cursor pointer
-	setcall pointer action_code_parse_new_or_call(cursor,(call_action_right),ac,excla)
+	setcall pointer action_code_parse_new_or_call(cursor,(call_action_right),ac)
 	if pointer!=cursor
+		if excla=(TRUE)
+			call action_code_set((ActionNot))
+		end
 		set pointer spaces(pointer) #ffdec
 		set p_op# pointer#;set pointer# 0
 		return pointer
@@ -1295,7 +1298,7 @@ function action_code_parse_leftfunction(ss ac)
         return pointer
     endif
     #a call
-	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac,(FALSE))
+	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac)
     char end=";"
     if ac#=end
         inc ac
@@ -1304,7 +1307,7 @@ function action_code_parse_leftfunction(ss ac)
 endfunction
 import "part_of_variable" part_of_variable
 #pointer
-function action_code_parse_new_or_call(ss ac,sd type,ss cursor,ss ?excla)
+function action_code_parse_new_or_call(ss ac,sd type,ss cursor)
 	ss pointer
 	set pointer ac
 	ss last_dot=0
@@ -1324,11 +1327,7 @@ function action_code_parse_new_or_call(ss ac,sd type,ss cursor,ss ?excla)
 				if ac!=cursor ##example: negative
 					call pointer_prefix()
 				end
-				ss ret;set ret action_code_parse_function_detected(ac,last_dot,pointer,type)
-				if excla=(TRUE)
-					call action_code_set((ActionNot))
-				end
-				return ret
+				callret action_code_parse_function_detected(ac,last_dot,pointer,type)
 			endelseif
 		endif
 	endwhile
