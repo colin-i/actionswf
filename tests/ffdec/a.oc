@@ -111,6 +111,7 @@ e=1.1;
 //a++; will go to eval
 //a--; will go to eval
 
+a=!b();
 if(a)play();
 if(!a)play();
 if(a==8){}
