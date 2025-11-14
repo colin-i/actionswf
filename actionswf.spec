@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.157
+Version: 1.158
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -55,6 +55,33 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Fri Nov 14 2025 Costin Botescu <costin.botescu@gmail.com> 1.158-0
+- oly useful at right (costin.botescu@gmail.com)
+- !call() (costin.botescu@gmail.com)
+- =!function not yet (costin.botescu@gmail.com)
+- !expression (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- csrc can compile (costin.botescu@gmail.com)
+- button at csrc (costin.botescu@gmail.com)
+- button_last fix (costin.botescu@gmail.com)
+- as swf.e with csrc (costin.botescu@gmail.com)
+- csrc local.oc (costin.botescu@gmail.com)
+- fix label_resolve. fix endcom escape_action. (costin.botescu@gmail.com)
+- tests (costin.b.84@gmail.com)
+- backward goto (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- forward jump to label (costin.botescu@gmail.com)
+- goto for always break decompiler complicated type (costin.botescu@gmail.com)
+- plan to allow goto (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- font at csrc (costin.botescu@gmail.com)
+- to local csrc (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- csrc throug .x (costin.botescu@gmail.com)
+- strip arm test fix (costin.botescu@gmail.com)
+- updated makedef (costin.botescu@gmail.com)
+- "sync" (costin.b.84@gmail.com)
+
 * Mon Oct 20 2025 Costin Botescu <costin.botescu@gmail.com> 1.157-0
 - ss fix (costin.botescu@gmail.com)
 - fix elsif error, img check, and more (costin.b.84@gmail.com)
