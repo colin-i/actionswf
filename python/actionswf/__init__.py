@@ -8,8 +8,8 @@ _lib=ctypes.cdll.LoadLibrary("libactionswf.so")
 
 from . import _swf
 _swf.init(_lib)
-new=_lib.swf_new
+new=_swf.new
 
 from . import _tool
 _tool.init(_lib)
-erbool_get=_lib.erbool_get
+erbool_get=_tool.erbool_get
