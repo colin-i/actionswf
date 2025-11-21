@@ -25,11 +25,11 @@ datax action_id#1
 
 #win32 with _
 importx "memcpy" memcpy
+importx "free" free
 
 const Z_OK=0
 importx "compressBound" compressBound
 importx "compress" compress
-importx "free" free
 
 #this is throwless here
 ^import "struct_ids" struct_ids 2

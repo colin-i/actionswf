@@ -1,0 +1,11 @@
+
+if [ -z "$1" ]; then
+z=python
+else
+z=${1}
+shift
+fi
+
+LD_LIBRARY_PATH=/home/bc/s/actionswf-1/csrc ${z} -m actionswf.main
+
+# cc a.c -L/home/bc/s/actionswf-1/csrc -lactionswf -lz
