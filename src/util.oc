@@ -19,6 +19,7 @@ char throwless=FALSE
 charx ainit_bool#1
 data fileRes=fd_none
 valuexu basepointer#1
+char ebool=0
 
 function printEr(ss msg)
 	sv ?len;setcall len strlen(msg)
@@ -410,8 +411,7 @@ end
 
 function erbool()
 	#aftercall ebool #still needed at flashalizer at aftecall_get and _reset, and at imgx
-	char ebool=0
-	return #ebool
+	return #globalt.ebool
 endfunction
 
 

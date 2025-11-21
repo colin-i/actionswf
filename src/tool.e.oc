@@ -1,6 +1,6 @@
 Format ElfObj64
 
-import "erbool" erbool
+^import "erbool" erbool #without this what erbool is returning is cannot read that memory
 functionx erbool_get()
     ss p;setcall p erbool()
     return p#
