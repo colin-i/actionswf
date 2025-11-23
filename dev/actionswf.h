@@ -50,6 +50,7 @@ typedef struct ButtonData_str{
 }ButtonData;
 #pragma pack(pop)
 
+//DefineEditText
 #define HasText 0x80
 #define WordWrap 0x40
 #define Multiline 0x20
@@ -66,7 +67,7 @@ typedef struct ButtonData_str{
 #define WasStatic 0x400
 #define HTML 0x200
 #define UseOutlines 0x100
-//
+//,HasLayout,Align
 #define layout_align_left 0
 #define layout_align_right 1
 #define layout_align_center 2
@@ -89,6 +90,7 @@ typedef struct EditText_str
 } EditText;
 #pragma pack(pop)
 
+//DefineFont2
 #define FontFlagsHasLayout 0x80
 #define FontFlagsShiftJIS 0x40
 #define FontFlagsSmallText 0x20
