@@ -1,5 +1,8 @@
 
-~/test/pyp/pypre
+#or use PYTHONPATH=/home/bc/s/actionswf-1/python
+
+if [ ! -e setup.py ]; then ~/test/pyp/pypre; fi
+pip install --user . --break-system-packages # python3 setup.py install --user will install egg
 
 # cc a.c -L/home/bc/s/actionswf-1/csrc -lactionswf -lz
 

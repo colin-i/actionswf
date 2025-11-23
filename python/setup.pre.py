@@ -1,6 +1,5 @@
 
 #this file will make setup.py after using github colin-i test/pyp/pypre
-# python3 setup.py install --user will install egg, pip install --user . will install plain files
 
 pkname='actionswf'
 

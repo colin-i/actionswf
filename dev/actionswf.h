@@ -9,19 +9,20 @@ extern "C" {
 
 
 
+//FILLSTYLE
 #define no_fill -1
 #define solid_fill 0
 #define repeating_bitmap_fill 0x40
 #define clipped_bitmap_fill 0x41
 #define nonsmoothed_repeating_bitmap 0x42
 #define nonsmoothed_clipped_bitmap 0x43
-//
+//StyleChangeRecord
 #define StateMoveTo 1
 #define StateFillStyle0 2*StateMoveTo
 #define StateFillStyle1 2*StateFillStyle0
 #define StateLineStyle 2*StateFillStyle1
 #define StateNewStyles 2*StateLineStyle
-
+//Buttonrecord
 #define ButtonStateUp 1
 #define ButtonStateOver 2*ButtonStateUp
 #define ButtonStateDown 2*ButtonStateOver
@@ -181,8 +182,8 @@ int swf_img_ex(char* imagepath,int wh[2]);
 //back at generic swf functions
 
 void swf_done();
-void swf_new(char* path,int width,int height,int backgroundcolor,char fps);
-void swf_new_ex(char* path,int width,int height,int backgroundcolor,char fps,int flags);
+void swf_new(char* path,int width,int height,int backgroundcolor,unsigned char fps);
+void swf_new_ex(char* path,int width,int height,int backgroundcolor,unsigned char fps,int flags);
 void swf_placeobject(int refid,int depth);
 void swf_placeobject_coords(int refid,int depth,int x,int y);
 void swf_removeobject(int depth);
