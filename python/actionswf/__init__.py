@@ -112,7 +112,12 @@ new=_swf.new
 from . import _action
 _action.init(_lib)
 action=_action.action
+actionf=_action.actionf
 
 from . import _tool
 _tool.init(_lib)
 erbool_get=_tool.erbool_get
+erbool_reset=_tool.erbool_reset
+freereset=_tool.freereset
+xlog_pad_get=_tool.xlog_pad_get
+xlog_pad_set=_tool.xlog_pad_set
