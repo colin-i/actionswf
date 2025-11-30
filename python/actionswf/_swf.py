@@ -52,14 +52,14 @@ def init(lib):
 
 	lib.swf_text.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_char_p,ctypes.c_short,ctypes.POINTER(EditText)] #lib.swf_text.restype = c_int
 
-	lib.swf_shape.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.POINTER(ctypes.c_int)] #lib.swf_shape.restype = c_int
+	lib.swf_shape.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.POINTER(ctypes.c_int)] #lib.swf_shape.restype = c_int  # (ctypes.c_int * 2)(*[4, 5])
 	lib.swf_shape_basic.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int] #lib.swf_shape_basic.restype = c_int
 	lib.swf_shape_bitmap.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int] #lib.swf_shape_bitmap.restype = c_int
 	lib.swf_shape_bitmap_clipped.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int] #lib.swf_shape_bitmap_clipped.restype = c_int
 	lib.swf_shape_border.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int] #lib.swf_shape_border.restype = c_int
 
 	lib.swf_image.argtypes = [ctypes.c_char_p] #lib.swf_image.restype = c_int
-	lib.swf_image_ex.argtypes = [ctypes.c_char_p,ctypes.POINTER(ctypes.c_int)] #lib.swf_image.restype = c_int  # (ctypes.c_int * 2)(*[4, 5])
+	lib.swf_image_ex.argtypes = [ctypes.c_char_p,ctypes.POINTER(ctypes.c_int)] #lib.swf_image.restype = c_int  # (ctypes.c_int * 2)()
 	lib.swf_dbl.argtypes = [ctypes.c_char_p] #lib.swf_dbl.restype = c_int
 	lib.swf_dbl_ex.argtypes = [ctypes.c_char_p,ctypes.POINTER(ctypes.c_int)] #lib.swf_dbl_ex.restype = c_int
 	lib.swf_dbl_width.argtypes = [ctypes.c_char_p] #lib.swf_dbl_width.restype = c_int
