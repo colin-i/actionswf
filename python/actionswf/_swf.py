@@ -106,7 +106,7 @@ def dbl_width(imagepath):
 	return _lib.swf_dbl_width(imagepath)
 def dbl_height(imagepath):
 	return _lib.swf_dbl_height(imagepath)
-	
+
 def done():
 	_lib.swf_done()
 def new(path,width,height,backgroundcolor,fps):
