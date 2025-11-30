@@ -106,6 +106,17 @@ button_last=_swf.button_last
 font=_swf.font
 font_basic=_swf.font_basic
 text=_swf.text
+shape=_swf.shape
+shape_basic=_swf.shape_basic
+shape_bitmap=_swf.shape_bitmap
+shape_bitmap_clipped=_swf.shape_bitmap_clipped
+shape_border=_swf.shape_border
+image=_swf.image
+image_ex=_swf.image_ex
+dbl=_swf.dbl
+dbl_ex=_swf.dbl_ex
+dbl_width=_swf.dbl_width
+dbl_height=_swf.dbl_height
 done=_swf.done
 new=_swf.new
 
@@ -113,6 +124,11 @@ from . import _action
 _action.init(_lib)
 action=_action.action
 actionf=_action.actionf
+actiond=_action.actiond
+action_sprite=_action.action_sprite
+actionf_sprite=_action.actionf_sprite
+action_init_sprite=_action.action_init_sprite
+actionf_init_sprite=_action.actionf_init_sprite
 
 from . import _tool
 _tool.init(_lib)
