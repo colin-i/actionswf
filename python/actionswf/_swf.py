@@ -66,11 +66,11 @@ def init(lib):
 	lib.swf_dbl_height.argtypes = [ctypes.c_char_p] #lib.swf_dbl_height.restype = c_int
 
 	lib.swf_imagej.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int] #lib.swf_imagej.restype = c_int
-	lib.swf_imagej_alpha.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej.restype = c_int
+	lib.swf_imagej_alpha.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej_alpha.restype = c_int
 	lib.swf_imagej_clipped.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int] #lib.swf_imagej_clipped.restype = c_int
-	lib.swf_imagej_alpha_clipped.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej_clipped.restype = c_int
-	lib.swf_jpeg.argtypes = [ctypes.c_char_p] #lib.swf_imagej.restype = c_int
-	lib.swf_jpeg_alpha.argtypes = [ctypes.c_char_p,ctypes.c_char_p] #lib.swf_imagej.restype = c_int
+	lib.swf_imagej_alpha_clipped.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej_alpha_clipped.restype = c_int
+	lib.swf_jpeg.argtypes = [ctypes.c_char_p] #lib.swf_jpeg.restype = c_int
+	lib.swf_jpeg_alpha.argtypes = [ctypes.c_char_p,ctypes.c_char_p] #lib.swf_jpeg_alpha.restype = c_int
 	lib.swf_gif_width.argtypes = [ctypes.c_char_p] #lib.swf_gif_width.restype = c_int
 	lib.swf_gif_height.argtypes = [ctypes.c_char_p] #lib.swf_gif_height.restype = c_int
 
