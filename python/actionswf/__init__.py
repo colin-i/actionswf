@@ -117,6 +117,14 @@ dbl=_swf.dbl
 dbl_ex=_swf.dbl_ex
 dbl_width=_swf.dbl_width
 dbl_height=_swf.dbl_height
+imagej=_swf.imagej
+imagej_alpha=_swf.imagej_alpha
+imagej_clipped=_swf.imagej_clipped
+imagej_alpha_clipped=_swf.imagej_alpha_clipped
+jpeg=_swf.jpeg
+jpeg_alpha=_swf.jpeg_alpha
+gif_width=_swf.gif_width
+gif_height=_swf.gif_height
 done=_swf.done
 new=_swf.new
 

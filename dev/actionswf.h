@@ -158,13 +158,13 @@ int swf_imagej(char* imagepath,int width,int height);
 //id
 int swf_imagej_alpha(char* imagepath,int width,int height,char* alphapath);
 //id
+int swf_imagej_clipped(char* imagepath,int width,int height);
+//id
+int swf_imagej_alpha_clipped(char* imagepath,int width,int height,char* alphapath);
+//id
 int swf_jpeg(char* imagepath);
 //id
 int swf_jpeg_alpha(char* imagepath,char* alphapath);
-//id
-int swf_jpeg_clipped(char* imagepath);
-//id
-int swf_jpeg_alpha_clipped(char* imagepath,char* alphapath);
 //width
 int swf_gif_width(char* imagepath);
 //height

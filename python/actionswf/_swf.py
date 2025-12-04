@@ -65,6 +65,15 @@ def init(lib):
 	lib.swf_dbl_width.argtypes = [ctypes.c_char_p] #lib.swf_dbl_width.restype = c_int
 	lib.swf_dbl_height.argtypes = [ctypes.c_char_p] #lib.swf_dbl_height.restype = c_int
 
+	lib.swf_imagej.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int] #lib.swf_imagej.restype = c_int
+	lib.swf_imagej_alpha.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej.restype = c_int
+	lib.swf_imagej_clipped.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int] #lib.swf_imagej_clipped.restype = c_int
+	lib.swf_imagej_alpha_clipped.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_char_p] #lib.swf_imagej_clipped.restype = c_int
+	lib.swf_jpeg.argtypes = [ctypes.c_char_p] #lib.swf_imagej.restype = c_int
+	lib.swf_jpeg_alpha.argtypes = [ctypes.c_char_p,ctypes.c_char_p] #lib.swf_imagej.restype = c_int
+	lib.swf_gif_width.argtypes = [ctypes.c_char_p] #lib.swf_gif_width.restype = c_int
+	lib.swf_gif_height.argtypes = [ctypes.c_char_p] #lib.swf_gif_height.restype = c_int
+
 	lib.swf_new.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ubyte] #lib.swf_new.restype = None # else c_int is default , is ok, there is still a wrapper to enforce nr of args
 
 	global _lib
@@ -106,6 +115,23 @@ def dbl_width(imagepath):
 	return _lib.swf_dbl_width(imagepath)
 def dbl_height(imagepath):
 	return _lib.swf_dbl_height(imagepath)
+
+def imagej(imagepath,width,height):
+	return _lib.swf_imagej(imagepath,width,height)
+def imagej_alpha(imagepath,width,height,alphapath):
+	return _lib.swf_imagej_alpha(imagepath,width,height,alphapath)
+def imagej_clipped(imagepath,width,height):
+	return _lib.swf_imagej_clipped(imagepath,width,height)
+def imagej_alpha_clipped(imagepath,width,height,alphapath):
+	return _lib.swf_imagej_alpha_clipped(imagepath,width,height,alphapath)
+def jpeg(imagepath):
+	return _lib.swf_jpeg(imagepath)
+def jpeg_alpha(imagepath,alphapath):
+	return _lib.swf_jpeg_alpha(imagepath,alphapath)
+def gif_width(imagepath):
+	return _lib.swf_gif_width(imagepath)
+def gif_height(imagepath):
+	return _lib.swf_gif_height(imagepath)
 
 def done():
 	_lib.swf_done()

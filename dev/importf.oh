@@ -46,13 +46,13 @@ importX "swf_imagej" swf_imagej
 #id
 importX "swf_imagej_alpha" swf_imagej_alpha
 #id
+importX "swf_imagej_clipped" swf_imagej_clipped
+#id
+importX "swf_imagej_alpha_clipped" swf_imagej_alpha_clipped
+#id
 importX "swf_jpeg" swf_jpeg
 #id
 importX "swf_jpeg_alpha" swf_jpeg_alpha
-#id
-importX "swf_jpeg_clipped" swf_jpeg_clipped
-#id
-importX "swf_jpeg_alpha_clipped" swf_jpeg_alpha_clipped
 #width
 importX "swf_gif_width" swf_gif_width
 #height
