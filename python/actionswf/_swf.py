@@ -74,7 +74,28 @@ def init(lib):
 	lib.swf_gif_width.argtypes = [ctypes.c_char_p] #lib.swf_gif_width.restype = c_int
 	lib.swf_gif_height.argtypes = [ctypes.c_char_p] #lib.swf_gif_height.restype = c_int
 
+	lib.swf_imagex.argtypes = [ctypes.c_char_p] #lib.swf_imagex.restype = c_int
+	lib.swf_imagex_ex.argtypes = [ctypes.c_char_p,ctypes.POINTER(ctypes.c_int)] #lib.swf_imagex_ex.restype = c_int
+	lib.swf_img.argtypes = [ctypes.c_char_p] #lib.swf_img.restype = c_int
+	lib.swf_img_ex.argtypes = [ctypes.c_char_p,ctypes.POINTER(ctypes.c_int)] #lib.swf_img_ex.restype = c_int
+
+	#swf_done
 	lib.swf_new.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ubyte] #lib.swf_new.restype = None # else c_int is default , is ok, there is still a wrapper to enforce nr of args
+	lib.swf_new_ex.argtypes = [ctypes.c_char_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ubyte,ctypes.c_int]
+	lib.swf_placeobject.argtypes = [ctypes.c_int,ctypes.c_int]
+	lib.swf_placeobject_coords.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int]
+	lib.swf_removeobject.argtypes = [ctypes.c_int]
+	#swf_showframe
+
+	lib.swf_sprite_done.argtypes = [ctypes.c_int] #lib.swf_sprite_done.restype = c_int
+	#lib.swf_sprite_new.restype = c_int
+	lib.swf_sprite_placeobject.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int]
+	lib.swf_sprite_placeobject_coords.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int]
+	lib.swf_sprite_removeobject.argtypes = [ctypes.c_int,ctypes.c_int]
+	lib.swf_sprite_showframe.argtypes = [ctypes.c_int]
+
+	lib.swf_exports_add.argtypes = [ctypes.c_int,ctypes.c_char_p]
+	#swf_exports_done
 
 	global _lib
 	_lib=lib
@@ -133,7 +154,44 @@ def gif_width(imagepath):
 def gif_height(imagepath):
 	return _lib.swf_gif_height(imagepath)
 
+def imagex(imagepath):
+	return _lib.swf_imagex(imagepath)
+def imagex_ex(imagepath,wh):
+	return _lib.swf_imagex_ex(imagepath,wh)
+def img(imagepath):
+	return _lib.swf_img(imagepath)
+def img_ex(imagepath,wh):
+	return _lib.swf_img_ex(imagepath,wh)
+
 def done():
 	_lib.swf_done()
 def new(path,width,height,backgroundcolor,fps):
 	_lib.swf_new(path,width,height,backgroundcolor,fps)
+def new_ex(path,width,height,backgroundcolor,fps,flags):
+	_lib.swf_new_ex(path,width,height,backgroundcolor,fps,flags)
+def placeobject(refid,depth):
+	_lib.swf_placeobject(refid,depth)
+def placeobject_coords(refid,depth,x,y):
+	_lib.swf_placeobject_coords(refid,depth,x,y)
+def removeobject(depth):
+	_lib.swf_removeobject(depth)
+def showframe():
+	_lib.swf_showframe()
+
+def sprite_done(spriteid):
+	return _lib.swf_sprite_done(spriteid)
+def sprite_new():
+	return _lib.swf_sprite_new()
+def sprite_placeobject(spriteid,object,depth):
+	_lib.swf_sprite_placeobject(spriteid,object,depth)
+def sprite_placeobject_coords(spriteid,object,depth,x,y):
+	_lib.swf_sprite_placeobject_coords(spriteid,object,depth,x,y)
+def sprite_removeobject(spriteid,depth):
+	_lib.swf_sprite_removeobject(spriteid,depth)
+def sprite_showframe(spriteid):
+	_lib.swf_sprite_showframe(spriteid)
+
+def exports_add(id,name):
+	_lib.swf_exports_add(id,name)
+def exports_done():
+	_lib.swf_exports_done()

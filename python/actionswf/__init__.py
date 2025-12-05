@@ -125,8 +125,25 @@ jpeg=_swf.jpeg
 jpeg_alpha=_swf.jpeg_alpha
 gif_width=_swf.gif_width
 gif_height=_swf.gif_height
+imagex=_swf.imagex
+imagex_ex=_swf.imagex_ex
+img=_swf.img
+img_ex=_swf.img_ex
 done=_swf.done
 new=_swf.new
+new_ex=_swf.new_ex
+placeobject=_swf.placeobject
+placeobject_coords=_swf.placeobject_coords
+removeobject=_swf.removeobject
+showframe=_swf.showframe
+sprite_done=_swf.sprite_done
+sprite_new=_swf.sprite_new
+sprite_placeobject=_swf.sprite_placeobject
+sprite_placeobject_coords=_swf.sprite_placeobject_coords
+sprite_removeobject=_swf.sprite_removeobject
+sprite_showframe=_swf.sprite_showframe
+exports_add=_swf.exports_add
+exports_done=_swf.exports_done
 
 from . import _action
 _action.init(_lib)
