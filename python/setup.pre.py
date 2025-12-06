@@ -19,3 +19,5 @@ setup(name=pkname,
 	author_email='costin.botescu@gmail.com',
 	license='MIT'
 )
+
+#README.md is for: python3 setup.py
