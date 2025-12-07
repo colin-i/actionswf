@@ -44,6 +44,12 @@ An optional step is to install **actionswf-devel**(noarch).\
 \
 \
 On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).
+\
+\
+Python library bindings at [PyPI](https://pypi.org/project/actionswf):
+```sh
+pip install actionswf
+```
 
 ## From source
 Compile with [O Compiler](https://github.com/colin-i/o).

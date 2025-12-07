@@ -1,0 +1,5 @@
+
+function Vehicle(){
+	trace('a'+this.value)
+}
+Object.registerClass('carSymbol',Vehicle)
