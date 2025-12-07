@@ -43,7 +43,7 @@ zypper install actionswf
 An optional step is to install **actionswf-devel**(noarch).\
 \
 \
-On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).
+On Windows, <i>.windows.zip</i> file from [releases](https://github.com/colin-i/actionswf/releases).\
 \
 \
 Python library bindings at [PyPI](https://pypi.org/project/actionswf):
