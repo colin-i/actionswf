@@ -1,7 +1,7 @@
 
-LD_LIBRARY_PATH=../csrc PYTHONPATH=../python python a.py
+LD_LIBRARY_PATH=../csrc PYTHONPATH=../python python ${p} a.py
 
 #using: minimal lib stdlib libffi , problems with actionswf map? going to qemu
 #	using: zlib1g libexpat1
 #	libactionswf.so: cannot enable executable stack as shared object requires? execstack -c ./libactionswf.so
-#LD_LIBRARY_PATH=../src:/home/bc/Desktop/python3.13/usr/lib/x86_64-linux-gnu PYTHONPATH=../python qq ~/Desktop/python3.13/usr/bin/python3.13 a.py
+#LD_LIBRARY_PATH=../src:/home/bc/Desktop/python3.13/usr/lib/x86_64-linux-gnu PYTHONPATH=../python qq ~/Desktop/python3.13/usr/bin/python3.13 ${p} a.py

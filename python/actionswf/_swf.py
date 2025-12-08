@@ -103,15 +103,15 @@ def init(lib):
 def button(width,height,buttondata):
 	return _lib.swf_button(width,height,buttondata)
 def button_last(actions,newtext):
-	return _lib.swf_button_last(actions,newtext)
+	return _lib.swf_button_last(actions.encode('utf-8'),newtext.encode('utf-8'))
 
 def font(fontname,font_flags):
-	return _lib.swf_font(fontname,font_flags)
+	return _lib.swf_font(fontname.encode('utf-8'),font_flags)
 def font_basic(fontname):
-	return _lib.swf_font_basic(fontname)
+	return _lib.swf_font_basic(fontname.encode('utf-8'))
 
 def text(bound_width,bound_height,variablename,flags,structure):
-	return _lib.swf_text(bound_width,bound_height,variablename,flags,structure)
+	return _lib.swf_text(bound_width,bound_height,variablename.encode('utf-8'),flags,structure)
 
 def shape(width,height,args):
 	return _lib.swf_shape(width,height,args)
@@ -125,50 +125,50 @@ def shape_border(width,height,linesize,linecolor):
 	return _lib.swf_shape_border(width,height,linesize,linecolor)
 
 def image(imagepath):
-	return _lib.swf_image(imagepath)
+	return _lib.swf_image(imagepath.encode('utf-8'))
 def image_ex(imagepath,wh):
-	return _lib.swf_image_ex(imagepath,wh)
+	return _lib.swf_image_ex(imagepath.encode('utf-8'),wh)
 def dbl(imagepath):
-	return _lib.swf_dbl(imagepath)
+	return _lib.swf_dbl(imagepath.encode('utf-8'))
 def dbl_ex(imagepath,wh):
-	return _lib.swf_dbl_ex(imagepath,wh)
+	return _lib.swf_dbl_ex(imagepath.encode('utf-8'),wh)
 def dbl_width(imagepath):
-	return _lib.swf_dbl_width(imagepath)
+	return _lib.swf_dbl_width(imagepath.encode('utf-8'))
 def dbl_height(imagepath):
-	return _lib.swf_dbl_height(imagepath)
+	return _lib.swf_dbl_height(imagepath.encode('utf-8'))
 
 def imagej(imagepath,width,height):
-	return _lib.swf_imagej(imagepath,width,height)
+	return _lib.swf_imagej(imagepath.encode('utf-8'),width,height)
 def imagej_alpha(imagepath,width,height,alphapath):
-	return _lib.swf_imagej_alpha(imagepath,width,height,alphapath)
+	return _lib.swf_imagej_alpha(imagepath.encode('utf-8'),width,height,alphapath.encode('utf-8'))
 def imagej_clipped(imagepath,width,height):
-	return _lib.swf_imagej_clipped(imagepath,width,height)
+	return _lib.swf_imagej_clipped(imagepath.encode('utf-8'),width,height)
 def imagej_alpha_clipped(imagepath,width,height,alphapath):
-	return _lib.swf_imagej_alpha_clipped(imagepath,width,height,alphapath)
+	return _lib.swf_imagej_alpha_clipped(imagepath.encode('utf-8'),width,height,alphapath.encode('utf-8'))
 def jpeg(imagepath):
-	return _lib.swf_jpeg(imagepath)
+	return _lib.swf_jpeg(imagepath.encode('utf-8'))
 def jpeg_alpha(imagepath,alphapath):
-	return _lib.swf_jpeg_alpha(imagepath,alphapath)
+	return _lib.swf_jpeg_alpha(imagepath.encode('utf-8'),alphapath.encode('utf-8'))
 def gif_width(imagepath):
-	return _lib.swf_gif_width(imagepath)
+	return _lib.swf_gif_width(imagepath.encode('utf-8'))
 def gif_height(imagepath):
-	return _lib.swf_gif_height(imagepath)
+	return _lib.swf_gif_height(imagepath.encode('utf-8'))
 
 def imagex(imagepath):
-	return _lib.swf_imagex(imagepath)
+	return _lib.swf_imagex(imagepath.encode('utf-8'))
 def imagex_ex(imagepath,wh):
-	return _lib.swf_imagex_ex(imagepath,wh)
+	return _lib.swf_imagex_ex(imagepath.encode('utf-8'),wh)
 def img(imagepath):
-	return _lib.swf_img(imagepath)
+	return _lib.swf_img(imagepath.encode('utf-8'))
 def img_ex(imagepath,wh):
-	return _lib.swf_img_ex(imagepath,wh)
+	return _lib.swf_img_ex(imagepath.encode('utf-8'),wh)
 
 def done():
 	_lib.swf_done()
 def new(path,width,height,backgroundcolor,fps):
-	_lib.swf_new(path,width,height,backgroundcolor,fps)
+	_lib.swf_new(path.encode('utf-8'),width,height,backgroundcolor,fps)
 def new_ex(path,width,height,backgroundcolor,fps,flags):
-	_lib.swf_new_ex(path,width,height,backgroundcolor,fps,flags)
+	_lib.swf_new_ex(path.encode('utf-8'),width,height,backgroundcolor,fps,flags)
 def placeobject(refid,depth):
 	_lib.swf_placeobject(refid,depth)
 def placeobject_coords(refid,depth,x,y):
@@ -192,6 +192,6 @@ def sprite_showframe(spriteid):
 	_lib.swf_sprite_showframe(spriteid)
 
 def exports_add(id,name):
-	_lib.swf_exports_add(id,name)
+	_lib.swf_exports_add(id,name.encode('utf-8'))
 def exports_done():
 	_lib.swf_exports_done()

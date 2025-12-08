@@ -14,7 +14,7 @@ else:
 	f=actionswf.flagss.xxu|actionswf.flag.titles
 
 actionswf.new_ex("a.swf",0x80,0x80,0x050607,2,f)
-action(text("./aoc/a"))
+actionswf.action(text("./aoc/a"))
 presprite=actionswf.sprite_new()
 actionswf.action_sprite(presprite,"trace('b'+this.value)")
 actionswf.action_init_sprite(presprite,"./aoc/b")
