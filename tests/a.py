@@ -17,7 +17,7 @@ actionswf.new_ex("a.swf",0x80,0x80,0x050607,2,f)
 actionswf.action(text("./aoc/a"))
 presprite=actionswf.sprite_new()
 actionswf.action_sprite(presprite,"trace('b'+this.value)")
-actionswf.action_init_sprite(presprite,"./aoc/b")
+actionswf.action_init_sprite(presprite,text("./aoc/b"))
 sprite=actionswf.sprite_done(presprite)
 actionswf.exports_add(sprite,"carSymbol")
 
