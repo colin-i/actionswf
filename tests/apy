@@ -6,9 +6,10 @@ if [ -z "$1" ]; then
 else
 #using: minimal lib stdlib libffi , problems with actionswf map? going to qemu
 #	using: zlib1g libexpat1
-#	libactionswf.so: cannot enable executable stack as shared object requires? execstack -c ./libactionswf.so
-	export LD_LIBRARY_PATH=../src:/home/bc/Desktop/python3.13/usr/lib/x86_64-linux-gnu
+#	libactionswf.so: cannot enable executable stack as shared object requires? launchpad_prelink execstack: execstack -c ./libactionswf.so
+	export LD_LIBRARY_PATH=~/x86_64_lib:~/Desktop/python3.13/usr/lib/x86_64-linux-gnu
 	export PYTHONPATH=../python
 	p="qq /home/bc/Desktop/python3.13/usr/bin/python3.13 ${p} a.py"
 fi
-$p && $p x
+$p || exit 1
+$p x
