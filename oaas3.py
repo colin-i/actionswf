@@ -38,6 +38,7 @@ error()
 os.chdir(c_dir) #back for clean
 for filename in os.listdir(src):
 	os.remove(os.path.join(dest,os.path.splitext(filename)[0]+'.hx'))
+os.rmdir(dest)
 
 #confirm is as3
 
