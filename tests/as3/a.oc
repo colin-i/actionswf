@@ -3,5 +3,20 @@ format elfobj64
 
 importx "_exit" exit
 
+override include_sec 1
+einclude "../../dev/import.oh"
+
 entry main()
+
+call swf_new("a.swf",550,400,0xffFFff,12)
+
+sd presprite;set presprite swf_sprite_new()
+call action_sprite(presprite,"")
+sd sprite;set sprite swf_sprite_done(presprite)
+call swf_exports_add(sprite,"MyClip")
+
+call action("")
+
+call swf_done()
+
 call exit(0)
