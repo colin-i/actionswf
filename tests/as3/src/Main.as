@@ -1,10 +1,9 @@
 
 import flash.Lib;
 
-//import MyClip;
-
 class Main {
-	static function main() {
+	static
+	function main() {
 		var stage = Lib.current.stage;
 
 		var shape = new MyClip();
@@ -17,3 +16,8 @@ class Main {
 //		Lib.current.addChild(img);
 	}
 }
+
+//import flash.display.BitmapData;
+//import flash.display.Bitmap;
+//@:bitmap("relative/path/to/myfile.png")
+//class MyBitmapData extends BitmapData { }
