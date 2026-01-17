@@ -1,5 +1,5 @@
 
-if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=../src; fi
+if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=../${inter}src; fi
 if [ -z "${OCOMP}" ]; then OCOMP=o; fi
 
 if [ -z "${conv_64}" ] || [ ${conv_64} = 0 ]; then

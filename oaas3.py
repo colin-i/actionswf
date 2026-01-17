@@ -29,7 +29,10 @@ import subprocess
 c_dir=os.getcwd() #haxe says no to abs path
 dest_file=os.path.realpath(sys.argv[3])
 os.chdir(dest)
-r=subprocess.run(['haxe','--swf',dest_file,'--main','Main'])
+if os.environ.get('header'):
+	r=subprocess.run(['haxe','--swf',dest_file,'--main','Main','--swf-header',os.environ.get('header')])
+else:
+	r=subprocess.run(['haxe','--swf',dest_file,'--main','Main'])
 # --swf-header 960:640:60:f68712 --swf-version 15
 #w:h:fps:rgb
 error()
