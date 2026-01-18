@@ -11,11 +11,11 @@ entry main()
 call swf_new("a.swf",550,400,0xffFFff,12)
 
 sd presprite;set presprite swf_sprite_new()
-call action_sprite(presprite,"")
+call action_sprite(presprite,"|||src/MyClip.as|||")
 sd sprite;set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip")
 
-call action("")
+call action("|||src/Main.as|||")
 
 call swf_done()
 
