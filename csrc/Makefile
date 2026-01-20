@@ -64,3 +64,5 @@ clean:
 distclean: clean
 
 .PHONY: all headers clean distclean
+
+# global usings: abcdefghiloprstuwx jkmnqvy
