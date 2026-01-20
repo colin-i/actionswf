@@ -686,6 +686,7 @@ function action_local(ss ac)
 		call action_base(alt_ac)
 		if alt_ac!=ac
 			call file_get_content__resources_free()
+		#else keep as3 format counter
 		end
 	end
 end

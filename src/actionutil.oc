@@ -405,7 +405,7 @@ function action_format(sv args)
 	sv elements=:
 	add elements args_format
 	call sprintf_manual(args#,args_format#,elements)
-	call action_base(args#)
+	callg action_base(args#)
 endfunction
 
 import "debug_base" debug_base
