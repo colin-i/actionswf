@@ -44,6 +44,7 @@ import "f_close" f_close
 
 import "x_data" x_data
 import "alt_free" alt_free
+import "format_free" format_free
 function debug_data()
 	call x_data()
 	if globald.dfile!=(NULL)
@@ -59,6 +60,7 @@ function debug_data()
 		end
 	endif
 	call alt_free()
+	call format_free()
 endfunction
 
 function debug_phase_init(ss pointer)
@@ -206,16 +208,18 @@ importx "free" free
 
 import "memalloc" memalloc
 import "alt_init" alt_init
+import "format_init" format_init
 import "dtitles_init" dtitles_init
 import "x_init" x_init
 import "f_open_mem_ex" f_open_mem_ex
 import "strlen_of" strlen_of
 
-function flags_init(sd flags,sd path) #this order is copied in a comment at flags.oh
+function flags_init(sd flags,ss path) #this order is copied in a comment at flags.oh
 	set flags pool_init(flags)
 	set flags x_init(flags,path)
 	set flags log_init(flags,path)
 	call alt_init(flags,path)
+	call format_init(flags,path)
 	call dtitles_init(flags)
 
 	call frames_as_shows(flags)
@@ -224,7 +228,7 @@ function flags_init(sd flags,sd path) #this order is copied in a comment at flag
 	call verbose(flags)
 endfunction
 
-function log_init(sd flags,sd path)
+function log_init(sd flags,ss path)
 	if globald.dfile!=(NULL)
 		call error("swf started, log not closed")
 	end

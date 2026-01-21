@@ -650,7 +650,7 @@ function len_of(sd s,sd add)
 	end
 	return s
 end
-function strlen_of(sd p,sd add) #of from overflow
+function strlen_of(ss p,sd add) #of from overflow
 	sd s;set s strlen(p)
 	set s len_of(s,add)
 	return s

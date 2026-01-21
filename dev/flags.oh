@@ -24,7 +24,7 @@ const flag_deprecation_yes=0x8000               #will turn off flag_deprecation_
 const flag_noDuplicate=0x10000
 const flag_verbose=0x20000
 const flag_xx=0x40000                           #to let .log for alt and .x for regrab
-#const flag_format=0x80000
+const flag_format=0x80000                       #is not reached at .x or at alt
 
 const flags_pool=flagpre_pool_write|flag_pool_read
 const flags_x=flagpre_x|flag_x

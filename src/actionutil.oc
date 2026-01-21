@@ -8,6 +8,7 @@ vstrx pointer#1
 vstr orig=NULL
 vstr memorig=NULL
 value dcode#1
+value format_file=NULL
 
 #win32 with _
 importx "memcpy" memcpy
@@ -213,6 +214,13 @@ function pool_size(sd id)
     add poolsize (1+2)
     return poolsize
 endfunction
+
+import "f_close" f_close
+function format_free()
+	if globalu.format_file!=(NULL)
+		call f_close(#globalu.format_file)
+	end
+end
 
 import "swf_actionblock_change_back" swf_actionblock_change_back
 import "file_get_content__resources_free" file_get_content__resources_free
@@ -480,5 +488,21 @@ function sprintf_manual(ss string,ss format,sv elements)
 		call sprintf(string,format)
 	end
 endfunction
+
+import "strlen_of" strlen_of
+import "memalloc" memalloc
+import "f_open_mem" f_open_mem
+function format_init(sd ?flags,ss path)
+	if globalu.format_file!=(NULL)
+		call error("swf started, format file not closed")
+	end
+	and flags (flag_format)
+	if flags=(flag_format)
+		sd size;setcall size strlen_of(path,7+1) #8+not_gigantic
+		sd a;setcall a memalloc(size)
+		call sprintf(a,"%s.format",path)
+		setcall globalu.format_file f_open_mem(a,"wb")
+	end
+end
 
 entryraw globalu()

@@ -16,8 +16,8 @@ else
 	launcher=q
 fi
 l_z=`pkg-config --libs zlib`
-${OCOMP} a.oc ${OFLAGS} logfile 0 && \
-${LD} ${linker} a.o -L/home/bc/before/lib -l:libc.so.6 -L${_L} ${l_z} -L${LD_LIBRARY_PATH} -lactionswf -e main && \
+${OCOMP} a${interext}.oc ${OFLAGS} logfile 0 && \
+${LD} ${linker} a${interext}.o -L/home/bc/before/lib -l:libc.so.6 -L${_L} ${l_z} -L${LD_LIBRARY_PATH} -lactionswf -e main && \
 # attention at launchpad and ldprefer (like in ./example)
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${_L} ${launcher} ./a.out && \
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${_L} ${launcher} ./a.out x

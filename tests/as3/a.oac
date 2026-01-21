@@ -4,11 +4,11 @@ format elfobj64
 importx "_exit" exit
 
 override include_sec 1
-einclude "../../dev/import.oh"
+einclude "../../../dev/import.oh"
 
 entry main()
 
-call swf_new("a.swf",550,400,0xffFFff,12)
+call swf_new_ex("a.swf",550,400,0xffFFff,12,(flag_format))
 
 sd presprite;set presprite swf_sprite_new()
 call action_sprite(presprite,"|||src/MyClip.as|||")
