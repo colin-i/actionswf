@@ -1,0 +1,107 @@
+
+format elfobj64
+
+importx "_exit" exit
+
+override include_sec 1
+einclude "../../../dev/import.oh"
+
+entry main()
+
+call swf_new_ex("a.swf",550,400,0xffFFff,12,(flag_format))
+
+sd presprite;set presprite swf_sprite_new()
+char buf#1000
+call actionf_sprite(presprite,#buf,"
+/*3 import flash.display.MovieClip;
+import flash.display.Shape;
+import flash.events.Event;
+
+class MyClip extends MovieClip {
+	function onEnterFrame(e) {
+		if(a){
+			x-=c;
+			if(b){
+				y-=c;
+				if(y<=0){
+					b=false;
+				}
+			}else{
+				y+=c;
+				if(y+height>=stage.stageHeight){
+					b=true;
+				}
+			}
+			if(x<=0){
+				a=false;
+			}
+		}else{
+			x+=c;
+			if(b){
+				y-=c;
+				if(y<=0){
+					b=false;
+				}
+			}else{
+				y+=c;
+				if(y+height>=stage.stageHeight){
+					b=true;
+				}
+			}
+			if(x+width>=stage.stageWidth){
+				a=true;
+			}
+		}
+	}
+	public
+	function new() {
+		super();
+
+		// Simple visual so you can see it
+		var shape = new Shape();
+		shape.graphics.beginFill(0x3399FF);
+		shape.graphics.drawRect(0, 0, 120, 80);
+		shape.graphics.endFill();
+
+		addChild(shape);
+
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+	}
+	static
+	var c=%u;
+	var a=false;var b=false;
+}
+*/
+",2)
+sd sprite;set sprite swf_sprite_done(presprite)
+call swf_exports_add(sprite,"MyClip")
+
+call action("
+//3 import flash.Lib;
+
+/*3 class Main {
+	static
+	function main() {
+		var stage = Lib.current.stage;
+
+		var shape = new MyClip();
+		shape.x = (stage.stageWidth - 100) / 2;
+		shape.y = (stage.stageHeight - 100) / 2;
+
+		stage.addChild(shape);
+
+//		var img = new Bitmap( new MyBitmapData(0, 0) );
+//		Lib.current.addChild(img);
+	}
+}
+
+//import flash.display.BitmapData;
+//import flash.display.Bitmap;
+//@:bitmap('relative/path/to/myfile.png')
+//class MyBitmapData extends BitmapData { }
+*/
+")
+
+call swf_done()
+
+call exit(0)
