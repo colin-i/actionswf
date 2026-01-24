@@ -42,13 +42,18 @@ class MyClip extends MovieClip {
 	public
 	function new() {
 		super();
-
+*/
+		beginFill(0x3399FF);
+		lineTo(120, 0);
+		lineTo(120, 80);
+		lineTo(0, 80);
+		endFill();
+/*3
 		// Simple visual so you can see it
 		var shape = new Shape();
 		shape.graphics.beginFill(0x3399FF);
 		shape.graphics.drawRect(0, 0, 120, 80);
 		shape.graphics.endFill();
-
 		addChild(shape);
 
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);

@@ -5,9 +5,9 @@
 	static
 	function main() {
 		var stage = Lib.current.stage;
-
-		var shape = new MyClip();
-		shape.x = (stage.stageWidth - 100) / 2;
+*/
+		attachMovie('MyClip','MyClip',getNextHighestDepth()); //3 var shape = new MyClip();
+/*3		shape.x = (stage.stageWidth - 100) / 2;
 		shape.y = (stage.stageHeight - 100) / 2;
 
 		stage.addChild(shape);
