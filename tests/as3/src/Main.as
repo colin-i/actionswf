@@ -1,7 +1,7 @@
 
-import flash.Lib;
+//3 import flash.Lib;
 
-class Main {
+/*3 class Main {
 	static
 	function main() {
 		var stage = Lib.current.stage;
@@ -19,5 +19,6 @@ class Main {
 
 //import flash.display.BitmapData;
 //import flash.display.Bitmap;
-//@:bitmap("relative/path/to/myfile.png")
+//@:bitmap('relative/path/to/myfile.png')
 //class MyBitmapData extends BitmapData { }
+*/

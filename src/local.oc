@@ -679,6 +679,7 @@ endfunction
 
 import "debug_base" debug_base
 import "action_base" action_base
+import "format_store" format_store
 function action_local(ss ac)
 	sd alt_ac;set alt_ac alt_action(ac,0)
 	if alt_ac!=(NULL)  #can be two action() same DoAction
@@ -686,7 +687,8 @@ function action_local(ss ac)
 		call action_base(alt_ac)
 		if alt_ac!=ac
 			call file_get_content__resources_free()
-		#else keep as3 format counter
+		else #keep as3 format counter
+			callg format_store("")
 		end
 	end
 end

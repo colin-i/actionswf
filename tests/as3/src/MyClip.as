@@ -1,5 +1,5 @@
 
-import flash.display.MovieClip;
+/*3 import flash.display.MovieClip;
 import flash.display.Shape;
 import flash.events.Event;
 
@@ -54,6 +54,7 @@ class MyClip extends MovieClip {
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 	}
 	static
-	var c=2;
+	var c=%u;
 	var a=false;var b=false;
 }
+*/
