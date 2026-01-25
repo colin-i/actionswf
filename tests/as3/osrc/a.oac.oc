@@ -56,19 +56,13 @@ class MyClip extends MovieClip {*/
 /*3	public function new() {
 		super();
 */
-		beginFill(0x3399FF);
-		lineTo(120, 0);
-		lineTo(120, 80);
-		lineTo(0, 80);
-		endFill();
-/*3
 		// Simple visual so you can see it
-		var shape = new Shape();
-		shape.graphics.beginFill(0x3399FF);
-		shape.graphics.drawRect(0, 0, 120, 80);
-		shape.graphics.endFill();
-		addChild(shape);
-*/
+		//3 var shape = new Shape();
+		beginFill(0x3399FF);//3 shape.graphics.beginFill(0x3399FF);
+		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 shape.graphics.drawRect(0, 0, 120, 80);
+		endFill();//3 shape.graphics.endFill();
+		//3 addChild(shape);
+
 		onEnterFrame=on_Enter_Frame; //3 addEventListener(Event.ENTER_FRAME, on_Enter_Frame);
 /*3	}
 	static
@@ -102,7 +96,7 @@ call action("
 //import flash.display.BitmapData;
 //import flash.display.Bitmap;
 //@:bitmap('relative/path/to/myfile.png')
-//class MyBitmapData extends BitmapData { }
+//class MyBitmapData extends BitmapData { }//*
 */
 ")
 
