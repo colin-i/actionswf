@@ -2,5 +2,4 @@
 if [ -z $p ]; then
 	p=python3
 fi
-mkdir -p dest
 ffdec=~/ffdec/bin/ffdec $p ../../oaas3.py src dest a.swf

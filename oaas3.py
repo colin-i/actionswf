@@ -3,21 +3,62 @@
 import sys
 if len(sys.argv)!=4:
 	print('Usage: as3.py input_folder output_folder output_file')
+	# only_src
+	# header ffdec
 	exit(1)
-
-#will remove //3 and at left, /*3 and ending */
-#also, need to make dirs tree to merge files
 
 import os
 
-src=sys.argv[1]
 dest=sys.argv[2]
+
+try:
+	os.mkdir(dest)
+except FileExistsError:
+	pass
+
+src=sys.argv[1]
+
 for filename in os.listdir(src):
 	with open(os.path.join(src,filename)) as sfile:
 		with open(os.path.join(dest,os.path.splitext(filename)[0]+'.hx'),'wb') as dfile: #haxe will not do for .as
+			mode=0
 			for line in sfile:
-				#print(line,end='')
-				dfile.write(line.encode())
+				chars = bytearray(len(line))
+				pos = 0
+				for c in line:
+					chars[pos]=ord(c)
+					pos+=1
+					if mode==0:
+						if c=='/':
+							mode=1
+					elif mode==6:
+						if c=='*':
+							mode=7
+					elif mode==1:
+						if c=='/':
+							mode=2
+						elif c=='*':
+							mode=3
+						else:
+							mode=0
+					elif mode==2 or mode==3:
+						if c=='3':
+							mode*=2
+							pos=0
+						else:
+							mode=0
+					elif mode==7:
+						if c=='/':
+							mode=0
+							pos-=2
+						else:
+							mode=6
+				if mode==4:
+					mode=0
+				dfile.write(chars[:pos])
+
+if os.environ.get('only_src'):
+	exit(0)
 
 def error():
 	if r.returncode:
@@ -29,8 +70,9 @@ import subprocess
 c_dir=os.getcwd() #haxe says no to abs path
 dest_file=os.path.realpath(sys.argv[3])
 os.chdir(dest)
-if os.environ.get('header'):
-	r=subprocess.run(['haxe','--swf',dest_file,'--main','Main','--swf-header',os.environ.get('header')])
+hd=os.environ.get('header')
+if hd:
+	r=subprocess.run(['haxe','--swf',dest_file,'--main','Main','--swf-header',hd])
 else:
 	r=subprocess.run(['haxe','--swf',dest_file,'--main','Main'])
 # --swf-header 960:640:60:f68712 --swf-version 15
