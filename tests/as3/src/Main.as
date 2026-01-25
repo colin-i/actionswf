@@ -6,10 +6,10 @@
 	function main() {
 		var stage = Lib.current.stage;
 */
-		attachMovie('MyClip','MyClip',getNextHighestDepth()); //3 var shape = new MyClip();
-/*3		shape.x = (stage.stageWidth - 100) / 2;
-		shape.y = (stage.stageHeight - 100) / 2;
-
+		attachMovie('MyClip','shape',getNextHighestDepth());//3 var shape = new MyClip();
+		shape._x = (Stage.width - 100) / 2;//3 shape.x = (stage.stageWidth - 100) / 2;
+		shape._y = (Stage.height - 100) / 2;//3 shape.y = (stage.stageHeight - 100) / 2;
+/*3
 		stage.addChild(shape);
 
 //		var img = new Bitmap( new MyBitmapData(0, 0) );

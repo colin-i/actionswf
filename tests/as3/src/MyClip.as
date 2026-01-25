@@ -3,44 +3,43 @@
 import flash.display.Shape;
 import flash.events.Event;
 
-class MyClip extends MovieClip {
-	function onEnterFrame(e) {
+class MyClip extends MovieClip {*/
+	function on_Enter_Frame(e){
 		if(a){
-			x-=c;
+			_x-=c;//3 x-=c;
 			if(b){
-				y-=c;
-				if(y<=0){
+				_y-=c;//3 y-=c;
+				if(_y<=0){//3 if(y<=0){
 					b=false;
 				}
 			}else{
-				y+=c;
-				if(y+height>=stage.stageHeight){
+				_y+=c;//3 y+=c;
+				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
 					b=true;
 				}
 			}
-			if(x<=0){
+			if(_x<=0){//3 if(x<=0){
 				a=false;
 			}
 		}else{
-			x+=c;
+			_x+=c;//3 x+=c;
 			if(b){
-				y-=c;
-				if(y<=0){
+				_y-=c;//3 y-=c;
+				if(_y<=0){//3 if(y<=0){
 					b=false;
 				}
 			}else{
-				y+=c;
-				if(y+height>=stage.stageHeight){
+				_y+=c;//3 y+=c;
+				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
 					b=true;
 				}
 			}
-			if(x+width>=stage.stageWidth){
+			if(_x+_width>=Stage.width){//3 if(x+width>=stage.stageWidth){
 				a=true;
 			}
 		}
 	}
-	public
-	function new() {
+/*3	public function new() {
 		super();
 */
 		beginFill(0x3399FF);
@@ -55,11 +54,11 @@ class MyClip extends MovieClip {
 		shape.graphics.drawRect(0, 0, 120, 80);
 		shape.graphics.endFill();
 		addChild(shape);
-
-		addEventListener(Event.ENTER_FRAME, onEnterFrame);
-	}
+*/
+		onEnterFrame=on_Enter_Frame; //3 addEventListener(Event.ENTER_FRAME, on_Enter_Frame);
+/*3	}
 	static
+*/
 	var c=%u;
 	var a=false;var b=false;
-}
-*/
+//3 }
