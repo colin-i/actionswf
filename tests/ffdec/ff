@@ -24,7 +24,7 @@ ${OCOMP} a.oc inplace_reloc 0 logfile 0 && \
 					ffd=${ffdec}
 				fi
 				is_debug=x ffdec=${ffd} skip_alternative=x ../../oaalternative.sh a.swf && {
-					#expect_obfuscation=./q   this is solved since ffdec_24.1.1_nightly3382 
+					#expect_obfuscation=./q   this is solved since ffdec_24.1.1_nightly3382
 					is_debug=x no_number_check=x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${_L} skip_ffdec=x ${bashdbg} ../../oaalternative.sh a.swf "${q} ./a.out x x" || {
 						swfdump -D${1} a.swf.orig > 1
 						swfdump -D${1} a.swf > 2
