@@ -42,6 +42,32 @@ call swf_button(150,50,#ButtonData)
 #call swf_button_last("var a;a=1","Qubmit")
 
 call action("
+/*function f(){
+	while(true){
+		if(a){
+			if(b)break;
+		}else if(b)break;
+		return 1;
+	}
+	return 2;
+}*/
+function f()
+{
+   if(a)
+   {
+      if(b)
+      {
+         §§goto(addr005d);
+      }
+   }
+   else if(b)
+   {
+      addr005d:
+      return 2;
+   }
+   return 1;
+}
+
 function c(){
 }
 function cc(a){
