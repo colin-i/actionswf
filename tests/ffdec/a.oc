@@ -42,44 +42,6 @@ call swf_button(150,50,#ButtonData)
 #call swf_button_last("var a;a=1","Qubmit")
 
 call action("
-//this is the same a&&b example plus e=1 to trick oaalternative.py
-//the second construct is this:
-//while(true){
-//if(a){if(b)break;}else if(b)break;
-//	return 2;
-//}
-//return 3;
-function f()
-{
-   if(a)
-   {
-      if(b)
-      {
-         c = 1;
-      }
-      else
-      {
-         addr003e:
-         d = 1;
-      }
-      if(a)
-      {
-         if(b)
-         {
-            §§goto(addr0081);
-         }
-      }
-      else if(b)
-      {
-         addr0081:
-         return 3;
-      }
-      return 2;
-   }
-   e = 1;
-   §§goto(addr003e);
-}
-
 function c(){
 }
 function cc(a){

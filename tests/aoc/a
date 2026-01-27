@@ -91,3 +91,23 @@ n(-NaN,NaN)
 var a=new Object();
 a.value=2;
 attachMovie('carSymbol','fastCar_mc',1,a)
+
+//goto up/down
+function gotos()
+{
+	if(a)
+	{
+		if(b)
+		{
+			§§goto(addr0001);
+		}
+		addr0002:
+		return 2;
+	}
+	else if(b)
+	{
+		addr0001:
+		return 1;
+	}
+	§§goto(addr0002);
+}
