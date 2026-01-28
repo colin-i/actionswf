@@ -1,1 +1,2 @@
-rm a.swf && cd osrc && ./c
+rm a.swf
+cd osrc && ./c
