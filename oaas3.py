@@ -18,6 +18,14 @@ except FileExistsError:
 
 src=sys.argv[1]
 
+a1='/'
+a2a='/'
+a2b='*'
+a3='3'
+
+b1b='*'
+b2b='/'
+
 for filename in os.listdir(src):
 	with open(os.path.join(src,filename)) as sfile:
 		with open(os.path.join(dest,os.path.splitext(filename)[0]+'.hx'),'wb') as dfile: #haxe will not do for .as
@@ -29,26 +37,26 @@ for filename in os.listdir(src):
 					chars[pos]=ord(c)
 					pos+=1
 					if mode==0:
-						if c=='/':
+						if c==a1:
 							mode=1
-					elif mode==6:
-						if c=='*':
-							mode=7
 					elif mode==1:
-						if c=='/':
+						if c==a2a:
 							mode=2
-						elif c=='*':
+						elif c==a2b:
 							mode=3
 						else:
 							mode=0
 					elif mode==2 or mode==3:
-						if c=='3':
+						if c==a3:
 							mode*=2
 							pos=0
 						else:
 							mode=0
+					elif mode==6:
+						if c==b1b:
+							mode=7
 					elif mode==7:
-						if c=='/':
+						if c==b2b:
 							mode=0
 							pos-=2
 						else:
