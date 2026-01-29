@@ -41,7 +41,7 @@ def premade_formats(a):
 out_file_name=sys.argv[3]
 
 splits_file, splits_mix = premade_formats(os.path.splitext(out_file_name)[0]) #'a.q.swf' is a.q
-print(splits_file+' '+splits_mix);exit(1)
+
 dest=sys.argv[2]
 
 try:
