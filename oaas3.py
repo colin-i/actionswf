@@ -3,20 +3,11 @@
 import sys
 if len(sys.argv)!=4:
 	print('Usage: as3.py input_folder output_folder output_file')
-	# only_src a1 a2a a2b a3 b1b b2b
+	# only_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
 	# header ffdec
 	exit(1)
 
 import os
-
-dest=sys.argv[2]
-
-try:
-	os.mkdir(dest)
-except FileExistsError:
-	pass
-
-src=sys.argv[1]
 
 def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
 changeable('a','1','/')
@@ -26,12 +17,39 @@ changeable('a','3','3')
 changeable('b','1b','*')
 changeable('b','2b','/')
 
-##these are defaults at edor
-#splits_folder osrc
-#rule_ext oac
-#splits_format_ext split
-##this is default here at src
-#splits_printf_ext format
+def premade_formats(a):
+	#environ or defaults at edor
+	splits_folder=os.environ.get('splits_folder')
+	if splits_folder==None:
+		splits_folder='osrc'
+	rule_ext=os.environ.get('rule_ext')
+	if rule_ext==None:
+		rule_ext='oac'
+	splits_format_ext=os.environ.get('splits_format_ext')
+	if splits_format_ext==None:
+		splits_format_ext='split'
+
+	#and here at src
+	splits_printf_ext=os.environ.get('splits_printf_ext')
+	if splits_printf_ext==None:
+		splits_printf_ext='format'
+
+	#notice: os.extsep is not direct connected with my edor and src, is like a guardian?
+	a=splits_folder+os.sep+a+os.extsep+rule_ext+os.extsep
+	return (a+splits_format_ext,a+splits_printf_ext)
+
+out_file_name=sys.argv[3]
+
+splits_file, splits_mix = premade_formats(os.path.splitext(out_file_name)[0]) #'a.q.swf' is a.q
+
+dest=sys.argv[2]
+
+try:
+	os.mkdir(dest)
+except FileExistsError:
+	pass
+
+src=sys.argv[1]
 
 for filename in os.listdir(src):
 	with open(os.path.join(src,filename)) as sfile:
@@ -83,7 +101,7 @@ def error():
 import subprocess
 
 c_dir=os.getcwd() #haxe says no to abs path
-dest_file=os.path.realpath(sys.argv[3])
+dest_file=os.path.realpath(out_file_name)
 os.chdir(dest)
 hd=os.environ.get('header')
 if hd:
