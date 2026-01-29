@@ -3,7 +3,7 @@
 import sys
 if len(sys.argv)!=4:
 	print('Usage: as3.py input_folder output_folder output_file')
-	# only_src
+	# only_src a1 a2a a2b a3 b1b b2b
 	# header ffdec
 	exit(1)
 
@@ -18,13 +18,20 @@ except FileExistsError:
 
 src=sys.argv[1]
 
-a1='/'
-a2a='/'
-a2b='*'
-a3='3'
+def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
+changeable('a','1','/')
+changeable('a','2a','/')
+changeable('a','2b','*')
+changeable('a','3','3')
+changeable('b','1b','*')
+changeable('b','2b','/')
 
-b1b='*'
-b2b='/'
+##these are defaults at edor
+#splits_folder osrc
+#rule_ext oac
+#splits_format_ext split
+##this is default here at src
+#splits_printf_ext format
 
 for filename in os.listdir(src):
 	with open(os.path.join(src,filename)) as sfile:
