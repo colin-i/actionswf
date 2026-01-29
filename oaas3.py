@@ -34,14 +34,14 @@ def premade_formats(a):
 	if splits_printf_ext==None:
 		splits_printf_ext='format'
 
-	#notice: os.extsep is not direct connected with my edor and src, is like a guardian?
-	a=splits_folder+os.sep+a+os.extsep+rule_ext+os.extsep
-	return (a+splits_format_ext,a+splits_printf_ext)
+	def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not direct connected with my edor and src, is like a guardian?
+	a=('' if splits_folder=='' else splits_folder+os.sep)+a+ext(rule_ext)
+	return (a+ext(splits_format_ext),a+ext(splits_printf_ext))
 
 out_file_name=sys.argv[3]
 
 splits_file, splits_mix = premade_formats(os.path.splitext(out_file_name)[0]) #'a.q.swf' is a.q
-
+print(splits_file+' '+splits_mix);exit(1)
 dest=sys.argv[2]
 
 try:
