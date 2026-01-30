@@ -100,7 +100,7 @@ with open(splits_file) as splits_file:
 								mode=0
 						elif mode==2 or mode==3:
 							if c==a3:
-								mode*=2
+								mode*=2 #notice: both //3 and /*3 will reset the line
 								pos=0
 							else:
 								mode=0
