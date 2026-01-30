@@ -2,4 +2,4 @@
 if [ -z $p ]; then
 	p=python3
 fi
-ffdec=~/ffdec/bin/ffdec $p ../../oaas3.py src dest a.swf
+ffdec=~/ffdec/bin/ffdec $p ../../oaas3.py dest a.swf

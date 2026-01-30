@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import sys
-if len(sys.argv)!=4:
-	print('Usage: as3.py input_folder output_folder output_file')
+if len(sys.argv)!=3:
+	print('Usage: as3.py output_folder output_file')
 	# only_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
 	# header ffdec
 	exit(1)
@@ -17,14 +17,17 @@ changeable('a','3','3')
 changeable('b','1b','*')
 changeable('b','2b','/')
 
-def premade_formats(a):
+def premade_formats():
 	#environ or defaults at edor
+
 	splits_folder=os.environ.get('splits_folder')
 	if splits_folder==None:
 		splits_folder='osrc'
+
 	rule_ext=os.environ.get('rule_ext')
 	if rule_ext==None:
 		rule_ext='oac'
+
 	splits_format_ext=os.environ.get('splits_format_ext')
 	if splits_format_ext==None:
 		splits_format_ext='split'
@@ -35,60 +38,71 @@ def premade_formats(a):
 		splits_printf_ext='format'
 
 	def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not direct connected with my edor and src, is like a guardian?
-	a=('' if splits_folder=='' else splits_folder+os.sep)+a+ext(rule_ext)
-	return (a+ext(splits_format_ext),a+ext(splits_printf_ext))
+	a=('' if splits_folder=='' else splits_folder+os.sep)
 
-out_file_name=sys.argv[3]
+	#'a.q.swf' is a.q
+	return (a+os.path.splitext(out_file_name)[0]+ext(rule_ext)+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
 
-splits_file, splits_mix = premade_formats(os.path.splitext(out_file_name)[0]) #'a.q.swf' is a.q
+out_file_name=sys.argv[2]
 
-dest=sys.argv[2]
+splits_file, splits_mix = premade_formats()
+
+dest=sys.argv[1]
 
 try:
 	os.mkdir(dest)
 except FileExistsError:
 	pass
 
-src=sys.argv[1]
+def hx_ext(fl): return os.path.join(dest,os.path.splitext(fl)[0]+'.hx')
 
-for filename in os.listdir(src):
-	with open(os.path.join(src,filename)) as sfile:
-		with open(os.path.join(dest,os.path.splitext(filename)[0]+'.hx'),'wb') as dfile: #haxe will not do for .as
-			mode=0
-			for line in sfile:
-				chars = bytearray(len(line))
-				pos = 0
-				for c in line:
-					chars[pos]=ord(c)
-					pos+=1
-					if mode==0:
-						if c==a1:
-							mode=1
-					elif mode==1:
-						if c==a2a:
-							mode=2
-						elif c==a2b:
-							mode=3
-						else:
-							mode=0
-					elif mode==2 or mode==3:
-						if c==a3:
-							mode*=2
-							pos=0
-						else:
-							mode=0
-					elif mode==6:
-						if c==b1b:
-							mode=7
-					elif mode==7:
-						if c==b2b:
-							mode=0
-							pos-=2
-						else:
-							mode=6
-				if mode==4:
+#for filename in os.listdir(src):
+with open(splits_file,'rb') as splits_file:
+	splits_file_data=splits_file.read()
+	with open(splits_mix,'rb') as splits_mix:
+		splits_mix_data=splits_mix.read()
+
+		files = splits_file_data.decode('utf-8').split('\x00')
+		files.pop() # Remove the last empty string
+		for f in files:
+			with open(f) as sfile:
+				filename=os.path.basename(f)
+				with open(hx_ext(filename),'wb') as dfile: #haxe will not do for .as
 					mode=0
-				dfile.write(chars[:pos])
+					for line in sfile:
+						chars = bytearray(len(line))
+						pos = 0
+						for c in line:
+							chars[pos]=ord(c)
+							pos+=1
+							if mode==0:
+								if c==a1:
+									mode=1
+							elif mode==1:
+								if c==a2a:
+									mode=2
+								elif c==a2b:
+									mode=3
+								else:
+									mode=0
+							elif mode==2 or mode==3:
+								if c==a3:
+									mode*=2
+									pos=0
+								else:
+									mode=0
+							elif mode==6:
+								if c==b1b:
+									mode=7
+							elif mode==7:
+								if c==b2b:
+									mode=0
+									pos-=2
+								else:
+									mode=6
+						if mode==4:
+							mode=0
+						dfile.write(chars[:pos])
 
 if os.environ.get('only_src'):
 	exit(0)
@@ -114,8 +128,9 @@ error()
 
 #done for output_folder
 os.chdir(c_dir) #back for clean
-for filename in os.listdir(src):
-	os.remove(os.path.join(dest,os.path.splitext(filename)[0]+'.hx'))
+for f in files:
+	filename=os.path.basename(f)
+	os.remove(hx_ext(filename))
 os.rmdir(dest)
 
 #confirm is as3
