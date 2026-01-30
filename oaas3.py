@@ -56,53 +56,67 @@ except FileExistsError:
 
 def hx_ext(fl): return os.path.join(dest,os.path.splitext(fl)[0]+'.hx')
 
+multiline_backjump=len(b1b)+len(b2b)
+
 #for filename in os.listdir(src):
-with open(splits_file,'rb') as splits_file:
+with open(splits_file) as splits_file:
 	splits_file_data=splits_file.read()
-	with open(splits_mix,'rb') as splits_mix:
+	with open(splits_mix) as splits_mix:
 		splits_mix_data=splits_mix.read()
 
-		files = splits_file_data.decode('utf-8').split('\x00')
+		files = splits_file_data.split('\x00')
 		files.pop() # Remove the last empty string
+		texts = splits_mix_data.split('\x00')
+		texts.pop()
+		i=0
 		for f in files:
-			with open(f) as sfile:
-				filename=os.path.basename(f)
-				with open(hx_ext(filename),'wb') as dfile: #haxe will not do for .as
-					mode=0
-					for line in sfile:
-						chars = bytearray(len(line))
-						pos = 0
-						for c in line:
-							chars[pos]=ord(c)
+			if texts[i]:
+				text=texts[i]
+			else:
+				with open(f) as sfile:
+					text=sfile.read()
+			text=text.splitlines(keepends=True)
+			filename=os.path.basename(f)
+			with open(hx_ext(filename),'wb') as dfile: #haxe will not do for .as
+				mode=0
+				for line in text:
+					chars = bytearray(len(line.encode())) #'utf-8'
+					pos = 0
+					for c in line:
+						ch=c.encode()
+						positions=len(ch)
+						for j in range(0,positions):
+							chars[pos]=ch[j]
 							pos+=1
-							if mode==0:
-								if c==a1:
-									mode=1
-							elif mode==1:
-								if c==a2a:
-									mode=2
-								elif c==a2b:
-									mode=3
-								else:
-									mode=0
-							elif mode==2 or mode==3:
-								if c==a3:
-									mode*=2
-									pos=0
-								else:
-									mode=0
-							elif mode==6:
-								if c==b1b:
-									mode=7
-							elif mode==7:
-								if c==b2b:
-									mode=0
-									pos-=2
-								else:
-									mode=6
-						if mode==4:
-							mode=0
-						dfile.write(chars[:pos])
+						if mode==0:
+							if c==a1:
+								mode=1
+						elif mode==1:
+							if c==a2a:
+								mode=2
+							elif c==a2b:
+								mode=3
+							else:
+								mode=0
+						elif mode==2 or mode==3:
+							if c==a3:
+								mode*=2
+								pos=0
+							else:
+								mode=0
+						elif mode==6:
+							if c==b1b:
+								mode=7
+						elif mode==7:
+							if c==b2b:
+								mode=0
+								pos-=multiline_backjump
+							else:
+								mode=6
+					if mode==4:
+						mode=0
+					dfile.write(chars[:pos])
+			i=i+1
 
 if os.environ.get('only_src'):
 	exit(0)
