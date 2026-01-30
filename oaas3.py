@@ -56,7 +56,7 @@ except FileExistsError:
 
 def hx_ext(fl): return os.path.join(dest,os.path.splitext(fl)[0]+'.hx')
 
-multiline_backjump=len(b1b)+len(b2b)
+multiline_backjump=len(b1b.encode())+len(b2b.encode())
 
 #for filename in os.listdir(src):
 with open(splits_file) as splits_file:
