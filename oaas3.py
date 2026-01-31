@@ -54,7 +54,8 @@ try:
 except FileExistsError:
 	pass
 
-def hx_ext(fl): return os.path.join(dest,os.path.splitext(fl)[0]+'.hx')
+def hx_ext(fl):
+	return os.path.join(dest,os.path.basename(os.path.dirname(fl))+'.hx')
 
 multiline_backjump=len(b1b.encode())+len(b2b.encode())
 
@@ -76,8 +77,7 @@ with open(splits_file) as splits_file:
 				with open(f) as sfile:
 					text=sfile.read()
 			text=text.splitlines(keepends=True)
-			filename=os.path.basename(f)
-			with open(hx_ext(filename),'wb') as dfile: #haxe will not do for .as
+			with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
 				mode=0
 				for line in text:
 					chars = bytearray(len(line.encode())) #'utf-8'
@@ -143,8 +143,7 @@ error()
 #done for output_folder
 os.chdir(c_dir) #back for clean
 for f in files:
-	filename=os.path.basename(f)
-	os.remove(hx_ext(filename))
+	os.remove(hx_ext(f))
 os.rmdir(dest)
 
 #confirm is as3
