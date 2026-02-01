@@ -2,6 +2,9 @@
 /*3 import flash.display.MovieClip;
 import flash.display.Shape;
 import flash.events.Event;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 
 class MyClip extends MovieClip {*/
 	function on_Enter_Frame(e){
@@ -48,6 +51,25 @@ class MyClip extends MovieClip {*/
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 shape.graphics.drawRect(0, 0, 120, 80);
 		endFill();//3 shape.graphics.endFill();
 		//3 addChild(shape);
+
+		// a 1/5 margin
+		createTextField('label', 1, 0, 16, 120, 48);//3 var label = new TextField();
+		/*3
+		label.y = 16;
+		label.width = 120;
+		label.height = 48;
+		*/
+		label.text = 'Click';
+		label.selectable = false;
+
+		// a 2/3 size format
+		var tf = new TextFormat();
+		tf.size = 32;
+		tf.align = 'center';//3 tf.align = TextFormatAlign.CENTER;
+		tf.color = 0xff9933;
+		label.setTextFormat(tf);
+
+		//3 addChild(label);
 
 		onEnterFrame=on_Enter_Frame; //3 addEventListener(Event.ENTER_FRAME, on_Enter_Frame);
 /*3	}
