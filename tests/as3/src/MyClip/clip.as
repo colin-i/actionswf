@@ -5,9 +5,10 @@ import flash.events.Event;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
+import flash.events.MouseEvent;
 
 class MyClip extends MovieClip {*/
-	function on_Enter_Frame(e){
+	function on_Enter_Frame(){//3 function on_Enter_Frame(e){
 		if(a){
 			_x-=c;//3 x-=c;
 			if(b){
@@ -42,7 +43,18 @@ class MyClip extends MovieClip {*/
 			}
 		}
 	}
-/*3	public function new() {
+	// Handlers
+	function onClick(){//3 function onClick(e){
+		trace('Button clicked!');
+	}
+	function onOver(){//3 function onOver(e){
+		_alpha = 80;//3 alpha = 0.8;
+	}
+	function onOut(){//3 function onOut(e){
+		_alpha = 100;//3 alpha = 1;
+	}
+/*3
+	public function new() {
 		super();
 */
 		// Simple visual so you can see it
@@ -68,6 +80,12 @@ class MyClip extends MovieClip {*/
 		tf.align = 'center';//3 tf.align = TextFormatAlign.CENTER;
 		tf.color = 0xff9933;
 		label.setTextFormat(tf);
+
+		// Interactivity
+		useHandCursor = true;//3 buttonMode = true;mouseChildren = false;
+		onRollOver = onOver;//3 addEventListener(MouseEvent.MOUSE_OVER, onOver);
+		onRollOut = onOut;//3 addEventListener(MouseEvent.MOUSE_OUT, onOut);
+		onPress = onClick;//3 addEventListener(MouseEvent.CLICK, onClick);
 
 		//3 addChild(label);
 
