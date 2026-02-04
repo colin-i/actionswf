@@ -13,6 +13,7 @@ import "ebase" ebase
 
 import "action_local" action_local
 import "actionf_local" actionf_local
+import "action_format" action_format
 
 functionX action(ss ac)
 	base globala.jmp_data;call ebase(globala.jmp_data)
@@ -26,8 +27,12 @@ functionXv actionf(ss buffer,ss *format)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
-	call is_ainit((xlog_ainit_false))
-	callg actionf_local(#buffer)
+	if buffer!=(NULL)
+		call is_ainit((xlog_ainit_false))
+		callg actionf_local(#buffer)
+		ret
+	end
+	callret action_format(#buffer) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
 endfunction
 #see at part_done functionXv actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated

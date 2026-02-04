@@ -13,10 +13,12 @@ value format_file=NULL
 #win32 with _
 importx "memcpy" memcpy
 importx "sprintf" sprintf
+importx "snprintf" snprintf
 Importx "realloc" realloc
 Importx "malloc" malloc
 Importx "free" free
 importx "strlen" strlen
+importx "strcpy" strcpy
 
 import "spaces" spaces
 
@@ -413,7 +415,11 @@ function action_format(sv args)
 	add args_format args
 	sv elements=:
 	add elements args_format
-	call sprintf_manual(args#,args_format#,elements)
+	if args#!=(NULL)
+		call sprintf_manual(args#,args_format#,elements)
+	else
+		callret sprintf_manual(args#,args_format#,elements)
+	end
 	call format_store(args#)
 	callg action_base(args#)
 endfunction
@@ -438,14 +444,19 @@ import "error" error
 
 function sprintf_manual(ss string,ss format,sv elements)
 	ss pointer;set pointer format
-	ss cursor;set cursor string
 	sd has_element=FALSE
 	sd escaped=0
 	valueu writable_size=1
-	ss writable;set writable malloc(1)
+	ss writable;set writable malloc(1) #this approach is not checking the format style: 0 or more flags, width, precision, modifiers, conversion
 	vstr er="malloc error at manual sprintf"
 	if writable=(NULL)
 		call error(er)
+	end
+	sd ?n ; # for snprintf int return
+	vstr err="unsafe action"
+	sdu total_size
+	if string=(NULL)
+		set total_size 0
 	end
 	while pointer#!=(Nullchar)
 		if pointer#=(Percent)
@@ -474,7 +485,15 @@ function sprintf_manual(ss string,ss format,sv elements)
 				call memcpy(writable,format,size)
 				ss marker;set marker writable;add marker size;set marker# (Nullchar)
 
-				add string sprintf(string,writable,elements#)
+				if string!=(NULL)
+					add string sprintf(string,writable,elements#)
+				else
+					set n snprintf((NULL),0,writable,elements#)
+					if n<0
+						call error(err)
+					end
+					add total_size n
+				end
 
 				set format pointer;incst elements
 				#set pointer# (Percent)
@@ -485,9 +504,24 @@ function sprintf_manual(ss string,ss format,sv elements)
 	endwhile
 	call free(writable)
 	if has_element=(TRUE)
-		call sprintf(string,format,elements#)
+		if string!=(NULL)
+			call sprintf(string,format,elements#)
+		else
+			set n snprintf((NULL),0,format,elements#)
+			if n<0
+				callg error(err)
+			end
+			add total_size n
+			inc total_size
+			return total_size
+		end
 	else
-		call sprintf(string,format)
+		if string!=(NULL)
+			call strcpy(string,format)
+		else
+			sdu m=1;add m strlen(format)
+			return m
+		end
 	end
 endfunction
 
