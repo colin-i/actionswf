@@ -29,10 +29,10 @@ functionXv actionf(ss buffer,ss *format)
 #...         % arguments here
 	if buffer!=(NULL)
 		call is_ainit((xlog_ainit_false))
-		callg actionf_local(#buffer)
-		ret
+		call actionf_local(#buffer)
+	else
+		callret action_format(#buffer) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
 	end
-	callret action_format(#buffer) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
 endfunction
 #see at part_done functionXv actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated
