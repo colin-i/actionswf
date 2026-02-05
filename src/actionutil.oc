@@ -423,6 +423,34 @@ function action_format(sv args)
 	call format_store(args#)
 	callg action_base(args#)
 endfunction
+function actions_format(sdu psize,sv args)
+	if psize=(NULL)
+		callret action_format(args)
+	end
+	sv pbuf;set pbuf args#
+	sv buf
+	set buf pbuf#
+	set args# (NULL)
+	sdu size;set size action_format(args)
+	vstr er="malloc error at actionsf"
+	if buf=(NULL)
+		set buf malloc(size)
+		if buf=(NULL)
+			call error(er)
+		end
+		set pbuf# buf
+		set psize# size
+	elseif size>^psize#
+		set buf realloc(buf,size)
+		if buf=(NULL)
+			call error(er)
+		end
+		set pbuf# buf
+		set psize# size
+	end
+	set args# buf
+	callg action_format(args)
+end
 
 import "debug_base" debug_base
 import "alt_action_base" alt_action_base

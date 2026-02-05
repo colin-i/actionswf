@@ -214,14 +214,17 @@ void swf_exports_done();
 
 void action(char* ac);
 void actionf(char* buffer,char* format,...);
+void actionsf(long unsigned int* psize,char** pbuffer,char* format,...);
 void actiond(char* ac);
 
 //action at sprite
 
 void action_sprite(int sprite,char* ac);
-void actionf_sprite(int sprite,char* buffer,char* format,...);
 void action_init_sprite(int sprite,char* ac);
+void actionf_sprite(int sprite,char* buffer,char* format,...);
 void actionf_init_sprite(int sprite,char* buffer,char* format,...);
+void actionsf_sprite(int sprite,long unsigned int* psize,char** pbuffer,char* format,...);
+void actionsf_init_sprite(int sprite,long unsigned int* psize,char** pbuffer,char* format,...);
 
 
 //tool

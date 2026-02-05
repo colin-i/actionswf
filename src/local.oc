@@ -692,26 +692,26 @@ function action_local(ss ac)
 		end
 	end
 end
-import "action_format" action_format
-function actionf_local(sv pbuffer)
+import "actions_format" actions_format
+function actionsf_local(sdu psize,sv pbuffer)
 	sd alt_ac;set alt_ac alt_action(pbuffer#,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
 		if pbuffer#=alt_ac
-			call action_format(pbuffer)
+			call actions_format(psize,pbuffer)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
 		end
 	end
 end
-function actionf_sprite_local(sd sprite,sv pbuffer)
+function actionsf_sprite_local(sd sprite,sdu psize,sv pbuffer)
 	sd alt_ac;set alt_ac alt_action(pbuffer#,sprite)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call swf_actionblock_change(sprite)
 		if pbuffer#=alt_ac
-			call action_format(pbuffer)
+			call actions_format(psize,pbuffer)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()

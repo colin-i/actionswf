@@ -97,11 +97,16 @@ importX "swf_exports_done" swf_exports_done
 
 importX "action" action
 importX "actionf" actionf
+importX "actionsf" actionsf
 importX "actiond" actiond
 importX "action_sprite" action_sprite
 importX "action_init_sprite" action_init_sprite
 importX "actionf_sprite" actionf_sprite
 importX "actionf_init_sprite" actionf_init_sprite
+importX "actionsf_sprite" actionsf_sprite
+importX "actionsf_init_sprite" actionsf_init_sprite
+
+importX "actions_free" actions_free
 
 #tool
 

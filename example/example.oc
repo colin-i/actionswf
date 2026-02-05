@@ -2,7 +2,6 @@ format elfobj64
 
 #a simple shape moving on the stage example
 
-importx "sprintf" sprintf
 importx "_exit" exit
 
 include "entry_arg.oc" "entry.oc"
@@ -46,11 +45,9 @@ call action_init_sprite(movie_preid,"_root.tog++") #to demonstrate multiple init
 call swf_sprite_placeobject(movie_preid,shape,1)
 call swf_sprite_showframe(movie_preid)
 
-char data#512
-vstr ac^data
-vstr vars="var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move"
-call sprintf(ac,vars,(width),(height),(shape_lat))
-call action_sprite(movie_preid,ac)
+sdu size
+ss a_c
+call actionsf_sprite(movie_preid,#size,#a_c,"var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move",(width),(height),(shape_lat))
 
 call action_sprite(movie_preid,"
 if(this._x>=right)_root.x_coef=_root.x_coef*-1;
@@ -86,9 +83,9 @@ if(_root.tog==1){
 sd b;set b swf_button(150,50,#ButtonData)
 call swf_placeobject(b,0)
 
-call action("
-var x_coef=1;
-var y_coef=1;
+call actionsf(#size,#a_c,"
+var x_coef=%u;
+var y_coef=%u;
 function test(){
 	function test2(){
 		attachMovie('movie','_movie',1);
@@ -125,11 +122,12 @@ while(true){
 		break;
 	}
 }
-
-")
+",1,1)
 
 call swf_showframe()
 call swf_done()
+
+call actions_free(a_c)
 
 call exit(0)
 #return 0

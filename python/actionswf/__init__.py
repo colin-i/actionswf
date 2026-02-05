@@ -149,11 +149,15 @@ from . import _action
 _action.init(_lib)
 action=_action.action
 actionf=_action.actionf
+actionsf=_action.actionsf
 actiond=_action.actiond
 action_sprite=_action.action_sprite
-actionf_sprite=_action.actionf_sprite
 action_init_sprite=_action.action_init_sprite
+actionf_sprite=_action.actionf_sprite
 actionf_init_sprite=_action.actionf_init_sprite
+actionsf_sprite=_action.actionsf_sprite
+actionsf_init_sprite=_action.actionsf_init_sprite
+actions_free=_action.actions_free
 
 from . import _tool
 _tool.init(_lib)
