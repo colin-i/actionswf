@@ -1,1 +1,1 @@
-sudo env LD_LIBRARY_PATH=../csrc gdb -p $(pgrep -n python)
+sudo env LD_LIBRARY_PATH=../csrc ~/test/gdb/g -p $(pgrep -n python)
