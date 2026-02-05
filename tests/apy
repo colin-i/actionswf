@@ -1,5 +1,6 @@
 
-if [ -z "$1" ]; then
+if [ -n "$1" ]; then break=x; fi
+if [ -z "${old}" ]; then
 	export LD_LIBRARY_PATH=../csrc
 	export PYTHONPATH=../python
 	p="python ${p} a.py"
@@ -11,5 +12,5 @@ else
 	export PYTHONPATH=../python
 	p="qq /home/bc/Desktop/python3.13/usr/bin/python3.13 ${p} a.py"
 fi
-$p || exit 1
-$p x
+break=${break} $p || exit 1
+break=${break} $p x

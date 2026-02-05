@@ -1,5 +1,8 @@
 
 import actionswf
+import os
+if os.environ.get('break'):
+	import pdb; pdb.set_trace()
 
 def text(name):
 	return open(name).read()
