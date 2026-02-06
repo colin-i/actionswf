@@ -92,6 +92,17 @@ class FontFlags(IntEnum):
 
 import ctypes
 
+def ImageSizes():
+	return (ctypes.c_int * 2)()
+def ShapeArray(*values): # ShapeArray(1,2,3)
+	return (ctypes.c_int * (len(values) + 1))(*values, 0)  # tests started from this: (ctypes.c_int * 2)(*[1, 0])
+def ActionSize():
+	return ctypes.c_ulong()  # using the .value
+def ActionBuffer():
+	return ctypes.c_char_p()
+def Ref(a):
+	return ctypes.byref(a)
+
 #try: #in PATH
 _lib=ctypes.cdll.LoadLibrary("libactionswf.so")
 #except Exception:
