@@ -1,1 +1,1 @@
-launcher='gdb --args' ./ac
+launcher='gd --args' ./ac
