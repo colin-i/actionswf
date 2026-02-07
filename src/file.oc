@@ -120,7 +120,7 @@ function filesize(sd file)
 endfunction
 
 #read
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 #mem
 function file_get_content(ss filepath,sv p_size)  #size is a stack variable
 	sd file

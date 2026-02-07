@@ -41,9 +41,9 @@ importx "strlen" strlen
 
 #aftercallimport ebool
 
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 import "error" error
-import "len_of" len_of
+^import "len_of" len_of 2
 
 function alt_init(sd flags,sd path)
 	if globall.folder!=(NULL)

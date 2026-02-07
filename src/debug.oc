@@ -146,7 +146,7 @@ function deprecation_init(sd flags)
 	end
 end
 
-importx "getenv" getenv
+^importx "getenv" getenv 1 #is not an int return, and unlike malloc is not known to be size_t
 importx "strlen" strlen
 importx "malloc" malloc
 importx "fopen" fopen
@@ -206,13 +206,13 @@ importx "free" free
 
 #aftercallimport ebool
 
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 import "alt_init" alt_init
 import "format_init" format_init
 import "dtitles_init" dtitles_init
 import "x_init" x_init
-import "f_open_mem_ex" f_open_mem_ex
-import "strlen_of" strlen_of
+^import "f_open_mem_ex" f_open_mem_ex 2
+^import "strlen_of" strlen_of 2
 
 function flags_init(sd flags,ss path) #this order is copied in a comment at flags.oh
 	set flags pool_init(flags)
@@ -269,8 +269,8 @@ end
 import "f_printf1" f_printf1
 import "f_printf2" f_printf2
 import "f_write" f_write
-import "f_tell" f_tell
-import "memrealloc" memrealloc
+^import "f_tell" f_tell 1
+^import "memrealloc" memrealloc 2
 
 function debug_action_init(ss ac)
 	if globald.dfile!=(NULL)
@@ -297,7 +297,7 @@ function debug_action_init(ss ac)
 			set globald.target (NULL)
 
 			add row globald.offsets
-			decst row   ##must be last entry not after
+			sub row : #decst row   ##must be last entry not after
 			set globald.dend row   ##at third iteration
 
 			set globald.dsize 0

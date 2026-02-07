@@ -28,10 +28,10 @@ import "erbool" erbool
 
 #aftercalli
 
-import "f_size" f_size
-import "f_size_errors" f_size_errors
+^import "f_size" f_size 1
+^import "f_size_errors" f_size_errors 1
 import "error" error
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 
 function imgx(ss dbl,sd p_wh,ss ?is_image) #,sd is_clipped
 	sd len;set len strlen(dbl)

@@ -572,8 +572,8 @@ function swf_dbl_ex_local(ss imagepath,sd p_wh,sd verif)
 	return id
 endfunction
 
-import "f_open" f_open
-import "f_tell_errors" f_tell_errors
+^import "f_open" f_open 2
+^import "f_tell_errors" f_tell_errors 1
 #id
 function swf_jpeg_local(ss imagepath,ss ?tag,ss alphapath)
 #ss imagepath = path name for the image

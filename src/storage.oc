@@ -141,7 +141,8 @@ import "block_get_size" block_get_size
 import "block_reset_size" block_reset_size
 import "push" push
 
-import "actionpoolid" actionpoolid;import "actionpoolid_root" actionpoolid_root
+^import "actionpoolid" actionpoolid
+^import "actionpoolid_root" actionpoolid_root
 import "actionpool_currentblock" actionpool_currentblock
 
 import "action_size" action_size
@@ -153,7 +154,7 @@ import "is_ainit" is_ainit
 
 import "dtitles_frame" dtitles_frame
 import "dtitles_frame_one" dtitles_frame_one
-import "strlen_of" strlen_of
+^import "strlen_of" strlen_of 2
 
 #id
 function identifiers_get()
@@ -178,7 +179,7 @@ import "struct_ids_action_set" struct_ids_action_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem
 import "debug_show" debug_show
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 
 import "pool_savepath_init" pool_savepath_init
 import "action_code_values_init" action_code_values_init
@@ -186,7 +187,7 @@ import "push_init" push_init
 import "file_open" file_open
 import "file_write" file_write
 import "file_write_mem" file_write_mem
-function swf_mem_init(ss path,sd len,sd flags)
+function swf_mem_init(ss path,sd len,sd ?flags)
 	#arg is file
 	#len is filelength offset
 	#flags

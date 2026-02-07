@@ -160,12 +160,12 @@ import "x_pointer_touchless" x_pointer_touchless
 #import "x_pointer_x" x_pointer_x
 function action_code_get_pointer(sv p_codepointer)
 	sd a;set a x_pointer(p_codepointer#)
-	incst p_codepointer#  #to pass the pointer
+	add p_codepointer# : #incst p_codepointer#  #to pass the pointer
 	return a
 end
 function action_code_get_pointer_touchless(sv p_codepointer)
 	sd a;set a x_pointer_touchless(p_codepointer#)
-	incst p_codepointer#  #to pass the pointer
+	add p_codepointer# : #incst p_codepointer#  #to pass the pointer
 	return a
 end
 
@@ -179,7 +179,7 @@ function infinite_loop_check(sd codepointer)
 		set compare action_true_compare(name)
 		if compare=0
 			if codepointer#=(math_end)
-				decst codepointer
+				sub codepointer : #decst codepointer
 				call action_code_get_pointer(#codepointer) #must test if debug_x to let the x file in good condition
 				add codepointer (DWORD)
 				return codepointer
@@ -204,10 +204,10 @@ function forinbreak_check(sd codepointer)
 				return start
 			end
 			set rules codepointer
-			incst codepointer
+			add codepointer : #incst codepointer
 			set pname codepointer
 			set name codepointer#v
-			incst codepointer
+			add codepointer : #incst codepointer
 			if codepointer#!=(args_end)
 				return start
 			end
@@ -221,7 +221,7 @@ function forinbreak_check(sd codepointer)
 			if codepointer#v!=(NULL)
 				return start
 			end
-			incst codepointer
+			add codepointer : #incst codepointer
 		end
 		datax compare#1
 		set compare strcmp("§§pop",name) #is memcmp unsafe? comparing from last to first?
@@ -287,7 +287,7 @@ import "debug_definefunction" debug_definefunction
 import "debug_concludefunction" debug_concludefunction
 import "error" error
 
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 function action_code_values_init()
 	setcall global.values_container memalloc((totalvalues*action_code_values_unit))
 endfunction

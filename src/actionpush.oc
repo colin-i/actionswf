@@ -38,8 +38,8 @@ end
 
 import "actionpool_value" actionpool_value
 
-import "memalloc" memalloc
-import "memrealloc" memrealloc
+^import "memalloc" memalloc 1
+^import "memrealloc" memrealloc 2
 import "error" error
 
 function push_init()

@@ -117,7 +117,7 @@ function x_log(sd codepointer)
 end
 
 import "action__code_row" action__code_row
-import "strlen_of" strlen_of
+^import "strlen_of" strlen_of 2
 
 #is not x or x?
 function actionx()
@@ -127,11 +127,11 @@ function actionx()
 			call error("error at x") # and < ? bad content and pointer is reading past the allocated memory, hard to demonstrate but logical
 		end
 		sd size
-		set size globalx.xpointer#v            ;#size of escaped block that was at parse + pad if flagpre_x_pad flag . xlog_strings_size
-		incst globalx.xpointer                 ##here at parse was the escaped mem
-		set globalx.xbase globalx.xpointer     ##for x_pointer function
-		add globalx.xpointer size              ##and add DWORD since liboadata read size without parse
-		add globalx.xpointer (xlog_xcode_size) ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
+		set size globalx.xpointer#v                   ;#size of escaped block that was at parse + pad if flagpre_x_pad flag . xlog_strings_size
+		add globalx.xpointer : #incst globalx.xpointer ##here at parse was the escaped mem
+		set globalx.xbase globalx.xpointer             ##for x_pointer function
+		add globalx.xpointer size                      ##and add DWORD since liboadata read size without parse
+		add globalx.xpointer (xlog_xcode_size)         ##mathpointer start equivalent, but this x has expanded caller and pointers indexes
 		if globalx.xflog!=(NULL)
 			set globalx.xlogbase globalx.xpointer
 		end
@@ -146,11 +146,11 @@ end
 
 
 import "error" error
-import "memalloc" memalloc
-import "f_open_mem" f_open_mem
-import "f_tell" f_tell
-import "f_tell_errors" f_tell_errors
-import "memalloc_errors" memalloc_errors
+^import "memalloc" memalloc 1
+^import "f_open_mem" f_open_mem 2
+^import "f_tell" f_tell 1
+^import "f_tell_errors" f_tell_errors 1
+^import "memalloc_errors" memalloc_errors 2
 
 function x_init(sd ?flags,sd path)
 	vstr err="swf started, x not closed"
@@ -299,9 +299,9 @@ function debug_x_preexpand(sv p_codepointer)
 		sd values;set values action_code_values()
 		sub codepointer values
 		call debug_x_base(values,codepointer)
-		incst globalx.xsize  ##will skip unexpanded member string at next write
+		add globalx.xsize : #incst globalx.xsize  ##will skip unexpanded member string at next write
 	end
-	incst p_codepointer#
+	add p_codepointer# : #incst p_codepointer# ##at c is long*[0]++
 	return value
 end
 function debug_x_preexpand_inter(sd codepointer)

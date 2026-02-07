@@ -553,9 +553,9 @@ function sprintf_manual(ss string,ss format,sv elements)
 	end
 endfunction
 
-import "strlen_of" strlen_of
-import "memalloc" memalloc
-import "f_open_mem" f_open_mem
+^import "strlen_of" strlen_of 2
+^import "memalloc" memalloc 1
+^import "f_open_mem" f_open_mem 2
 function format_init(sd ?flags,ss path)
 	if globalu.format_file!=(NULL)
 		call error("swf started, format file not closed")

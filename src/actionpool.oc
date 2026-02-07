@@ -89,9 +89,9 @@ import "block_get_mem_size" block_get_mem_size
 
 #aftercallimport ebool
 
-import "f_open_mem" f_open_mem
+^import "f_open_mem" f_open_mem 2
 import "f_write" f_write
-import "memalloc" memalloc
+^import "memalloc" memalloc 1
 import "mem_block_add" mem_block_add
 import "debug_xlog_pool" debug_xlog_pool
 
@@ -189,7 +189,7 @@ function pool_done_one(sd id)
 		callg pool_done_write(id,-1)
 	end
 end
-import "strlen_of" strlen_of
+^import "strlen_of" strlen_of 2
 function pool_savepath_init(sd a)
 	set globalo.svpath a
 	set globalo.svsize strlen_of(globalo.svpath,(ext_str_len)) #size_t is ulong

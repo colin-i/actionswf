@@ -20,7 +20,7 @@ import "label_init" label_init
 import "action__code_row" action__code_row
 import "action_code_set" action_code_set
 import "action_code_row" action_code_row
-import "dupreserve_string" dupreserve_string
+^import "dupreserve_string" dupreserve_string 1
 import "brace_blocks_end" brace_blocks_end
 import "error" error
 import "actionx" actionx
@@ -55,7 +55,9 @@ function action_base(ss ac)
 		sv p_action_errors
 		setcall p_action_errors action_debug((action_debug_get))
 		set p_action_errors# ac  ##this also requires debug_code to be set, and is set at first action_code_row_ex / at every row, that is from here without any aftercall
-		sv cursor;set cursor p_action_errors;incst cursor;set cursor# mem
+		sv cursor;set cursor p_action_errors
+		incst cursor
+		set cursor# mem
 		call endcom(ac,mem) #also for line end term to follow
 		while mem#!=0
 			setcall mem action_code_row(mem,(FALSE))
