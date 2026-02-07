@@ -278,7 +278,7 @@ function debug_action_init(ss ac)
 		if globald.prexx=(prexx_flags)
 			sd start;set start ac
 
-			sd row=1     #at least one row, example: row 1,3 actions
+			sv row=1     #at least one row, example: row 1,3 actions
 			while ac#!=0
 				call row_termination(#ac,#row)
 				inc ac
@@ -297,7 +297,7 @@ function debug_action_init(ss ac)
 			set globald.target (NULL)
 
 			add row globald.offsets
-			sub row : #decst row   ##must be last entry not after
+			decst row   ##must be last entry not after
 			set globald.dend row   ##at third iteration
 
 			set globald.dsize 0
