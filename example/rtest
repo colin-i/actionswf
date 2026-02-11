@@ -1,2 +1,1 @@
-. ~/games/ep/ffdec
-ffdec=${ffd} ./mrd test
+m=r ./test

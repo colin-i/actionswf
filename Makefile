@@ -25,6 +25,7 @@ $(ALLDIRS):
 
 test:
 	RUN__SHELL=$(SHELL) . ./shl && cd tests && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
+	src=x $${RUN__SHELL} ./apy && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
 	cd ffdec && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
 	cd ../data && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./test x && echo tests ok
 clean:
