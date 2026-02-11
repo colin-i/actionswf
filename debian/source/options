@@ -1,2 +1,2 @@
 # Ignore more changed files
-extend-diff-ignore = "^(\.github\/.*|\.tito\/.*|actionswf\.spec|arh\/.*|\.python\/.*)$"
+extend-diff-ignore = "^(\.github\/.*|\.tito\/.*|actionswf\.spec|arh\/.*)$"
