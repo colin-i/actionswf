@@ -29,7 +29,7 @@ test:
 	src=x $${RUN__SHELL} ./apy && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
 	cd ffdec && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
 	cd ../data && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./test x && \
-	cd ../as3 && RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
+	cd ../as3 && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
 	echo tests ok
 clean:
 	RUN__SHELL=$(SHELL) . ./shl && cd tests && \

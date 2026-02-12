@@ -133,10 +133,10 @@ if os.environ.get('skip_comp')==None:
 		compiler='haxe'
 	hd=os.environ.get('header')
 	if hd:
-		r=subprocess.run([compiler,'--swf',dest_file,'--main','Main','--swf-header',hd])
+		r=subprocess.run([compiler,'-swf',dest_file,'-main','Main','-swf-header',hd])
 	else:
-		r=subprocess.run([compiler,'--swf',dest_file,'--main','Main'])
-	# --swf-header 960:640:60:f68712 --swf-version 15
+		r=subprocess.run([compiler,'-swf',dest_file,'-main','Main'])
+	# -swf-header 960:640:60:f68712 -swf-version 15
 	#w:h:fps:rgb
 	error()
 

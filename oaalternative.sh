@@ -46,8 +46,13 @@ if [ -z "${skip_ffdec}" ]; then
 fi
 if [ -z "${skip_alternative}" ]; then
 	if [ -z "${skip_deobfuscation}" ]; then
-		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternativedeobf) || exit 1
-		#is not in start folder there
+		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternativedeobf) #all but the last component must exist
+		if [ ! -e "${deobfuscator}" ]; then
+			deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternativedeobf.py) #this is on windows
+			if [ ! -e "${deobfuscator}" ]; then
+				exit 1
+			fi
+		fi
 	fi
 
 	mkdir -p "${out}" || exit 1
