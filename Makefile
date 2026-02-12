@@ -24,18 +24,24 @@ $(ALLDIRS):
 	$(MAKE) -C $@ conv_64=${conv_64} $(MAKECMDGOALS)
 
 test:
-	RUN__SHELL=$(SHELL) . ./shl && cd tests && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
+	RUN__SHELL=$(SHELL) . ./shl && cd tests && \
+	conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
 	src=x $${RUN__SHELL} ./apy && conv_64=${conv_64} $${RUN__SHELL} ./c 1 && \
 	cd ffdec && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
-	cd ../data && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./test x && echo tests ok
+	cd ../data && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./test x && \
+	cd ../as3 && RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
+	echo tests ok
 clean:
-	RUN__SHELL=$(SHELL) . ./shl && cd tests && $${RUN__SHELL} ./c && cd ffdec && $${RUN__SHELL} ./c && cd ../data && $${RUN__SHELL} ./c
+	RUN__SHELL=$(SHELL) . ./shl && cd tests && \
+	$${RUN__SHELL} ./c && cd ffdec && $${RUN__SHELL} ./c && cd ../data && $${RUN__SHELL} ./c && cd ../as3 && $${RUN__SHELL} ./c
 install:
 	install -D oaalternative.sh $(DESTDIR)$(prefix)/bin/oaalternative.sh
-	install -D oaalternative.py $(DESTDIR)$(prefix)/bin/oaalternative.py
+	install -D oaalternativedeobf $(DESTDIR)$(prefix)/bin/oaalternativedeobf
+	install -D oaas3 $(DESTDIR)$(prefix)/bin/oaas3
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative.sh
-	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative.py
+	-rm -f $(DESTDIR)$(prefix)/bin/oaalternativedeobf
+	-rm -f $(DESTDIR)$(prefix)/bin/oaas3
 
 .PHONY: $(TOPTARGETS) $(MEDTARGETS) $(ALLDIRS)
 .NOTPARALLEL:

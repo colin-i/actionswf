@@ -21,7 +21,8 @@ cd ../oad && \
 ./mw clean && \
 cd .. && \
 cp oaalternative.sh actionswf && \
-cp oaalternative.py actionswf && \
+cp oaalternativedeobf actionswf && \
+cp oaas3 actionswf && \
 cp oaalternative.cmd actionswf && \
 zip -r actionswf.zip actionswf && \
 rm -r ./actionswf && \

@@ -1,1 +1,2 @@
-inter=../../ interext=.oac ../../a
+#!/bin/sh
+inter=../../ interext=.oac ${RUN__SHELL} ../../a${s}

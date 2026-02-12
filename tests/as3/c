@@ -1,2 +1,3 @@
+#!/bin/sh
 rm a.swf
-cd osrc && ./c
+cd osrc && ${RUN__SHELL} ./c

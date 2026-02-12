@@ -4,7 +4,7 @@ import sys
 if len(sys.argv)!=3:
 	print('Usage: as3.py output_folder output_file')
 	# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
-	# skip_comp header ffdec
+	# skip_comp header ffdec compiler
 	exit(1)
 
 import os
@@ -128,11 +128,14 @@ if os.environ.get('skip_comp')==None:
 	c_dir=os.getcwd() #haxe says no to abs path
 	dest_file=os.path.realpath(out_file_name)
 	os.chdir(dest)
+	compiler=os.environ.get('compiler')
+	if compiler==None:
+		compiler='haxe'
 	hd=os.environ.get('header')
 	if hd:
-		r=subprocess.run(['haxe','--swf',dest_file,'--main','Main','--swf-header',hd])
+		r=subprocess.run([compiler,'--swf',dest_file,'--main','Main','--swf-header',hd])
 	else:
-		r=subprocess.run(['haxe','--swf',dest_file,'--main','Main'])
+		r=subprocess.run([compiler,'--swf',dest_file,'--main','Main'])
 	# --swf-header 960:640:60:f68712 --swf-version 15
 	#w:h:fps:rgb
 	error()

@@ -46,12 +46,13 @@ if [ -z "${skip_ffdec}" ]; then
 fi
 if [ -z "${skip_alternative}" ]; then
 	if [ -z "${skip_deobfuscation}" ]; then
-		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternative.py) #is not in start folder there
+		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternativedeobf) || exit 1
+		#is not in start folder there
 	fi
 
-	mkdir -p "${out}"
+	mkdir -p "${out}" || exit 1
 
-	cd "${folder}"
+	cd "${folder}" || exit 1
 
 	move () {
 		if [ -z "${no_clean}" ]; then

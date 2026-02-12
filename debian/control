@@ -2,7 +2,7 @@ Source: actionswf
 Section: utils
 Priority: optional
 Maintainer: Botescu Costin <costin.botescu@gmail.com>
-Build-Depends: debhelper-compat (= 11), ocompiler, jpexs-decompiler, pkg-config, zlib1g-dev, bc, python3
+Build-Depends: debhelper-compat (= 11), ocompiler, jpexs-decompiler, pkg-config, zlib1g-dev, bc, python3, haxe
 #, ostriputil [amd64]
 Standards-Version: 4.5.0
 Homepage: https://github.com/colin-i/actionswf
