@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.159
+Version: 1.160
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -56,7 +56,8 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Thu Feb 12 2026 costin <costin.botescu@gmail.com> 1.159-0
+* Thu Feb 12 2026 costin <costin.botescu@gmail.com> 1.160-0
+- python , oaas3 (costin.b.84@gmail.com)
 - adding oaas3 to builds / tests (costin.botescu@gmail.com)
 - since there is a python test, let that at .deb (costin.botescu@gmail.com)
 - example fix (costin.botescu@gmail.com)

@@ -8,7 +8,7 @@ if [ -n "${arm}" ]; then
 	export LD_LIBRARY_PATH=~/x86_64_lib:~/Desktop/python3.13/usr/lib/x86_64-linux-gnu
 	p="qq /home/bc/Desktop/python3.13/usr/bin/python3.13 ${p} a.py"
 else
-	p="python ${p} a.py"
+	p="python3 ${p} a.py"
 	if [ -z "${src}" ]; then
 		export LD_LIBRARY_PATH=../csrc
 	else
