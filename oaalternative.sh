@@ -45,7 +45,7 @@ if [ -z "${skip_ffdec}" ]; then
 	fi
 fi
 if [ -z "${skip_alternative}" ]; then
-	if [ -z "${skip_deobfuscation}" ]; then # at readlink, all but the last component must exist
+	if [ -z "${skip_deobfuscation}" ]; then # at readlink -f, all but the last component must exist
 		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternative.py) #.py? to keep the compatibility with windows, else was oaalternativedeobf
 	fi
 
