@@ -1,2 +1,2 @@
 #!/bin/sh
-rm a.oac.o a.out a.swf a.swf.format
+rm -f a.oac.o a.out a.swf a.swf.format

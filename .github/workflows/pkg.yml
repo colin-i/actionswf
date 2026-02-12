@@ -11,5 +11,5 @@ jobs:
    - uses: colin-i/test/.github/actions/pkg@main
      with:
       amd64: x
-      pac: bc
+      pac: bc haxe
       aur: ocompiler ffdec-bin
