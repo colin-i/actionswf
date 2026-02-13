@@ -10,10 +10,11 @@ vstr memorig=NULL
 value dcode#1
 value format_file=NULL
 
+importx "_snprintf" snprintf
+
 #win32 with _
 importx "memcpy" memcpy
 importx "sprintf" sprintf
-importx "snprintf" snprintf
 Importx "realloc" realloc
 Importx "malloc" malloc
 Importx "free" free
