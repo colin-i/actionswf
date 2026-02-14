@@ -1,25 +1,30 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
+include "stdarg.h" "stdarg.oh"
 
 #multithread unsafe
 charx matrix#1+4+4
 charx rect#31*4+5
 
 functionV bits_packs(ss dest,sd ?packs)
+	%<packs
+	!sd src^packs
 	sd ?i=0
 	sd ?value
 	sd ?size
 	sd ?pos=0x80
-	sd src^packs
 	while i<packs
-		add src : #incst src
-		set value src#
-		add src : #incst src
-		set size src#
+		!add src : #incst src
+		!set value src#
+		%|value
+		!add src : #incst src
+		!set size src#
+		%|size
 		call bits_bigendian(value,size,#dest,#pos)
 		inc i
 	endwhile
+	%>
 endfunction
 function bits_bigendian(sd ?value,sd ?size,sv p_dest,sd p_pos)
 	ss dest
