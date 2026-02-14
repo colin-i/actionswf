@@ -4,7 +4,7 @@ import sys
 if len(sys.argv)!=3:
 	print('Usage: as3.py output_folder output_file')
 	# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
-	# skip_comp header ffdec compiler
+	# skip_comp header ffdec compiler no_clean
 	exit(1)
 
 import os
@@ -141,10 +141,12 @@ if os.environ.get('skip_comp')==None:
 	error()
 
 	#done for output_folder
-	os.chdir(c_dir) #back for clean
-	for f in files:
-		os.remove(hx_ext(f))
-	os.rmdir(dest)
+	os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
+
+	if os.environ.get('no_clean')==None:
+		for f in files:
+			os.remove(hx_ext(f))
+		os.rmdir(dest)
 
 	#confirm is as3
 
