@@ -148,9 +148,9 @@ endfunction
 
 #
 import "swf_mem_add" swf_mem_add
-function rect_add(sd width,sd height)
+function rect_add(sd ?width,sd ?height)
     sd mem
-    sd sz
+    sd ?sz
     call rect_prepare(#mem,#sz,width,height)
     callg swf_mem_add(mem,sz)
 endfunction

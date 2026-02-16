@@ -226,7 +226,7 @@ function swf_mem_init(ss path,sd len,sd ?flags)
 		set globals.is_file_write (FALSE)
 	end
 end
-function swf_mem(sd proc,sd arg,sd len)
+function swf_mem(sd ?proc,sd arg,sd ?len)
 	if globals.path_mem=(NULL)
 	#swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
 		call error("there isn't a swf started")
@@ -281,13 +281,13 @@ function swf_mem(sd proc,sd arg,sd len)
 		end
 	endelse
 endfunction
-function swf_mem_add(ss dest,sd size) #this is here only to evade .c number of arguments error
+function swf_mem_add(ss dest,sd ?size) #this is here only to evade .c number of arguments error
     callg swf_mem((mem_exp_add),dest,size)
 endfunction
 function swf_tag_end()
     callg swf_tag_recordheader_entry((End),0)
 endfunction
-function swf_tag_recordheader_entry(sd tag,sd size)
+function swf_tag_recordheader_entry(sd ?tag,sd ?size)
     if size<(recordheader_long_mark)
         sd tag_plus_size
         callg swf_tag_recordheader(#tag_plus_size,tag,size)
@@ -295,24 +295,24 @@ function swf_tag_recordheader_entry(sd tag,sd size)
         callg swf_tag_recordheader_long_entry(tag,size)
     endelse
 endfunction
-function swf_tag_recordheader_long_entry(sd tag,sd size)
+function swf_tag_recordheader_long_entry(sd ?tag,sd ?size)
     sd tag_plus_size
     call swf_tag_recordheader(#tag_plus_size,tag,(recordheader_long_mark))
     callg swf_mem_add(#size,(DWORD))
 endfunction
 const short_header=2
-function swf_tag_recordheader(ss dest,sd tag,sd size)
+function swf_tag_recordheader(ss dest,sd ?tag,sd ?size)
     call bits_packs(dest,2,tag,10,size,6)
     call word_swap_arg(dest)
     callg swf_mem_add(dest,(short_header))
 endfunction
-function swf_tag(ss dest,sd tag,sd size)
+function swf_tag(ss dest,sd ?tag,sd ?size)
     call swf_tag_recordheader(dest,tag,size)
     add dest (short_header)
     callg swf_mem_add(dest,size)
 endfunction
 
-function swf_frames_inc(sd frames,sw pointer)
+function swf_frames_inc(sd ?frames,sw pointer)
 	if frames=(maxuint16)  #example, frame count at DefineSprite
 		call error("max uint16 at frames")
 	end

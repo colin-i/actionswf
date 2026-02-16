@@ -29,7 +29,7 @@ function printEr(ss msg)
 endfunction
 
 function word_swap_arg(ss word)
-    sd a
+    sd ?a
     ss aux^a
     set aux# word#
     ss dest
