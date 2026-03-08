@@ -70,12 +70,12 @@ end
 
 importx "access" access
 importx "fseek" fseek
-importx "fread" fread
+^importx "fread" fread 4
 importx "unlink" unlink
 importx "fclose" fclose
 importx "sprintf" sprintf
-importx "fopen" fopen
-importx "ftell" ftell
+^importx "fopen" fopen 2
+^importx "ftell" ftell 1
 
 import "stack_to_word_arg" stack_to_word_arg
 import "word_arg_to_stack" word_arg_to_stack

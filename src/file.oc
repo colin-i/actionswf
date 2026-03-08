@@ -47,11 +47,11 @@ endfunction
 
 importx "fprintf" fprintf
 
-importx "fwrite" fwrite
-importx "ftell" ftell
+importx "fwrite" fwrite # builtin
+^importx "ftell" ftell 1
 importx "fseek" fseek
 
-importx "fopen" fopen
+^importx "fopen" fopen 2
 importx "free" free
 
 #aftercallimport ebool

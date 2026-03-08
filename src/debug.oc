@@ -147,9 +147,9 @@ function deprecation_init(sd flags)
 end
 
 ^importx "getenv" getenv 1 #is not an int return, and unlike malloc is not known to be size_t
-importx "strlen" strlen
-importx "malloc" malloc
-importx "fopen" fopen
+importx "strlen" strlen #is builtin
+importx "malloc" malloc #is predefined and already known to be long
+^importx "fopen" fopen 2
 importx "fscanf" fscanf
 importx "fclose" fclose
 
@@ -199,7 +199,7 @@ import "pool_init" pool_init
 import "verbose" verbose
 
 importx "fseek" fseek
-importx "fread" fread
+^importx "fread" fread 4
 importx "fprintf" fprintf
 importx "free" free
 
@@ -368,27 +368,27 @@ function alt_log()
 	end
 	return (NULL)
 end
-function logs_printf(sd log,sd nr)
+function logs_printf(sd log,sd ?nr)
 	char u={Percent,u_low,xlog_nl,Nullchar}
 	callg f_printf1(log,#u,nr)
 end
-function debug_printf(sd ix)
+function debug_printf(sd ?ix)
 	call logs_printf(globald.dfile,ix)
 	if globald.dfile2!=(NULL)
 		callg logs_printf(globald.dfile2,ix)
 	end
 end
-#function debug_base_core(sd id)
+#function debug_base_core(sd ?id)
 #	callg debug_printf(id) #swf_button is calling action_sprite
 #end
-function debug_base(sd id)
+function debug_base(sd ?id)
 	if globald.dfile!=(NULL)
 		call debug_printf(id)
 		sd ai;set ai ainit()
 		callg debug_printf(ai)
 	end
 end
-function debug_show(sd id)
+function debug_show(sd ?id)
 	if globald.dfile!=(NULL)
 		call debug_printf(id)
 		char nls={xlog_nl,xlog_nl}
@@ -413,7 +413,7 @@ function debug_spritedone(sd p,sd i)
 		callg debug_printf(i)
 	end
 end
-function debug_export(sd i,ss e,sd size)
+function debug_export(sd ?i,ss e,sd size)
 	if globald.dfile!=(NULL)
 		sd alt;set alt alt_log()
 		if alt!=(NULL)

@@ -96,7 +96,7 @@ import "verbose_get" verbose_get
 importx "fwrite" fwrite
 importx "sprintf" sprintf
 importx "fseek" fseek
-importx "fread" fread
+^importx "fread" fread 4
 importx "fclose" fclose
 
 importx "printf" printf
