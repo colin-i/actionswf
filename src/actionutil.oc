@@ -21,7 +21,7 @@ Importx "free" free
 importx "strlen" strlen
 importx "strcpy" strcpy
 
-import "spaces" spaces
+^import "spaces" spaces 1 #full return
 
 #strings
 
@@ -454,7 +454,7 @@ function actions_format(sdu psize,sv args)
 end
 
 import "debug_base" debug_base
-import "alt_action_base" alt_action_base
+^import "alt_action_base" alt_action_base 3 #full return
 
 function action_sprite_base(sd sprite,ss actions,sd has_frames)
 	sd alt_ac;set alt_ac alt_action_base(actions,sprite,has_frames)

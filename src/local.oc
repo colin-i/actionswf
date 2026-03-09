@@ -22,7 +22,7 @@ import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "block_reset_size" block_reset_size
 
-import "alt_action" alt_action
+^import "alt_action" alt_action 2 # full return
 import "swf_actionblock_change_back" swf_actionblock_change_back
 
 import "deprecation" deprecation

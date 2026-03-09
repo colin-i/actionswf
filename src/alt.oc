@@ -73,12 +73,12 @@ end
 
 import "file_get_content" file_get_content
 
-function alt_action(sd orig_action,sd preid)
+function alt_action(ss orig_action,sd ?preid)
 	callret alt_action_base(orig_action,preid,(TRUE))
 end
 import "struct_ids_action" struct_ids_action
 import "block_get_size" block_get_size
-function alt_action_base(sd orig_action,sd preid,sd has_frames)
+function alt_action_base(ss orig_action,sd ?preid,sd ?has_frames)
 	if globall.folder!=(NULL)
 		if orig_action!=(NULL) #this to filter a button with no swf actions for example
 			sd block

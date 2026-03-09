@@ -6,7 +6,7 @@ import "action_debug" action_debug
 import "action_data" action_data
 import "action_code_values" action_code_values
 import "action_code_values_action" action_code_values_action
-import "escape_action" escape_action
+^import "escape_action" escape_action 4 #full return
 import "action_debug_free_macro" action_debug_free_macro
 import "debug_phase_parse_end" debug_phase_parse_end
 import "endcom" endcom

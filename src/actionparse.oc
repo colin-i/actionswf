@@ -25,7 +25,7 @@ importx "strpbrk" strpbrk
 import "str_expression_at_start" str_expression_at_start
 
 import "debug_code" debug_code
-import "spaces" spaces
+^import "spaces" spaces 1
 
 import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
 
@@ -102,7 +102,7 @@ import "memtrailstrict" memtrailstrict
 import "compat" compat
 import "debug_phase_code_remove" debug_phase_code_remove
 import "mem_cmp_bool" mem_cmp_bool
-import "escape_action_endcom" escape_action_endcom
+^import "escape_action_endcom" escape_action_endcom 1 #full return
 import "swf_actionblock_get_size" swf_actionblock_get_size
 import "label_add" label_add
 import "swf_actionblock_get_mem_size" swf_actionblock_get_mem_size
