@@ -89,10 +89,11 @@ OFLAGS += nobits_virtual 0
 endif
 
 #same problems like ocompiler and arm #ATLDCOM = $(CC) ${linkerflags} ${eobs} -shared -e DllMain -o ${name} -lc -L. -l:${exte} -Wl,--exclude-libs ${exte}
-ATLDCOM = $(LD) ${linkerflags} -z noexecstack --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L. -l:${exte} --build-id --exclude-libs ${exte}
+ATLDCOM = $(LD) ${linkerflags} -z noexecstack -z notext --dynamic-linker=/lib64/ld-linux-x86-64.so.2 ${eobs} -shared -e DllMain -o ${name} -l:libc.so.6 ${L} `pkg-config --libs zlib` -L. -l:${exte} --build-id --exclude-libs ${exte}
 #noexecstack is for arch linux, and also for old apy test
 #and pkg-config for -lc? is not in libc6-dev. where is?
 #--build-id for rpm
+#-z notext since fedora 44 that will error: read-only segment has dynamic relocations
 ifeq (${nobits_virtual},1)
 ${libname}: ${name}
 	ln -f ${name} ${libname}
