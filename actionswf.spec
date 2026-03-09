@@ -1,7 +1,7 @@
 
 Name: actionswf
 Version: 1.161
-Release: 0
+Release: 1
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -56,6 +56,15 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Mon Mar 09 2026 costin <costin.botescu@gmail.com> 1.161-1
+- fedora 44 fix (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- c variadic bits_pack (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- fix (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+
 * Fri Feb 13 2026 costin <costin.botescu@gmail.com> 1.161-0
 - "up" (costin.botescu@gmail.com)
 - windows compatibility (costin.botescu@gmail.com)
