@@ -205,8 +205,8 @@ endfunction
 import "block_get_mem" block_get_mem
 
 #these ids are get only, is safe at throwless
-import "struct_ids_action" struct_ids_action
-import "struct_ids_actionpool" struct_ids_actionpool
+^import "struct_ids_action" struct_ids_action 2 #full
+^import "struct_ids_actionpool" struct_ids_actionpool 2 #full
 
 #size
 function pool_size(sd id)

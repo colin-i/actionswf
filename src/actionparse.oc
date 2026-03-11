@@ -3,6 +3,7 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 const cond_block_size=DWORD
 const brace_blocks_max=100*cond_block_size
+const swapdata_max=128
 
 #multithread unsafe
 dataxu flag#1
@@ -10,6 +11,8 @@ charx type#1
 data compare_bool=FALSE
 datax counter#1
 datax blocks_mem#brace_blocks_max
+word swapsdata_index=0
+valuexu swapdsdata#1
 
 char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
@@ -21,6 +24,8 @@ importx "strchr" strchr
 importx "memcpy" memcpy
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
+importx "malloc" malloc #builtin
+importx "free" free
 
 ^import "str_expression_at_start" str_expression_at_start 2 #full
 
@@ -1364,24 +1369,23 @@ function action_code_parse_function_arguments(ss pointer)
         inc pointer
         return pointer
     endif
-    #
-        #need to swap the arguments for the call function
-    const swapdata_max=128
-    sd swapdata#swapdata_max
-    sd cursor^swapdata
-    sd all_nr=swapdata_max*:
-    sd nr
-    set nr all_nr
-    add cursor nr
-    sd start_data
-    sd data
-    setcall start_data action_code_get()
-    set data start_data
-    sd sizemark
-    setcall sizemark action_code_values_index()
-    sd sizepointer
-    set sizepointer sizemark#
-    #
+	#
+	#need to swap the arguments for the call function
+	sd cursor
+	set cursor get_a_swap()
+	sd all_nr=swapdata_max*:
+	sd nr
+	set nr all_nr
+	add cursor nr
+	sd start_data
+	sd data
+	setcall start_data action_code_get()
+	set data start_data
+	sd sizemark
+	setcall sizemark action_code_values_index()
+	sd sizepointer
+	set sizepointer sizemark#
+	#
     ss ?op=0
     while op!=close
         setcall pointer action_code_row_parse_tool_util(pointer,#op,comma,close)
@@ -1404,11 +1408,12 @@ function action_code_parse_function_arguments(ss pointer)
         add data dif
         #
     endwhile
-    #
-    sub all_nr nr
-    call memcpy(start_data,cursor,all_nr)
-    #
-    return pointer
+	#
+	sub all_nr nr
+	call memcpy(start_data,cursor,all_nr)
+	call free_a_swap()
+	#
+	return pointer
 endfunction
 
 #
@@ -1483,5 +1488,32 @@ function action_code_parse_function_defarguments(ss ac)
 		call error("close the function arguments sign expected: )")
 	endwhile
 endfunction
+
+function get_a_swap()
+	if globalp.swapsdata_index<0x100
+		sd a;set a malloc(:*swapdata_max)
+		if a!=(NULL)
+			sv pointer=:
+			mult pointer globalp.swapsdata_index
+			add pointer #globalp.swapdsdata
+			set pointer# a
+			inc globalp.swapsdata_index
+			return a
+		end
+	end
+	call error("error at function call arguments swap")
+end
+function free_a_swap()
+	dec globalp.swapsdata_index
+	sv pointer=:
+	mult pointer globalp.swapsdata_index
+	add pointer #globalp.swapdsdata
+	call free(pointer#)
+end
+function free_all_swaps()
+	while globalp.swapsdata_index!=0
+		call free_a_swap()
+	end
+end
 
 entryraw globalp()

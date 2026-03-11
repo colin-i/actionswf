@@ -20,6 +20,12 @@ charx ainit_bool#1
 data fileRes=fd_none
 valuexu basepointer#1
 char ebool=0
+vdatax action_structures#max_structures
+vdatax action_structures_init#max_structures
+vdatax actionpool_structures#max_structures
+vdatax actionpool_structures_init#max_structures
+vdatax actionpool_filter_structures#max_structures
+vdatax actionpool_filter_structures_init#max_structures
 
 function printEr(ss msg)
 	sv ?len;setcall len strlen(msg)
@@ -344,13 +350,17 @@ endfunction
 
 #
 
-function freelater()
-    #this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
-    call action_debug_free_macro()
-    #
-    call file_get_content__resources_free()
+import "free_all_swaps" free_all_swaps
+function freelater() #forced free
+	#this can be after code_values(in last_free); but normal is this at action and last_free at swf_done(without this)
+	call action_debug_free_macro()
+	#
+	call file_get_content__resources_free()
 
-    call file_resources_free()
+	call file_resources_free()
+
+	#swaps
+	call free_all_swaps()
 endfunction
 
 #bool
@@ -580,34 +590,28 @@ function struct_ids(sd proc,sd ?ident)
 endfunction
 function struct_ids_action(sd proc,sd id)
 	sd v
-	vdatax action_structures#max_structures
-	vdatax action_structures_init#max_structures
 	if globalt.ainit_bool=(xlog_ainit_false)
-		set v struct_ids_expand(proc,id,#action_structures)
+		set v struct_ids_expand(proc,id,#globalt.action_structures)
 	else
-		set v struct_ids_expand(proc,id,#action_structures_init)
+		set v struct_ids_expand(proc,id,#globalt.action_structures_init)
 	end
 	return v
 endfunction
 function struct_ids_actionpool(sd proc,sd id)
 	sd v
-	vdatax action_structures#max_structures
-	vdatax action_structures_init#max_structures
 	if globalt.ainit_bool=(xlog_ainit_false)
-		set v struct_ids_expand(proc,id,#action_structures)
+		set v struct_ids_expand(proc,id,#globalt.actionpool_structures)
 	else
-		set v struct_ids_expand(proc,id,#action_structures_init)
+		set v struct_ids_expand(proc,id,#globalt.actionpool_structures_init)
 	end
 	return v
 endfunction
 function struct_ids_actionpool_filter(sd proc,sd id)
 	sd v
-	vdatax action_structures#max_structures
-	vdatax action_structures_init#max_structures
 	if globalt.ainit_bool=(xlog_ainit_false)
-		set v struct_ids_expand(proc,id,#action_structures)
+		set v struct_ids_expand(proc,id,#globalt.actionpool_filter_structures)
 	else
-		set v struct_ids_expand(proc,id,#action_structures_init)
+		set v struct_ids_expand(proc,id,#globalt.actionpool_filter_structures_init)
 	end
 	return v
 endfunction

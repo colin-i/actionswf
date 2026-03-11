@@ -174,7 +174,7 @@ endfunction
 
 import "error" error
 ^import "struct_ids_actionpool" struct_ids_actionpool 2
-import "struct_ids_action" struct_ids_action
+^import "struct_ids_action" struct_ids_action 2 #full
 import "struct_ids_action_set" struct_ids_action_set
 import "mem_block_add" mem_block_add
 import "def_mem" def_mem

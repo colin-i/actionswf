@@ -22,14 +22,14 @@ function actionpoolid()
 	return #globalo.selid
 endfunction
 
-import "struct_ids_actionpool" struct_ids_actionpool
+^import "struct_ids_actionpool" struct_ids_actionpool 2 #full
 #block
 function actionpool_currentblock()
 	callret struct_ids_actionpool((ids_get),globalo.selid)
 endfunction
 
 importx "free" free
-import "struct_ids_actionpool_filter" struct_ids_actionpool_filter
+^import "struct_ids_actionpool_filter" struct_ids_actionpool_filter 2 #full
 function pool_data(sd ?id)
 	sv block;set block struct_ids_actionpool_filter((ids_get),id)
 	if block!=(NULL)

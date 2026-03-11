@@ -17,7 +17,7 @@ import "printEr" printEr
 import "word_arg_to_stack" word_arg_to_stack
 import "file_get_content__resources_free" file_get_content__resources_free
 import "matrix_translate" matrix_translate
-import "struct_ids" struct_ids
+^import "struct_ids" struct_ids 2 #full
 import "block_get_size" block_get_size
 import "block_get_mem" block_get_mem
 import "block_reset_size" block_reset_size
