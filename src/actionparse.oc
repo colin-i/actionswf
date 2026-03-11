@@ -1396,7 +1396,7 @@ function action_code_parse_function_arguments(ss pointer)
 	sd data
 	setcall start_data action_code_get()
 	set data start_data
-	sd ?sizemark
+	sd sizemark
 	setcall sizemark action_code_values_index()
 	sd ?sizepointer
 	set sizepointer sizemark#
@@ -1413,7 +1413,7 @@ function action_code_parse_function_arguments(ss pointer)
         sub dif sizepointer
         set sizepointer sizemark#
         mult dif (DWORD)
-            #
+        #
         sub nr dif
         if nr<0
             call error("too many function arguments")
