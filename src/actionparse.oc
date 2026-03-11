@@ -22,12 +22,12 @@ importx "memcpy" memcpy
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
 
-import "str_expression_at_start" str_expression_at_start
+^import "str_expression_at_start" str_expression_at_start 2 #full
 
-import "debug_code" debug_code
+^import "debug_code" debug_code #full return
 ^import "spaces" spaces 1
 
-import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare
+^import "str_expression_at_start_withEndCare" str_expression_at_start_withEndCare 2 #full
 
 #bool
 function action_parse_utilEndTypes(ss ?op,ss p_op,sd endtype1,sd endtype2)

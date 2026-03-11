@@ -47,7 +47,7 @@ function is_x()
 	return (TRUE)
 end
 
-import "action_debug" action_debug
+^import "action_debug" action_debug 1 #full return
 function x_pointer(sv pointer)
 	sd value
 	set value pointer#

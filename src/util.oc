@@ -8,7 +8,7 @@ importx "free" free
 importx "strlen" strlen
 importx "memcmp" memcmp
 
-import "platform_iob" platform_iob
+^import "platform_iob" platform_iob #full
 
 include "../include/prog.h" "../include/prog.oh"
 
@@ -23,8 +23,8 @@ char ebool=0
 
 function printEr(ss msg)
 	sv ?len;setcall len strlen(msg)
-	sv ?stderr;setcall stderr platform_iob()
-	call fwrite(msg,(BYTE),len,stderr)
+	sv ?stder;setcall stder platform_iob()
+	call fwrite(msg,(BYTE),len,stder)
 	#callret
 endfunction
 

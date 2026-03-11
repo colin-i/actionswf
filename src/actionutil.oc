@@ -9,6 +9,7 @@ vstr orig=NULL
 vstr memorig=NULL
 value dcode#1
 value format_file=NULL
+char row_nr#dword_to_string_char  # this is global for fwrite, if is on stack is not ok at c compilation
 
 importx "_snprintf" snprintf
 
@@ -167,24 +168,25 @@ endfunction
 import "printEr" printEr
 import "string_nl_print" string_nl_print
 function action_error()
-    sv p_action_errors
-    setcall p_action_errors action_debug((action_debug_get))
-    if p_action_errors#=(NULL)
-        ret
-    endif
+	sv p_action_errors
+	setcall p_action_errors action_debug((action_debug_get))
+	if p_action_errors#=(NULL)
+		ret
+	endif
 
-    vstr ac#1
-    vstr mem#1
-    call memcpy(#ac,p_action_errors,(2*:))
+	call printEr("Row: ")
 
-    call printEr("Row: ")
-    sd row
-    setcall row escape_action(ac,mem,globalu.dcode,(NULL))
-    #a small reserve for a number like 2 000 000 000
-    char row_nr#dword_to_string_char
-    call sprintf(#row_nr,"%u",row)
-    call string_nl_print(#row_nr)
-    call string_nl_print(globalu.dcode)
+	# ac and mem is not ok at arm c code can be 16 bit aligned
+	vstr stack#2
+	sv st^stack  #can do more with only at c sign !
+	call memcpy(st,p_action_errors,(2*:))
+	sd row
+	sv mem=:;add mem st
+	setcall row escape_action(st#,mem#,globalu.dcode,(NULL))
+	#a small reserve for a number like 2 000 000 000
+	call sprintf(#globalu.row_nr,"%u",row)
+	call string_nl_print(#globalu.row_nr)
+	call string_nl_print(globalu.dcode)
 endfunction
 
 import "block_get_size" block_get_size
@@ -456,7 +458,7 @@ end
 import "debug_base" debug_base
 ^import "alt_action_base" alt_action_base 3 #full return
 
-function action_sprite_base(sd sprite,ss actions,sd has_frames)
+function action_sprite_base(sd sprite,ss actions,ss ?has_frames)
 	sd alt_ac;set alt_ac alt_action_base(actions,sprite,has_frames)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
