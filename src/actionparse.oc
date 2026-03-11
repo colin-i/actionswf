@@ -3,7 +3,6 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 const cond_block_size=DWORD
 const brace_blocks_max=100*cond_block_size
-const swapdata_max=128
 
 #multithread unsafe
 dataxu flag#1
@@ -1357,6 +1356,7 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     call action_code_set((args_end))
     return pointer
 endfunction
+const swapdata_max=128
 #pointer
 function action_code_parse_function_arguments(ss pointer)
     #arguments
