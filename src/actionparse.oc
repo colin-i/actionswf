@@ -10,7 +10,7 @@ charx type#1
 data compare_bool=FALSE
 datax counter#1
 datax blocks_mem#brace_blocks_max
-word swapsdata_index=0
+word swapsdata_index=0  # was ok on stack but not sure about 16M on stack(at get_a_swap is the limit), maybe 1 to 8
 valuexu swapdsdata#1
 
 char operations_base="+-*/%&|^<>?"
@@ -1503,7 +1503,7 @@ function action_code_parse_function_defarguments(ss ac)
 endfunction
 
 function get_a_swap()
-	if globalp.swapsdata_index<0x100
+	if globalp.swapsdata_index<0x4000 # a(a()) is 0x2c(44) at .x, less than one of these (swapdata_max mult long)
 		sd a;set a malloc(:*swapdata_max)
 		if a!=(NULL)
 			sv pointer=:
