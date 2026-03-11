@@ -99,6 +99,19 @@ function action_parse_init()
 	call memcpy(a,#c,3)
 end
 
+function free_a_swap()
+	dec globalp.swapsdata_index
+	sv pointer=:
+	mult pointer globalp.swapsdata_index
+	add pointer #globalp.swapdsdata
+	call free(pointer#)
+end
+function free_all_swaps()
+	while globalp.swapsdata_index!=0
+		call free_a_swap()
+	end
+end
+
 import "action_code_get" action_code_get
 import "action_code_values_index" action_code_values_index
 import "memtrail" memtrail
@@ -1502,18 +1515,6 @@ function get_a_swap()
 		end
 	end
 	call error("error at function call arguments swap")
-end
-function free_a_swap()
-	dec globalp.swapsdata_index
-	sv pointer=:
-	mult pointer globalp.swapsdata_index
-	add pointer #globalp.swapdsdata
-	call free(pointer#)
-end
-function free_all_swaps()
-	while globalp.swapsdata_index!=0
-		call free_a_swap()
-	end
 end
 
 entryraw globalp()
