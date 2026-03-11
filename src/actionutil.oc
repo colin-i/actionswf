@@ -9,7 +9,6 @@ vstr orig=NULL
 vstr memorig=NULL
 value dcode#1
 value format_file=NULL
-char row_nr#dword_to_string_char  # this is global for fwrite, if is on stack is not ok at c compilation
 
 importx "_snprintf" snprintf
 
@@ -184,8 +183,10 @@ function action_error()
 	sv mem=:;add mem st
 	setcall row escape_action(st#,mem#,globalu.dcode,(NULL))
 	#a small reserve for a number like 2 000 000 000
-	call sprintf(#globalu.row_nr,"%u",row)
-	call string_nl_print(#globalu.row_nr)
+	char a#dword_to_string_char
+	ss row_nr^a
+	call sprintf(row_nr,"%u",row)
+	call string_nl_print(row_nr)
 	call string_nl_print(globalu.dcode)
 endfunction
 
