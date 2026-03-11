@@ -3,6 +3,7 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 const cond_block_size=DWORD
 const brace_blocks_max=100*cond_block_size
+const swapsdata_max=0x100
 
 #multithread unsafe
 dataxu flag#1
@@ -10,12 +11,14 @@ charx type#1
 data compare_bool=FALSE
 datax counter#1
 datax blocks_mem#brace_blocks_max
-word swapsdata_index=0  # was ok on stack but not sure about 16M on stack(at get_a_swap is the limit), maybe 1 to 8
-valuexu swapdsdata#1
+wordu swapsdata_index=0
+valuexu swapdsdata#swapsdata_max
 
 char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
 char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
+
+const swapdata_max=0x400
 
 #win32 with _
 importx "strcspn" strcspn
@@ -1369,14 +1372,13 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     call action_code_set((args_end))
     return pointer
 endfunction
-const swapdata_max=128
 #pointer
 function action_code_parse_function_arguments(ss pointer)
     #arguments
     # this was for what? sd math_values
     # setcall math_values action_code_get()
-    char comma=","
-    char close=")"
+    char comma=","^
+    char close=")"^
     inc pointer
     if pointer#=close
         inc pointer
@@ -1386,27 +1388,27 @@ function action_code_parse_function_arguments(ss pointer)
 	#need to swap the arguments for the call function
 	sd cursor
 	set cursor get_a_swap()
-	sd all_nr=swapdata_max*:
-	sd nr
+	sd ?all_nr=swapdata_max*:
+	sd ?nr
 	set nr all_nr
 	add cursor nr
 	sd start_data
 	sd data
 	setcall start_data action_code_get()
 	set data start_data
-	sd sizemark
+	sd ?sizemark
 	setcall sizemark action_code_values_index()
-	sd sizepointer
+	sd ?sizepointer
 	set sizepointer sizemark#
 	#
-    ss ?op=0
-    while op!=close
+	ss ?op=0
+	while op!=close
         setcall pointer action_code_row_parse_tool_util(pointer,#op,comma,close)
         if op=0
             call error("close the function arguments sign expected: )")
         endif
         #
-        sd dif
+        sd ?dif
         set dif sizemark#
         sub dif sizepointer
         set sizepointer sizemark#
@@ -1417,13 +1419,13 @@ function action_code_parse_function_arguments(ss pointer)
             call error("too many function arguments")
         endif
         sub cursor dif
-        call memcpy(cursor,data,dif)
+        call memcpy(cursor,data,dif) #copy at end arguments
         add data dif
         #
-    endwhile
+	endwhile
 	#
 	sub all_nr nr
-	call memcpy(start_data,cursor,all_nr)
+	call memcpy(start_data,cursor,all_nr) #copy swaped arguments
 	call free_a_swap()
 	#
 	return pointer
@@ -1503,7 +1505,8 @@ function action_code_parse_function_defarguments(ss ac)
 endfunction
 
 function get_a_swap()
-	if globalp.swapsdata_index<0x4000 # a(a()) is 0x2c(44) at .x, less than one of these (swapdata_max mult long)
+	#will be blocked by topmost size (too many function arguments). information an a() from a(a(...)) is 0x2c(44) at .x
+	if globalp.swapsdata_index<(swapsdata_max)
 		sd a;set a malloc(:*swapdata_max)
 		if a!=(NULL)
 			sv pointer=:
