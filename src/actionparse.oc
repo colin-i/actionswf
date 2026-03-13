@@ -179,7 +179,7 @@ function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
                 endif
                 #using the operations function
                 inc ac
-                char closecompare=")"
+				char closecompare=Closeparenthesis
                 setcall ac action_code_row_parse_tool(ac,closecompare)
                 #if ac#!=closecompare
                 #    call error("close parenthesis expected")
@@ -399,7 +399,7 @@ function action_code_row_parse_instrument(ss ac)
     setcall pointer str_expression_at_start(ac,"return")
     if pointer!=ac
         call action_code_set((ActionReturn))
-        char an_end=";"
+		char an_end=Semicolon
 		callret action_code_row_parse_tool(pointer,an_end)
     endif
     setcall pointer str_expression_at_start_withEndCare(ac,"break")
@@ -760,7 +760,7 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 
 	set pointer ac
 
-	char neg="-"^
+	char neg=Hyphen
 	if pointer#=neg
 		inc pointer
 		set pointer spaces(pointer) #=- Math(8)
@@ -831,8 +831,8 @@ import "str_escape" str_escape
 #next/0
 function action_code_str(ss ac)
     sd delim
-    char stringdelim="\""
-    char stringdelim2="'"
+	char stringdelim=Doublequotes
+	char stringdelim2=Singlequote
     set delim stringdelim
     if ac#!=stringdelim
 	if ac#!=stringdelim2
@@ -875,7 +875,7 @@ end
 #bool
 function numeric_code_orConstruction(ss ac)
 	ss pointer;set pointer ac
-	char neg="-"^
+	char neg=Hyphen
 	if pointer#=neg
 		inc pointer
 	endif
@@ -917,7 +917,7 @@ function numeric_code_orConstruction(ss ac)
 	endif
 	data value_low#1;data value_high#1
 	ss decimal_symbol_test
-	char dot="."
+	char dot=Period
 	setcall decimal_symbol_test strchr(pointer,dot)
 	if decimal_symbol_test!=(NULL)
 		call action_code_set((ap_Double))
@@ -931,7 +931,7 @@ function numeric_code_orConstruction(ss ac)
 	ss hextest
 	set hextest pointer
 	inc hextest
-	char hex="x"
+	char hex=x_low
 	if hextest#=hex
 		call sscanf(ac,"%x",#value_low)
 	else
@@ -942,8 +942,8 @@ function numeric_code_orConstruction(ss ac)
 endfunction
 function action_code_member(ss pointer,sd full)
 	vstr delims=".["
-	char sqbrace_start="["
-	char sqbrace_end="]"
+	char sqbrace_start=Openingbracket
+	char sqbrace_end=Closingbracket
 	call action_code_set_pointer(pointer) #owner?
 	sd pos
 	setcall pos strcspn(pointer,delims)
@@ -1319,7 +1319,7 @@ function action_code_parse_leftfunction(ss ac)
     endif
     #a call
 	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac)
-    char end=";"
+	char end=Semicolon
     if ac#=end
         inc ac
     endif
@@ -1377,8 +1377,8 @@ function action_code_parse_function_arguments(ss pointer)
     #arguments
     # this was for what? sd math_values
     # setcall math_values action_code_get()
-    char comma=","^
-    char close=")"^
+	char comma=Comma
+	char close=Closeparenthesis
     inc pointer
     if pointer#=close
         inc pointer
@@ -1443,7 +1443,7 @@ function action_code_parse_deffunction(ss ac)
     call action_code_set((function_action))
     ss name_start
     set name_start pointer
-    char startsign="("
+	char startsign=Openparenthesis
     ss args
     setcall args strchr(pointer,startsign)
     if args=(NULL)

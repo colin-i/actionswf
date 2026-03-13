@@ -65,7 +65,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
     sd error_row=0
     #
     sd comments=0
-    char lines_com_c1="*";char lines_com_c2="/";ss test
+	char lines_com_c1=Asterisk;char lines_com_c2=Slash;ss test
     const line_comment=1
     const multiLine_comment=2
     #

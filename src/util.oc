@@ -172,8 +172,8 @@ endfunction
 
 #bool
 function is_numeric(ss ?charvar)
-	char min="0"^
-	char max="9"^
+	char min=_0
+	char max=_9
 	if charvar<min
 		return (FALSE)
 	endif
@@ -290,7 +290,7 @@ function str_expression_at_start_withEndCare(ss ac,ss expression)
     if pointer=ac
         return ac
     endif
-    char term=";"^
+	char term=Semicolon
     if pointer#=term
         inc pointer
     endif
@@ -679,7 +679,7 @@ function str_escape(ss src,ss dest,sd delim)
 		#elseif src#==delim2
 		#    set loop 0
 		else
-			char esc="\\"^
+			char esc=Backslash
 			while src#=esc
 				if escapes=0
 					set escapes 1
