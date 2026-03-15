@@ -103,7 +103,7 @@ def ActionBuffer():
 def Ref(a):
 	return ctypes.byref(a)
 
-#try: #in PATH
+#try: #in LD_LIBRARY_PATH
 _lib=ctypes.cdll.LoadLibrary("libactionswf.so")
 #except Exception:
 #lib=ctypes.cdll.LoadLibrary("actionswf.dll")

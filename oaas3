@@ -1,13 +1,29 @@
 #!/usr/bin/python3
 
+# break
+# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
+# skip_comp header ffdec compiler no_clean
+
 import sys
 if len(sys.argv)!=3:
 	print('Usage: as3.py output_folder output_file')
-	# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
-	# skip_comp header ffdec compiler no_clean
 	exit(1)
 
+import ctypes
+try: #in LD_LIBRARY_PATH
+	lib=ctypes.cdll.LoadLibrary("liboaas.so")
+except Exception:
+	lib = None # at windows # print('no liboaas.so support')
+if lib:
+	try:
+		lib.line.argtypes = [ctypes.c_char_p]; lib.line.restype = ctypes.c_char_p
+	except Exception:
+		print('lib oaas error')
+		exit(1)
+
 import os
+if os.environ.get('break'):
+	import pdb; pdb.set_trace()
 
 dest=sys.argv[1]
 def hx_ext(fl):
@@ -112,9 +128,12 @@ if os.environ.get('skip_src')==None:
 									pos-=multiline_backjump
 								else:
 									mode=6
+						outbuf=chars[:pos]
 						if mode==4:
 							mode=0
-						dfile.write(chars[:pos])
+							if lib:
+								outbuf=lib.line(bytes(outbuf))
+						dfile.write(outbuf)
 				i=i+1
 
 if os.environ.get('skip_comp')==None:

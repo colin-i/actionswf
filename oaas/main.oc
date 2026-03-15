@@ -1,0 +1,6 @@
+
+format elfobj64
+
+functionx line(ss oa)
+	return oa
+end
