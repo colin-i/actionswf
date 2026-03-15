@@ -14,10 +14,10 @@ importx "strlen" strlen
 import "button_mem" button_mem
 
 import "stack_to_word_arg" stack_to_word_arg
-import "word_arg_to_stack" word_arg_to_stack
+^import "word_arg_to_stack" word_arg_to_stack 1
 ^import "struct_ids" struct_ids 2 #full
 import "block_get_size" block_get_size
-import "block_get_mem" block_get_mem
+^import "block_get_mem" block_get_mem 1
 import "free_sprite_id" free_sprite_id
 import "freereset" freereset   #..x with no args
 import "dtitles_conclude" dtitles_conclude

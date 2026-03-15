@@ -13,8 +13,8 @@ importx "strcpy" strcpy
 importx "memcpy" memcpy
 importx "sprintf" sprintf
 
-import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
-import "word_arg_to_stack" word_arg_to_stack
+^import "swf_sprite_frames_pointer" swf_sprite_frames_pointer 1 #full return
+^import "word_arg_to_stack" word_arg_to_stack 1
 import "mem_free" mem_free
 
 function alt_join()

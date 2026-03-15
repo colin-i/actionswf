@@ -17,8 +17,8 @@ function label_init()
 	set globalg.apos 0
 end
 
-import "swf_actionblock_get" swf_actionblock_get
-import "block_get_mem" block_get_mem
+^import "swf_actionblock_get" swf_actionblock_get
+^import "block_get_mem" block_get_mem 1
 
 import "stack_to_word_arg" stack_to_word_arg
 import "swf_actionblock_get_mem_size" swf_actionblock_get_mem_size

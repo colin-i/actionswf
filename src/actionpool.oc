@@ -78,10 +78,10 @@ importx "sprintf" sprintf
 ^importx "ftell" ftell 1
 
 import "stack_to_word_arg" stack_to_word_arg
-import "word_arg_to_stack" word_arg_to_stack
+^import "word_arg_to_stack" word_arg_to_stack 1
 import "swf_mem_change_pool" swf_mem_change_pool
 import "swf_mem_change_back_pool" swf_mem_change_back_pool
-import "block_get_mem" block_get_mem
+^import "block_get_mem" block_get_mem 1
 import "block_get_size" block_get_size
 import "block_reset_size" block_reset_size
 import "mem_block_add_throwless" mem_block_add_throwless

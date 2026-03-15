@@ -187,11 +187,11 @@ include "../include/platformhome.h" "../include/platformhome.oh" #"../include/li
 end
 
 import "row_termination" row_termination
-import "swf_actionblock_get" swf_actionblock_get
+^import "swf_actionblock_get" swf_actionblock_get #full return
 import "swf_actionblock_get_size" swf_actionblock_get_size
-import "block_get_psize" block_get_psize
-import "block_get_mem" block_get_mem
-import "word_arg_to_stack" word_arg_to_stack
+^import "block_get_psize" block_get_psize 1 #full return
+^import "block_get_mem" block_get_mem 1
+^import "word_arg_to_stack" word_arg_to_stack 1
 import "for_in" for_in
 import "frames_as_shows" frames_as_shows
 import "ainit" ainit

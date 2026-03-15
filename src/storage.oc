@@ -133,7 +133,7 @@ end
 import "mem_free" mem_free
 import "action_code_values_free" action_code_values_free
 import "file_close" file_close
-import "block_get_mem" block_get_mem
+^import "block_get_mem" block_get_mem 1 #full return
 import "block_get_mem_size" block_get_mem_size
 import "bits_packs" bits_packs
 import "word_swap_arg" word_swap_arg
@@ -147,7 +147,7 @@ import "actionpool_currentblock" actionpool_currentblock
 
 import "action_size" action_size
 import "stack_to_word_arg" stack_to_word_arg
-import "word_arg_to_stack" word_arg_to_stack
+^import "word_arg_to_stack" word_arg_to_stack 1 #full return
 import "is_ainit" is_ainit
 
 #aftercallimport ebool

@@ -14,12 +14,12 @@ import "NumFill_NumLin" NumFill_NumLin
 import "NumFill_NumLin_get" NumFill_NumLin_get
 import "shapewithstyle_records" shapewithstyle_records
 import "printEr" printEr
-import "word_arg_to_stack" word_arg_to_stack
+^import "word_arg_to_stack" word_arg_to_stack 1
 import "file_get_content__resources_free" file_get_content__resources_free
 import "matrix_translate" matrix_translate
 ^import "struct_ids" struct_ids 2 #full
 import "block_get_size" block_get_size
-import "block_get_mem" block_get_mem
+^import "block_get_mem" block_get_mem 1
 import "block_reset_size" block_reset_size
 
 ^import "alt_action" alt_action 2 # full return

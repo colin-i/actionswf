@@ -203,7 +203,7 @@ function action_size(sd id)
     return size
 endfunction
 
-import "block_get_mem" block_get_mem
+^import "block_get_mem" block_get_mem 1
 
 #these ids are get only, is safe at throwless
 ^import "struct_ids_action" struct_ids_action 2 #full
