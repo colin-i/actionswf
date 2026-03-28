@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # break
-# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder rule_ext splits_format_ext splits_printf_ext
+# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext
 # skip_comp header ffdec compiler no_clean
 
 import sys
@@ -40,15 +40,11 @@ if os.environ.get('skip_src')==None:
 	changeable('b','2b','/')
 
 	def premade_formats():
-		#environ or defaults at edor
+		#environ or defaults at edor and src
 
 		splits_folder=os.environ.get('splits_folder')
 		if splits_folder==None:
 			splits_folder='osrc'
-
-		rule_ext=os.environ.get('rule_ext')
-		if rule_ext==None:
-			rule_ext='oac'
 
 		splits_format_ext=os.environ.get('splits_format_ext')
 		if splits_format_ext==None:
@@ -59,11 +55,10 @@ if os.environ.get('skip_src')==None:
 		if splits_printf_ext==None:
 			splits_printf_ext='format'
 
-		def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not direct connected with my edor and src, is like a guardian?
+		def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not directly connected with my edor and src, is like a guardian?
 		a=('' if splits_folder=='' else splits_folder+os.sep)
 
-		#'a.q.swf' is a.q
-		return (a+os.path.splitext(out_file_name)[0]+ext(rule_ext)+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
+		return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
 
 	splits_file, splits_mix = premade_formats()
 
