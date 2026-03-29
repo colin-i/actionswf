@@ -106,7 +106,7 @@ function dword_swap(sd value)
     #
     return res
 endfunction
-function struct_off(sd struct_of_ints,sd off)
+function struct_off(sd struct_of_ints,sd ?off)
     add struct_of_ints off
     return struct_of_ints#
 endfunction
@@ -127,7 +127,7 @@ function block_reset_size(sd block)
 endfunction
 #size
 function block_get_size(sd block)
-    sd size
+    sd ?size
     setcall size struct_off(block,(mem_struct__size_off))
     sub size (mem_struct_size)
     return size
