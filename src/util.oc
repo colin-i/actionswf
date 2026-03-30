@@ -276,7 +276,7 @@ function str_expression_at_start(ss string,ss expression)
 	ss next
 	set next string
 	addcall next strlen(expression)
-	sd sz
+	ss ?sz
 	setcall sz part_of_variable(next)
 	if sz!=0
 		return string

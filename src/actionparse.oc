@@ -17,10 +17,12 @@ valuexu swapdsdata#swapsdata_max
 char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
 char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
+char parse_pack_chars={Equals,0,0,0} #but parse_pack_chars[0] is hardcoded this way, a tradeoff with c
 
 const swapdata_max=0x400
 
 #win32 with _
+#all of these are builtin from string/stdlib
 importx "strcspn" strcspn
 importx "strchr" strchr
 importx "memcpy" memcpy
@@ -417,12 +419,10 @@ function action_code_row_parse_instrument(ss ac)
 endfunction
 #pointer
 function action_parse_pack(ss ac,ss ?endChar)
-	ss ?op   ;#this is recursive stack for future expands, now is simple
-	char set={Equals}
-	char secondChar#1
-	char thirdChar#1
-	char *term=0
-	set secondChar endChar
+	ss delims=1
+	add delims #globalp.parse_pack_chars
+	set delims# endChar
+	inc delims
 
 	ss pointer
 	sd isnewvar=FALSE
@@ -430,21 +430,21 @@ function action_parse_pack(ss ac,ss ?endChar)
 	setcall pointer str_expression_at_start(ac,"var")
 	if pointer!=ac
 		set isnewvar (TRUE)
-		set thirdChar (Nullchar)
+		set delims# (Nullchar)
 	else
 		set isdelete (FALSE)
 		setcall pointer str_expression_at_start(ac,"delete")
 		if pointer!=ac
 			set isdelete (TRUE)
-			set thirdChar (Nullchar)
+			set delims# (Nullchar)
 		else
 			set pointer spaces(pointer) #ffdec, /tests/ffdec/ff
-			set thirdChar (Colon)
+			set delims# (Colon)
 		endelse
 	endelse
+	set ac strcspn(pointer,#globalp.parse_pack_chars)
 
-	ss delims^set
-	set ac strcspn(pointer,delims)
+	ss ?op   ;#this is recursive stack for future expands, now is simple
 	add ac pointer
 	set op ac#
 	if op=(Colon) #since goto markers, this is the label
@@ -460,7 +460,7 @@ function action_parse_pack(ss ac,ss ?endChar)
 
 	if isnewvar=(TRUE)
 		call memtrail(marker)
-		if op=set
+		if op=(Equals)
 			call action_code_set((ActionDefineLocal))
 			call action_code_set_pointer(pointer)
 		else
@@ -471,7 +471,7 @@ function action_parse_pack(ss ac,ss ?endChar)
 	elseif isdelete=(FALSE)
 		sd ?inc_dec
 		sd ?mixt_action
-		if op!=set
+		if op!=(Equals)
 			set inc_dec 0
 			ss test
 			set test marker
@@ -508,7 +508,7 @@ function action_parse_pack(ss ac,ss ?endChar)
 			call memtrail(marker)
 		endelse
 		call action_parse_left_holder(pointer,(ActionSetVariable),(ActionSetMember))
-		if op=set
+		if op=(Equals)
 			#mixt or not mixt
 			if mixt_action!=0
 				call action_code_set((mixt_equal))
@@ -580,7 +580,7 @@ function action_parse_test_mixt_equal(ss start,sv p_ac)
 	callret action_parse_take_action(op,pointer)
 endfunction
 #pointer
-function action_parse_right(ss ac,sd endChar)
+function action_parse_right(ss ac,ss ?endChar)
     ss pointer
     #can be a function definition
     setcall pointer action_code_parse_deffunction(ac)
@@ -1327,11 +1327,11 @@ function action_code_parse_leftfunction(ss ac)
 endfunction
 import "part_of_variable" part_of_variable
 #pointer
-function action_code_parse_new_or_call(ss ac,sd type,ss cursor)
+function action_code_parse_new_or_call(ss ac,sd ?type,ss cursor)
 	ss pointer
 	set pointer ac
 	ss last_dot=0
-	sd sz
+	ss ?sz
 	setcall sz part_of_variable(pointer)
 	while sz!=0
 		add pointer sz
