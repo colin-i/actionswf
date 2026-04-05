@@ -249,7 +249,9 @@ function swf_mem(sd ?proc,sd arg,sd ?len)
 
 			sd block
 			setcall block struct_ids((ids_get),globals.main_id)
-			ss mem;sd ?size;call block_get_mem_size(block,#mem,#size)
+			ss mem;sd ?size
+			!xor size size ##same .c problem and stack variables
+			call block_get_mem_size(block,#mem,#size)
 
 			sd pointer
 			set pointer mem

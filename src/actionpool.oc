@@ -105,6 +105,7 @@ import "x_log_string" x_log_string
 function pool_reentry(sd offset)
 	sd b;set b struct_ids_actionpool_filter((ids_get),globalo.selid)
 	sd mem;sdu ?size
+	!xor size size ## .c problems
 	call block_get_mem_size(b,#mem,#size)
 	sdu ?cursor;set cursor mem#
 	if cursor<^size

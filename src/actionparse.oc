@@ -118,7 +118,7 @@ function free_all_swaps()
 end
 
 import "action_code_get" action_code_get
-import "action_code_values_index" action_code_values_index
+^import "action_code_values_index" action_code_values_index #full
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
@@ -1185,6 +1185,7 @@ import "debug_phase_code_add_jump_if" debug_phase_code_add_jump_if
 function write_forward_offset_base(sdu ?offset,ss ?skip_xlog,ss ?xlog_j)
 	sd mem
 	sdu ?size
+	!xor size size ## c problem
 	call swf_actionblock_get_mem_size(#mem,#size)
 	#
 	add mem offset
@@ -1286,6 +1287,7 @@ import "debug_phase_code_add_jumpback_if" debug_phase_code_add_jumpback_if
 function resolve_back_jump(sdu ?jumpoffset)  #also at continue
 	ss mem
 	sd ?size ;#will *-1
+	!xor size size ## c problem
 	call swf_actionblock_get_mem_size(#mem,#size)
 	add mem size;sub mem (WORD)
 	#

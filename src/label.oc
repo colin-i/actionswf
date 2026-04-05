@@ -60,6 +60,7 @@ function label_resolve(sdu ?lab)
 	add pointer #globalg.gotos
 	sd max;set max pointer
 	ss mem;sdu ?size
+	!xor size size ## c problem
 	call swf_actionblock_get_mem_size(#mem,#size)
 	while #globalg.gotos!=pointer
 		sub pointer (DWORD)

@@ -146,7 +146,7 @@ function block_get_mem(sd block)
     add block (mem_struct_size)
     return block
 endfunction
-function block_get_mem_size(sd block,sv p_mem,sv p_size)  #size is a stack variable
+function block_get_mem_size(sd block,sv p_mem,sd p_size)  #size is a stack variable , but since .c it is !xor-ed
     setcall p_mem# block_get_mem(block)
     setcall p_size# block_get_size(block)
 endfunction

@@ -122,7 +122,7 @@ endfunction
 #read
 ^import "memalloc" memalloc 1
 #mem
-function file_get_content(ss filepath,sv p_size)  #size is a stack variable
+function file_get_content(ss filepath,sv p_size)  #size is a stack variable , but here is not like the other cases, here is on full
 	sd file
 	setcall file file_open(filepath,(_open_read))
 	set globalf.file file

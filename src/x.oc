@@ -88,7 +88,7 @@ end
 #	end
 #end
 
-import "action_code_values" action_code_values
+^import "action_code_values" action_code_values
 import "action_code_get" action_code_get
 
 import "verbose_get" verbose_get
@@ -116,7 +116,7 @@ function x_log(sd codepointer)
 	end
 end
 
-import "action__code_row" action__code_row
+^import "action__code_row" action__code_row 1
 ^import "strlen_of" strlen_of 2
 
 #is not x or x?
