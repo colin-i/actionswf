@@ -806,25 +806,25 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 endfunction
 #pointer
 function brackets_test(ss pointer)
-    sd multidim=1
-    while multidim=1
-        sd openedbrackets=1
-        while openedbrackets>0
-            inc pointer
-            if pointer#=(Openingbracket)
-                inc openedbrackets
-            elseif pointer#=(Closingbracket)
-                dec openedbrackets
-            elseif pointer#=0
-                call error("unclosed bracket detected")
-            endelseif
-        endwhile
-        inc pointer
-        if pointer#!=(Openingbracket)
-            set multidim 0
-        endif
-    endwhile
-    return pointer
+	ss ?multidim=1
+	while multidim=1
+		sv ?openedbrackets=1 #it's not like is long but why to error here?
+		while openedbrackets>0
+			inc pointer
+			if pointer#=(Openingbracket)
+				inc openedbrackets
+			elseif pointer#=(Closingbracket)
+				dec openedbrackets
+			elseif pointer#=0
+				call error("unclosed bracket detected")
+			endelseif
+		endwhile
+		inc pointer
+		if pointer#!=(Openingbracket)
+			set multidim 0
+		endif
+	endwhile
+	return pointer
 endfunction
 
 import "str_escape" str_escape
