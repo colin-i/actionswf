@@ -155,8 +155,8 @@ function action_code_write_builtin_names(sv codepointer,sv p_action) #action is 
 	return (NULL)
 endfunction
 
-import "x_pointer" x_pointer
-import "x_pointer_touchless" x_pointer_touchless
+^import "x_pointer" x_pointer 1 #full
+^import "x_pointer_touchless" x_pointer_touchless 1 #full
 #import "x_pointer_x" x_pointer_x
 function action_code_get_pointer(sv p_codepointer)
 	sd a;set a x_pointer(p_codepointer#)
