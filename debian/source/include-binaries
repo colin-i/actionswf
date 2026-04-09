@@ -2,3 +2,4 @@
 tests/.expected/example.swf.data
 tests/.expected/example.swf.data32
 tests/as3/osrc/a.oac.split
+tests/as3/osrc/a.split

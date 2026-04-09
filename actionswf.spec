@@ -1,7 +1,7 @@
 
 Name: actionswf
-Version: 1.161
-Release: 1
+Version: 1.162
+Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -56,6 +56,31 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Thu Apr 09 2026 costin <costin.botescu@gmail.com> 1.162-0
+- brackets_test at .c (costin.botescu@gmail.com)
+- more c fixes (costin.botescu@gmail.com)
+- c parse_pack chars (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- as3 test adapted to match the new multi-language edor split behaviour
+  (costin.botescu@gmail.com)
+- info (costin.botescu@gmail.com)
+- oarec plan (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- more c fixes (costin.botescu@gmail.com)
+- introducing lib oaas (costin.botescu@gmail.com)
+- c =" fixes (costin.botescu@gmail.com)
+- c fix (costin.botescu@gmail.com)
+- fix (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- these fns on throwless (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- for c: call args moved to heap, all struct ids moved to c style static
+  (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+
 * Mon Mar 09 2026 costin <costin.botescu@gmail.com> 1.161-1
 - fedora 44 fix (costin.botescu@gmail.com)
 - "up" (costin.botescu@gmail.com)
