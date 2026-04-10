@@ -232,9 +232,9 @@ end
 import "swf_actionblock_change_back" swf_actionblock_change_back
 import "file_get_content__resources_free" file_get_content__resources_free
 
-import "action_code_get_pointer" action_code_get_pointer
-import "action_code_values_index" action_code_values_index
-import "action_code_get" action_code_get
+^import "action_code_get_pointer" action_code_get_pointer 1 #full
+^import "action_code_values_index" action_code_values_index
+^import "action_code_get" action_code_get #full
 
 
 #aftercallimport ebool

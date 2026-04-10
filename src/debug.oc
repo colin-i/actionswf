@@ -71,7 +71,7 @@ function debug_phase_init(ss pointer)
 	endif
 endfunction
 
-import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
+^import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
 
 function debug_phase_parse(ss pointer)
 	if globald.offsets!=(NULL)
