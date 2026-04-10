@@ -379,7 +379,7 @@ function swf_actionblock_change(sd ?id)
 	set poolid# globals.action_id
 end
 function swf_actionblock_done(sd type)
-	sd frames;sd pframes
+	sd ?frames;sd pframes
 	set pframes swf_sprite_frames_pointer(globals.action_id)
 	set frames word_arg_to_stack(pframes)
 
@@ -387,7 +387,7 @@ function swf_actionblock_done(sd type)
 	# and, at ruffle, can add in multiple frames, but are executed all at once before any frames, and "this" is level0 for all
 	#then, this at done
 
-	sd sz
+	sd ?sz
 	call is_ainit((xlog_ainit_false))
 	set sz done_action(globals.action_id,frames)
 

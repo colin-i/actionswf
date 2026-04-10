@@ -253,7 +253,7 @@ function action_one(sd tag)
 	callg debug_phase_code_add_if((FALSE),(xlog_act))
 endfunction
 
-import "action_code_right_util" action_code_right_util
+^import "action_code_right_util" action_code_right_util 1 #full
 import "debug_x_preexpand_inter" debug_x_preexpand_inter
 import "debug_x_expand" debug_x_expand
 #codepointer

@@ -127,10 +127,12 @@ function block_reset_size(sd block)
 endfunction
 #size
 function block_get_size(sd block)
-    sd ?size
-    setcall size struct_off(block,(mem_struct__size_off))
-    sub size (mem_struct_size)
-    return size
+	sd ?size
+	setcall size struct_off(block,(mem_struct__size_off))
+	ss ?a=mem_struct_size
+	sub size a
+	#sub size (mem_struct_size) #this is not working at my gcc
+	return size
 endfunction
 #psize
 function block_get_psize(sd block)

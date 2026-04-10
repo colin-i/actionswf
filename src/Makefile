@@ -27,6 +27,7 @@ endif
 OFLAGS=conv_64 ${conv_64} include_sec 1 ${OFLAGSEXTRA}
 
 items_prefix=
+dllmain=../shared/action_dllmain
 include ./items
 include ./hitems
 

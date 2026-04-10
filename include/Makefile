@@ -13,7 +13,6 @@ items=action ascii ${platform}home ${platform} prog program xlog
 $(foreach var,$(items),$(eval headers += ${var}.h))
 $(foreach var,$(items),$(eval xfiles += ${var}.ohi.x))
 
-include ../src/items
 include ../src/hitems
 $(foreach var,$(hreqs),$(eval chreqs += ../include/${var}.h))
 

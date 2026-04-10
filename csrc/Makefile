@@ -15,11 +15,14 @@ ifndef EXTRA_CFLAGS
 include ../oad/cflags
 endif
 
-items_prefix=../src/
-include ../src/items
+backsrc=../src/
+
+logs_prefix=${backsrc}
+include ${backsrc}items
 exte=libexte.a
 proj=libactionswf.so
 
+items_prefix=${backsrc}
 $(eval xfiles = )
 $(foreach var,$(expitems),$(eval xfiles += ${items_prefix}${var}.e.oc.x))
 $(foreach var,$(items),$(eval xfiles += ${items_prefix}${var}.oc.x))
@@ -43,18 +46,19 @@ all: headers ${proj}
 #can't put headers at proj, will phony libactionswf.so
 ${proj}: ${exte} ${eobs}
 	${OLINK} ${logs}
-	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ -L. -l:${exte} -e DllMain -Wl,--exclude-libs=${exte}
+	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ -L. -l:${exte} -Wl,--exclude-libs=${exte}
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
+# -e DllMain
 
 headers:
 	$(MAKE) -C ../include
 	$(MAKE) -C ../dev flags.h action_swf.h
 
-%.o: %.oc
+%.o: ${backsrc}%.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
-	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c -o $@
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} ${backsrc}$*.c -o $@
 
 clean:
 	$(MAKE) -C ../include clean

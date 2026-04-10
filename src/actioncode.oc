@@ -268,7 +268,7 @@ function action_null_compare(ss command)
 	callret strcmp("null",command) #int datax compare#1
 end
 
-import "ret_cont_break" ret_cont_break
+^import "ret_cont_break" ret_cont_break #full
 import "brace_blocks_counter_inc" brace_blocks_counter_inc
 import "cond_blocks_at_index" cond_blocks_at_index
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
@@ -325,8 +325,8 @@ endfunction
 
 import "action_push" action_push
 import "action_one" action_one
-import "action_member_loop_left" action_member_loop_left
-import "action_member_loop_right" action_member_loop_right
+^import "action_member_loop_left" action_member_loop_left 1 #full
+^import "action_member_loop_right" action_member_loop_right 1 #full
 import "brace_blocks_add_write" brace_blocks_add_write
 import "brace_blocks_add_write_offset" brace_blocks_add_write_offset
 import "brace_blocks_remove_write" brace_blocks_remove_write
@@ -591,7 +591,7 @@ function action_code_write_conditions(sd codepointer)
 			#
 			sd attr2;set attr2 codepointer#;add codepointer (DWORD)
 			if attr2=(ActionSetMember)
-				setcall codepointer action_member_loop_left(codepointer,(NULL))
+				setcall codepointer action_member_loop_left(codepointer) #,(NULL))
 			else
 				#var or set variable
 				sd newname;set newname action_code_get_pointer(#codepointer)
@@ -1061,36 +1061,36 @@ endfunction
 
 #codepointer
 function action_code_right_number(sd codepointer)
-    if codepointer#=(parenthesis_start)
-        add codepointer (DWORD)
+	if codepointer#=(parenthesis_start)
+		add codepointer (DWORD)
 		callret action_code_right_util(codepointer)
-    endif
-    if codepointer#=(call_action_right)
+	endif
+	if codepointer#=(call_action_right)
 		callret action_code_write_function_call(codepointer,(TRUE))
-    endif
-    sd attrib;sd var
-    set attrib codepointer#
-    add codepointer (DWORD)
-    if attrib=(ActionGetMember)
-        setcall codepointer action_member_loop_right(codepointer)
-    else
-        if attrib=(ActionGetVariable)
-		set var action_code_get_pointer(#codepointer)
-            call action_one_command(var)
-        elseif attrib=(ap_Double)
-		sd high;set high codepointer#;add codepointer (DWORD)
-		call action_push(attrib,high,codepointer#)
-		add codepointer (DWORD)
-        elseif attrib=(ap_Integer)
-		call action_push(attrib,codepointer#)
-		add codepointer (DWORD)
-        else
-        #ap_Constant8
-		set var action_code_get_pointer(#codepointer)
-		call action_push(attrib,var)
-        endelse
-    endelse
-    return codepointer
+	endif
+	sd ?attrib;sd var
+	set attrib codepointer#
+	add codepointer (DWORD)
+	if attrib=(ActionGetMember)
+		setcall codepointer action_member_loop_right(codepointer)
+	else
+		if attrib=(ActionGetVariable)
+			set var action_code_get_pointer(#codepointer)
+			call action_one_command(var)
+		elseif attrib=(ap_Double)
+			sd high;set high codepointer#;add codepointer (DWORD)
+			call action_push(attrib,high,codepointer#)
+			add codepointer (DWORD)
+		elseif attrib=(ap_Integer)
+			call action_push(attrib,codepointer#)
+			add codepointer (DWORD)
+		else
+			#ap_Constant8
+			set var action_code_get_pointer(#codepointer)
+			call action_push(attrib,var)
+		endelse
+	endelse
+	return codepointer
 endfunction
 function action_one_command(ss command)
 	datax compare#1

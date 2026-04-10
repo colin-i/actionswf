@@ -324,8 +324,8 @@ function debug_x_expand(sd values)
 	end
 end
 
-import "action_caller_right" action_caller_right
-import "action_member_loop_right" action_member_loop_right
+^import "action_caller_right" action_caller_right 2 #full
+^import "action_member_loop_right" action_member_loop_right 1
 #codepointer
 function x_call(sv pmember,sv pfname,sv codepointer)
 	if globalx.xmem!=(NULL)
