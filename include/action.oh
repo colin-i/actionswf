@@ -36,7 +36,7 @@ const for=0xfe0EE0e0                  #1
 const label=0xff0FF0f0                #L
 
 const no_flag=0                        #code only
-const consecutive_flag=0x80<<24        #parse only
+const consecutive_flag=0x80000000      #parse only
 const skip_flag=0x80<<24               #code only
 const brace_blocks_function=0x7fFFffFF #code only
 

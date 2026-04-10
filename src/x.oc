@@ -195,7 +195,9 @@ function x_init(sd ?flags,sd path)
 				call sprintf(b,"%s.xx",path)
 				set globalx.xflog f_open_mem(b,"wb")
 			end
-			and flags (~antix_read)
+			sd ?a=antix_read  #can't put ~antix_read because at c will expand in another way than at o
+			not a
+			and flags a
 		end
 	end
 	return flags

@@ -214,7 +214,7 @@ import "x_init" x_init
 ^import "f_open_mem_ex" f_open_mem_ex 2
 ^import "strlen_of" strlen_of 2
 
-function flags_init(sd flags,ss path) #this order is copied in a comment at flags.oh
+function flags_init(sd ?flags,ss path) #this order is copied in a comment at flags.oh
 	set flags pool_init(flags)
 	set flags x_init(flags,path)
 	set flags log_init(flags,path)

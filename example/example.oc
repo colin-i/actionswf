@@ -130,5 +130,7 @@ call swf_done()
 
 call actions_free(a_c)
 
-call exit(0)
+sd ?er
+set er erbool_get()
+call exit(er)
 #return 0
