@@ -146,11 +146,11 @@ const shl=Lessthan
 const sar_shr=Greaterthan
 const ifElse_sign=Questionmark
 #pointer
-function action_code_row(ss ac,sd a_block_detected)
+function action_code_row(ss ac,ss ?a_block_detected)
 	callret action_code_row_ex(ac,a_block_detected,-1)
 endfunction
 #pointer
-function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
+function action_code_row_ex(ss ac,ss ?a_block_detected,sd ?else_index)
 	ss p;set p action_code_row_ex_wrap(ac,a_block_detected,else_index)
 	if p#=(Slash)
 		inc p
@@ -164,7 +164,7 @@ function action_code_row_ex(ss ac,sd a_block_detected,sd else_index)
 end
 import "debug_phase_parse" debug_phase_parse
 #pointer
-function action_code_row_ex_wrap(ss ac,sd a_block_detected,sd else_index)
+function action_code_row_ex_wrap(ss ac,ss ?a_block_detected,sd ?else_index)
     sv p_c
     setcall p_c debug_code()
     set p_c# ac
@@ -311,7 +311,7 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         return cursor
 endfunction
 #pointer
-function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
+function action_code_row_parse(ss ac,ss ?a_block_detected,sd ?else_index)
 	if ac#=(Openingbrace)
         if a_block_detected=(FALSE)
             call brace_blocks_add_parse((normal_marker))
@@ -334,7 +334,7 @@ function action_code_row_parse(ss ac,sd a_block_detected,sd else_index)
     return ac
 endfunction
 #pointer
-function else_verify(ss ac,sd else_index)
+function else_verify(ss ac,sd ?else_index)
 	#this condition for: else >expression<
 	if globalp.counter>else_index
 		call brace_blocks_remove_parse()
@@ -827,7 +827,7 @@ function brackets_test(ss pointer)
 	return pointer
 endfunction
 
-import "str_escape" str_escape
+^import "str_escape" str_escape 3 #full
 #next/0
 function action_code_str(ss ac)
     sd delim

@@ -270,9 +270,9 @@ end
 
 ^import "ret_cont_break" ret_cont_break #full
 import "brace_blocks_counter_inc" brace_blocks_counter_inc
-import "cond_blocks_at_index" cond_blocks_at_index
+^import "cond_blocks_at_index" cond_blocks_at_index 1 #full
 import "brace_blocks_counter_dec" brace_blocks_counter_dec
-import "cond_blocks_noerror" cond_blocks_noerror
+^import "cond_blocks_noerror" cond_blocks_noerror #full
 import "debug_phase_code_remove" debug_phase_code_remove
 import "flag_noDup_get" flag_noDup_get
 import "x_pointer_twice_set" x_pointer_twice_set
@@ -281,7 +281,7 @@ import "label_resolve" label_resolve
 
 #aftercallimport ebool
 
-import "cond_blocks" cond_blocks
+^import "cond_blocks" cond_blocks #full
 import "debug_phase_code" debug_phase_code
 import "debug_definefunction" debug_definefunction
 import "debug_concludefunction" debug_concludefunction
@@ -471,7 +471,7 @@ function action_code_pack(sdu codepointer)
 		call action_push((ap_Constant8),name)
 	endelse
 	if need_right=(TRUE)
-		sd f
+		sd ?f
 		if codepointer#=(ActionIncrement)
 			add codepointer (DWORD)
 			set f flag_noDup_get()
@@ -1139,7 +1139,9 @@ function action_definefunction(sd codepointer)
 	call debug_phase_code(codepointer)
 
 	#a function marker for return and for..in case
-	sd block;setcall block cond_blocks();set block# (brace_blocks_function);call brace_blocks_counter_inc()
+	sd block;setcall block cond_blocks()
+	set block# (brace_blocks_function)
+	call brace_blocks_counter_inc()
 	#
 	call brace_blocks_add_write()
 	#
@@ -1162,22 +1164,22 @@ function action_definefunction(sd codepointer)
 endfunction
 #codepointer
 function action_deffunction(sv codepointer,sv debug_related)
-    ss fn_name
+	ss fn_name
 	set fn_name action_code_get_pointer(#codepointer)
 
-    sd fn_name_size
-    setcall fn_name_size strlen(fn_name)
-    inc fn_name_size
-    #
-    sd fn_size
-    set fn_size fn_name_size
-    const NumParams_size=2
-    const codeSize_size=2
-    add fn_size (NumParams_size+codeSize_size)
-    #
-    sd NumParams=0
-    sv args
-    set args codepointer
+	sv ?fn_name_size
+	setcall fn_name_size strlen(fn_name)
+	inc fn_name_size ## it cannot be for len_of, it was reallocated at comments remover
+	#
+	sv ?fn_size
+	set fn_size fn_name_size
+	const NumParams_size=2
+	const codeSize_size=2
+	add fn_size (NumParams_size+codeSize_size)
+	#
+	sd ?NumParams=0 #is ui16
+	sv args
+	set args codepointer
 	sd arg
 	while codepointer#!=(no_pointer)  #first time get for ACTIONRECORDHEADER.Length and NumParams
 		set arg action_code_get_pointer_touchless(#codepointer)
@@ -1185,13 +1187,13 @@ function action_deffunction(sv codepointer,sv debug_related)
 		inc fn_size
 		inc NumParams
 	endwhile
-    add codepointer :  #to pass the pointer
-    #
-    call actionrecordheader((ActionDefineFunction),fn_size)
-    call swf_actionblock_add(fn_name,fn_name_size)
-    call swf_actionblock_add(#NumParams,(NumParams_size))
-    #
-    sd wr_size
+	add codepointer :  #to pass the pointer
+	#
+	call actionrecordheader((ActionDefineFunction),fn_size)
+	call swf_actionblock_add(fn_name,fn_name_size)
+	call swf_actionblock_add(#NumParams,(NumParams_size))
+	#
+	sv ?wr_size
 	while args#!=(no_pointer)  #second time write to swf
 		set arg action_code_get_pointer(#args)
 		setcall wr_size strlen(arg)
@@ -1201,10 +1203,10 @@ function action_deffunction(sv codepointer,sv debug_related)
 	#get reg, not depending on brace blocks because } is closed in the loop there, for debug
 	call debug_definefunction(debug_related)
 	#
-    data dummyoffset=0
-    call swf_actionblock_add(#dummyoffset,(WORD))  #codeSize
-    #
-    return codepointer
+	data dummyoffset=0
+	call swf_actionblock_add(#dummyoffset,(WORD))  #codeSize
+	#
+	return codepointer
 endfunction
 
 entryraw global()

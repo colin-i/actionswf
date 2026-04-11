@@ -6,6 +6,7 @@ include "../include/prog.h" "../include/prog.oh"
 #multithread unsafe
 char dtbool#1
 dataxu func#1 #like ui32 swf size
+char frame_index={_0,_0,_0,_0,0,0,0,0,0} #id
 
 importx "sprintf" sprintf
 importx "memcpy" memcpy
@@ -46,10 +47,10 @@ function dtitles_conclude_record(sd mem,sd finalidstr)
 	ss cursor
 	set cursor mem
 	inc cursor           ##ACTIONRECORDHEADER ActionCode
-	sd Length
+	sd ?Length
 	set Length word_arg_to_stack(cursor)
 	add cursor (WORD)
-	sd Count
+	sd ?Count
 	set Count word_arg_to_stack(cursor)
 	add cursor (WORD)
 	if Count!=1
@@ -83,12 +84,12 @@ import "swf_actionblock_change_back" swf_actionblock_change_back
 import "actionpool_value_ex" actionpool_value_ex
 
 #here adds 0000X[X[X[X]]], if is root 0000 will be final, else is dummy now and will be sprite final id at conclude function
-function dtitles_frame(sd index)
+function dtitles_frame(swu ?index) #index is uword here, is checked
 	if globale.dtbool=(TRUE)
-		char format={_0,_0,_0,_0} #id
-		char frame_index#4+1      #index is uword here, is checked
-		call sprintf(#frame_index,"%X",index)
-		call actionpool_value_ex(#format,(TRUE))  #force the write because debugger will look at the last pool constant there
+		ss p=4
+		add p #globale.frame_index
+		call sprintf(p,"%X",index)
+		call actionpool_value_ex(#globale.frame_index,(TRUE))  #force the write because debugger will look at the last pool constant there
 	end
 end
 function dtitles_frame_one(sd preid,sd finalid) #is called at swf_sprite_done and swf_button

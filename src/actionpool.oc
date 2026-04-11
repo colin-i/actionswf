@@ -223,7 +223,6 @@ import "swf_mem_add" swf_mem_add
 import "error" error
 import "x_log_const" x_log_const
 import "x_log_id" x_log_id
-^import "len_of" len_of 2 #full
 #pool id
 function actionpool_getvalue_ex(ss value,sd ?force)
 	sd block
@@ -297,7 +296,7 @@ function actionpool_getvalue_ex(ss value,sd ?force)
 		inc count
 		call stack_to_word_arg(count,mem)
 	endelse
-	set newlen len_of(newlen,1) #afraid of overflows #inc newlen
+	inc newlen  ## it cannot be for len_of, it was reallocated at comments remover
 	call swf_mem_add(value,newlen)
 	return nr
 endfunction
