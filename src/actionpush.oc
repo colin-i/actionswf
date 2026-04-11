@@ -7,7 +7,7 @@ include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
 value mem=NULL
-dataxu size#1    #same as debug_data, and here is from x values, keeping a maxuint16 action code
+dataxu msize#1    #same as debug_data, and here is from x values, keeping a maxuint16 action code
 dataxu allsize#1
 
 import "mem_free" mem_free
@@ -28,11 +28,11 @@ import "swf_actionblock_add" swf_actionblock_add
 
 function actionpush()
 #allmost all before action_one, but also before actionrecordheader( two examples: a=function (){} and a=1?2:3 )
-	if globalh.size!=0
-		call actionrecordheader_core((ActionPush),globalh.size)
-		call swf_actionblock_add(globalh.mem,globalh.size)
-		#this is already in actionrecordheader_core call debug_phase_code_add((TRUE),#globalh.size)
-		set globalh.size 0
+	if globalh.msize!=0
+		call actionrecordheader_core((ActionPush),globalh.msize)
+		call swf_actionblock_add(globalh.mem,globalh.msize)
+		#this is already in actionrecordheader_core call debug_phase_code_add((TRUE),#globalh.msize)
+		set globalh.msize 0
 	end
 end
 
@@ -45,11 +45,11 @@ import "error" error
 function push_init()
 	set globalh.allsize 1
 	set globalh.mem memalloc(1) #same
-	set globalh.size 0
+	set globalh.msize 0
 end
-function push_add_ex(sd ?size,sd ?value,ss ?type)
+function push_add_ex(sd ?size,sd value,ss ?type) #value can also be pointer
 	sd newsize
-	set newsize globalh.size
+	set newsize globalh.msize
 	add newsize size
 	if newsize>^(maxuint16)
 		call error("actionrecordheader too big")
@@ -60,13 +60,13 @@ function push_add_ex(sd ?size,sd ?value,ss ?type)
 		set globalh.mem memrealloc(globalh.mem,globalh.allsize)
 	end
 	sd mm;set mm globalh.mem
-	add mm globalh.size
+	add mm globalh.msize
 	if type=0
 		call memcpy(mm,#value,size)
 	else
 		call memcpy(mm,value,size)
 	end
-	set globalh.size newsize
+	set globalh.msize newsize
 end
 function push_add(sd ?size,sd ?value)
 	callg push_add_ex(size,value,0)
@@ -77,7 +77,7 @@ const float_double=-1
 function action_push(sd ?type,sd valuehigh,sd ?valuelow)
 	if type=(ap_Constant8)
 		#set the action pool(if isn't) and verify to add +1size if 8 will go to ap_Constant16
-		sd ?translated_id ;#not_an_id=-1
+		sw ?translated_id ;#not_an_id=-1 #at c, if swu, will not evaluate !=-1
 		setcall translated_id actionpool_value(valuehigh)
 		if translated_id!=(not_an_id)
 			if translated_id<=0xff
@@ -89,7 +89,7 @@ function action_push(sd ?type,sd valuehigh,sd ?valuelow)
 			end
 		else
 			call push_add((BYTE),(ap_String))
-			sd size=1;add size strlen(valuehigh)
+			sd ?size=1;add size strlen(valuehigh)
 			call push_add_ex(size,valuehigh,1)
 		end
 	elseif type=(ap_Integer)

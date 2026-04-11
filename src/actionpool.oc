@@ -210,7 +210,7 @@ function actionpool_value(ss value)
 	callret actionpool_value_ex(value,(FALSE))
 end
 #pool id
-function actionpool_value_ex(ss value,sd force)
+function actionpool_value_ex(ss value,sd ?force)
 	swu ?nr
 	call swf_mem_change_pool(globalo.selid)
 	setcall nr actionpool_getvalue_ex(value,force)
@@ -223,14 +223,15 @@ import "swf_mem_add" swf_mem_add
 import "error" error
 import "x_log_const" x_log_const
 import "x_log_id" x_log_id
+^import "len_of" len_of 2 #full
 #pool id
-function actionpool_getvalue_ex(ss value,sd force)
+function actionpool_getvalue_ex(ss value,sd ?force)
 	sd block
 	setcall block actionpool_currentblock()
 	sdu ?size
 	setcall size block_get_size(block)
 	swu ?nr
-	sd newlen
+	sv ?newlen
 	setcall newlen strlen(value)
 	sss ?testboolid
 	if size=0
@@ -246,7 +247,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 				call x_log_const(value)
 			end
 		end
-		sd onevalue=1
+		sd ?onevalue=1
 		call swf_mem_add(#onevalue,2)
 		set nr 0
 	else
@@ -296,7 +297,7 @@ function actionpool_getvalue_ex(ss value,sd force)
 		inc count
 		call stack_to_word_arg(count,mem)
 	endelse
-	inc newlen
+	set newlen len_of(newlen,1) #afraid of overflows #inc newlen
 	call swf_mem_add(value,newlen)
 	return nr
 endfunction

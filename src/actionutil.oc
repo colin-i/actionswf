@@ -195,7 +195,7 @@ import "block_get_size" block_get_size
 function action_size(sd id)
     sd block
     setcall block struct_ids_action((ids_get),id)
-    sd size
+    sd ?size
     setcall size block_get_size(block)
     addcall size pool_size(id)
     #add termination
@@ -213,7 +213,7 @@ endfunction
 function pool_size(sd id)
     sd poolblock
     setcall poolblock struct_ids_actionpool((ids_get),id)
-    sd poolsize
+    sd ?poolsize
     setcall poolsize block_get_size(poolblock)
     #detected at button actions="", swfdump giving error without "if poolsize!=0"
     if poolsize=0;return 0;endif

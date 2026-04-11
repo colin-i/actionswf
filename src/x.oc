@@ -49,7 +49,7 @@ end
 
 ^import "action_debug" action_debug 1 #full return
 function x_pointer(sv pointer)
-	sd value
+	ss value
 	set value pointer#
 	if globalx.xfile!=(NULL)
 		sd mem;set mem action_debug((action_debug_get_mem))
@@ -67,7 +67,7 @@ function x_pointer(sv pointer)
 	return value
 end
 function x_pointer_touchless(sv pointer)
-	sd value
+	ss value
 	set value pointer#
 	if globalx.xmem!=(NULL)
 		add value globalx.xbase

@@ -129,9 +129,7 @@ endfunction
 function block_get_size(sd block)
 	sd ?size
 	setcall size struct_off(block,(mem_struct__size_off))
-	ss ?a=mem_struct_size
-	sub size a
-	#sub size (mem_struct_size) #this is not working at c macro expandings
+	sub size (mem_struct_size)
 	return size
 endfunction
 #psize

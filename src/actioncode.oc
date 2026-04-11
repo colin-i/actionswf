@@ -441,9 +441,9 @@ function action_code_pack(sdu codepointer)
 	set attrib codepointer#
 	add codepointer (DWORD)
 	#
-	sd is_member=FALSE
-	sd need_right=TRUE
-	sd need_pop=FALSE
+	ss ?is_member=FALSE
+	ss ?need_right=TRUE
+	ss ?need_pop=FALSE
 	if attrib=(ActionSetMember)
 		set is_member (TRUE)
 	elseif attrib=(ActionDelete)
