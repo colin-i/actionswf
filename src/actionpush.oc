@@ -52,7 +52,7 @@ function push_add_ex(sd ?size,sd value,ss ?type) #value can also be pointer
 	set newsize globalh.msize
 	add newsize size
 	if newsize>^(maxuint16)
-		call error("actionrecordheader too big")
+		call error("error at push size") #hard to demonstrate, an example is a='b'+'ceeeee...' that will stop at 0xffFF at constant pool and will be 1 byte extra at pool read
 	end
 	if newsize>^globalh.allsize
 		set globalh.allsize newsize
