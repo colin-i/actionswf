@@ -400,14 +400,17 @@ endfunction
 function pool_wr(sd id)
     sd poolblock
     setcall poolblock struct_ids_actionpool((ids_get),id)
-    sd poolsize
+    sd ?poolsize
     setcall poolsize block_get_size(poolblock)
     #detected at button actions="", swfdump giving error without "if poolsize!=0"
     if poolsize=0;return 0;endif
     sd poolmem
     setcall poolmem block_get_mem(poolblock)
-    call swf_actionrecordheader((ActionConstantPool),poolsize)
-    call swf_mem_add(poolmem,poolsize)
+	if poolsize>^(maxuint16)
+		call error("error at pool size")
+	end
+	call swf_actionrecordheader((ActionConstantPool),poolsize)
+	callg swf_mem_add(poolmem,poolsize)
 endfunction
 
 #format and alt
