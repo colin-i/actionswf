@@ -1082,15 +1082,15 @@ function brace_blocks_add_parse(sd ?type)
     call brace_blocks_counter_inc()
 endfunction
 function brace_blocks_remove_parse_else()
-    sd p_type
-    sd type
-    #
-	sd i
+	sd p_type
+	sd ?type
+	#
+	sd ?i
 	set i globalp.counter
 	dec i
-    setcall p_type cond_blocks_at_index(i)
-    set type p_type#
-    if type=(else_marker)
+	setcall p_type cond_blocks_at_index(i)
+	set type p_type#
+	if type=(else_marker)
         sd else_number=0
         while type=(else_marker)
             inc else_number
@@ -1105,7 +1105,7 @@ function brace_blocks_remove_parse_else()
         endwhile
         call action_code_set((block_else_end))
 		callg action_code_set(else_number)
-    endif
+	endif
 endfunction
 function brace_blocks_remove_parse() #else is at brace_blocks_remove_parse_else
 	sd p_type

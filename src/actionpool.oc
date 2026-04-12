@@ -225,13 +225,19 @@ import "x_log_const" x_log_const
 import "x_log_id" x_log_id
 #pool id
 function actionpool_getvalue_ex(ss value,sd ?force)
+	sv ?newlen
+	setcall newlen strlen(value)
+	# even with inc newlen it cannot be for len_of, it was reallocated at comments remover
+	if newlen>=^(maxuint16) #the problem when is long is that can be mem_added truncated and without a null and that can lead to sigsegv
+		#at this check can also subtract some headers but is extra
+		call error("error at pool value")
+	endif
+
 	sd block
 	setcall block actionpool_currentblock()
 	sdu ?size
 	setcall size block_get_size(block)
 	swu ?nr
-	sv ?newlen
-	setcall newlen strlen(value)
 	sss ?testboolid
 	if size=0
 	#is first value, add the pools header and count=1 , # before: actionpool_getvalue(the pool mem is already selected when it comes from the second  at push)
@@ -296,7 +302,7 @@ function actionpool_getvalue_ex(ss value,sd ?force)
 		inc count
 		call stack_to_word_arg(count,mem)
 	endelse
-	inc newlen  ## it cannot be for len_of, it was reallocated at comments remover
+	inc newlen
 	call swf_mem_add(value,newlen)
 	return nr
 endfunction
