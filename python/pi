@@ -1,4 +1,9 @@
 set -e
 cd python
+diff v2 ../../v2 && {
+	echo same python
+	exit 0
+}
 base=../ minor=x exit=0 ~/test/pyp/pypi
+cp v2 ../../v2
 cd ..
