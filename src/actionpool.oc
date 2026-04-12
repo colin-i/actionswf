@@ -264,7 +264,7 @@ function actionpool_getvalue_ex(ss value,sd ?force)
 		if force=(FALSE)
 			add mem (WORD)
 			while count!=0
-				sd len
+				sd ?len ;#is ok, entering low values since recent, don't need to inc mem
 				setcall len strlen(mem)
 				if len=newlen
 					datax comp#1

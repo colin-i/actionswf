@@ -106,13 +106,8 @@ function action_push(sd ?type,sd valuehigh,sd ?valuelow)
 		call push_add((BYTE),(ap_RegisterNumber))
 		call push_add((BYTE),valuehigh)
 	else #if type=(ap_Double)
-		sd f;set f floatcall(valuehigh,valuelow)
-		if f=(float_double)
-			call push_add((BYTE),(ap_Double))
-			call push_add((DWORD),valuehigh)
-			callg push_add((DWORD),valuelow)
-		end
-	end # string literal, float
+		callg floatcall(valuehigh,valuelow)
+	end
 endfunction
 
 function floatcall(sd ?h,sd ?l)
@@ -120,8 +115,11 @@ function floatcall(sd ?h,sd ?l)
 	if f!=(float_double)
 		call push_add((BYTE),(ap_Float))
 		call push_add((DWORD),f)
+	else
+		call push_add((BYTE),(ap_Double))
+		call push_add((DWORD),h)
+		callg push_add((DWORD),l)
 	end
-	return f
 end
 function floatconv(sd ?h,sd ?l)
 	sd ?sign=doubleH_sign
