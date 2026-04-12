@@ -262,7 +262,7 @@ function action_caller(ss member,sv pfname,sd codepointer)
 
 	call debug_x_preexpand_inter(codepointer)
 	if member!=0
-		sd currentnr
+		sd ?currentnr
 		sd p_currentnr
 		setcall p_currentnr action_code_values_index()
 		set currentnr p_currentnr#
@@ -283,7 +283,7 @@ endfunction
 #codepointer
 function action_caller_right(sv pfname,sd codepointer)
 	set pfname# action_code_get_pointer(#codepointer)
-	sd nrargs=0
+	sd ?nrargs=0
 	while codepointer#!=(args_end)
 		setcall codepointer action_code_right_util(codepointer)
 		inc nrargs

@@ -557,7 +557,7 @@ import "write_forward_offset" write_forward_offset
 function action_code_write_conditions(sd codepointer)
 	#verify for condition tag
 	sd infinite_guard
-	sd cond;set cond codepointer#
+	sd ?cond;set cond codepointer#
 	if cond=(for)
 		add codepointer (DWORD)
 		if codepointer#!=(for_three)
@@ -964,9 +964,9 @@ function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 	endif
 	return codepointer
 endfunction
-import "x_call" x_call
-import "debug_x_preexpand" debug_x_preexpand
-import "action_caller" action_caller
+^import "x_call" x_call 3 #full
+^import "debug_x_preexpand" debug_x_preexpand 1 #full
+^import "action_caller" action_caller 3
 #codepointer
 function action_code_new_or_call(sv codepointer,sv pmember)
 	sd fname

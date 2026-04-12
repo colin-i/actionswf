@@ -1198,7 +1198,7 @@ function write_forward_offset_base(sdu ?offset,ss ?skip_xlog,ss ?xlog_j)
 		callg debug_phase_code_add_jump_if(mem,xlog_j)
 	end
 endfunction
-function forward_jump_check(swu ?size) #is short is swf<x related to totalvalues
+function forward_jump_check(sd ?size) #is short is swf<x related to totalvalues #is swu but what if is going to 0x10000 at c?
 	if size>^0x7fFF
 		call error("offset>(signed word size) error")
 	endif
@@ -1241,14 +1241,14 @@ function brace_blocks_remove_write_jump() #here is only from endwhile (at while 
 	if globalp.type=(ret_cont_break_nothing)  #skip dead code
 		call add_dummy_jump()
 	end
-	sd skip_jump=0 ;#look to see top_marker and if is not forin, that has a different break than for3/while
-	sd ifs=0
+	sd ?skip_jump=0 ;#look to see top_marker and if is not forin, that has a different break than for3/while
+	sd ?ifs=0 #on cond blocks
 	call check_whilefor(#skip_jump,#ifs)
 	sd blocks
 	set blocks cond_blocks_noerror()
 	dec globalp.counter
 	sub blocks (DWORD)
-	sd offset;set offset blocks#
+	sd ?offset;set offset blocks#
 	if offset!=(top_marker) #can be whiletrue with no breaks (a return in a branch)
 		whiletrue
 			dec globalp.counter
@@ -1302,7 +1302,7 @@ function resolve_back_jump(sdu ?jumpoffset)  #also at continue
 	sd byte=0x0000ff00;and byte size;div byte 0x100
 	inc mem;set mem# byte
 endfunction
-function backward_jump_check(swu ?size) #for short same as forward check
+function backward_jump_check(sd ?size) #for short same as forward check # is swu, but o/c word missmatch
 	if size<^0xFFff8000
 	#if size>^0x8000
 		call error("offset>(signed word size) error (at jump back)")
