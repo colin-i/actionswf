@@ -16,7 +16,7 @@ if [ "${platform}" = "win" ]; then
 fi
 
 if [ ! -e ${etest} ]; then
-	${RUN__SHELL} ./a${what_a} || exit 1
+	${RUN__SHELL} ./a${what_a} ${g} || exit 1
 	if [ -n "${rd}" ]; then
 		read -t $((60*60*24))
 	fi
