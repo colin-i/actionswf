@@ -95,7 +95,7 @@ import "f_write" f_write
 import "mem_block_add" mem_block_add
 import "debug_xlog_pool" debug_xlog_pool
 
-function pool_entry(sd nr)
+function pool_entry(sd ?nr)
 	sd pb;set pb struct_ids_actionpool_filter((ids_get_pointer),globalo.selid)
 	char a=constpool_unique
 	call mem_block_add(pb,#a,1)
@@ -120,14 +120,14 @@ function pool_reentry(sd offset)
 	callg error("error at pool read")
 end
 const pool_cursor_size=mem_struct__size_size
-function pool_read(sd id,sd frame_nr)
+function pool_read(sd ?id,sd ?frame_nr)
 	if globalo.dataread!=(FALSE)
 		sv pb;set pb struct_ids_actionpool_filter((ids_get_pointer),id)
 		call block_reset_size(pb#)  #if is after a read is ok, else is useless
 		data cursor=pool_cursor_size
 		call mem_block_add(pb,#cursor,(pool_cursor_size))  #if is first and after a read is ok, else is useless
 
-		sd name;set name pool_savepath(id,frame_nr)
+		ss name;set name pool_savepath(id,frame_nr)
 		dataxu acs#1
 		set acs access(name,(R_OK))
 		if acs=0
@@ -177,7 +177,7 @@ function pool_done_write(sd ?id,sd ?frame_nr)
 		call block_reset_size(b)
 	end
 end
-function pool_done(sd id,sd frame_nr)
+function pool_done(sd ?id,sd ?frame_nr)
 	if globalo.datawrite!=(FALSE)
 		callg pool_done_write(id,frame_nr)
 		ret
@@ -195,7 +195,7 @@ function pool_savepath_init(sd a)
 	set globalo.svpath a
 	set globalo.svsize strlen_of(globalo.svpath,(ext_str_len)) #size_t is ulong
 end
-function pool_savepath(sd id,sd fr)
+function pool_savepath(sd ?id,sd ?fr)
 	sd m;set m memalloc(globalo.svsize)
 	if fr!=-1
 		call sprintf(m,"%s.%u.%u",globalo.svpath,id,fr)

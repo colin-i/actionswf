@@ -160,7 +160,7 @@ endfunction
 
 #pointer
 
-function move_to_n_pointer(sd pointer,sd id)
+function move_to_n_pointer(sd pointer,sdu ?id)
     mult id :
     add pointer id
     return pointer
@@ -545,7 +545,7 @@ function struct_ids_free_all()
 		endif
 	endwhile
 end
-function struct_ids(sd proc,sd ?ident)
+function struct_ids(sd ?proc,sd ?ident)
 	sv pointer
 	setcall pointer move_to_n_pointer(#globalt.structures,ident)
 	if proc=(ids_get)
@@ -588,7 +588,7 @@ function struct_ids(sd proc,sd ?ident)
 	call mem_free(pointer)
 	#endelse
 endfunction
-function struct_ids_action(sd proc,sd id)
+function struct_ids_action(sd ?proc,sd ?id)
 	sd v
 	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#globalt.action_structures)
@@ -597,7 +597,7 @@ function struct_ids_action(sd proc,sd id)
 	end
 	return v
 endfunction
-function struct_ids_actionpool(sd proc,sd id)
+function struct_ids_actionpool(sd ?proc,sd ?id)
 	sd v
 	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#globalt.actionpool_structures)
@@ -606,7 +606,7 @@ function struct_ids_actionpool(sd proc,sd id)
 	end
 	return v
 endfunction
-function struct_ids_actionpool_filter(sd proc,sd id)
+function struct_ids_actionpool_filter(sd ?proc,sd ?id)
 	sd v
 	if globalt.ainit_bool=(xlog_ainit_false)
 		set v struct_ids_expand(proc,id,#globalt.actionpool_filter_structures)
@@ -615,7 +615,7 @@ function struct_ids_actionpool_filter(sd proc,sd id)
 	end
 	return v
 endfunction
-function struct_ids_expand(sd proc,sd id,sd p_action_structures)
+function struct_ids_expand(sd ?proc,sd ?id,sd p_action_structures)
 	sv pointer;setcall pointer move_to_n_pointer(p_action_structures,id)
 	if proc=(ids_get)
 		return pointer#
@@ -633,13 +633,13 @@ function struct_ids_expand(sd proc,sd id,sd p_action_structures)
 		call free(pointer#)
 	endelse
 endfunction
-function struct_ids_action_set(sd id,sd ainitvalue)
+function struct_ids_action_set(sd ?id,ss ?ainitvalue)
 	call is_ainit(ainitvalue)
 	call struct_ids_action((ids_set),id)
 	# is next and is set (NULL) inside. sv p;set p struct_ids_actionpool((ids_get_pointer),id);set p# (NULL)
 	callg struct_ids_actionpool_set(id)
 end
-function struct_ids_actionpool_set(sd id)
+function struct_ids_actionpool_set(sd ?id)
 	call struct_ids_actionpool((ids_set),id)
 	callg struct_ids_actionpool_filter((ids_set),id) #flag_pool is almost default
 end

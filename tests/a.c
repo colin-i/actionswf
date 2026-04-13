@@ -35,10 +35,12 @@ int main(int argc,char**argv){
 
 	int f;
 	if(argc==1)f=prexx_flags|flagpre_x_pad|flagpre_write_no;
-	else{
-		puts("xxu_flags flag_titles");
+	else if(argc==2){
 		f=xxu_flags|flag_titles;
+	}else{
+		sscanf(argv[2],"%x",&f);
 	}
+	printf("%x\n",f);
 
 	swf_new_ex("a.swf",0x80,0x80,0x050607,2,f);
 	action(text("./aoc/a"));
