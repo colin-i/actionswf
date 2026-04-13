@@ -159,7 +159,7 @@ function memhex_parse_withinc(ss start,swu out)
 			if nr<=(NineChar)
 				sub nr (ZeroChar)
 			else
-				sub nr (A+10)
+				sub nr (A-10)
 			end
 			mult nr n
 			add out# nr

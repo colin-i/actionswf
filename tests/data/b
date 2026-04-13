@@ -1,4 +1,4 @@
 cd ../../oad && \
-./md && \
+./md${local} && \
 cd ../tests/data && \
-./test${test}
+./test

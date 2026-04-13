@@ -15,6 +15,6 @@ reln example.swf.data32.txt
 
 if [ -n "${mirror}" ]; then git pull local master; fi && \
 if [ -z "${1}" ]; then make clean && cd dev && make && cd ../src && ./mr32d && cd ../example && ./mr32d && cd ..; fi && \
-cd ./tests/data && CC=arm-linux-gnueabihf-gcc test=32 ./b
+cd ./tests/data && CC=arm-linux-gnueabihf-gcc ./b
 
 # libc6:armhf gcc-arm-linux-gnueabihf
