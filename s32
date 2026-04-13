@@ -9,9 +9,12 @@ reln () {
 	fi
 }
 reln a.swf.x32.txt
+reln a.swf.xx32.txt
 reln data32.txt
 reln example.swf.data32.txt
 
 if [ -n "${mirror}" ]; then git pull local master; fi && \
-if [ -z "${1}" ]; then make clean && cd src && ./mr32d && cd ../example && ./mr32d && cd ..; fi && \
-cd ./tests/data && CC=arm-linux-gnueabihf-gcc test=32r ./b
+if [ -z "${1}" ]; then make clean && cd dev && make && cd ../src && ./mr32d && cd ../example && ./mr32d && cd ..; fi && \
+cd ./tests/data && CC=arm-linux-gnueabihf-gcc test=32 ./b
+
+# libc6:armhf gcc-arm-linux-gnueabihf

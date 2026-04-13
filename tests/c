@@ -5,7 +5,9 @@ if [ -z "${1}" ]; then
 	rm -f a.o a.out a.swf a.swf.x a.swf.log a.swf.xx
 	if [ -e .expected/a.swf ]; then rm .expected/a.swf; fi
 	if [ -e .expected/a.swf.x ]; then rm .expected/a.swf.x; fi
+	if [ -e .expected/a.swf.xx ]; then rm .expected/a.swf.xx; fi
 	if [ -e .expected/a.swf.x32 ]; then rm .expected/a.swf.x32; fi
+	if [ -e .expected/a.swf.xx32 ]; then rm .expected/a.swf.xx32; fi
 else
 	. ./integ && {
 		. ./xxd
@@ -67,6 +69,12 @@ else
 		if [ $? != 0 ]; then
 			if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
 			smart_ask .x${v} .x
+		fi
+		base64 -d .expected/a.swf.xx${v}.txt > .expected/a.swf.xx${v} || { echo not ok; exit 1; }
+		smart_diff .expected/a.swf.xx${v} a.swf.xx
+		if [ $? != 0 ]; then
+			if [ ${1} != 0 ]; then { echo not ok; exit 1; } fi
+			smart_ask .xx${v} .xx
 		fi
 
 		smart_diff .expected/a.swf.log a.swf.log x
