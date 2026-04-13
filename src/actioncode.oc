@@ -793,15 +793,15 @@ function action_code_else_resolve(sd flag)
 	call brace_blocks_add_write_offset((smallbackjump),flag)
 endfunction
 function action_code_conditions_end(sd codepointer)
-    add codepointer (DWORD)
-    sd number_of_unclosed
-    set number_of_unclosed codepointer#
-    add codepointer (DWORD)
+	add codepointer (DWORD)
+	sd ?number_of_unclosed
+	set number_of_unclosed codepointer#
+	add codepointer (DWORD)
 	while number_of_unclosed>^0
 		call brace_blocks_remove_write_ex()
 		dec number_of_unclosed
 	endwhile
-    return codepointer
+	return codepointer
 endfunction
 
 #codepointer

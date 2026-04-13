@@ -40,15 +40,15 @@ else
 			echo y \? m \?; read -n1 -t $((60*60*24)) ans
 			if [ "${ans}" = "m" ]; then
 				if [ -z "${1}" ]; then
-					swfdump -D .expected/a.swf${1} > 1
-					swfdump -D a.swf${2} > 2
+					swfdump -Dd .expected/a.swf${1} > 1
+					swfdump -Dd a.swf${2} > 2
 				else
 					xxd${xxd_args}.expected/a.swf${1} > 1
 					xxd${xxd_args}a.swf${2} > 2
 				fi
 				diff 1 2
-				rm 1 2
 				echo y \?; read -n1 -t $((60*60*24)) ans
+				rm 1 2
 			fi
 			if [ "${ans}" != "y" ]; then { echo not ok; exit 1; } fi
 			base64 a.swf${2} > .expected/a.swf${1}.txt #this is ok with ln

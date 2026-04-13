@@ -595,34 +595,35 @@ functionX swf_exports_add(sd ?id,ss name)
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
 #sd id
 #ss name       name to be used at the actionscript
-    sd exports
-    setcall exports exportsId_get()
-    #
-    call swf_mem((mem_exp_change),exports)
-    #
-    sd block
-    setcall block struct_ids((ids_get),exports)
-    sd size
-    setcall size block_get_size(block)
-    sd counter
-    if size=0
-        set counter 1
-        call swf_mem_add(#counter,(WORD))
-    else
-        sd mem
-        setcall mem block_get_mem(block)
-        setcall counter word_arg_to_stack(mem)
-        inc counter
-        call stack_to_word_arg(counter,mem)
-    endelse
-    #
-    call swf_mem_add(#id,(WORD))
-    sd len
-    setcall len strlen(name)
+	sd ?exports
+	setcall exports exportsId_get()
+	#
+	call swf_mem((mem_exp_change),exports)
+	#
+	sd block
+	setcall block struct_ids((ids_get),exports)
+	sd ?size
+	setcall size block_get_size(block)
+	sd ?counter
+	if size=0
+		set counter 1
+		call swf_mem_add(#counter,(WORD))
+	else
+		sd mem
+		setcall mem block_get_mem(block)
+		setcall counter word_arg_to_stack(mem)
+		inc counter
+		call stack_to_word_arg(counter,mem)
+	endelse
+	#
+	call swf_mem_add(#id,(WORD))
+	sv ?len
+	setcall len strlen(name) #here can be a problem on a great string but ExportAssets has only a counter and some id/string pairs, the error is visible
+	#	can work more here if wanting all good
 	call debug_export(id,name,len)
-    inc len
-    call swf_mem_add(name,len)
-    #
+	inc len
+	call swf_mem_add(name,len)
+	#
 	call swf_mem_change_back()
 endfunction
 import "swf_exports_done_local" swf_exports_done_local

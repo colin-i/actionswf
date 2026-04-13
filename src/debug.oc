@@ -124,9 +124,9 @@ endfunction
 importx "sprintf" sprintf
 importx "memcpy" memcpy
 
-function md_printf(sd c,sd format,sd val) #to not write null on unknown
+function md_printf(sd c,sd format,sd ?val) #to not write null on unknown
 	char mem#5
-	sd n;set n sprintf(#mem,format,val)
+	ss ?n;set n sprintf(#mem,format,val)
 	call memcpy(c,#mem,n)
 	return n
 end
@@ -332,7 +332,7 @@ function debug_phase_code(sd codepointer)
 		endif
 	endif
 endfunction
-function debug_phase_code_flush_part(sd sz)
+function debug_phase_code_flush_part(sd ?sz)
 	call f_write(globald.dfile,globald.dmem,sz)
 	char a=xlog_nl
 	callg f_write(globald.dfile,#a,1)
@@ -399,7 +399,7 @@ function debug_show(sd ?id)
 		end
 	end
 end
-function debug_write(ss s,sd d)
+function debug_write(ss s,ss ?d)
 	call f_write(globald.dfile,s,d)
 	if globald.dfile2!=(NULL)
 		callg f_write(globald.dfile2,s,d)
@@ -429,7 +429,7 @@ end
 
 function debug_phase_code_add(ss ?is_long,ss arg2,ss ?delim)
 	call debug_phase_code_flush()  #since Slash, function c(){\n} , will also add empty row but with one .
-	sd sz;set sz globald.dsize
+	sd ?sz;set sz globald.dsize
 	if is_long=(TRUE)
 		add sz (action_debug_comma+2+2)
 	else
@@ -445,7 +445,7 @@ function debug_phase_code_add(ss ?is_long,ss arg2,ss ?delim)
 	if is_long=(TRUE)
 		set m# delim
 		inc m
-		sd here_sz
+		sd ?here_sz
 		ss second=1
 		add second arg2
 		if second#!=0
@@ -455,7 +455,7 @@ function debug_phase_code_add(ss ?is_long,ss arg2,ss ?delim)
 			call md_printf(m,"%02X",arg2#)
 		else
 			set here_sz md_printf(m,"%X",arg2#)  #only 0 is also printed
-			sub here_sz 2+2
+			sub here_sz ((2+2)) # () until will decide at c what to expand
 		end
 		add sz here_sz   ##is +0 or -1[+-1]  and for the else is -2 -3
 	else
@@ -484,7 +484,7 @@ function debug_phase_code_add_if(ss ?is_long,ss arg2)
 		callg debug_phase_code_add(is_long,arg2,(xlog_act))
 	endif
 endfunction
-function debug_phase_code_remove(sd swflength,sd length)
+function debug_phase_code_remove(sd ?swflength,sd ?length)
 	sd memblock;set memblock swf_actionblock_get()
 	sd p;set p block_get_psize(memblock)
 	sub p# swflength
@@ -525,10 +525,10 @@ function debug_concludefunction(sv pointers)
 		sd block;setcall block swf_actionblock_get()
 		sd blockmem;set blockmem block_get_mem(block)
 		add blockmem pointers#d^
-		sd size;set size word_arg_to_stack(blockmem)
+		sd ?size;set size word_arg_to_stack(blockmem)
 		incst pointers
 
-		sd offset;set offset pointers#d^
+		sd ?offset;set offset pointers#d^
 		vstr format="%04X"
 		if prev_fileoffset!=now   ##often case where the function has multiple lines, now line is on the file and not in mem
 			add prev_fileoffset 2 # * from the start of the row and first digit
@@ -561,7 +561,7 @@ function debug_concludefunction(sv pointers)
 end
 
 import "x_log" x_log
-function debug_xlog_ex(sd codepointer,sd type)
+function debug_xlog_ex(sd codepointer,sd ?type)
 	if globald.prexx=(prexx_flags)
 		call debug_phase_code_add_one(type)
 	else
@@ -581,7 +581,7 @@ function debug_xlog_stepout(sd codepointer) #}
 # for;;[ func}[ :}[
 	callg debug_xlog_ex(codepointer,(xlog_innerbranchend))
 end
-function debug_xlog_pool(sd nr) #pool_flag is already tested
+function debug_xlog_pool(sd ?nr) #pool_flag is already tested
 	if globald.prexx=(prexx_flags)
 		if nr<256  #at oad when is reading the log, it has constant8/constant16, after pool substitutions in the second swf, it is another lookup with string/c8/c16, must recalculate
 		#at write to xx, new can compare ssize and id has the word nr < or >= 256

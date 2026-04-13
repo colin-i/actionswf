@@ -658,21 +658,21 @@ endfunction
 
 function swf_exports_done_local()
 #write all the exports to the swf
-    sd exports
-    setcall exports exportsId_get()
-    sd block
-    setcall block struct_ids((ids_get),exports)
-    sd size
-    setcall size block_get_size(block)
-    if size!=0
-        #
-        call swf_tag_recordheader_entry((ExportAssets),size)
-        #
-        sd exp
-        setcall exp block_get_mem(block)
-        call swf_mem_add(exp,size)
-        call block_reset_size(block)
-    endif
+	sd ?exports
+	setcall exports exportsId_get()
+	sd block
+	setcall block struct_ids((ids_get),exports)
+	sd ?size
+	setcall size block_get_size(block)
+	if size!=0
+		#
+		call swf_tag_recordheader_entry((ExportAssets),size)
+		#
+		sd exp
+		setcall exp block_get_mem(block)
+		call swf_mem_add(exp,size)
+		call block_reset_size(block)
+	endif
 endfunction
 
 

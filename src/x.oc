@@ -165,7 +165,7 @@ function x_init(sd ?flags,sd path)
 	sd ?test=flags_x
 	and test flags
 	if test!=0
-		sd size;setcall size strlen_of(path,2+1)
+		sv ?size;setcall size strlen_of(path,2+1)
 		sd b;setcall b memalloc(size)
 		call sprintf(b,"%s.x",path)
 
@@ -210,7 +210,7 @@ function debug_x_pointers(svu strt,svu sz)
 
 		ss ?pad
 		sub globalx.dbxsize globalx.dbxstart
-		inc globalx.dbxsize  ##is on last \0
+		add globalx.dbxsize 1 ##is on last \0
 		if globalx.xflag=(flagpre_x_pad)
 			set globalx.mark f_tell(globalx.xfile) #long
 			add globalx.mark (xlog_strings_size)
@@ -245,7 +245,8 @@ function debug_x_pointers(svu strt,svu sz)
 		end
 		set globalx.mark f_tell(globalx.xfile)
 		call f_write(globalx.xfile,globalx.dbxstart,globalx.dbxsize)  #write now? is not ready ..str\0.. . the system will write something anyway and if error is good for visual debug, and fseek needs an extra check with this size that can have 0x10000 one string * multiple pointers
-		char zero={0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,   0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #47 pad is maximum
+#this is ok with word wrap on 1920x1028
+char zero={0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,                       0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,                       0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,                       0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0,0,    0,0,0,0, 0,0,0,0,  0,0,0,0, 0,0,0} #max is 255
 		if globalx.xflag=(flagpre_x_pad)
 			if pad!=0
 				call f_write(globalx.xfile,#zero,pad)
@@ -257,7 +258,7 @@ function debug_x_pointers(svu strt,svu sz)
 	end
 end
 
-function debug_x_base(sd mem,sd size)
+function debug_x_base(sd mem,sd ?size)
 	#already wrote
 	sub size globalx.xsize
 	add mem globalx.xsize
@@ -265,10 +266,10 @@ function debug_x_base(sd mem,sd size)
 	call f_write(globalx.xfile,mem,size)
 	add globalx.xsize size
 end
-function debug_x(sd mem,sd nr)
+function debug_x(sd mem,sd ?nr)
 	sd vb;set vb verbose_get()
 	if vb!=(flag_none)
-		if nr>globalx.verb
+		if nr>^globalx.verb
 			set globalx.verb nr
 			call printf("action .x peak: %hu\n",globalx.verb) # totalvalues = 0xffFF
 		end
@@ -340,13 +341,13 @@ function x_call(sv pmember,sv pfname,sv codepointer)
 	return codepointer
 end
 
-function x_log_val(sd type,sd size,sd val)
+function x_log_val(sd ?type,sd ?size,sd val)
 	call f_write(globalx.xflog,#type,(xlog_type_size))
 	if size!=0
 		callg f_write(globalx.xflog,#val,size)
 	end
 end
-function x_log_id(sd type,sd val)
+function x_log_id(sd ?type,sd val)
 	if globalx.xflog!=(NULL)
 		callg x_log_val(type,(xlog_id_size),val)
 	end
@@ -354,7 +355,7 @@ end
 function x_log_const(sd offset)
 	callg x_log_string((xlog_new),offset)
 end
-function x_log_string(sd type,sd offset)
+function x_log_string(sd ?type,sd offset)
 	if globalx.xflog!=(NULL) #flag_pool_read is already tested
 		sub offset globalx.xbase
 		callg x_log_val(type,(xlog_unique_new_size),offset)
