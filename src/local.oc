@@ -2,6 +2,7 @@
 format elfobj64
 
 include "../include/prog.h" "../include/prog.oh"
+include "../include/throw.h" "../include/throw.oh"
 
 import "identifiers_set" identifiers_set
 import "stack_to_word_arg" stack_to_word_arg
@@ -27,11 +28,13 @@ import "swf_actionblock_change_back" swf_actionblock_change_back
 
 import "deprecation" deprecation
 import "user_flags" user_flags
+import "is_ainit" is_ainit
 
 importx "strlen" strlen
 importx "fseek" fseek
 importx "fclose" fclose
 
+import "ebase" ebase
 #aftercalli
 
 import "swf_actionblock_change" swf_actionblock_change
@@ -693,25 +696,26 @@ function action_local(ss ac)
 	end
 end
 import "actions_format" actions_format
-function actionsf_local(sdu psize,sv pbuffer)
+function actionsf_local(svu psize,sv pbuffer,sv the_va_list)
+	call is_ainit((xlog_ainit_false))
 	sd alt_ac;set alt_ac alt_action(pbuffer#,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
 		if pbuffer#=alt_ac
-			call actions_format(psize,pbuffer)
+			call actions_format(psize,pbuffer,the_va_list)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
 		end
 	end
 end
-function actionsf_sprite_local(sd sprite,sdu psize,sv pbuffer)
-	sd alt_ac;set alt_ac alt_action(pbuffer#,sprite)
+function actionsf_sprite_local(sd sprite,svu psize,sv pbuffer,sv the_va_list)
+	sd alt_ac;set alt_ac alt_action(pbuffer,sprite) #this to trick alt action that if will return the same thing, will return a not null thing
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call swf_actionblock_change(sprite)
-		if pbuffer#=alt_ac
-			call actions_format(psize,pbuffer)
+		if pbuffer=alt_ac
+			call actions_format(psize,pbuffer,the_va_list)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
@@ -719,3 +723,25 @@ function actionsf_sprite_local(sd sprite,sdu psize,sv pbuffer)
 		call swf_actionblock_change_back()
 	end
 end
+
+import "action_format" action_format
+function actionf_va(ss buffer,sv the_va_list)
+	base globalz.jmp_data;call ebase(globalz.jmp_data)
+	if buffer!=(NULL)
+		callg actionsf_local((NULL),#buffer,the_va_list)
+		#return is not important
+	else #here to find the size
+		callret action_format((NULL),the_va_list) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
+	end
+end
+function actionsf_va(svu psize,sv pbuffer,sv the_va_list)
+	base globalz.jmp_data;call ebase(globalz.jmp_data)
+	callg actionsf_local(psize,pbuffer,the_va_list)
+end
+function actionsf_sprite_va(sd ?sprite,ss ?ainit,svu psize,sv pbuffer,sv the_va_list)
+	base globalz.jmp_data;call ebase(globalz.jmp_data)
+	call is_ainit(ainit)
+	callg actionsf_sprite_local(sprite,psize,pbuffer,the_va_list)
+end
+
+entryraw globalz()

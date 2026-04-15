@@ -37,4 +37,5 @@ functionx xlog_pad_set(ss ?new_pad)
 	end
 endfunction
 
-entryraw globalr() # abcdefghiloprstuwx
+entryraw globalr() # abcdefghi  l  op rstu wx z
+#                             jk mn  q    v  y

@@ -1,6 +1,7 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
+include "stdarg.h" "stdarg.oh"
 
 #multithread unsafe
 vstrx ac#1
@@ -417,28 +418,22 @@ endfunction
 
 import "action_base" action_base
 
-function action_format(sv args)
-	sv args_format=:
-	add args_format args
-	sv elements=:
-	add elements args_format
-	if args#!=(NULL)
-		call sprintf_manual(args#,args_format#,elements)
+function action_format(ss buffer,sv the_va_list)
+	if buffer!=(NULL)
+		call sprintf_manual(buffer,the_va_list)
 	else
-		callret sprintf_manual(args#,args_format#,elements)
+		callret sprintf_manual(buffer,the_va_list)
 	end
-	call format_store(args#)
-	callg action_base(args#)
+	call format_store(buffer)
+	callg action_base(buffer)
 endfunction
-function actions_format(sdu psize,sv args)
-	if psize=(NULL)
-		callret action_format(args)
-	end
-	sv pbuf;set pbuf args#
-	sv buf
+function actions_format(svu psize,sv pbuf,sv the_va_list)
+	ss buf
 	set buf pbuf#
-	set args# (NULL)
-	sdu size;set size action_format(args)
+	if psize=(NULL)
+		callret action_format(buf,the_va_list)
+	end
+	sdu size;set size action_format((NULL),the_va_list)
 	vstr er="malloc error at actionsf"
 	if buf=(NULL)
 		set buf malloc(size)
@@ -455,8 +450,7 @@ function actions_format(sdu psize,sv args)
 		set pbuf# buf
 		set psize# size
 	end
-	set args# buf
-	callg action_format(args)
+	callg action_format(buf,the_va_list)
 end
 
 import "debug_base" debug_base
@@ -477,11 +471,16 @@ endfunction
 
 import "error" error
 
-function sprintf_manual(ss string,ss format,sv elements)
+function sprintf_manual(ss string,sv the_va_list)
+	ss format
+	#%|format for this to work at c must add at otoc at end a % at def and at call, then proto/functiondef/CL will add the required va_list
+	!set format the_va_list#
+	!add the_va_list :
+
 	ss pointer;set pointer format
-	sd has_element=FALSE
-	sd escaped=0
-	valueu writable_size=1
+	ss ?has_element=FALSE
+	ss ?escaped=0
+	svu writable_size=1
 	ss writable;set writable malloc(1) #this approach is not checking the format style: 0 or more flags, width, precision, modifiers, conversion
 	vstr er="malloc error at manual sprintf"
 	if writable=(NULL)
@@ -493,6 +492,7 @@ function sprintf_manual(ss string,ss format,sv elements)
 	if string=(NULL)
 		set total_size 0
 	end
+	sv ?el
 	while pointer#!=(Nullchar)
 		if pointer#=(Percent)
 			xor escaped 1
@@ -512,6 +512,7 @@ function sprintf_manual(ss string,ss format,sv elements)
 						call error(er)
 					end
 					set writable mem
+					set writable_size size
 				end
 
 				dec pointer
@@ -520,17 +521,20 @@ function sprintf_manual(ss string,ss format,sv elements)
 				call memcpy(writable,format,size)
 				ss marker;set marker writable;add marker size;set marker# (Nullchar)
 
+				#%|el
+				!set el the_va_list#
 				if string!=(NULL)
-					add string sprintf(string,writable,elements#)
+					add string sprintf(string,writable,el)
 				else
-					set n snprintf((NULL),0,writable,elements#)
+					set n snprintf((NULL),0,writable,el)
 					if n<0
 						call error(err)
 					end
 					add total_size n
 				end
+				!incst the_va_list
 
-				set format pointer;incst elements
+				set format pointer
 				#set pointer# (Percent)
 				inc pointer ##not adding 2 here and continue? or let for a pointer# >= unicode start condition?
 			end
@@ -539,10 +543,12 @@ function sprintf_manual(ss string,ss format,sv elements)
 	endwhile
 	call free(writable)
 	if has_element=(TRUE)
+		#%|el
+		!set el the_va_list#
 		if string!=(NULL)
-			call sprintf(string,format,elements#)
+			call sprintf(string,format,el)
 		else
-			set n snprintf((NULL),0,format,elements#)
+			set n snprintf((NULL),0,format,el)
 			if n<0
 				callg error(err)
 			end

@@ -2,6 +2,7 @@ Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
+include "stdarg.h" "stdarg.oh"
 
 import "for_in_ptr" for_in_ptr
 import "is_ainit" is_ainit
@@ -11,11 +12,11 @@ importx "free" free
 import "ebase" ebase
 #aftercallimport ebool
 
-#this/an action
-
 import "action_local" action_local
-import "actionsf_local" actionsf_local
-import "action_format" action_format
+import "actionf_va" actionf_va
+import "actionsf_va" actionsf_va
+
+#this/an action
 
 functionX action(ss ac)
 	base globala.jmp_data;call ebase(globala.jmp_data)
@@ -24,22 +25,22 @@ functionX action(ss ac)
 	callg action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
-functionXv actionf(ss buffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
+functionXv actionf(ss buffer,ss format)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
-	if buffer!=(NULL)
-		call is_ainit((xlog_ainit_false))
-		call actionsf_local((NULL),#buffer)
-	else
-		callret action_format(#buffer) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
-	end
+	%<format
+	!sv the_va_list^format
+	sv ?ret
+	setg ret actionf_va(buffer,the_va_list)
+	%>
+	return ret
 endfunction
-functionXv actionsf(sdu psize,sv pbuffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
-	call is_ainit((xlog_ainit_false))
-	callg actionsf_local(psize,#pbuffer)
+functionXv actionsf(svu psize,sv pbuffer,ss format)
+	%<pbuffer
+	!sv the_va_list^format
+	callg actionsf_va(psize,pbuffer,the_va_list)
+	%>
 endfunction
 #see at part_done functionXv actionf_init(ss buffer,ss *format)
 functionX actiond(ss ac) #deprecated
@@ -54,41 +55,47 @@ end
 
 import "action_sprite_base" action_sprite_base
 
-functionX action_sprite(sd sprite,ss actions)
+functionX action_sprite(sd ?sprite,ss actions)
 	base globala.jmp_data;call ebase(globala.jmp_data)
 #sd sprite    sprite id
 #ss actions   same as action
 	call is_ainit((xlog_ainit_false))
 	callg action_sprite_base(sprite,actions,(TRUE))
 endfunction
-functionX action_init_sprite(sd sprite,ss actions)
+functionX action_init_sprite(sd ?sprite,ss actions)
 	base globala.jmp_data;call ebase(globala.jmp_data)
 	call is_ainit((xlog_ainit_true))
 	callg action_sprite_base(sprite,actions,(TRUE))
 end
-import "actionsf_sprite_local" actionsf_sprite_local
-functionXv actionf_sprite(sd sprite,ss buffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
+
+import "actionsf_sprite_va" actionsf_sprite_va
+
+functionXv actionf_sprite(sd ?sprite,ss buffer,ss format)
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
-	call is_ainit((xlog_ainit_false))
-	callg actionsf_sprite_local(sprite,(NULL),#buffer)
+	%<buffer
+	!sv the_va_list^format
+	callg actionsf_sprite_va(sprite,(xlog_ainit_false),(NULL),#buffer,the_va_list)
+	%>
 endfunction
-functionXv actionf_init_sprite(sd sprite,ss buffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
-	call is_ainit((xlog_ainit_true))
-	callg actionsf_sprite_local(sprite,(NULL),#buffer)
+functionXv actionf_init_sprite(sd ?sprite,ss buffer,ss format)
+	%<buffer
+	!sv the_va_list^format
+	callg actionsf_sprite_va(sprite,(xlog_ainit_true),(NULL),#buffer,the_va_list)
+	%>
 end
-functionXv actionsf_sprite(sd sprite,sdu psize,sv pbuffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
-	call is_ainit((xlog_ainit_false))
-	callg actionsf_sprite_local(sprite,psize,#pbuffer)
+functionXv actionsf_sprite(sd ?sprite,svu psize,sv pbuffer,ss format)
+	%<buffer
+	!sv the_va_list^format
+	callg actionsf_sprite_va(sprite,(xlog_ainit_false),psize,pbuffer,the_va_list)
+	%>
 endfunction
-functionXv actionsf_init_sprite(sd sprite,sdu psize,sv pbuffer,ss *format)
-	base globala.jmp_data;call ebase(globala.jmp_data)
-	call is_ainit((xlog_ainit_true))
-	callg actionsf_sprite_local(sprite,psize,#pbuffer)
+functionXv actionsf_init_sprite(sd ?sprite,svu psize,sv pbuffer,ss format)
+	%<buffer
+	!sv the_va_list^format
+	callg actionsf_sprite_va(sprite,(xlog_ainit_true),psize,pbuffer,the_va_list)
+	%>
 end
 
 #both

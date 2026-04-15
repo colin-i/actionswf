@@ -210,11 +210,23 @@ void swf_exports_done();
 
 //action
 
+#ifndef ACTIONSWF_SIZE_T_DEFINED
+#define ACTIONSWF_SIZE_T_DEFINED
+/* Define my_size_t based on pointer size / platform */
+#if defined(_WIN64)
+    typedef unsigned long long actionswf_size_t;
+#elif defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 8
+    typedef unsigned long actionswf_size_t;
+#else
+    typedef unsigned int actionswf_size_t;
+#endif
+#endif /* ACTIONSWF_SIZE_T_DEFINED */
+
 //this/an action
 
 void action(char* ac);
-void actionf(char* buffer,char* format,...);
-void actionsf(long unsigned int* psize,char** pbuffer,char* format,...);
+actionswf_size_t actionf(char* buffer,char* format,...);
+void actionsf(actionswf_size_t* psize,char** pbuffer,char* format,...);
 void actiond(char* ac);
 
 //action at sprite
@@ -223,8 +235,8 @@ void action_sprite(int sprite,char* ac);
 void action_init_sprite(int sprite,char* ac);
 void actionf_sprite(int sprite,char* buffer,char* format,...);
 void actionf_init_sprite(int sprite,char* buffer,char* format,...);
-void actionsf_sprite(int sprite,long unsigned int* psize,char** pbuffer,char* format,...);
-void actionsf_init_sprite(int sprite,long unsigned int* psize,char** pbuffer,char* format,...);
+void actionsf_sprite(int sprite,actionswf_size_t* psize,char** pbuffer,char* format,...);
+void actionsf_init_sprite(int sprite,actionswf_size_t* psize,char** pbuffer,char* format,...);
 
 
 //tool
