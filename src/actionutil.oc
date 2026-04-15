@@ -1,7 +1,7 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
-include "stdarg.h" "stdarg.oh"
+#include "stdarg.h" "stdarg.oh"
 
 #multithread unsafe
 vstrx ac#1
@@ -473,7 +473,7 @@ import "error" error
 
 function sprintf_manual(ss string,sv the_va_list)
 	ss format
-	#%|format for this to work at c must add at otoc at end a % at def and at call, then proto/functiondef/CL will add the required va_list
+	#%|format , only at functiondef, will save at decl_runtime_core the start and the end, and if % will replace with va_list
 	!set format the_va_list#
 	!add the_va_list :
 
