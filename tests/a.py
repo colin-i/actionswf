@@ -17,7 +17,10 @@ else:
 print("%x" % f)
 
 actionswf.new_ex("a.swf",0x80,0x80,0x050607,2,f)
-actionswf.action(text("./aoc/a"))
+format=text("./aoc/a")
+size=actionswf.ActionSize()
+buffer=actionswf.ActionBuffer()
+actionswf.actionsf(psize=actionswf.Ref(size),pbuffer=actionswf.Ref(buffer),format=format,*[1,b'a'])
 presprite=actionswf.sprite_new()
 actionswf.action_sprite(presprite,"trace('b'+this.value)")
 actionswf.action_init_sprite(presprite,text("./aoc/b"))

@@ -22,7 +22,7 @@ def init(lib):
 
 def action(ac):
 	_lib.action(ac.encode('utf-8'))
-def actionf(*args, buffer, format): #You must place the variadic ones first in the function definition  #call this like this: (buffer=b, format="...", *["a",1])
+def actionf(*args, buffer, format): #You must place the variadic ones first in the function definition  #call this like this: (buffer=b, format="...", *[b'a',1])
 	return _lib.actionf(buffer, format.encode('utf-8'), *args) #buffer example: (ctypes.c_char * 10)()       #string args can go like this: b'a_string'
 def actionsf(*args, psize, pbuffer, format):
 	_lib.actionsf(psize, pbuffer, format.encode('utf-8'), *args)
