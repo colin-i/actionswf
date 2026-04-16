@@ -1,7 +1,6 @@
 Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
-#include "stdarg.h" "stdarg.oh"
 
 #multithread unsafe
 vstrx ac#1
@@ -418,7 +417,7 @@ endfunction
 
 import "action_base" action_base
 
-function action_format(ss buffer,sv the_va_list)
+function action_format(ss buffer,sv %the_va_list)
 	if buffer!=(NULL)
 		call sprintf_manual(buffer,the_va_list)
 	else
@@ -427,7 +426,7 @@ function action_format(ss buffer,sv the_va_list)
 	call format_store(buffer)
 	callg action_base(buffer)
 endfunction
-function actions_format(svu psize,sv pbuf,sv the_va_list)
+function actions_format(svu psize,sv pbuf,sv %the_va_list)
 	ss buf
 	set buf pbuf#
 	if psize=(NULL)
@@ -471,9 +470,9 @@ endfunction
 
 import "error" error
 
-function sprintf_manual(ss string,sv the_va_list)
+function sprintf_manual(ss string,sv %the_va_list)
 	ss format
-	#%|format , only at functiondef, will save at decl_runtime_core the start and the end, and if % will replace with va_list
+	%|format
 	!set format the_va_list#
 	!add the_va_list :
 
@@ -521,7 +520,7 @@ function sprintf_manual(ss string,sv the_va_list)
 				call memcpy(writable,format,size)
 				ss marker;set marker writable;add marker size;set marker# (Nullchar)
 
-				#%|el
+				%|el
 				!set el the_va_list#
 				if string!=(NULL)
 					add string sprintf(string,writable,el)
@@ -543,7 +542,7 @@ function sprintf_manual(ss string,sv the_va_list)
 	endwhile
 	call free(writable)
 	if has_element=(TRUE)
-		#%|el
+		%|el
 		!set el the_va_list#
 		if string!=(NULL)
 			call sprintf(string,format,el)

@@ -696,7 +696,7 @@ function action_local(ss ac)
 	end
 end
 import "actions_format" actions_format
-function actionsf_local(svu psize,sv pbuffer,sv the_va_list)
+function actionsf_local(svu psize,sv pbuffer,sv %the_va_list)
 	call is_ainit((xlog_ainit_false))
 	sd alt_ac;set alt_ac alt_action(pbuffer#,0)
 	if alt_ac!=(NULL)
@@ -709,7 +709,7 @@ function actionsf_local(svu psize,sv pbuffer,sv the_va_list)
 		end
 	end
 end
-function actionsf_sprite_local(sd sprite,svu psize,sv pbuffer,sv the_va_list)
+function actionsf_sprite_local(sd sprite,svu psize,sv pbuffer,sv %the_va_list)
 	sd alt_ac;set alt_ac alt_action(pbuffer,sprite) #this to trick alt action that if will return the same thing, will return a not null thing
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
@@ -725,7 +725,7 @@ function actionsf_sprite_local(sd sprite,svu psize,sv pbuffer,sv the_va_list)
 end
 
 import "action_format" action_format
-function actionf_va(ss buffer,sv the_va_list)
+function actionf_va(ss buffer,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
 	if buffer!=(NULL)
 		callg actionsf_local((NULL),#buffer,the_va_list)
@@ -734,11 +734,11 @@ function actionf_va(ss buffer,sv the_va_list)
 		callret action_format((NULL),the_va_list) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
 	end
 end
-function actionsf_va(svu psize,sv pbuffer,sv the_va_list)
+function actionsf_va(svu psize,sv pbuffer,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
 	callg actionsf_local(psize,pbuffer,the_va_list)
 end
-function actionsf_sprite_va(sd ?sprite,ss ?ainit,svu psize,sv pbuffer,sv the_va_list)
+function actionsf_sprite_va(sd ?sprite,ss ?ainit,svu psize,sv pbuffer,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
 	call is_ainit(ainit)
 	callg actionsf_sprite_local(sprite,psize,pbuffer,the_va_list)
