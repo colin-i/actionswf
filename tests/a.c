@@ -43,7 +43,10 @@ int main(int argc,char**argv){
 	printf("%x\n",f);
 
 	swf_new_ex("a.swf",0x80,0x80,0x050607,2,f);
-	action(text("./aoc/a"));
+	char*a=text("./aoc/a");
+	size_t sz;char*b=0;
+	actionsf(&sz,&b,a,1,"a");
+	free(b);
 	int presprite=swf_sprite_new();
 	action_sprite(presprite,"trace('b'+this.value)");
 	action_init_sprite(presprite,text("./aoc/b"));

@@ -7,7 +7,9 @@ if [ -z "${conv_64}" ] || [ ${conv_64} = 0 ]; then
 	LD=/usr/x86_64-linux-gnu/bin/ld
 	_L=/home/bc/x86_64_lib/cross
 	linker=--dynamic-linker=/lib64/ld-linux-x86-64.so.2
-	launcher=qq
+	if [ -z "${launcher}" ]; then
+		launcher=qq
+	fi
 else
 	OFLAGS="conv_64 ${conv_64}"
 	LD=/usr/i686-linux-gnu/bin/ld

@@ -11,7 +11,8 @@ this.this.this=this;
 
 //note that ap_Constant8/16,null,undefined,true/false is not a step here (pointers are here), also special is ap_RegisterNumber
 a=new Array(1);
-var b=(-2+0x2-2*2/2%2&2|2^2<2>2==2!=2<=2>=2<<2>>2>>>2&&2||2?2:3);
+//here %% is because this is going through sprintf
+var b=(-2+0x2-2*2/2%%2&2|2^2<2>2==2!=2<=2>=2<<2>>2>>>2&&2||2?2:3);
 var c=1.2;var d=a[0];var e='q';
 f=2;var g;delete g;delete this.f;
 h=function(){var a;}var i=h();
@@ -90,7 +91,7 @@ n(-NaN,NaN)
 //example of extending clip symbols (and one time DoInitAction tag)
 var a=new Object();
 a.value=2;
-attachMovie('carSymbol','fastCar_mc',1,a)
+attachMovie('carSymbol','fastCar_mc',%u,%s)
 
 //goto up/down
 function gotos()

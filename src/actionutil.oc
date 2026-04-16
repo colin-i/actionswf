@@ -421,7 +421,7 @@ function action_format(ss buffer,sv %the_va_list)
 	if buffer!=(NULL)
 		call sprintf_manual(buffer,the_va_list)
 	else
-		callret sprintf_manual(buffer,the_va_list)
+		callret sprintf_manual((NULL),the_va_list)
 	end
 	call format_store(buffer)
 	callg action_base(buffer)

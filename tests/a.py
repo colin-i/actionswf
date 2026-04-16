@@ -13,8 +13,8 @@ import sys
 if len(sys.argv)==1:
 	f=actionswf.flags.prexx|actionswf.flag.pre_x_pad|actionswf.flag.pre_write_no
 else:
-	print("xxu|titles")
 	f=actionswf.flagss.xxu|actionswf.flag.titles
+print("%x" % f)
 
 actionswf.new_ex("a.swf",0x80,0x80,0x050607,2,f)
 actionswf.action(text("./aoc/a"))

@@ -7,6 +7,7 @@ importx "ftell" ftell
 importx "malloc" malloc
 importx "fread" fread
 importx "_exit" exit
+importx "free" free
 
 function text(ss name)
 	sd file;set file fopen(name,"rb")
@@ -32,14 +33,16 @@ sd f
 if argc=1
 	set f (prexx_flags|flagpre_x_pad|flagpre_write_no)
 else
-	importx "puts" puts
-	call puts("xxu_flags flag_titles")
 	set f (xxu_flags|flag_titles)
 end
+importx "printf" printf
+call printf("%x\n",f)
 call swf_new_ex("a.swf",0x80,0x80,0x050607,2,f)
 
 ss buf;set buf text("./aoc/a")
-call action(buf)
+sd sz;sd bf=0
+call actionsf(#sz,#bf,buf,1,"a")
+call free(bf)
 
 sd presprite;set presprite swf_sprite_new()
 call action_sprite(presprite,"trace('b'+this.value)")

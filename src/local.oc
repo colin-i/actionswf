@@ -698,10 +698,10 @@ end
 import "actions_format" actions_format
 function actionsf_local(svu psize,sv pbuffer,sv %the_va_list)
 	call is_ainit((xlog_ainit_false))
-	sd alt_ac;set alt_ac alt_action(pbuffer#,0)
+	sd alt_ac;set alt_ac alt_action(pbuffer,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
-		if pbuffer#=alt_ac
+		if pbuffer=alt_ac
 			call actions_format(psize,pbuffer,the_va_list)
 		else
 			call action_base(alt_ac)

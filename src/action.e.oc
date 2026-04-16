@@ -25,20 +25,22 @@ functionX action(ss ac)
 	callg action_local(ac)
 endfunction
 #see at part_done functionX action_init(ss ac)
-functionXv actionf(ss buffer,ss format)
+functionXv actionf(ss buffer) # ,ss format chatgpt: "it ignores your incorrect hint" (va_start)
 #ss buffer   the buffer where to sprintf the format and the arguments
 #ss format   the format
 #...         % arguments here
-	%<format
-	!sv the_va_list^format
+	%<buffer
+	!sv the_va_list=:
+	!add the_va_list #buffer
 	sv ?ret
 	setg ret actionf_va(buffer,the_va_list)
 	%>
 	return ret
 endfunction
-functionXv actionsf(svu psize,sv pbuffer,ss format)
+functionXv actionsf(svu psize,sv pbuffer)
 	%<pbuffer
-	!sv the_va_list^format
+	!sv the_va_list=:
+	!add the_va_list #pbuffer
 	callg actionsf_va(psize,pbuffer,the_va_list)
 	%>
 endfunction
@@ -70,30 +72,34 @@ end
 
 import "actionsf_sprite_va" actionsf_sprite_va
 
-functionXv actionf_sprite(sd ?sprite,ss buffer,ss format)
+functionXv actionf_sprite(sd ?sprite,ss buffer) #,ss format
 #sd sprite    sprite id
 #ss buffer    same as actionf
 #ss format    same as actionf
 	%<buffer
-	!sv the_va_list^format
+	!sv the_va_list=:
+	!add the_va_list #buffer
 	callg actionsf_sprite_va(sprite,(xlog_ainit_false),(NULL),#buffer,the_va_list)
 	%>
 endfunction
-functionXv actionf_init_sprite(sd ?sprite,ss buffer,ss format)
+functionXv actionf_init_sprite(sd ?sprite,ss buffer)
 	%<buffer
-	!sv the_va_list^format
+	!sv the_va_list=:
+	!add the_va_list #buffer
 	callg actionsf_sprite_va(sprite,(xlog_ainit_true),(NULL),#buffer,the_va_list)
 	%>
 end
-functionXv actionsf_sprite(sd ?sprite,svu psize,sv pbuffer,ss format)
-	%<buffer
-	!sv the_va_list^format
+functionXv actionsf_sprite(sd ?sprite,svu psize,sv pbuffer)
+	%<pbuffer
+	!sv the_va_list=:
+	!add the_va_list #pbuffer
 	callg actionsf_sprite_va(sprite,(xlog_ainit_false),psize,pbuffer,the_va_list)
 	%>
 endfunction
-functionXv actionsf_init_sprite(sd ?sprite,svu psize,sv pbuffer,ss format)
-	%<buffer
-	!sv the_va_list^format
+functionXv actionsf_init_sprite(sd ?sprite,svu psize,sv pbuffer)
+	%<pbuffer
+	!sv the_va_list=:
+	!add the_va_list #pbuffer
 	callg actionsf_sprite_va(sprite,(xlog_ainit_true),psize,pbuffer,the_va_list)
 	%>
 end
