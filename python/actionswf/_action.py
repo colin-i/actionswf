@@ -15,7 +15,7 @@ def init(lib):
 	lib.actionsf_sprite.argtypes = [ ctypes.c_int, ctypes.POINTER(ctypes.c_size_t), ctypes.POINTER(ctypes.c_char_p), ctypes.c_char_p ]
 	lib.actionsf_init_sprite.argtypes = [ ctypes.c_int, ctypes.POINTER(ctypes.c_size_t), ctypes.POINTER(ctypes.c_char_p), ctypes.c_char_p ]
 
-	lib.actions_free = [ ctypes.c_char_p ]
+	lib.actions_free.argtypes = [ ctypes.c_char_p ]
 
 	global _lib
 	_lib=lib
