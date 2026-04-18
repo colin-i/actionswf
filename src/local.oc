@@ -165,12 +165,16 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 	#flags
 	add size 2
 	#FontID
+	#FontHeight
 	sd p_fontid
+	sd p_font_height
 	sw ?hasfont=HasFont
 	and hasfont flags
 	if hasfont!=0
 		set p_fontid structure
-		add size 2
+		set p_font_height structure
+		add p_font_height (DWORD)
+		add size 2+2
 	endif
 	#FontClass
 	ss fontclassname
@@ -187,18 +191,11 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 		inc fontclasssize
 		add size fontclasssize
 	endif
-	#FontHeight
-	sd p_font_height
-	sub structure (DWORD)
-	if hasfont!=0
-		set p_font_height structure
-		add size 2
-	endif
 	#TextColor
 	sd p_rgba
 	sw ?hastextcolor=HasTextColor
 	and hastextcolor flags
-	add structure (DWORD+:)
+	add structure :
 	if hastextcolor!=0
 		set p_rgba structure
 		add size 4
@@ -212,14 +209,26 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 		set p_maxlength structure
 		add size 2
 	endif
+	#InitialText
+	ss initialtext
+	sd initialtextsize
+	sw ?hastext=HasText
+	and hastext flags
+	add structure (DWORD)
+	if hastext!=0
+		set initialtext structure#
+		setcall initialtextsize strlen(initialtext)
+		inc initialtextsize
+		add size initialtextsize
+	endif
 	#layout
-	ss p_layout
+	#ss p_layout
 	data layout_size=4*WORD+BYTE
 	sw ?haslayout=HasLayout
 	and haslayout flags
-	add structure (DWORD+:)
+	add structure :
 	if haslayout!=0
-		set p_layout structure
+		#set p_layout structure
 		add size layout_size
 	endif
 	#VariableName
@@ -227,18 +236,6 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 	setcall vlen strlen(variablename)
 	inc vlen
 	add size vlen
-	#InitialText
-	ss initialtext
-	sd initialtextsize
-	sw ?hastext=HasText
-	and hastext flags
-	sub structure :
-	if hastext!=0
-		set initialtext structure#
-		setcall initialtextsize strlen(initialtext)
-		inc initialtextsize
-		add size initialtextsize
-	endif
 
 	call swf_tag_recordheader_entry((DefineEditText),size)
 	sd ?id
@@ -276,11 +273,11 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 #		char l_indent#2
 #		char l_leading#2
 		charx layoutdata#9;ss p_layoutdata^layoutdata
-		set p_layoutdata# p_layout#
-		add p_layout (DWORD);inc p_layoutdata;call stack_to_word_arg_twips(p_layout#w,p_layout)
-		add p_layout (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(p_layout#w,p_layout)
-		add p_layout (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(p_layout#w,p_layout)
-		add p_layout (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(p_layout#w,p_layout)
+		set p_layoutdata# structure#s
+		add structure (DWORD);inc p_layoutdata;call stack_to_word_arg_twips(structure#w,p_layoutdata)
+		add structure (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(structure#w,p_layoutdata)
+		add structure (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(structure#w,p_layoutdata)
+		add structure (DWORD);add p_layoutdata (WORD);call stack_to_word_arg_twips(structure#w,p_layoutdata)
 		call swf_mem_add(#layoutdata,layout_size)
 	endif
 	call swf_mem_add(variablename,vlen)

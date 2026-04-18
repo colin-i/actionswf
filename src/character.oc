@@ -364,7 +364,7 @@ import "write_action_one" write_action_one
 function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,ss actions,sd ?noText,sd ?text_id,sd ?y)
     sd ?size=2+1+2;#ButtonId,TrackAsMenu,ActionOffset
 
-    sd Characters_CharacterEndFlag_size
+	sd ?Characters_CharacterEndFlag_size
     setcall Characters_CharacterEndFlag_size buttonrecord_size(0,0)
     mult Characters_CharacterEndFlag_size 3
     if noText=(FALSE)
@@ -395,7 +395,7 @@ function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,ss
     call swf_mem_add(#ButtonId,2)
     char TrackAsMenu=0
     call swf_mem_add(#TrackAsMenu,(BYTE))
-    sd ActionOffset=2;add ActionOffset Characters_CharacterEndFlag_size
+	sd ?ActionOffset=2;add ActionOffset Characters_CharacterEndFlag_size
     call swf_mem_add(#ActionOffset,(WORD))
 
 	call buttonrecord(0,0,(ButtonStateUp),state_def_id,1)

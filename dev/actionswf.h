@@ -76,17 +76,17 @@ typedef struct ButtonData_str{
 #pragma pack(push,4)
 typedef struct EditText_str
 {
-    int fontid;
-    int font_height;
-    char* fontclassname;
-    int rgba;
-    int maxlength;
-    char* initialtext;
-    int layout_align;
-    int layout_leftmargin;
-    int layout_rightmargin;
-    int layout_indent;
-    int layout_leading;
+	int fontid;
+	int font_height;
+	char* fontclassname;
+	int rgba;
+	int maxlength;
+	char* initialtext;
+	char layout_align;
+	int layout_leftmargin;
+	int layout_rightmargin;
+	int layout_indent;
+	int layout_leading;
 } EditText;
 #pragma pack(pop)
 
