@@ -3,8 +3,8 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
-vstrx ac#1
-vstrx pointer#1
+vstrx acod#1
+vstrx apointer#1
 vstr orig=NULL
 vstr memorig=NULL
 value dcode#1
@@ -54,7 +54,7 @@ function row_termination_endcom(ss ac)
 end
 
 function endcom(ss c,ss p)
-	set globalu.ac c;set globalu.pointer p
+	set globalu.acod c;set globalu.apointer p
 end
 
 import "debug_phase_init" debug_phase_init
@@ -64,13 +64,13 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
     #sd loop1=1
     sd error_row=0
     #
-    sd comments=0
+	sd ?comments=0
 	char lines_com_c1=Asterisk;char lines_com_c2=Slash;ss test
     const line_comment=1
     const multiLine_comment=2
     #
     whiletrue
-        sd loop2=1
+	sd ?loop2=1
         setcall ac spaces(ac)
         #
         if comments!=(multiLine_comment)
@@ -112,8 +112,8 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
 									break
 								end
 							else
-								set globalu.ac ac
-								set globalu.pointer pointer
+								set globalu.acod ac
+								set globalu.apointer pointer
 								break
 							end
 						end
@@ -124,16 +124,16 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
 				endelse
 				inc pointer
 			elseif comments=(multiLine_comment)
-			    if ac#=lines_com_c1
-			        set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
-			    endif
+				if ac#=lines_com_c1
+					set test ac;inc test;if test#=lines_com_c2;set comments 0;inc ac;endif
+				endif
 			endelseif
 		elseif stop_pointer=(NULL)
 			if line_term=(NULL) #not wainting this at end com
 				call debug_phase_init(pointer)
 			end
 		endelseif
-            inc ac
+		inc ac
         endwhile
 	if error_row!=0
 		set pointer# 0
@@ -143,7 +143,7 @@ function escape_action(ss ac,ss pointer,ss stop_pointer,ss line_term)
 end
 #ac
 function escape_action_endcom(ss pointer)
-	callret escape_action(globalu.ac,globalu.pointer,(NULL),pointer)
+	callret escape_action(globalu.acod,globalu.apointer,(NULL),pointer)
 end
 
 #debug

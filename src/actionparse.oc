@@ -195,7 +195,7 @@ function action_code_row_ex_wrap(ss ac,ss ?a_block_detected,sd ?else_index)
             set a_block_detected (TRUE)
         endif
     endwhile
-    setcall ac action_code_row_parse(ac,a_block_detected,else_index)
+	setcall ac action_code_row_parse(ac,a_block_detected,else_index)
 	#around: else if(2==2){return 2;}else{return 3;}, 4 breakpoints, with \n-s,this here and not at action_code_row,1 breakpoint
 	call debug_phase_parse(ac)
     return ac
@@ -326,7 +326,7 @@ function action_code_row_parse(ss ac,ss ?a_block_detected,sd ?else_index)
         inc ac
 		callret else_verify(ac,else_index)
 	endif
-    setcall ac action_code_row_parse_instrument(ac)
+	setcall ac action_code_row_parse_instrument(ac)
     if a_block_detected=(TRUE)
     #ex: if(a==b)x=3;
         setcall ac else_verify(ac,else_index)
@@ -335,7 +335,7 @@ function action_code_row_parse(ss ac,ss ?a_block_detected,sd ?else_index)
 endfunction
 #pointer
 function else_verify(ss ac,sd ?else_index)
-	#this condition for: else >expression<
+	#this condition for: else >expression< placing in else{} block will demonstrate, and don't compare unsigned, else index can go -1
 	if globalp.counter>else_index
 		call brace_blocks_remove_parse()
 	endif
@@ -1462,16 +1462,17 @@ function action_code_parse_deffunction(ss ac)
     #
     call brace_blocks_add_parse((function_marker))
     #loop until the function code is over
-    sd index_atstart
-    set index_atstart globalp.counter
-    #
-    setcall pointer action_code_row(pointer,(TRUE))
-    while index_atstart<=globalp.counter
-        if pointer#=0
-            call error("A define function was unclosed")
-        endif
-        setcall pointer action_code_row(pointer,(FALSE))
-    endwhile
+	sd ?index_atstart
+	set index_atstart globalp.counter
+	#
+	setcall pointer action_code_row(pointer,(TRUE))
+	#at start is equal, then can be lower
+	while index_atstart<=^globalp.counter
+		if pointer#=0
+			call error("A define function was unclosed")
+		endif
+		setcall pointer action_code_row(pointer,(FALSE))
+	endwhile
     return pointer
 endfunction
 #pointer
