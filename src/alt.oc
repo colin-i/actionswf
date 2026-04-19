@@ -71,7 +71,7 @@ function alt_init(sd flags,sd path)
 	end
 end
 
-import "file_get_content" file_get_content
+^import "file_get_content" file_get_content 2
 
 function alt_action(ss orig_action,sd ?preid)
 	callret alt_action_base(orig_action,preid,(TRUE))
@@ -83,18 +83,18 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 		if orig_action!=(NULL) #this to filter a button with no swf actions for example
 			sd block
 			setcall block struct_ids_action((ids_get),preid)
-			sd size
+			sd ?size
 			setcall size block_get_size(block)
 			if size=0 #at alt, first action from the frame is with all
 				whiletrue
 					if has_frames=(TRUE)
-						sd ai;set ai ainit()
+						ss ?ai;set ai ainit()
 						if ai=(xlog_ainit_false)
 							sw p
 							#if preid!=0
 							set p swf_sprite_frames_pointer(preid)
 							#else #set p swf_frames_pointer()#end
-							sd f;set f word_arg_to_stack(p)
+							sd ?f;set f word_arg_to_stack(p)
 							inc f  ##index 0 is frame 1 at ffdec
 							call sprintf(globall.concat_point,"%u_%u",preid,f)
 							break

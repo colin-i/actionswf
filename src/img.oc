@@ -24,7 +24,7 @@ importx "free" free
 importx "printf" printf
 
 import "ebase" ebase
-import "erbool" erbool
+^import "erbool" erbool
 
 #aftercalli
 
