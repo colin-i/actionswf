@@ -867,8 +867,8 @@ import "goto_add" goto_add
 function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 	ss name
 	#these acts must stay on stack, can be builtin inside builtin
-	sd act
-	sd act2
+	sd ?act
+	sd ?act2
 	set name action_code_write_builtin_names(codepointer,#act)
 	if name!=(NULL)
 		sd test;set test codepointer
@@ -929,7 +929,7 @@ function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 			if test#=(ap_Integer)
 				add test (DWORD)
 				if test#<=^0xffFF #attention at negative numbers, ignoring gotoandstop mc behaviour
-					sd val;set val test#
+					sd ?val;set val test#
 					add test (DWORD)
 					if test#=(math_end)
 						add test (DWORD)
