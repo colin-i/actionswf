@@ -115,7 +115,8 @@ const R_OK=4
 include "xlog.h" "xlog.oh"
 const actionrecord_jump_size=actionrecordheader_size+actionjump_contentsize
 
-const dblsignature_major=3
+const dblsignature_prefix=2
+const dblsignature_major=dblsignature_prefix+1
 const dblsignature=dblsignature_major+1
 const dblsize=4
 const dblsize16=2
