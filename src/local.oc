@@ -13,7 +13,7 @@ import "args_advance" args_advance
 import "bits_packs" bits_packs
 import "NumFill_NumLin" NumFill_NumLin
 import "NumFill_NumLin_get" NumFill_NumLin_get
-import "shapewithstyle_records" shapewithstyle_records
+^import "shapewithstyle_records" shapewithstyle_records #full
 import "printEr" printEr
 ^import "word_arg_to_stack" word_arg_to_stack 1
 import "file_get_content__resources_free" file_get_content__resources_free
@@ -211,7 +211,7 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 	endif
 	#InitialText
 	ss initialtext
-	sd initialtextsize
+	svu ?initialtextsize
 	sw ?hastext=HasText
 	and hastext flags
 	add structure (DWORD)
@@ -232,7 +232,7 @@ function swf_text_local(sd ?bound_width,sd ?bound_height,ss variablename,sw ?fla
 		add size layout_size
 	endif
 	#VariableName
-	sd vlen
+	svu ?vlen
 	setcall vlen strlen(variablename)
 	inc vlen
 	add size vlen

@@ -11,7 +11,7 @@ importx "strlen" strlen
 #import "swf_frames_pointer" swf_frames_pointer
 #import "swf_sprite_frames_pointer" swf_sprite_frames_pointer
 
-import "button_mem" button_mem
+^import "button_mem" button_mem #full
 
 import "stack_to_word_arg" stack_to_word_arg
 ^import "word_arg_to_stack" word_arg_to_stack 1

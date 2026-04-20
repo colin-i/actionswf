@@ -124,7 +124,7 @@ import "action_sprite_base" action_sprite_base
 #shape
 
 import "error" error
-function shape_records_bits(sd value,sd size,sv p_dest_pos)
+function shape_records_bits(sd ?value,sd ?size,sv p_dest_pos)
 	#why was this here? data start#1
 	#and this, this is called through shape_records_add    if p_dest_pos==0
 	#	set start value
@@ -143,12 +143,12 @@ function shape_records_bits(sd value,sd size,sv p_dest_pos)
 	call bits_bigendian(value,size,p_dest_pos,p_pos)
 endfunction
 function shape_records_add(sd p_dest_pos,sd p_args)
-    sd edge
+	sd ?edge
     setcall edge args_advance(p_args)
     call shape_records_bits(edge,1,p_dest_pos)
-    if edge=0
+	if edge=0
     #StyleChangeRecord,#EndShapeRecord
-        sd flags
+		sd ?flags
         setcall flags args_advance(p_args)
         call shape_records_bits(flags,5,p_dest_pos)
         if flags=0
@@ -158,8 +158,8 @@ function shape_records_add(sd p_dest_pos,sd p_args)
         #StateMoveTo
         call shape_records_add_moveto(p_dest_pos,flags,p_args)
         #
-        sd f_l_bits
-        sd fill
+		sd ?f_l_bits
+		sd ?fill
         #StateFillStyle0
         set fill flags;and fill (StateFillStyle0)
         if fill!=0
@@ -177,7 +177,7 @@ function shape_records_add(sd p_dest_pos,sd p_args)
             call shape_records_bits(1,f_l_bits,p_dest_pos)
         endif
         ret
-    endif
+	endif
     call shape_records_add_edge(p_dest_pos,p_args)
 endfunction
 function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
@@ -185,11 +185,11 @@ function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
     if flags=0
         ret
     endif
-    sd x
+	sd ?x
     setcall x args_advance(p_args)
-    sd y
+	sd ?y
     setcall y args_advance(p_args)
-    sd numbits
+	ss ?numbits
     mult x 20
     mult y 20
     setcall numbits numbitsMax(x,y)
@@ -198,7 +198,7 @@ function shape_records_add_moveto(sd p_dest_pos,sd flags,sd p_args)
     call shape_records_bits(y,numbits,p_dest_pos)
 endfunction
 function shape_records_add_edge(sd p_dest_pos,sd p_args)
-    sd straight_edge
+	sd ?straight_edge
     setcall straight_edge args_advance(p_args)
     call shape_records_bits(straight_edge,1,p_dest_pos)
     if straight_edge=1
@@ -208,14 +208,14 @@ function shape_records_add_edge(sd p_dest_pos,sd p_args)
     endelse
 endfunction
 function shape_records_add_edge_straight(sd p_dest_pos,sd p_args)
-    sd width=20;multCall width args_advance(p_args)
-    sd height=20;multCall height args_advance(p_args)
-    sd counter;setcall counter numbitsMax(width,height)
+	sd ?width=20;multCall width args_advance(p_args)
+	sd ?height=20;multCall height args_advance(p_args)
+	ss ?counter;setcall counter numbitsMax(width,height)
     #NumBits(UB[4])
-    sd NumBits;setcall NumBits shape_records_NumBits(#counter)
+	ss ?NumBits;setcall NumBits shape_records_NumBits(#counter)
     call shape_records_bits(NumBits,4,p_dest_pos)
     #GeneralLineFlag
-    sd GeneralLineFlag=0
+	ss ?GeneralLineFlag=0
     if width!=0;if height!=0;set GeneralLineFlag 1;endif;endif
     call shape_records_bits(GeneralLineFlag,1,p_dest_pos)
 	#Vert(1)/Horz(0)
@@ -226,34 +226,34 @@ function shape_records_add_edge_straight(sd p_dest_pos,sd p_args)
 		call shape_records_bits(vertical,1,p_dest_pos)
 	endif
     #DeltaX SB[NumBits+2]
-    sd DeltaX=TRUE;if GeneralLineFlag=0;if vertical=1;set DeltaX (FALSE);endif;endif
+	ss ?DeltaX=TRUE;if GeneralLineFlag=0;if vertical=1;set DeltaX (FALSE);endif;endif
     if DeltaX=(TRUE);call shape_records_bits(width,counter,p_dest_pos);endif
     #DeltaY SB[NumBits+2]
-    sd DeltaY=TRUE;if GeneralLineFlag=0;if vertical=0;set DeltaY (FALSE);endif;endif
+	ss ?DeltaY=TRUE;if GeneralLineFlag=0;if vertical=0;set DeltaY (FALSE);endif;endif
     if DeltaY=(TRUE);call shape_records_bits(height,counter,p_dest_pos);endif
 endfunction
 function shape_records_add_edge_curved(sd p_dest_pos,sd p_args)
-    sd control_x
+	sd ?control_x
     setcall control_x args_advance(p_args)
-    sd control_y
+	sd ?control_y
     setcall control_y args_advance(p_args)
-    sd anchor_x
+	sd ?anchor_x
     setcall anchor_x args_advance(p_args)
-    sd anchor_y
+	sd ?anchor_y
     setcall anchor_y args_advance(p_args)
     mult control_x 20
     mult control_y 20
     mult anchor_x 20
     mult anchor_y 20
-    sd numbits
-    sd numbits2
+	ss ?numbits
+	ss ?numbits2
     setcall numbits numbitsMax(control_x,control_y)
     setcall numbits2 numbitsMax(anchor_x,anchor_y)
-    if numbits2>numbits
+    if numbits2>^numbits
         set numbits numbits2
     endif
     #NumBits(UB[4])
-    sd Num_Bits;setcall Num_Bits shape_records_NumBits(#numbits)
+	ss ?Num_Bits;setcall Num_Bits shape_records_NumBits(#numbits)
     call shape_records_bits(Num_Bits,4,p_dest_pos)
     #SB[NumBits+2]
     call shape_records_bits(control_x,numbits,p_dest_pos)
@@ -262,18 +262,18 @@ function shape_records_add_edge_curved(sd p_dest_pos,sd p_args)
     call shape_records_bits(anchor_y,numbits,p_dest_pos)
 endfunction
 #id
-function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linecolor,sd xcurve,sd ycurve)
-    sd wd;set wd width;sub wd lineheight
-    sd hg;set hg height;sub hg lineheight
-    sd test
-    set test lineheight;mult test 2;if test>width;call error("lineheight value against width is too high for shape");endif
-    set test lineheight;mult test 2;if test>height;call error("lineheight value against height is too high for shape");endif
-    set test wd;div test 2;if xcurve>wd;call error("xcurve value is too high for shape");endif
-    set test hg;div test 2;if ycurve>hg;call error("ycurve value is too high for shape");endif
-    sd lineheight_hf;set lineheight_hf lineheight;div lineheight_hf 2
+function swf_shape_simple(sd ?width,sd ?height,sd ?fillcolor,sd ?lineheight,sd ?linecolor,sd ?xcurve,sd ?ycurve)
+	sd ?wd;set wd width;sub wd lineheight
+	sd ?hg;set hg height;sub hg lineheight
+	sv ?test
+	set test lineheight;mult test 2;if test>^width;call error("lineheight value against width is too high for shape");endif
+	set test lineheight;mult test 2;if test>^height;call error("lineheight value against height is too high for shape");endif
+	set test wd;divu test 2;if xcurve>^wd;call error("xcurve value is too high for shape");endif #even if will -1 curves in this function, cannot let signed, the comp will have no logic
+	set test hg;divu test 2;if ycurve>^hg;call error("ycurve value is too high for shape");endif
+	sd ?lineheight_hf;set lineheight_hf lineheight;div lineheight_hf 2
 
-    sd width_variable
-    sd height_variable
+	sd ?width_variable
+	sd ?height_variable
     set width_variable wd
     set height_variable hg
     sub width_variable xcurve
@@ -281,63 +281,159 @@ function swf_shape_simple(sd width,sd height,sd fillcolor,sd lineheight,sd linec
     sub height_variable ycurve
     sub height_variable ycurve
 
-    data header#4
-    sd strct^header;if lineheight=0;add strct (DWORD);endif
-    sd cursor;set cursor strct
-    set cursor# (solid_fill)
-    add cursor (DWORD);set cursor# fillcolor
-    add cursor (DWORD);set cursor# lineheight
-    if lineheight!=0;add cursor (DWORD);set cursor# linecolor;endif
-    #the header is connected with the part below
-    data *styles_type=0
-    data styles#1;set styles (StateFillStyle0|StateMoveTo);if lineheight!=0;or styles (StateLineStyle);endif
-        data x_move#1;set x_move lineheight_hf;add x_move xcurve
-        data y_move#1;set y_move lineheight_hf
+	const und=0
+	data structu={und,und,und,und, 0,und,und,und, 1,1,und,0, 1,0,und,0,0,und, 1,1,0,und, 1,0,0,und,und,0, 1,1,und,0, 1,0,und,0,0,und, 1,1,0,und, 1,0,0,und,und,0, -1};sd strct^structu
+	#             4               +4             +4         +6               +4         +6               +4       +6                 +4         +6               +1
 
-    data *straight_wd={1,1}
-        data w1#1;data *s_w_d=0
-        set w1 width_variable
-    data *curved_ne={1,0}
-        data xNE#1
-        set xNE xcurve
-        data *ne_d={0,0}
-        data yNE#1
-        set yNE ycurve
-    data *straight_hg={1,1}
-        data *s_h_d=0;data h1#1
-        set h1 height_variable
-    data *curved_se={1,0}
-        data *se_y_d=0
-        data ySE#1
-        set ySE ycurve
-        data xSE#1
-        mult xcurve -1
-        set xSE xcurve
-        data *se_x_d=0
-    data *straight_wd_back={1,1}
-        data w2#1;data *s_w_b_d=0
-        mult width_variable -1
-        set w2 width_variable
-    data *curved_sv={1,0}
-        data xSV#1
-        set xSV xcurve
-        data *sv_d={0,0}
-        mult ycurve -1
-        data ySV#1
-        set ySV ycurve
-    data *straight_hg_back={1,1}
-        data *s_h_b_d=0;data h2#1
-        mult height_variable -1
-        set h2 height_variable
-    data *curved_nv={1,0}
-        data *nv_y_d=0
-        data yNV#1
-        set yNV ycurve
-        data xNV#1
-        mult xcurve -1
-        set xNV xcurve
-        data *nv_x_d=0
-    data *struct_end=-1
+	#data header#4
+	#sd strct^header
+	if lineheight=0;add strct (DWORD);endif
+	sd cursor;set cursor strct
+	set cursor# (solid_fill);add cursor (DWORD)
+	set cursor# fillcolor;add cursor (DWORD)
+	set cursor# lineheight
+	if lineheight!=0;add cursor (DWORD);set cursor# linecolor;endif
+	add cursor (DWORD)
+	#the header is connected with the part below
+
+	#data *styles_type=0
+	#set cursor# 0
+	add cursor (DWORD)
+	#data styles#1
+	#set styles (StateFillStyle0|StateMoveTo);if lineheight!=0;or styles (StateLineStyle);endif
+	set cursor# (StateFillStyle0|StateMoveTo);if lineheight!=0;or cursor# (StateLineStyle);endif
+	add cursor (DWORD)
+	#data x_move#1
+	#set x_move lineheight_hf;add x_move xcurve
+	set cursor# lineheight_hf;add cursor# xcurve
+	add cursor (DWORD)
+	#data y_move#1
+	#set y_move lineheight_hf
+	set cursor# lineheight_hf
+	add cursor (DWORD)
+
+	#data *straight_wd={1,1}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 1
+	add cursor (DWORD)
+	#data w1#1;data *s_w_d=0
+	#set w1 width_variable
+	set cursor# width_variable;add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+
+	#data *curved_ne={1,0}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	#data xNE#1
+	#set xNE xcurve
+	set cursor# xcurve;add cursor (DWORD)
+	#data *ne_d={0,0}
+	#set cursor# 0
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	#data yNE#1
+	#set yNE ycurve
+	set cursor# ycurve;add cursor (DWORD)
+
+	#data *straight_hg={1,1}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 1
+	add cursor (DWORD)
+	#data *s_h_d=0;data h1#1
+	#set cursor# 0
+	add cursor (DWORD)
+	#set h1 height_variable
+	set cursor# height_variable;add cursor (DWORD)
+
+	#data *curved_se={1,0}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	#data *se_y_d=0
+	#set cursor# 0
+	add cursor (DWORD)
+	#data ySE#1
+	#set ySE ycurve
+	set cursor# ycurve;add cursor (DWORD)
+	#data xSE#1
+	mult xcurve -1
+	#set xSE xcurve
+	set cursor# xcurve;add cursor (DWORD)
+	#data *se_x_d=0
+	#set cursor# 0
+	add cursor (DWORD)
+
+	#data *straight_wd_back={1,1}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 1
+	add cursor (DWORD)
+	#data w2#1;data *s_w_b_d=0
+	mult width_variable -1
+	#set w2 width_variable
+	set cursor# width_variable;add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+
+	#data *curved_sv={1,0}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	#data xSV#1
+	#set xSV xcurve
+	set cursor# xcurve;add cursor (DWORD)
+	#data *sv_d={0,0}
+	#set cursor# 0
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	mult ycurve -1
+	#data ySV#1
+	#set ySV ycurve
+	set cursor# ycurve;add cursor (DWORD)
+
+	#data *straight_hg_back={1,1}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 1
+	add cursor (DWORD)
+	#data *s_h_b_d=0;data h2#1
+	#set cursor# 0
+	add cursor (DWORD)
+	mult height_variable -1
+	#set h2 height_variable
+	set cursor# height_variable;add cursor (DWORD)
+
+	#data *curved_nv={1,0}
+	#set cursor# 1
+	add cursor (DWORD)
+	#set cursor# 0
+	add cursor (DWORD)
+	#data *nv_y_d=0
+	#set cursor# 0
+	add cursor (DWORD)
+	#data yNV#1
+	#set yNV ycurve
+	set cursor# ycurve;add cursor (DWORD)
+	#data xNV#1
+	mult xcurve -1
+	#set xNV xcurve
+	set cursor# xcurve;add cursor (DWORD)
+	#data *nv_x_d=0
+	#set cursor# 0
+	add cursor (DWORD)
+
+	#data *struct_end=-1
+	#set cursor# -1;add cursor (DWORD)
+
 	callret swf_shape_local(width,height,strct)
 endfunction
 
@@ -374,8 +470,9 @@ function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,ss
 
     add size Characters_CharacterEndFlag_size
 
-    char BUTTONCONDACTION={0,0};#CondActionSize
-    char *CondOverDownToOverUp={8,0}
+	#char BUTTONCONDACTION={0,0};#CondActionSize
+	#char *CondOverDownToOverUp={8,0}
+	char BUTTONCONDACTION={0,0,8,0}
     const BUTTONCONDACTION_header_size=2+2
     #is action,pool and sprite, it's more code to get action,pool only
     sd ?id
@@ -384,7 +481,7 @@ function swf_button_base(sd ?state_def_id,sd ?state_over_id,sd ?state_down_id,ss
 
     call action_sprite_base(id,actions,(FALSE))
 
-	sd ButtonId
+	sd ?ButtonId
 	setcall ButtonId identifiers_get()  #is final at buttons
 	call dtitles_frame_one(id,ButtonId)
 
@@ -433,12 +530,20 @@ function buttonrecord_size(sd ?x,sd ?y)
 endfunction
 #void
 function buttonrecord(sd ?x,sd ?y,ss ?states,sd ?id,sd ?depth)
-	char bits#1
-	char CharacterID#2
-	char PlaceDepth#2
-	set bits states
-	call stack_to_word_arg(id,#CharacterID)
-	call stack_to_word_arg(depth,#PlaceDepth)
+	char bits#1+2+2;ss pbits^bits
+	#char bits#1
+	#char CharacterID#2
+	#char PlaceDepth#2
+
+	#set bits states
+	set pbits# states;inc pbits
+
+	#call stack_to_word_arg(id,#CharacterID)
+	call stack_to_word_arg(id,pbits);add pbits (WORD)
+
+	#call stack_to_word_arg(depth,#PlaceDepth)
+	call stack_to_word_arg(depth,pbits)
+
 	call swf_mem_add(#bits,(buttonrecord_top_size))
 
 	#PlaceMatrix
