@@ -867,10 +867,10 @@ import "goto_add" goto_add
 function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 	ss name
 	#these acts must stay on stack, can be builtin inside builtin
-	sd ?act
-	sd ?act2
-	set name action_code_write_builtin_names(codepointer,#act)
+	sd actsdata#2;sv acts^actsdata
+	set name action_code_write_builtin_names(codepointer,acts)
 	if name!=(NULL)
+		sd ?act;set act acts#d
 		sd test;set test codepointer
 		add test :   #to pass the pointer
 		if test#!=(args_end)
@@ -941,6 +941,9 @@ function action_code_write_builtin_set(sv codepointer,ss pwant_return)
 								call swf_actionblock_add(#val,(WORD))
 								set pwant_return# (TRUE)   #no ActionPop required
 								#
+								sd ?act2
+								incst acts
+								set act2 acts#d
 								if act2!=(ActionEndFlag)
 									#ActionPlay
 									call swf_actionblock_add(#act2,(BYTE))
