@@ -442,7 +442,7 @@ function actions_format(svu psize,sv pbuf,sv %the_va_list)
 	sdu size
 	#%& a_va_list
 	set size action_format_wrap(the_va_list) #here at c will replace with a_va_list
-	#%> a_va_list
+	#%>
 	ss p;setcall p erbool();if p#=0
 		vstr er="malloc error at actionsf"
 		if buf=(NULL)
