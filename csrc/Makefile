@@ -15,6 +15,11 @@ ifndef EXTRA_CFLAGS
 include ../oad/cflags
 endif
 
+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), arm64)
+#let error if not dpkg-architecture to be visible for correction . or || uname -m , patsubst
+	OCONVFLAGS=-s
+endif
+
 backsrc=../src/
 
 logs_prefix=${backsrc}
@@ -36,7 +41,7 @@ ifeq (${conv_64},1) #to cross compile
 	endif
 #else
 #	ifeq (${platform},win) #to long long
-#		OCONVFLAGS=-
+#		OCONVFLAGS - or plus l
 #	endif
 endif
 

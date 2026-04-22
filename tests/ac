@@ -3,8 +3,10 @@ if [ -z "${old}" ]; then
 	L1=../csrc
 	LD_LIBRARY_PATH=${L1}
 	CC=cc
-	shopt -s expand_aliases #for gd
-	source ~/aliases        #
+	if [ -n "${expand}" ]; then
+		shopt -s expand_aliases #for gd
+		source ~/aliases
+	fi
 else #same as apy
 	L1=~/x86_64_lib
 	LD_LIBRARY_PATH=${L1}:~/x86_64_lib/cross

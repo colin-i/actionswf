@@ -1,1 +1,1 @@
-launcher='gd --args' ./ac
+launcher='gd --args' expand=x ./ac
