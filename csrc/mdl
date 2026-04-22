@@ -1,2 +1,6 @@
 
-OCOMP="q ~/o/ocompiler-2/src/o" OCONV="qq ~/o/ocompiler-2/otoc/otoc" ./md $@
+if [ `uname -m` = x86_64 ]; then
+	OCOMP=~/o/ocompiler-2/src/o OCONV=~/o/ocompiler-2/otoc/otoc ./md $@
+else
+	OCOMP="q ~/o/ocompiler-2/src/o" OCONV="qq ~/o/ocompiler-2/otoc/otoc" ./md $@
+fi
