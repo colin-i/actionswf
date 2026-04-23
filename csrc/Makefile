@@ -53,7 +53,7 @@ all: headers ${proj}
 #can't put headers at proj, will phony libactionswf.so
 ${proj}: ${exte} ${eobs}
 	${OLINK} ${logs}
-	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ -L. -l:${exte} -Wl,--exclude-libs=${exte}
+	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ `pkg-config --libs zlib` -L. -l:${exte} -Wl,--exclude-libs=${exte}
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
 # -e DllMain
