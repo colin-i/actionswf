@@ -45,7 +45,6 @@ jobs:
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
      make
      cd ..
-     cd ..
 
      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
      cd ..
