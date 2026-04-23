@@ -37,12 +37,19 @@ jobs:
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
+     make SUBDIRS="dev oad"
+     cd csrc
+     LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
+     OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
+     OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
+     OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
      make
-
      cd ..
+     cd ..
+
      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
-
      cd ..
+
      wget https://raw.githubusercontent.com/colin-i/pkgbuilds/refs/heads/main/${name}-`uname -m`/PKGBUILD
      makepkg
 

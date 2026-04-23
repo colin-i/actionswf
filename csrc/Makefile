@@ -15,6 +15,10 @@ ifndef EXTRA_CFLAGS
 include ../oad/cflags
 endif
 
+ifndef prefix
+prefix=/usr
+endif
+
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), arm64)
 #let error if not dpkg-architecture to be visible for correction . or || uname -m , patsubst
 	OCONVFLAGS=-s
@@ -74,6 +78,12 @@ clean:
 	-rm -f ${xfiles} ${cfiles}
 distclean: clean
 
-.PHONY: all headers clean distclean
+install:
+	install -D ${proj} $(DESTDIR)$(prefix)/lib${install_number}/${proj}
+
+uninstall:
+	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${proj}
+
+.PHONY: all headers clean distclean install uninstall
 
 # global usings: abcdefghiloprstuwx jkmnqvy
