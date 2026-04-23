@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.164
+Version: 1.165
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -56,6 +56,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Thu Apr 23 2026 costin <costin.botescu@gmail.com> 1.165-0
+- 
+
 * Thu Apr 23 2026 costin <costin.botescu@gmail.com> 1.164-0
 - 
 

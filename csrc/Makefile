@@ -6,7 +6,7 @@ ifndef OCONV
 OCONV=otoc
 endif
 ifndef linkerflags
-linkerflags=-O3 -s
+linkerflags=-s #-O1..fast will break the test at bionic(at least)
 endif
 ifndef compilerflags
 compilerflags=${linkerflags}

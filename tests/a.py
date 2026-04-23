@@ -5,7 +5,7 @@ if os.environ.get('break'):
 	import pdb; pdb.set_trace()
 
 def text(name):
-	return open(name).read()
+	return open(name,encoding="utf-8").read()
 
 actionswf.xlog_pad_set(0x30)
 
