@@ -32,7 +32,6 @@ jobs:
      wget https://github.com/colin-i/o/releases/download/${otag}/${otag}-arch-x86_64.pkg.tar.zst
      sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ${otag}-arch-x86_64.pkg.tar.zst
 
-     cd src/oad
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
