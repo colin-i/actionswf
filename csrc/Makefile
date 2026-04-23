@@ -36,6 +36,8 @@ $(foreach var,$(expitems),$(eval cfiles += ${items_prefix}${var}.e.c))
 $(foreach var,$(items),$(eval cfiles += ${items_prefix}${var}.c))
 
 ifeq (${conv_64},1) #to cross compile
+	OCONVFLAGS=-s
+#yes, was not set earlier at arm64 when cross for armhf(even setting CC to armhf will change that), and i386 is not like x86_64 in terms of va_list
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
 		model=-m32
 	endif

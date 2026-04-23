@@ -1,1 +1,6 @@
-launcher='gd --args' expand=x ./ac
+
+if [ -z "${expand}" ]; then
+	launcher='gd --args' expand=x ./ac
+else
+	launcher='gdb --args' ./ac
+fi

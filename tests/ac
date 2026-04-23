@@ -2,8 +2,8 @@
 if [ -z "${old}" ]; then
 	L1=../csrc
 	LD_LIBRARY_PATH=${L1}
-	CC=cc
-	if [ -n "${expand}" ]; then
+	if [ -z "${CC}" ]; then CC=cc; fi
+	if [ "${expand}" = x ]; then
 		shopt -s expand_aliases #for gd
 		source ~/aliases
 	fi
