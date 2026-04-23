@@ -47,7 +47,7 @@ jobs:
      makepkg
 
      nm=`ls | grep ".*\.gz$"`
-     nm2=`echo ${nm} | sed "s/-aarch64/-ubuntu-aarch64/; s/${name}/liboadbgdata/"`
+     nm2=`echo ${nm} | sed s/-aarch64/-ubuntu-aarch64/` #"; s/${name}/liboadbgdata/"
      mv ${nm} ${nm2}
      echo "file=${nm2}" >> $GITHUB_ENV
 

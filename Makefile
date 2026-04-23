@@ -33,7 +33,7 @@ test:
 	cd ../as3 && conv_64=${conv_64} RUN__SHELL="$${RUN__SHELL}" $${RUN__SHELL} ./as && \
 	echo tests ok
 clean:
-	RUN__SHELL=$(SHELL) . ./shl && cd csrc && make clean && cd tests && \
+	RUN__SHELL=$(SHELL) . ./shl && cd csrc && make clean && cd ../tests && \
 	$${RUN__SHELL} ./c && cd ffdec && $${RUN__SHELL} ./c && cd ../data && $${RUN__SHELL} ./c && cd ../as3 && $${RUN__SHELL} ./c
 install:
 	install -D oaalternative.sh $(DESTDIR)$(prefix)/bin/oaalternative.sh

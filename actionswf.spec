@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.162
+Version: 1.163
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -56,6 +56,47 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Thu Apr 23 2026 costin <costin.botescu@gmail.com> 1.163-0
+- c test ready (costin.botescu@gmail.com)
+- c server build is ok (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- plan to va_list copy (costin.botescu@gmail.com)
+- optimization (costin.botescu@gmail.com)
+- c, fix acts builtin (costin.botescu@gmail.com)
+- c goto fix (costin.botescu@gmail.com)
+- c dbl dim fixes (costin.botescu@gmail.com)
+- character c fixes (costin.botescu@gmail.com)
+- c fixes (costin.botescu@gmail.com)
+- c fixes at alt/images (costin.botescu@gmail.com)
+- fix swf text layout (costin.botescu@gmail.com)
+- fix py actions_free (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- fix actionsf (costin.botescu@gmail.com)
+- va_list from otoc (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- arrangements for downstream va_list (costin.botescu@gmail.com)
+- fix o/c oad mismatch (costin.botescu@gmail.com)
+- ac test is functional (costin.botescu@gmail.com)
+- s32 (costin.botescu@gmail.com)
+- fix c pool (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- info (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- otoc is wrapping constants now (costin.botescu@gmail.com)
+- c forkings (costin.botescu@gmail.com)
+- c repairs (costin.botescu@gmail.com)
+- c fix, and a safety warning (costin.botescu@gmail.com)
+- another demonstration (costin.botescu@gmail.com)
+- two easy to catch errors (costin.botescu@gmail.com)
+- c translations (costin.botescu@gmail.com)
+- fix by fix at c (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- c fixes set (costin.botescu@gmail.com)
+- c fixes (costin.botescu@gmail.com)
+- win fix, and c (costin.botescu@gmail.com)
+- c works (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+
 * Thu Apr 09 2026 costin <costin.botescu@gmail.com> 1.162-0
 - brackets_test at .c (costin.botescu@gmail.com)
 - more c fixes (costin.botescu@gmail.com)
