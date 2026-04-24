@@ -34,15 +34,19 @@ int main(int argc,char**argv){
 	xlog_pad_set(0x30);
 
 	int f;
+	char*s="a.swf";
 	if(argc==1)f=prexx_flags|flagpre_x_pad|flagpre_write_no;
 	else if(argc==2){
 		f=xxu_flags|flag_titles;
 	}else{
 		sscanf(argv[2],"%x",&f);
+		if(argc==4){
+			s=argv[3];
+		}
 	}
 	printf("%x\n",f);
 
-	swf_new_ex("a.swf",0x80,0x80,0x050607,2,f);
+	swf_new_ex(s,0x80,0x80,0x050607,2,f);
 	char*a=text("./aoc/a");
 	size_t sz;char*b=0;
 	actionsf(&sz,&b,a,1,"a");

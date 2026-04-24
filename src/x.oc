@@ -47,12 +47,13 @@ function is_x()
 	return (TRUE)
 end
 
-^import "action_debug" action_debug 1 #full return
+^import "action_debug_memorig" action_debug_memorig
 function x_pointer(sv pointer)
 	ss value
 	set value pointer#
 	if globalx.xfile!=(NULL)
-		sd mem;set mem action_debug((action_debug_get_mem))
+		sv mem;set mem action_debug_memorig()
+		set mem mem#
 		if globalx.twice=(FALSE)
 			sub pointer# mem
 			inc pointer#  ##only to not be comparable with (no_pointer)

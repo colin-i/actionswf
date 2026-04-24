@@ -1,2 +1,3 @@
 
-linkerflags=-g make $@
+if [ -z "${linkerflags}" ]; then linkerflags=-g; fi
+make linkerflags="${linkerflags}" $@

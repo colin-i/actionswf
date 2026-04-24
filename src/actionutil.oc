@@ -150,39 +150,33 @@ end
 #debug
 
 import "mem_free" mem_free
-function action_debug(sd type)
-	if type=(action_debug_get_mem)
-		return globalu.memorig
-	endif
-	if type=(action_debug_get)
-		return #globalu.orig
-	end
-	# action_debug_free
+function action_debug_orig()
+	return #globalu.orig
+endfunction
+function action_debug_memorig()
+	return #globalu.memorig
+end
+function action_debug_free_macro()
 	set globalu.orig (NULL)
 	if globalu.memorig!=(NULL);call mem_free(#globalu.memorig);endif
-endfunction
-function action_debug_free_macro()
-    call action_debug((action_debug_free))
 endfunction
 
 import "printEr" printEr
 import "string_nl_print" string_nl_print
 function action_error()
-	sv p_action_errors
-	setcall p_action_errors action_debug((action_debug_get))
-	if p_action_errors#=(NULL)
+	if globalu.orig=(NULL)
 		ret
 	endif
 
 	call printEr("Row: ")
 
 	# ac and mem is not ok at arm c code can be 16 bit aligned
-	vstr stack#2
-	sv st^stack  #can do more with only at c sign !
-	call memcpy(st,p_action_errors,(2*:))
+	#vstr stack#2
+	#sv st^stack  #can do more with only at c sign !
+	#call memcpy(st,p_action_errors,(2*:))
+	#sv mem=:;add mem st
 	sd row
-	sv mem=:;add mem st
-	setcall row escape_action(st#,mem#,globalu.dcode,(NULL))
+	setcall row escape_action(globalu.orig,globalu.memorig,globalu.dcode,(NULL))
 	#a small reserve for a number like 2 000 000 000
 	char a#dword_to_string_char
 	ss row_nr^a

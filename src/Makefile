@@ -9,7 +9,7 @@ endif
 
 ifndef linkerflags
 linkerflags=-O3 -s
-#-O0 to 3 is same at .so here
+#vs executables, -Olevel(any level, is same not, but "may change") is more significant here. -O without level is another thing, and -O0 is like without -O.
 endif
 ifndef prefix
 prefix=/usr

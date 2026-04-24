@@ -2,7 +2,8 @@ Format ElfObj64
 
 include "../include/prog.h" "../include/prog.oh"
 
-^import "action_debug" action_debug 1 #full return
+^import "action_debug_orig" action_debug_orig #full return
+^import "action_debug_memorig" action_debug_memorig #full return
 import "action_data" action_data
 ^import "action_code_values" action_code_values #full
 ^import "action_code_values_action" action_code_values_action #full
@@ -52,12 +53,12 @@ function action_base(ss ac)
 		call debug_x_pointers(mem,last)
 		call debug_action_phase()
 
-		sv p_action_errors
-		setcall p_action_errors action_debug((action_debug_get))
-		set p_action_errors# ac  ##this also requires debug_code to be set, and is set at first action_code_row_ex / at every row, that is from here without any aftercall
-		sv cursor;set cursor p_action_errors
-		incst cursor
-		set cursor# mem
+		sv _orig
+		setcall _orig action_debug_orig()
+		set _orig# ac  ##this also requires debug_code to be set, and is set at first action_code_row_ex / at every row, that is from here without any aftercall
+		sv _mem
+		set _mem action_debug_memorig()
+		set _mem# mem
 		call endcom(ac,mem) #also for line end term to follow
 		while mem#!=0
 			setcall mem action_code_row(mem,(FALSE))
@@ -65,7 +66,7 @@ function action_base(ss ac)
 		call debug_phase_parse_end() #can't be after math_end the case when last rows are blank
 		call action_code_set((math_end))
 		#reset to stop adding row nr at errors
-		set p_action_errors# (NULL)
+		set _orig# (NULL)
 		call brace_blocks_end()
 
 		call debug_action_phase()
