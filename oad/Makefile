@@ -9,8 +9,8 @@ ifndef OCONV
 OCONV=otoc
 endif
 ifndef linkerflags
-linkerflags=-O3 -s #Ofast is breaking the test
-endif
+linkerflags=-O3 -march=native -s
+# -Ofast: - crashes that don't happen with -O3
 ifndef compilerflags
 compilerflags=${linkerflags}
 endif

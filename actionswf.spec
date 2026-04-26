@@ -27,7 +27,7 @@ This package contains necessary header files for actionswf development.
 touch include_dev
 
 %build
-linkerflags="-O3 -g" make  # -g here is important if wanting to have debuginfo and debugsource packages
+linkerflags="-O3 -march=native -g" make  # -g here is important if wanting to have debuginfo and debugsource packages
 
 %install
 install_number=64 %make_install

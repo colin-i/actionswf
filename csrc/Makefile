@@ -6,7 +6,9 @@ ifndef OCONV
 OCONV=otoc
 endif
 ifndef linkerflags
-linkerflags=-O3 -s
+linkerflags=-O3 -march=native -s
+# -flto currently breaks. ... block_get_size is pointer(translator), int when we use it, at == 0 comparation lto if having O1 will skip
+#	when trying to find what lto/O mix, -fno-strict-aliasing will produce less crashes
 endif
 ifndef compilerflags
 compilerflags=${linkerflags}
@@ -71,10 +73,12 @@ headers:
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} ${backsrc}$*.c -o $@
 
-clean:
+clean-obj:
+	-rm -f ${obs} ${eobs}
+clean: clean-obj
 	$(MAKE) -C ../include clean
 	$(MAKE) -C ../dev clean-csrc
-	-rm -f ${obs} ${eobs} ${logs} ${exte} ${proj}
+	-rm -f ${logs} ${exte} ${proj}
 	-rm -f ${xfiles} ${cfiles}
 distclean: clean
 
@@ -84,6 +88,6 @@ install:
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${proj}
 
-.PHONY: all headers clean distclean install uninstall
+.PHONY: all headers clean clean-obj distclean install uninstall
 
 # global usings: abcdefghiloprstuwx jkmnqvy
