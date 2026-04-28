@@ -425,7 +425,7 @@ functionX swf_imagex(ss imagepath)
 	callret imgx(imagepath,(NULL),(TRUE))  #imgx has another base location and util.oc is not stacking them at the moment, if this is not last must compare or stack them
 end
 functionX swf_imagex_ex(ss imagepath,sd p_wh)
-	base globalw.jmp_data;call ebase(globalw.jmp_data) #sane
+	base globalw.jmp_data;call ebase(globalw.jmp_data) #same
 	callret imgx(imagepath,p_wh,(TRUE))    #same
 end
 functionX swf_img(ss imagepath)
