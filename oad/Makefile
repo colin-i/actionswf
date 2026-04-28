@@ -11,6 +11,7 @@ endif
 ifndef linkerflags
 linkerflags=-O3 -march=native -s
 # -Ofast: - crashes that don't happen with -O3
+endif
 ifndef compilerflags
 compilerflags=${linkerflags}
 endif
