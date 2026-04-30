@@ -8,13 +8,18 @@ endif
 ifndef OCONV
 OCONV=otoc
 endif
+
 ifndef linkerflags
-linkerflags=-O3 -march=native -s
-# -Ofast: - crashes that don't happen with -O3
+	linkerflags=-O3 -s
+	# -Ofast: - crashes that don't happen with -O3
+	ifeq ($(findstring mingw,$(CC)),)
+		linkerflags += -march=native
+	endif
 endif
 ifndef compilerflags
-compilerflags=${linkerflags}
+	compilerflags=${linkerflags}
 endif
+
 ifndef EXTRA_CFLAGS
 include ./cflags
 endif
