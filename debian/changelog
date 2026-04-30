@@ -1,3 +1,9 @@
+actionswf (1-168) bionic; urgency=medium
+
+  * native arch optimization
+
+ -- bc <bc@ubuntu>  Thu, 30 Apr 2026 16:48:40 +0300
+
 actionswf (1-167) bionic; urgency=medium
 
   * fix c i386 test
