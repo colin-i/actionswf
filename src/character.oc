@@ -61,13 +61,13 @@ import "bits_bigendian" bits_bigendian
 import "numbitsMax" numbitsMax
 
 #n
-function shape_records_NumBits(sd p_val)
-    sd val=-2;add val p_val#
-    if val<0
-        mult val -1;add p_val# val
-        return 0
-    endif
-    return val
+function shape_records_NumBits(ss p_val)
+	sss ?val=-2;add val p_val#
+	if val<0
+		mult val -1;add p_val# val
+		return 0
+	endif
+	return val
 endfunction
 #get:fill/lin
 function NumFill_NumLin(sd ?fill,sd ?lin)

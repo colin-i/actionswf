@@ -6,6 +6,7 @@ include "../include/throw.h" "../include/throw.oh"
 
 #multithread unsafe
 datax vflag#1
+datax globdims#2
 
 function verbose(sd ?f)
 	set globali.vflag (flag_verbose)
@@ -143,13 +144,12 @@ import "swf_shape_bitmap_local_clipped" swf_shape_bitmap_local_clipped
 
 function imgx_decision(sd dbl_size,sd jpg_size,ss dbl,ss jpg,ss msk,sd p_wh,ss ?is_image) #,sd is_clipped
 	base globali.jmp_data;call ebase(globali.jmp_data)
-	datax width#1;datax height#1
 	if dbl_size<^jpg_size
 		if is_image=(FALSE)
 			callret swf_dbl_ex_local(dbl,p_wh,(TRUE))
 		end
 		if p_wh=(NULL)
-			callret swf_image_ex_local(dbl,#width,(TRUE))
+			callret swf_image_ex_local(dbl,#globali.globdims,(TRUE))
 		end
 		callret swf_image_ex_local(dbl,p_wh,(TRUE))
 	end
@@ -159,7 +159,9 @@ function imgx_decision(sd dbl_size,sd jpg_size,ss dbl,ss jpg,ss msk,sd p_wh,ss ?
 	else
 		set id swf_jpeg_local(jpg,(DefineBitsJPEG3),msk)
 	end
+	sd ?width
 	set width dbl_dim(dbl,0)
+	sd ?height
 	set height dbl_dim(dbl,(WORD))
 	if p_wh!=(NULL)
 		set p_wh# width

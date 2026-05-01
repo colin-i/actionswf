@@ -481,7 +481,7 @@ function swf_shape_bitmap_local(sd ?bitmapId,sd ?width,sd ?height,sd ?bitmap_fil
 endfunction
 
 #id
-function swf_image_ex_local(ss imagepath,sd p_wh,sd verif)
+function swf_image_ex_local(ss imagepath,sd p_wh,ss ?verif)
 #ss imagepath = path name for the dbl image
 #sd p_wh      = pointer width height
 	sd ?dbl_id
