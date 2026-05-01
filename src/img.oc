@@ -6,7 +6,6 @@ include "../include/throw.h" "../include/throw.oh"
 
 #multithread unsafe
 datax vflag#1
-datax globdims#2
 
 function verbose(sd ?f)
 	set globali.vflag (flag_verbose)
@@ -149,7 +148,8 @@ function imgx_decision(sd dbl_size,sd jpg_size,ss dbl,ss jpg,ss msk,sd p_wh,ss ?
 			callret swf_dbl_ex_local(dbl,p_wh,(TRUE))
 		end
 		if p_wh=(NULL)
-			callret swf_image_ex_local(dbl,#globali.globdims,(TRUE))
+			datax dims#2;sd _dims^dims
+			callret swf_image_ex_local(dbl,_dims,(TRUE))
 		end
 		callret swf_image_ex_local(dbl,p_wh,(TRUE))
 	end
