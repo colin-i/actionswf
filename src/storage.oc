@@ -212,7 +212,7 @@ function swf_mem_init(ss path,sd len,sd ?flags)
 	#4
 	call push_init()
 	#
-	sd test=flagpre_write_no;and test flags
+	sd ?test=flagpre_write_no;and test flags
 	if test=0
 		set globals.filelength_offseted len
 		set globals.is_file_write (TRUE)
