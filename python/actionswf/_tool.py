@@ -13,8 +13,8 @@ def init(lib):
 	global _lib
 	_lib=lib
 
-def erbool_get(): #this to enforce no arguments
-	return _lib.erbool_get()
+def erbool_get():
+	return _lib.erbool_get()[0]
 def erbool_reset():
 	_lib.erbool_reset()
 

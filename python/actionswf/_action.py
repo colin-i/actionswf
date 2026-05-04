@@ -38,9 +38,9 @@ def actionf_sprite(*args, sprite, buffer, format):
 def actionf_init_sprite(*args, sprite, buffer, format):
 	_lib.actionf_init_sprite(sprite, buffer, format.encode('utf-8'), *args)
 def actionsf_sprite(*args, sprite, psize, pbuffer, format):
-	_lib.actionf_sprite(sprite, psize, pbuffer, format.encode('utf-8'), *args)
+	_lib.actionsf_sprite(sprite, psize, pbuffer, format.encode('utf-8'), *args)
 def actionsf_init_sprite(*args, sprite, psize, pbuffer, format):
-	_lib.actionf_init_sprite(sprite, psize, pbuffer, format.encode('utf-8'), *args)
+	_lib.actionsf_init_sprite(sprite, psize, pbuffer, format.encode('utf-8'), *args)
 
 def actions_free(buffer):
 	_lib.actions_free(buffer)
