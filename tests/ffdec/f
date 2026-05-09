@@ -19,7 +19,7 @@ ${OCOMP} a.oc inplace_reloc 0 logfile 0 && \
 				if [ "${a}" = 2 ]; then exit; fi
 				if [ -n "${wait}" ]; then read; fi
 				if [ -z "${ffdec}" ]; then
-					. ~/games/ep/ffdec #~/games/ffdec /home/bc/a/a/s/actionswf-1/tests/ffdec/a.swf
+					. ~/games/ffdec #~/games/ffdec /home/bc/a/a/s/actionswf-1/tests/ffdec/a.swf
 				else
 					ffd=${ffdec}
 				fi
