@@ -1,7 +1,7 @@
 
 Name: actionswf
-Version: 1.168
-Release: 1
+Version: 1.169
+Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -56,6 +56,13 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Sun May 10 2026 costin <costin.botescu@gmail.com> 1.169-0
+- "up" (costin.botescu@gmail.com)
+- sf fix (costin.botescu@gmail.com)
+- c flag fix (costin.botescu@gmail.com)
+- no need to store that on c (costin.botescu@gmail.com)
+- fix stack smash (costin.botescu@gmail.com)
+
 * Thu Apr 30 2026 costin <costin.botescu@gmail.com> 1.168-1
 - arch fix (costin.botescu@gmail.com)
 
