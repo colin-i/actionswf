@@ -5,7 +5,7 @@ On Ubuntu(amd64 i386)(bionic focal jammy noble) from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
-Or the *Manual installation step* from this [link](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6):
+Or the *Manual installation step* from this [link](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6#manual-installation-step):
 ```sh
 sudo apt-get install actionswf
 ```
@@ -62,4 +62,4 @@ Games by this program at [kongregate](https://www.kongregate.com/accounts/bitpla
 <!--- but with no sort --->
 
 ## Donations
-The *Donations* section is [here](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6).
+The *Donations* section is [here](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6#donations).
