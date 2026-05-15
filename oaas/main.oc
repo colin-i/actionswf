@@ -1,16 +1,8 @@
 
 format elfobj64
 
-function spc(ss a)
-	whiletrue
-		#if a#=0x9			inc a		else
-		if a#=0x20
-			inc a
-		else
-			return a
-		end
-	end
-end
+^import "spc" spc 1
+
 functionx line(ss oa)
 	#remove "text" 'text'
 	#a . af . function a() -> function a(e) , find ()

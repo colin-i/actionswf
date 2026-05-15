@@ -33,13 +33,18 @@ OFLAGS=x_file 2
 
 libname=liboaas.so
 
+objs=util.o
 objects=main.o
+exte=libexte.a
 
 all: ${libname}
 
-${libname}: ${objects}
-	${OLINK} main.oc.log
-	$(CC) ${model} ${linkerflags} -shared $< -o ${libname}
+${libname}: ${objects} ${exte}
+	${OLINK} main.oc.log util.oc.log
+	$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}
+
+${exte}: ${objs}
+	$(AR) cr ${exte} $^
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
@@ -47,8 +52,8 @@ ${libname}: ${objects}
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 
 clean:
-	-rm -f main.oc.log main.oc.x main.c
-	-rm -f ${objects} ${libname}
+	-rm -f main.oc.log main.oc.x main.c util.oc.log util.oc.x util.c
+	-rm -f ${objects} ${exte} ${objs} ${libname}
 
 distclean: clean
 

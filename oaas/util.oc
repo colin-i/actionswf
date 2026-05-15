@@ -1,0 +1,13 @@
+
+format elfobj64
+
+function spc(ss a)
+	whiletrue
+		#if a#=0x9			inc a		else
+		if a#=0x20
+			inc a
+		else
+			return a
+		end
+	end
+end
