@@ -60,6 +60,12 @@ if os.environ.get('skip_src')==None:
 
 		return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
 
+	def singleline():
+		bf=chars[:pos]
+		if lib:
+			bf=lib.line(bytes(bf))
+		dfile.write(bf)
+
 	splits_file, splits_mix = premade_formats()
 
 	try:
@@ -121,14 +127,18 @@ if os.environ.get('skip_src')==None:
 								if c==b2b:
 									mode=0
 									pos-=multiline_backjump
+									singleline()
+									pos=0
 								else:
 									mode=6
-						outbuf=chars[:pos]
 						if mode==4:
 							mode=0
-							if lib:
-								outbuf=lib.line(bytes(outbuf))
-						dfile.write(outbuf)
+							singleline()
+						elif mode==6:
+							singleline()
+						else:
+							dfile.write(chars[:pos])
+					#here can test if multiline was closed
 				i=i+1
 
 if os.environ.get('skip_comp')==None:

@@ -37,7 +37,10 @@ objs=util.o
 objects=main.o
 exte=libexte.a
 
-all: ${libname}
+all: ${headers} ${libname}
+
+headers:
+	$(MAKE) -C ../include
 
 ${libname}: ${objects} ${exte}
 	${OLINK} main.oc.log util.oc.log
@@ -47,7 +50,7 @@ ${exte}: ${objs}
 	$(AR) cr ${exte} $^
 
 %.o: %.oc
-	${OCOMP} $< ${OFLAGS}
+	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 
@@ -68,4 +71,4 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
-.PHONY: all install install-lib clean distclean uninstall test
+.PHONY: all headers install install-lib clean distclean uninstall test

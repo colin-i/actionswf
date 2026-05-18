@@ -1,10 +1,12 @@
 
 format elfobj64
 
+einclude "../include/ascii.h" "../include/ascii.oh"
+
 function spc(ss a)
 	whiletrue
 		#if a#=0x9			inc a		else
-		if a#=0x20
+		if a#=(Space)
 			inc a
 		else
 			return a
