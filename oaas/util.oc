@@ -1,11 +1,20 @@
 
 format elfobj64
 
+const a_page_size=0x1000
+#multithread unsafe
+charx a_page#a_page_size
+vstr importstr="import "
+
 einclude "../include/ascii.h" "../include/ascii.oh"
+Const i_low=0x69
+
+importx "puts" puts
+importx "sprintf" sprintf
+importx "strlen" strlen
 
 function spc(ss a)
 	whiletrue
-		#if a#=0x9			inc a		else
 		if a#=(Space)
 			inc a
 		else
@@ -13,7 +22,62 @@ function spc(ss a)
 		end
 	end
 end
+#function spcfull(ss a)
+#	whiletrue
+#		if a#=(HorizontalTab)
+#			inc a
+#		elseif a#=(Space)
+#			inc a
+#		else
+#			return a
+#		end
+#	end
+#end
 
-function translate(ss *start,ss oa)
+function translate(ss start,ss oa)
+	set oa spc(oa)
+	if oa#=(s_low)
+		inc oa
+		if oa#=(Space)
+			ss src;set src start
+			ss dest;set dest start
+			whiletrue
+				if src#=(Nullchar)
+					break
+				end
+				if src#!=(_)
+					set dest# src#
+					inc dest
+				end
+				inc src
+			end
+			set dest# (Nullchar)
+			call puts("Search")
+			return start
+		end
+		dec oa
+	end
 	return oa
 end
+
+function translate_normal(ss oa)
+	if oa#=(i_low)
+		inc oa
+		if oa#=(Space)
+			svu ?len;set len strlen(oa)
+			inc oa
+			if len>^(a_page_size-\globalu.importstr-1)
+				dec oa
+			else
+				call sprintf(#globalu.a_page,"%s%s;",globalu.importstr,oa)
+				call puts("Import")
+				return #globalu.a_page
+			end
+		end
+		dec oa
+	end
+	call puts("Untranslated")
+	return oa
+end
+
+entryraw globalu()

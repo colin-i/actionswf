@@ -1,26 +1,19 @@
 
 format elfobj64
 
-importx "puts" puts
-
 ^import "translate" translate 2
+^import "translate_normal" translate_normal 1
 
 ^import "spc" spc 1
 
-#Const i_low=0x69
-
 functionx line(ss oa)
-	#syntax
-	#else is untranslated
 	set oa spc(oa)
-	#if oa#=(i_low)
-	#else
-		call puts("Untranslated")
-	#end
-	return oa
+	callret translate_normal(oa)
 end
 
 functionx startline(ss start,ss oa)
+	set oa spc(oa)
+
 	#at this function first can be syntax dependent of start string
 	ss result
 	set result translate(start,oa)
@@ -29,5 +22,5 @@ functionx startline(ss start,ss oa)
 	end
 
 	#or normal line
-	callret line(oa)
+	callret translate_normal(oa)
 end
