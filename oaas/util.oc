@@ -7,6 +7,8 @@ charx a_page#a_page_size
 vstr importstr="import "
 
 einclude "../include/ascii.h" "../include/ascii.oh"
+Const LineFeed=0x0A
+Const CarriageReturn=0x0D
 Const i_low=0x69
 
 importx "puts" puts
@@ -38,7 +40,12 @@ function translate(ss start,ss oa)
 	set oa spc(oa)
 	if oa#=(s_low)
 		inc oa
-		if oa#=(Space)
+		whiletrue
+			if oa#!=(LineFeed)
+				if oa#!=(CarriageReturn)
+					break
+				end
+			end
 			ss src;set src start
 			ss dest;set dest start
 			whiletrue

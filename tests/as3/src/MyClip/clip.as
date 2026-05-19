@@ -10,7 +10,7 @@ i flash.events.MouseEvent
 class MyClip extends MovieClip {*/
 	function on_Enter_Frame(){//3 function on_Enter_Frame(e){
 		if(a){
-			_x-=c;//3 s 
+			_x-=c;//3 s
 			if(b){
 				_y-=c;//3 y-=c;
 				if(_y<=0){//3 if(y<=0){
