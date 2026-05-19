@@ -1,13 +1,33 @@
 
 format elfobj64
 
+importx "puts" puts
+
+^import "translate" translate 2
+
 ^import "spc" spc 1
 
+#Const i_low=0x69
+
 functionx line(ss oa)
-	#remove "text" 'text'
-	#a . af . function a() -> function a(e) , find ()
-	#r . r_x _x -> x
-	#x next is untranslated
+	#syntax
+	#else is untranslated
 	set oa spc(oa)
+	#if oa#=(i_low)
+	#else
+		call puts("Untranslated")
+	#end
 	return oa
+end
+
+functionx startline(ss start,ss oa)
+	#at this function first can be syntax dependent of start string
+	ss result
+	set result translate(start,oa)
+	if result!=oa
+		return result
+	end
+
+	#or normal line
+	callret line(oa)
 end

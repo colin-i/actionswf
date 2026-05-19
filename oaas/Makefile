@@ -37,10 +37,10 @@ objs=util.o
 objects=main.o
 exte=libexte.a
 
-all: ${headers} ${libname}
+all: headers ${libname}
 
 headers:
-	$(MAKE) -C ../include
+	$(MAKE) -C ../include ascii.h
 
 ${libname}: ${objects} ${exte}
 	${OLINK} main.oc.log util.oc.log
@@ -55,6 +55,7 @@ ${exte}: ${objs}
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
 
 clean:
+	$(MAKE) -C ../include clean
 	-rm -f main.oc.log main.oc.x main.c util.oc.log util.oc.x util.c
 	-rm -f ${objects} ${exte} ${objs} ${libname}
 

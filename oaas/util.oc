@@ -13,3 +13,7 @@ function spc(ss a)
 		end
 	end
 end
+
+function translate(ss *start,ss oa)
+	return oa
+end

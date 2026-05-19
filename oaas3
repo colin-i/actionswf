@@ -17,6 +17,7 @@ except Exception:
 if lib:
 	try:
 		lib.line.argtypes = [ctypes.c_char_p]; lib.line.restype = ctypes.c_char_p
+		lib.startline.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.startline.restype = ctypes.c_char_p
 	except Exception:
 		print('lib oaas error')
 		exit(1)
@@ -63,7 +64,11 @@ if os.environ.get('skip_src')==None:
 	def singleline():
 		bf=chars[:pos]
 		if lib:
-			bf=lib.line(bytes(bf))
+			if len(stored):
+				bf=lib.startline(bytes(stored),bytes(bf))
+				stored.clear()
+			else:
+				bf=lib.line(bytes(bf))
 		dfile.write(bf)
 
 	splits_file, splits_mix = premade_formats()
@@ -72,8 +77,6 @@ if os.environ.get('skip_src')==None:
 		os.mkdir(dest)
 	except FileExistsError:
 		pass
-
-	multiline_backjump=len(b1b.encode())+len(b2b.encode())
 
 	#for filename in os.listdir(src):
 	with open(splits_file) as splits_file:
@@ -86,6 +89,15 @@ if os.environ.get('skip_src')==None:
 			texts = splits_mix_data.split('\x00')
 			texts.pop()
 			i=0
+
+			multiline_backjump=len(b1b.encode())+len(b2b.encode())
+
+			stored=bytearray()
+			multiline_backjump_start=len(a1.encode())+len(a3.encode())
+			singleline_backjump_start=multiline_backjump_start
+			multiline_backjump_start+=len(a2a.encode())
+			singleline_backjump_start+=len(a2b.encode())
+
 			for f in files:
 				if texts[i]:
 					text=texts[i]
@@ -116,6 +128,11 @@ if os.environ.get('skip_src')==None:
 									mode=0
 							elif mode==2 or mode==3:
 								if c==a3:
+									if mode==2:
+										xpos=singleline_backjump_start
+									else:
+										xpos=multiline_backjump_start
+									stored=chars[:pos-xpos]
 									mode*=2
 									pos=0    #notice: both //3 and /*3 will reset the line
 								else:
