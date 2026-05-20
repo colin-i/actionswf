@@ -1,9 +1,13 @@
 
 Action Swf can create swf files.
-The program is a set of objects made with O Language.
+The program is a library made with O Language or C.
+
+X syntax is here: https://flashixy.com/actionswf.html .
+Oaas syntax is here: https://flashixy.com/oaas.html .
+
 A swf with actionscript example is in the example folder for static o language.
-The libactionswf-dev actionswf.h is for c/c++ languages and actionswf.oh is for for o language.
-The files swf.es and action.es has the main functions that can be used; functions from tool.es can be used in rare situations.
+The libactionswf-dev actionswf.h is for c/c++ languages and actionswf.oh is for for o language. There are also python bindings.
+The files swf.e.oc and action.e.oc has the main functions that can be used; functions from tool.e.oc can be used in rare situations.
 To override a default flag without calling swf_new_ex, write in user home folder .actionswf file (example to override flagpre_log and flag_deprecation_yes, write 8001).
 When using the flagpre_log flag, action,action_sprite,swf_sprite_done calls are logged for oaalternative, more is logged at prexx_flags for debugging.
 
