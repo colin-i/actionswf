@@ -89,16 +89,13 @@ function translate_normal(ss oa)
 			sd ?len
 			inc oa
 			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",globalu.importstr,oa)
-			whiletrue
-				if len>0
-					if len<(a_page_size)
-						call puts("Import")
-						return #globalu.a_page
-					end
+			if len>0
+				if len<(a_page_size)
+					call puts("Import")
+					return #globalu.a_page
 				end
-				dec oa
-				break
 			end
+			dec oa
 		end
 		dec oa
 	end
