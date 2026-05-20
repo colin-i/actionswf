@@ -33,7 +33,17 @@ OFLAGS=x_file 2
 
 libname=liboaas.so
 
-objs=util.o
+objs=translate util
+
+$(eval obs = )
+$(foreach var,$(objs),$(eval obs += ${var}.o))
+$(eval logs = )
+$(foreach var,$(objs),$(eval logs += ${var}.oc.log))
+$(eval cfiles = )
+$(foreach var,$(objs),$(eval cfiles += ${var}.c))
+$(eval xfiles = )
+$(foreach var,$(objs),$(eval xfiles += ${var}.oc.x))
+
 objects=main.o
 exte=libexte.a
 
@@ -43,10 +53,10 @@ headers:
 	$(MAKE) -C ../include ascii.h
 
 ${libname}: ${objects} ${exte}
-	${OLINK} main.oc.log util.oc.log
+	${OLINK} main.oc.log ${logs}
 	$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}
 
-${exte}: ${objs}
+${exte}: ${obs}
 	$(AR) cr ${exte} $^
 
 %.o: %.oc
@@ -56,8 +66,9 @@ ${exte}: ${objs}
 
 clean:
 	$(MAKE) -C ../include clean
-	-rm -f main.oc.log main.oc.x main.c util.oc.log util.oc.x util.c
-	-rm -f ${objects} ${exte} ${objs} ${libname}
+	-rm -f main.oc.log main.oc.x main.c
+	-rm -f ${objects} ${exte} ${libname}
+	-rm -f ${obs} ${logs} ${xfiles} ${cfiles}
 
 distclean: clean
 

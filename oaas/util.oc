@@ -1,19 +1,7 @@
 
 format elfobj64
 
-const a_page_size=0x1000
-#multithread unsafe
-charx a_page#a_page_size
-vstr importstr="import "
-
-Const NULL=0
 einclude "../include/ascii.h" "../include/ascii.oh"
-Const e_low=0x65
-Const i_low=0x69
-
-importx "puts" puts
-importx "snprintf" snprintf
-importx "strstr" strstr
 
 function spc(ss a)
 	whiletrue
@@ -35,72 +23,3 @@ end
 #		end
 #	end
 #end
-
-function translate(ss start,ss oa)
-	if oa#=(s_low)
-		inc oa
-		if oa#=(Nullchar)
-			ss src;set src start
-			ss dest;set dest start
-			whiletrue
-				if src#=(Nullchar)
-					break
-				end
-				if src#!=(_)
-					set dest# src#
-					inc dest
-				end
-				inc src
-			end
-			set dest# (Nullchar)
-			if dest!=src
-				call puts("Search")
-				return start
-			end
-		end
-		dec oa
-	elseif oa#=(e_low)
-		inc oa
-		if oa#=(Nullchar)
-			ss str="()"
-			ss p;set p strstr(start,str)
-			if p!=(NULL)
-				set p# (Nullchar)
-				ss pp=2;add pp p
-				sd ?n;set n snprintf(#globalu.a_page,(a_page_size),"%s(e)%s",start,pp)
-				#set p# '('
-				if n>0
-					if n<(a_page_size)
-						call puts("Event")
-						return #globalu.a_page
-					end
-				end
-			end
-		end
-		dec oa
-	end
-	return oa
-end
-
-function translate_normal(ss oa)
-	if oa#=(i_low)
-		inc oa
-		if oa#=(Space)
-			sd ?len
-			inc oa
-			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",globalu.importstr,oa)
-			if len>0
-				if len<(a_page_size)
-					call puts("Import")
-					return #globalu.a_page
-				end
-			end
-			dec oa
-		end
-		dec oa
-	end
-	call puts("Untranslated")
-	return oa
-end
-
-entryraw globalu()
