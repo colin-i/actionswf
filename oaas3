@@ -64,12 +64,16 @@ if os.environ.get('skip_src')==None:
 	def singleline():
 		bf=chars[:pos]
 		if lib:
+			bf = bf.rstrip(b"\r\n") #this is extra at inline comments
 			if len(stored):
 				bf=lib.startline(bytes(stored),bytes(bf))
 				stored.clear()
 			else:
 				bf=lib.line(bytes(bf))
-		dfile.write(bf)
+			dfile.write(bf)
+			dfile.write(os.linesep.encode())
+		else:
+			dfile.write(bf)
 
 	splits_file, splits_mix = premade_formats()
 

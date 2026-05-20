@@ -1,5 +1,5 @@
 
-//3 import flash.Lib;
+//3 i flash.Lib
 
 /*3 class Main {
 	static

@@ -6,14 +6,14 @@ const a_page_size=0x1000
 charx a_page#a_page_size
 vstr importstr="import "
 
+Const NULL=0
 einclude "../include/ascii.h" "../include/ascii.oh"
-Const LineFeed=0x0A
-Const CarriageReturn=0x0D
+Const e_low=0x65
 Const i_low=0x69
 
 importx "puts" puts
-importx "sprintf" sprintf
-importx "strlen" strlen
+importx "snprintf" snprintf
+importx "strstr" strstr
 
 function spc(ss a)
 	whiletrue
@@ -37,15 +37,9 @@ end
 #end
 
 function translate(ss start,ss oa)
-	set oa spc(oa)
 	if oa#=(s_low)
 		inc oa
-		whiletrue
-			if oa#!=(LineFeed)
-				if oa#!=(CarriageReturn)
-					break
-				end
-			end
+		if oa#=(Nullchar)
 			ss src;set src start
 			ss dest;set dest start
 			whiletrue
@@ -59,8 +53,29 @@ function translate(ss start,ss oa)
 				inc src
 			end
 			set dest# (Nullchar)
-			call puts("Search")
-			return start
+			if dest!=src
+				call puts("Search")
+				return start
+			end
+		end
+		dec oa
+	elseif oa#=(e_low)
+		inc oa
+		if oa#=(Nullchar)
+			ss str="()"
+			ss p;set p strstr(start,str)
+			if p!=(NULL)
+				set p# (Nullchar)
+				ss pp=2;add pp p
+				sd ?n;set n snprintf(#globalu.a_page,(a_page_size),"%s(e)%s",start,pp)
+				#set p# '('
+				if n>0
+					if n<(a_page_size)
+						call puts("Event")
+						return #globalu.a_page
+					end
+				end
+			end
 		end
 		dec oa
 	end
@@ -71,14 +86,18 @@ function translate_normal(ss oa)
 	if oa#=(i_low)
 		inc oa
 		if oa#=(Space)
-			svu ?len;set len strlen(oa)
+			sd ?len
 			inc oa
-			if len>^(a_page_size-\globalu.importstr-1)
+			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",globalu.importstr,oa)
+			whiletrue
+				if len>0
+					if len<(a_page_size)
+						call puts("Import")
+						return #globalu.a_page
+					end
+				end
 				dec oa
-			else
-				call sprintf(#globalu.a_page,"%s%s;",globalu.importstr,oa)
-				call puts("Import")
-				return #globalu.a_page
+				break
 			end
 		end
 		dec oa
