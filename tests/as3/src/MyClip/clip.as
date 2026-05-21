@@ -10,35 +10,35 @@ i flash.events.MouseEvent
 class MyClip extends MovieClip {*/
 	function on_Enter_Frame(){//3 e
 		if(a){
-			_x-=c;//3 s
+			_x-=c;//3 s _
 			if(b){
-				_y-=c;//3 s
-				if(_y<=0){//3 s
+				_y-=c;//3 s _
+				if(_y<=0){//3 s _
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s
-				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
+				_y+=c;//3 s _
+				if(_y+_height>=Stage.height){//3 s _h
 					b=true;
 				}
 			}
-			if(_x<=0){//3 s
+			if(_x<=0){//3 s _
 				a=false;
 			}
 		}else{
-			_x+=c;//3 s
+			_x+=c;//3 s _
 			if(b){
-				_y-=c;//3 s
-				if(_y<=0){//3 s
+				_y-=c;//3 s _
+				if(_y<=0){//3 s _
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s
-				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
+				_y+=c;//3 s _
+				if(_y+_height>=Stage.height){//3 s _h
 					b=true;
 				}
 			}
-			if(_x+_width>=Stage.width){//3 if(x+width>=stage.stageWidth){
+			if(_x+_width>=Stage.width){//3 s _w
 				a=true;
 			}
 		}

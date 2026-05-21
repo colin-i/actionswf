@@ -9,7 +9,7 @@ ifndef OCONV
 OCONV=otoc
 endif
 
-items=action ascii ${platform}home ${platform} prog program xlog
+items=action ascii common ${platform}home ${platform} prog program xlog
 $(foreach var,$(items),$(eval headers += ${var}.h))
 $(foreach var,$(items),$(eval xfiles += ${var}.ohi.x))
 

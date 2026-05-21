@@ -50,7 +50,7 @@ exte=libexte.a
 all: headers ${libname}
 
 headers:
-	$(MAKE) -C ../include ascii.h
+	$(MAKE) -C ../include common.h
 
 ${libname}: ${objects} ${exte}
 	${OLINK} main.oc.log ${logs}

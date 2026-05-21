@@ -7,8 +7,8 @@
 		var stage = Lib.current.stage;
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 var shape = new MyClip();
-		shape._x = (Stage.width - 100) / 2;//3 shape.x = (stage.stageWidth - 100) / 2;
-		shape._y = (Stage.height - 100) / 2;//3 shape.y = (stage.stageHeight - 100) / 2;
+		shape._x = (Stage.width - 100) / 2;//3 s _w
+		shape._y = (Stage.height - 100) / 2;//3 s _h
 /*3
 		stage.addChild(shape);
 

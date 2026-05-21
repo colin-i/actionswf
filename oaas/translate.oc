@@ -5,38 +5,35 @@ const a_page_size=0x1000
 #multithread unsafe
 charx a_page#a_page_size
 
-Const NULL=0
-einclude "../include/ascii.h" "../include/ascii.oh"
+einclude "../include/common.h" "../include/common.oh"
 Const c_low=0x63
 Const e_low=0x65
+Const h_low=0x68
 Const i_low=0x69
+Const w_low=0x77
 
+importx "printf" printf
 importx "puts" puts
 importx "snprintf" snprintf
 importx "strstr" strstr
+
+^import "replace" replace 5
 
 function translate_two(ss start,ss oa)
 	ss ?chr;set chr oa#
 	if chr=(s_low)
 		inc oa
-		if oa#=(Nullchar)
-			ss src;set src start
-			ss dest;set dest start
-			whiletrue
-				if src#=(Nullchar)
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
 					break
 				end
-				if src#!=(_)
-					set dest# src#
-					inc dest
-				end
-				inc src
 			end
-			set dest# (Nullchar)
-			if dest!=src
-				call puts("Search")
-				return start
+			ss s;set s translate_search(start,oa)
+			if s!=oa
+				return s
 			end
+			break
 		end
 		dec oa
 	elseif chr=(e_low)
@@ -104,9 +101,56 @@ function translate_one(ss oa)
 			break
 		end
 		dec oa
+	elseif chr=(Nullchar)
+		call puts("Blank")
+		return oa
 	end
-	call puts("Untranslated")
+	call printf("Untranslated: %s\n",oa)
 	return oa
+end
+
+function translate_search(ss start,ss oa)
+	ss cursor;set cursor oa
+	inc cursor
+	ss str
+	while cursor#!=(Nullchar)
+		if cursor#=(_)
+			ss src;set src start
+			ss dest;set dest start
+			whiletrue
+				if src#=(Nullchar)
+					break
+				end
+				if src#!=(_)
+					set dest# src#
+					inc dest
+				end
+				inc src
+			end
+			if dest!=src
+				set dest# (Nullchar)
+				inc cursor
+				continue
+			end
+		elseif cursor#=(w_low)
+			set str replace(start,"Stage.w","stage.stageW",#globalu.a_page,(a_page_size))
+			if str!=start
+				set start str
+				inc cursor
+				continue
+			end
+		elseif cursor#=(h_low)
+			set str replace(start,"Stage.h","stage.stageH",#globalu.a_page,(a_page_size))
+			if str!=start
+				set start str
+				inc cursor
+				continue
+			end
+		end
+		return oa
+	end
+	call puts("Search")
+	return start
 end
 
 entryraw globalu()

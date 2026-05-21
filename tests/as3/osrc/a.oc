@@ -24,35 +24,35 @@ i flash.events.MouseEvent
 class MyClip extends MovieClip {*/
 	function on_Enter_Frame(){//3 e
 		if(a){
-			_x-=c;//3 s
+			_x-=c;//3 s _
 			if(b){
-				_y-=c;//3 s
-				if(_y<=0){//3 s
+				_y-=c;//3 s _
+				if(_y<=0){//3 s _
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s
-				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
+				_y+=c;//3 s _
+				if(_y+_height>=Stage.height){//3 s _h
 					b=true;
 				}
 			}
-			if(_x<=0){//3 s
+			if(_x<=0){//3 s _
 				a=false;
 			}
 		}else{
-			_x+=c;//3 s
+			_x+=c;//3 s _
 			if(b){
-				_y-=c;//3 s
-				if(_y<=0){//3 s
+				_y-=c;//3 s _
+				if(_y<=0){//3 s _
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s
-				if(_y+_height>=Stage.height){//3 if(y+height>=stage.stageHeight){
+				_y+=c;//3 s _
+				if(_y+_height>=Stage.height){//3 s _h
 					b=true;
 				}
 			}
-			if(_x+_width>=Stage.width){//3 if(x+width>=stage.stageWidth){
+			if(_x+_width>=Stage.width){//3 s _w
 				a=true;
 			}
 		}
@@ -123,8 +123,8 @@ call action("
 		var stage = Lib.current.stage;
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 var shape = new MyClip();
-		shape._x = (Stage.width - 100) / 2;//3 shape.x = (stage.stageWidth - 100) / 2;
-		shape._y = (Stage.height - 100) / 2;//3 shape.y = (stage.stageHeight - 100) / 2;
+		shape._x = (Stage.width - 100) / 2;//3 s _w
+		shape._y = (Stage.height - 100) / 2;//3 s _h
 /*3
 		stage.addChild(shape);
 

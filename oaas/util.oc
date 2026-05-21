@@ -1,7 +1,12 @@
 
 format elfobj64
 
-einclude "../include/ascii.h" "../include/ascii.oh"
+einclude "../include/common.h" "../include/common.oh"
+
+importx "memcpy" memcpy
+importx "snprintf" snprintf
+importx "strlen" strlen
+importx "strstr" strstr
 
 function spc(ss a)
 	whiletrue
@@ -23,3 +28,40 @@ end
 #		end
 #	end
 #end
+
+function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keeping it int because to not wrong it by passing an int in int64
+	ss pos
+	ss src;set src string
+	ss dst;set dst out
+	svu ?slen;set slen strlen(from)
+	svu ?dlen;set dlen strlen(to)
+	whiletrue
+		set pos strstr(src,from)
+		if pos=(NULL)
+			if dst!=out
+				sd ?n;set n snprintf(dst,out_size,"%s",src)
+				if n>=0
+					if n<^out_size
+						return out
+					end
+				end
+			end
+			return string
+		end
+		sub pos src
+		if pos<^out_size
+			call memcpy(dst,src,pos)
+			add src pos
+			add dst pos
+			sub out_size pos
+			if dlen<^out_size
+				call memcpy(dst,to,dlen)
+				add src slen
+				add dst dlen
+				sub out_size dlen
+				continue
+			end
+		end
+		return string
+	end
+end
