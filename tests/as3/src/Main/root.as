@@ -12,13 +12,13 @@
 /*3
 		stage.addChild(shape);
 
-//		var img = new Bitmap( new MyBitmapData(0, 0) );
-//		Lib.current.addChild(img);
+c		var img = new Bitmap( new MyBitmapData(0, 0) );
+c		Lib.current.addChild(img);
 	}
 }
 
-//import flash.display.BitmapData;
-//import flash.display.Bitmap;
-//@:bitmap('relative/path/to/myfile.png')
-//class MyBitmapData extends BitmapData { }//*
+c import flash.display.BitmapData;
+c import flash.display.Bitmap;
+c @:bitmap('relative/path/to/myfile.png')
+c class MyBitmapData extends BitmapData { }//*
 */

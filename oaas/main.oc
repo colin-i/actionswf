@@ -1,14 +1,14 @@
 
 format elfobj64
 
-^import "translate" translate 2
-^import "translate_normal" translate_normal 1
+^import "translate_one" translate_one 1
+^import "translate_two" translate_two 2
 
 ^import "spc" spc 1
 
 functionx line(ss oa)
 	set oa spc(oa)
-	callret translate_normal(oa)
+	callret translate_one(oa)
 end
 
 functionx startline(ss start,ss oa)
@@ -16,11 +16,11 @@ functionx startline(ss start,ss oa)
 
 	#at this function first can be syntax dependent of start string
 	ss result
-	set result translate(start,oa)
+	set result translate_two(start,oa)
 	if result!=oa
 		return result
 	end
 
 	#or normal line
-	callret translate_normal(oa)
+	callret translate_one(oa)
 end

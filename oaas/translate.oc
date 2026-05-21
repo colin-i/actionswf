@@ -4,10 +4,10 @@ format elfobj64
 const a_page_size=0x1000
 #multithread unsafe
 charx a_page#a_page_size
-vstr importstr="import "
 
 Const NULL=0
 einclude "../include/ascii.h" "../include/ascii.oh"
+Const c_low=0x63
 Const e_low=0x65
 Const i_low=0x69
 
@@ -15,8 +15,9 @@ importx "puts" puts
 importx "snprintf" snprintf
 importx "strstr" strstr
 
-function translate(ss start,ss oa)
-	if oa#=(s_low)
+function translate_two(ss start,ss oa)
+	ss ?chr;set chr oa#
+	if chr=(s_low)
 		inc oa
 		if oa#=(Nullchar)
 			ss src;set src start
@@ -38,7 +39,7 @@ function translate(ss start,ss oa)
 			end
 		end
 		dec oa
-	elseif oa#=(e_low)
+	elseif chr=(e_low)
 		inc oa
 		if oa#=(Nullchar)
 			ss str="()"
@@ -61,20 +62,46 @@ function translate(ss start,ss oa)
 	return oa
 end
 
-function translate_normal(ss oa)
-	if oa#=(i_low)
+function translate_one(ss oa)
+	sd ?len
+	ss ?chr;set chr oa#
+	if chr=(c_low)
 		inc oa
-		if oa#=(Space)
-			sd ?len
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
 			inc oa
-			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",globalu.importstr,oa)
+			set len snprintf(#globalu.a_page,(a_page_size),"//%s",oa)
+			if len>0
+				if len<(a_page_size)
+					call puts("Comment")
+					return #globalu.a_page
+				end
+			end
+			dec oa
+			break
+		end
+		dec oa
+	elseif chr=(i_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			vstr importstr="import"
+			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",importstr,oa)
 			if len>0
 				if len<(a_page_size)
 					call puts("Import")
 					return #globalu.a_page
 				end
 			end
-			dec oa
+			break
 		end
 		dec oa
 	end
