@@ -12,12 +12,12 @@ Const h_low=0x68
 Const i_low=0x69
 Const w_low=0x77
 
-importx "printf" printf
-importx "puts" puts
 importx "snprintf" snprintf
 importx "strstr" strstr
 
 ^import "replace" replace 5
+import "translated" translated
+import "untranslated" untranslated
 
 function translate_two(ss start,ss oa)
 	ss ?chr;set chr oa#
@@ -44,12 +44,12 @@ function translate_two(ss start,ss oa)
 			if p!=(NULL)
 				set p# (Nullchar)
 				ss pp=2;add pp p
-				sd ?n;set n snprintf(#globalu.a_page,(a_page_size),"%s(e)%s",start,pp)
+				sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%s(e)%s",start,pp)
 				#set p# '('
 				if n>0
 					if n<(a_page_size)
-						call puts("Event")
-						return #globalu.a_page
+						call translated("Event")
+						return #globalt.a_page
 					end
 				end
 			end
@@ -71,11 +71,11 @@ function translate_one(ss oa)
 				end
 			end
 			inc oa
-			set len snprintf(#globalu.a_page,(a_page_size),"//%s",oa)
+			set len snprintf(#globalt.a_page,(a_page_size),"//%s",oa)
 			if len>0
 				if len<(a_page_size)
-					call puts("Comment")
-					return #globalu.a_page
+					call translated("Comment")
+					return #globalt.a_page
 				end
 			end
 			dec oa
@@ -91,21 +91,21 @@ function translate_one(ss oa)
 				end
 			end
 			vstr importstr="import"
-			set len snprintf(#globalu.a_page,(a_page_size),"%s%s;",importstr,oa)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s;",importstr,oa)
 			if len>0
 				if len<(a_page_size)
-					call puts("Import")
-					return #globalu.a_page
+					call translated("Import")
+					return #globalt.a_page
 				end
 			end
 			break
 		end
 		dec oa
 	elseif chr=(Nullchar)
-		call puts("Blank")
+		call translated("Blank")
 		return oa
 	end
-	call printf("Untranslated: %s\n",oa)
+	call untranslated(oa)
 	return oa
 end
 
@@ -133,14 +133,14 @@ function translate_search(ss start,ss oa)
 				continue
 			end
 		elseif cursor#=(w_low)
-			set str replace(start,"Stage.w","stage.stageW",#globalu.a_page,(a_page_size))
+			set str replace(start,"Stage.w","stage.stageW",#globalt.a_page,(a_page_size))
 			if str!=start
 				set start str
 				inc cursor
 				continue
 			end
 		elseif cursor#=(h_low)
-			set str replace(start,"Stage.h","stage.stageH",#globalu.a_page,(a_page_size))
+			set str replace(start,"Stage.h","stage.stageH",#globalt.a_page,(a_page_size))
 			if str!=start
 				set start str
 				inc cursor
@@ -149,8 +149,8 @@ function translate_search(ss start,ss oa)
 		end
 		return oa
 	end
-	call puts("Search")
+	call translated("Search")
 	return start
 end
 
-entryraw globalu()
+entryraw globalt()

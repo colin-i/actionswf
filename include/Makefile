@@ -35,6 +35,8 @@ lin.ohi: lin.oh
 ${chreqs}:
 	ln -s `echo $* | sed s/platform/${platform}/`.h $@
 
+common.h: ascii.h
+
 throw.h:
 	a='int main(){printf("%lu",sizeof(jmp_buf));return 0;}'; \
 	printf '#include <setjmp.h>\n#include <stdio.h>\n%s' "$${a}" | gcc -x c -

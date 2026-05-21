@@ -1,9 +1,15 @@
 
 format elfobj64
 
+#multithread unsafe
+valueu untranslations=0
+valueu alltranslations=0
+
 einclude "../include/common.h" "../include/common.oh"
 
 importx "memcpy" memcpy
+importx "printf" printf
+importx "puts" puts
 importx "snprintf" snprintf
 importx "strlen" strlen
 importx "strstr" strstr
@@ -65,3 +71,18 @@ function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keepi
 		return string
 	end
 end
+
+function untranslated(ss oa)
+	inc globalu.untranslations
+	inc globalu.alltranslations
+	svu ?n=100
+	mult n globalu.untranslations
+	divu n globalu.alltranslations
+	call printf("Untranslated %u%%: %s\n",n,oa)
+end
+function translated(ss s)
+	inc globalu.alltranslations
+	call puts(s)
+end
+
+entryraw globalu()
