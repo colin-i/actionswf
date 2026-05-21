@@ -9,7 +9,10 @@ ifndef OCONV
 OCONV=otoc
 endif
 
-items=action ascii common ${platform}home ${platform} prog program xlog
+comm=common
+asci=ascii
+
+items=action ${asci} ${comm} ${platform}home ${platform} prog program xlog
 $(foreach var,$(items),$(eval headers += ${var}.h))
 $(foreach var,$(items),$(eval xfiles += ${var}.ohi.x))
 
@@ -31,11 +34,11 @@ lin.ohi: lin.oh
 	echo "format elfobj64" > $@
 	echo "orphan off" >> $@
 	cat $< >> $@
-	sed -i "s/^const path_separator=Slash/const path_separator=`cat ascii.oh | grep -Po '(?<=Const Slash=).*'`/" $@
+	sed -i "s/^const path_separator=Slash/const path_separator=`cat ${asci}.oh | grep -Po '(?<=Const Slash=).*'`/" $@
 ${chreqs}:
 	ln -s `echo $* | sed s/platform/${platform}/`.h $@
 
-common.h: ascii.h
+${comm}.h: ${asci}.h
 
 throw.h:
 	a='int main(){printf("%lu",sizeof(jmp_buf));return 0;}'; \
