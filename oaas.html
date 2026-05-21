@@ -6,8 +6,16 @@
 	{
 		color:red;
 	}
+	.green
+	{
+		color:green;
+	}
 	table td {
 		border: 1px solid;
+	}
+	.com {
+		border: none;
+		white-space: nowrap;
 	}
 </style>
 </head>
@@ -15,10 +23,12 @@
 <body>
 <h1>OA AS syntax</h1>
 <p class="red">Red = string</p>
+<p class="green">Green = translate two</p>
 <table>
-	<tr><td>e</td></tr>
-	<tr><td>i</td><td class="red">import</td></tr>
-	<tr><td>s</td></tr>
+	<tr><td>c</td><td class="red">comment</td><td class="com">//comment</td></tr>
+	<tr><td class="green" colspan=2>e</td><td class="com">is replacing first () with (e)</td></tr>
+	<tr><td>i</td><td class="red">importString</td><td class="com">import importString;</td></tr>
+	<tr><td class="green" colspan=2>s</td><td class="com">is removing all _</td></tr>
 </table>
 </body>
 </html>
