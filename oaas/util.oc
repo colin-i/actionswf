@@ -34,6 +34,21 @@ function spcfull(ss a)
 		end
 	end
 end
+function spcafter(ss a) #first is not white
+	ss b;set b a
+	whiletrue
+		if a#=(Nullchar)
+			return b
+		end
+		inc a
+		if a#=(Space)
+			return a
+		end
+		if a#=(HorizontalTab)
+			return a
+		end
+	end
+end
 
 function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keeping it int because to not wrong it by passing an int in int64
 	ss pos

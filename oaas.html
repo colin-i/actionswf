@@ -13,9 +13,12 @@
 	table td {
 		border: 1px solid;
 	}
-	.com, .com td {
+	.com, .com td { // com on td, but also with inner tables with their own tds
 		border: none;
 		white-space: nowrap;
+	}
+	td table { // this to extend inside table borders to full width
+		width: 100%;
 	}
 </style>
 </head>
@@ -25,10 +28,14 @@
 <p class="red">Red = string</p>
 <p class="green">Green = translate two</p>
 <table>
+	<tr><td>a</td>                        <td><table class="red"><tr><td colspan=2>className</td></tr>
+	                                                                          <tr><td>className</td><td>extendName</td></tr></table></td>
+	                                      <td class="com"><table><tr><td>class className{</td></tr>
+	                                                             <tr><td>class className extends extendName{</td></tr></table></td></tr>
 	<tr><td>c</td>                        <td class="red">comment</td><td class="com">//comment</td></tr>
 	<tr><td class="green" colspan=2>e</td><td class="com">is replacing first () with (e)</td></tr>
 	<tr><td>i</td>                        <td class="red">importString</td><td class="com">import importString;</td></tr>
-	<tr><td>o</td>                        <td><table width='100%'><tr><td>c</td><td class="red" rowspan=3>functionName</td></tr><tr><td>i</td></tr><tr><td>o</td></tr></table></td>
+	<tr><td>o</td>                        <td><table><tr><td>c</td><td class="red" rowspan=3>functionName</td></tr><tr><td>i</td></tr><tr><td>o</td></tr></table></td>
 	                                      <td class="com"><table><tr><td>addEventListener(MouseEvent.MOUSE_OVER,functionName);</td></tr>
 	                                                             <tr><td>addEventListener(MouseEvent.MOUSE_OUT,functionName);</td></tr>
 	                                                             <tr><td>addEventListener(MouseEvent.CLICK,functionName);</td></tr></table></td></tr>

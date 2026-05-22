@@ -1,7 +1,7 @@
 
 //3 i flash.Lib
 
-/*3 class Main {
+/*3 a Main
 	static
 	function main() {
 		var stage = Lib.current.stage;

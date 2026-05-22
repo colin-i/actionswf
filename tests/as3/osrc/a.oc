@@ -21,7 +21,7 @@ i flash.text.TextFormat
 i flash.text.TextFormatAlign
 i flash.events.MouseEvent
 
-class MyClip extends MovieClip {*/
+a MyClip MovieClip*/
 	function on_Enter_Frame(){//3 e
 		if(a){
 			_x-=c;//3 s _
@@ -117,7 +117,7 @@ call swf_exports_add(sprite,"MyClip")
 call action("
 //3 i flash.Lib
 
-/*3 class Main {
+/*3 a Main
 	static
 	function main() {
 		var stage = Lib.current.stage;

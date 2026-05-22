@@ -7,7 +7,7 @@ i flash.text.TextFormat
 i flash.text.TextFormatAlign
 i flash.events.MouseEvent
 
-class MyClip extends MovieClip {*/
+a MyClip MovieClip*/
 	function on_Enter_Frame(){//3 e
 		if(a){
 			_x-=c;//3 s _
