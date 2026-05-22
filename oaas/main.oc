@@ -4,7 +4,9 @@ format elfobj64
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 
+import "print_stdout" print_stdout
 ^import "spc" spc 1
+import "translated_ratio" translated_ratio
 
 functionx line(ss oa)
 	set oa spc(oa)
@@ -23,4 +25,10 @@ functionx startline(ss start,ss oa)
 
 	#or normal line
 	callret translate_one(oa,start)
+end
+
+functionx ratio()
+	call print_stdout("Ratio: ")
+	call translated_ratio()
+	call print_stdout("\n")
 end

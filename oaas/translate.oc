@@ -194,10 +194,9 @@ function translate_one(ss in,ss start)
 		call translated("Blank")
 		return in
 	else
-		set cursor spcfull(oa)
-		if cursor#=(Closingbrace)
-			inc cursor
-			if cursor#=(Nullchar)
+		if oa#=(Closingbrace)
+			inc oa
+			if oa#=(Nullchar)
 				call translated("Closing")
 				return in
 			end

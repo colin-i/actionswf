@@ -161,6 +161,8 @@ if os.environ.get('skip_src')==None:
 							dfile.write(chars[:pos])
 					#here can test if multiline was closed
 				i=i+1
+			if lib:
+				lib.ratio()
 
 if os.environ.get('skip_comp')==None:
 	def error():
