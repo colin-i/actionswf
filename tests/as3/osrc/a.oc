@@ -97,9 +97,9 @@ class MyClip extends MovieClip {*/
 
 		// Interactivity
 		useHandCursor = true;//3 buttonMode = true;mouseChildren = false;
-		onRollOver = onOver;//3 addEventListener(MouseEvent.MOUSE_OVER, onOver);
-		onRollOut = onOut;//3 addEventListener(MouseEvent.MOUSE_OUT, onOut);
-		onPress = onClick;//3 addEventListener(MouseEvent.CLICK, onClick);
+		onRollOver = onOver;//3 o ionOver
+		onRollOut = onOut;//3 o oonOut
+		onPress = onClick;//3 o conClick
 
 		//3 addChild(label);
 
