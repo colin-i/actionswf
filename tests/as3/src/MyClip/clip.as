@@ -54,7 +54,7 @@ a MyClip MovieClip*/
 		_alpha = 100;//3 alpha = 1;
 	}
 /*3
-	public function new() {
+	f pnew
 		super();
 */
 		// Simple visual so you can see it

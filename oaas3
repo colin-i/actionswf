@@ -2,7 +2,7 @@
 
 # break
 # skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext
-# skip_comp header ffdec compiler no_clean
+# skip_comp header ffdec compiler no_clean no_confirm
 
 import sys
 if len(sys.argv)!=3:
@@ -193,41 +193,42 @@ if os.environ.get('skip_comp')==None:
 			os.remove(hx_ext(f))
 		os.rmdir(dest)
 
-	#confirm is as3
+	if os.environ.get('no_confirm')==None:
+		#confirm is as3
 
-	dest_file_tmp=dest_file+'.tmp'
-	ffdec=os.environ.get('ffdec')
-	if ffdec==None:
-		ffdec='ffdec'
-	r=subprocess.run([ffdec,'-decompress',dest_file,dest_file_tmp])
-	error()
-	with open(dest_file_tmp,'rb') as file:
-		file.seek(8)
-		#rect
-		b=file.read(1)
-		n=b[0]>>3 # 0xff >> 1 is 0x7f
-		n=5+(n*4)
-		if n%8:
-			n=int(n/8)+1
-		else:
-			n=n/8
-		file.seek(n+3,1)
-		#tag
-		tag=file.read(2)
-		tg=tag[1]<<2
-		tg_low=tag[0]>>6
-		tg|=tg_low
-		if tg!=69:
-			print('no FileAttributes tag')
-			exit(1)
-		tg=tag[0]&0x3f
-		if tg==0x3f:
-			print('malformed FileAttributes tag')
-			exit(1)
-		#tag data
-		tg=file.read(1)
-		if (tg[0]&8)==0:
-			print('ActionScript3 bit is not set')
-			exit(1)
+		dest_file_tmp=dest_file+'.tmp'
+		ffdec=os.environ.get('ffdec')
+		if ffdec==None:
+			ffdec='ffdec'
+		r=subprocess.run([ffdec,'-decompress',dest_file,dest_file_tmp])
+		error()
+		with open(dest_file_tmp,'rb') as file:
+			file.seek(8)
+			#rect
+			b=file.read(1)
+			n=b[0]>>3 # 0xff >> 1 is 0x7f
+			n=5+(n*4)
+			if n%8:
+				n=int(n/8)+1
+			else:
+				n=n/8
+			file.seek(n+3,1)
+			#tag
+			tag=file.read(2)
+			tg=tag[1]<<2
+			tg_low=tag[0]>>6
+			tg|=tg_low
+			if tg!=69:
+				print('no FileAttributes tag')
+				exit(1)
+			tg=tag[0]&0x3f
+			if tg==0x3f:
+				print('malformed FileAttributes tag')
+				exit(1)
+			#tag data
+			tg=file.read(1)
+			if (tg[0]&8)==0:
+				print('ActionScript3 bit is not set')
+				exit(1)
 
-	os.remove(dest_file_tmp)
+		os.remove(dest_file_tmp)

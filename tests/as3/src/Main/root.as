@@ -2,8 +2,7 @@
 //3 i flash.Lib
 
 /*3 a Main
-	static
-	function main() {
+	f smain
 		var stage = Lib.current.stage;
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 var shape = new MyClip();
