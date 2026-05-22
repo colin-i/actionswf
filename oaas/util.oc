@@ -23,17 +23,17 @@ function spc(ss a)
 		end
 	end
 end
-#function spcfull(ss a)
-#	whiletrue
-#		if a#=(HorizontalTab)
-#			inc a
-#		elseif a#=(Space)
-#			inc a
-#		else
-#			return a
-#		end
-#	end
-#end
+function spcfull(ss a)
+	whiletrue
+		if a#=(HorizontalTab)
+			inc a
+		elseif a#=(Space)
+			inc a
+		else
+			return a
+		end
+	end
+end
 
 function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keeping it int because to not wrong it by passing an int in int64
 	ss pos

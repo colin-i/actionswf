@@ -16,6 +16,7 @@ importx "snprintf" snprintf
 importx "strstr" strstr
 
 ^import "replace" replace 5
+^import "spcfull" spcfull 1
 import "translated" translated
 import "untranslated" untranslated
 
@@ -104,6 +105,15 @@ function translate_one(ss oa)
 	elseif chr=(Nullchar)
 		call translated("Blank")
 		return oa
+	else
+		ss cursor;set cursor spcfull(oa)
+		if cursor#=(Closingbrace)
+			inc cursor
+			if cursor#=(Nullchar)
+				call translated("Closing")
+				return oa
+			end
+		end
 	end
 	call untranslated(oa)
 	return oa
