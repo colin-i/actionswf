@@ -11,6 +11,7 @@ Const e_low=0x65
 Const f_low=0x66
 Const h_low=0x68
 Const i_low=0x69
+Const k_low=0x6B
 Const o_low=0x6F
 Const p_low=0x70
 Const t_low=0x74
@@ -84,13 +85,13 @@ function translate_two(ss start,ss oa)
 			if oa#=(Nullchar)
 				vstr mous="Mouse"
 				set cursor start
-				if chr=(c_low)
-					set cursor translate_on(start,mous,"CLICK")
-				elseif chr=(f_low)
+				if chr=(f_low)
 					set cursor translate_on(start,"","ENTER_FRAME")
-				elseif chr=(i_low)
-					set cursor translate_on(start,mous,"MOUSE_OVER")
+				elseif chr=(k_low)
+					set cursor translate_on(start,mous,"CLICK")
 				elseif chr=(o_low)
+					set cursor translate_on(start,mous,"MOUSE_OVER")
+				elseif chr=(t_low)
 					set cursor translate_on(start,mous,"MOUSE_OUT")
 				end
 				if cursor!=start

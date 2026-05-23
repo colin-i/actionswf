@@ -78,9 +78,9 @@ a MyClip MovieClip*/
 
 		// Interactivity
 		useHandCursor = true;//3 buttonMode = true;mouseChildren = false;
-		onRollOver = onOver;//3 o i
-		onRollOut = onOut;//3 o o
-		onPress = onClick;//3 o c
+		onRollOver = onOver;//3 o o
+		onRollOut = onOut;//3 o t
+		onPress = onClick;//3 o k
 
 		//3 addChild(label);
 
