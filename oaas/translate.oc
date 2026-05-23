@@ -32,28 +32,14 @@ import "object_make" object_make
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
+^import "strip" strip 1
 import "translated" translated
 import "untranslated" untranslated
 
 function translate_two(ss start,ss oa)
 	ss cursor
 	ss ?chr;set chr oa#
-	if chr=(s_low)
-		inc oa
-		whiletrue
-			if oa#!=(Space)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			ss s;set s translate_search(start,oa)
-			if s!=oa
-				return s
-			end
-			break
-		end
-		dec oa
-	elseif chr=(e_low)
+	if chr=(e_low)
 		inc oa
 		if oa#=(Nullchar)
 			ss str="()"
@@ -117,6 +103,30 @@ function translate_two(ss start,ss oa)
 					end
 				end
 			end
+		end
+		dec oa
+	elseif chr=(s_low)
+		inc oa
+		whiletrue
+			if oa#=(Nullchar)
+				ss ?t=7
+				set cursor translate_search_base(start,#t)
+				if t=0
+					break
+				end
+			else
+				if oa#!=(Space)
+					if oa#!=(HorizontalTab)
+						break
+					end
+				end
+				set cursor translate_search(start,oa)
+				if cursor=oa
+					break
+				end
+			end
+			call translated("Search")
+			return cursor
 		end
 		dec oa
 	elseif chr=(t_low)
@@ -255,44 +265,64 @@ end
 function translate_search(ss start,ss oa)
 	ss cursor;set cursor oa
 	inc cursor
-	ss str
+	ss ?types=0
 	while cursor#!=(Nullchar)
 		if cursor#=(_)
-			ss src;set src start
-			ss dest;set dest start
-			whiletrue
-				if src#=(Nullchar)
-					break
-				end
-				if src#!=(_)
-					set dest# src#
-					inc dest
-				end
-				inc src
-			end
-			if dest!=src
-				set dest# (Nullchar)
-				inc cursor
-				continue
-			end
-		elseif cursor#=(w_low)
-			set str replace(start,"Stage.w","stage.stageW",#globalt.a_page,(a_page_size))
-			if str!=start
-				set start str
-				inc cursor
-				continue
-			end
-		elseif cursor#=(h_low)
-			set str replace(start,"Stage.h","stage.stageH",#globalt.a_page,(a_page_size))
-			if str!=start
-				set start str
-				inc cursor
-				continue
-			end
+			or types 1
+			inc cursor
+			continue
+		end
+		if cursor#=(w_low)
+			or types 2
+			inc cursor
+			continue
+		end
+		if cursor#=(h_low)
+			or types 4
+			inc cursor
+			continue
 		end
 		return oa
 	end
-	call translated("Search")
+	ss ?t;set t types
+	set cursor translate_search_base(start,#types)
+	if types=t
+		return cursor
+	end
+	return oa
+end
+function translate_search_base(ss start,ss ptypes)
+	ss ?t=1
+	and t ptypes#
+	if t!=0
+		ss dest;set dest strip(start)
+		if dest!=start
+			set dest# (Nullchar)
+		else
+			xor ptypes# 1
+		end
+	end
+	ss str
+	set t 2
+	and t ptypes#
+	if t!=0
+		set str replace(start,"Stage.w","stage.stageW",#globalt.a_page,(a_page_size))
+		if str!=start
+			set start str
+		else
+			xor ptypes# 2
+		end
+	end
+	set t 4
+	and t ptypes#
+	if t!=0
+		set str replace(start,"Stage.h","stage.stageH",#globalt.a_page,(a_page_size))
+		if str!=start
+			set start str
+		else
+			xor ptypes# 4
+		end
+	end
 	return start
 end
 
