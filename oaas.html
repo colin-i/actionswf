@@ -10,6 +10,10 @@
 	{
 		color:green;
 	}
+	.blue
+	{
+		color:blue;
+	}
 	table td {
 		border: 1px solid;
 	}
@@ -26,7 +30,8 @@
 <body>
 <h1>OA AS syntax</h1>
 <p class="red">Red = string</p>
-<p class="green">Green = translate two</p>
+<p class="green">Green = replacement</p>
+<p class="blue">[] is optional</p>
 <table>
 	<tr><td>a</td>                        <td><table class="red"><tr><td colspan=2>className</td></tr>
 	                                                                          <tr><td>className</td><td>extendName</td></tr></table></td>
@@ -39,13 +44,14 @@
 	                                      <td class="com"><table><tr><td>public function functionName(){</td></tr>
 	                                                             <tr><td>static function functionName(){</td></tr></table></td></tr>
 	<tr><td>i</td>                        <td class="red">importString</td><td class="com">import importString;</td></tr>
-	<tr><td>o</td>                        <td><table><tr><td>c</td><td class="red" rowspan=3>functionName</td></tr><tr><td>i</td></tr><tr><td>o</td></tr></table></td>
-	                                      <td class="com"><table><tr><td>addEventListener(MouseEvent.MOUSE_OVER,functionName);</td></tr>
-	                                                             <tr><td>addEventListener(MouseEvent.MOUSE_OUT,functionName);</td></tr>
-	                                                             <tr><td>addEventListener(MouseEvent.CLICK,functionName);</td></tr></table></td></tr>
+	<tr><td class="green" rowspan=4>o</td><td>c</td><td class="com">addEventListener(MouseEvent.MOUSE_CLICK,<span class="green">replacement</span>);</td></tr>
+	<tr>                                  <td>f</td><td class="com">addEventListener(Event.ENTER_FRAME,<span class="green">replacement</span>);</td></tr>
+	<tr>                                  <td>i</td><td class="com">addEventListener(MouseEvent.MOUSE_OVER,<span class="green">replacement</span>);</td></tr>
+	<tr>                                  <td>o</td><td class="com">addEventListener(MouseEvent.MOUSE_OUT,<span class="green">replacement</span>);</td></tr>
 	<tr><td class="green" rowspan=3>s</td><td>_</td><td class="com">is removing all _</td></tr>
 	<tr>                                  <td>w</td><td class="com">is replacing all Stage.w with stage.stageW</td></tr>
 	<tr>                                  <td>h</td><td class="com">is replacing all Stage.h with stage.stageH</td></tr>
+	<tr><td class="green" colspan=2>t</td><td class="com">var <span class="green">label</span>=new TextField();<span class="blue">[</span><span class="green">label</span>.x=<span class="green">nr</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.y=<span class="green">nr</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.width=<span class="green">nr</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.height=<span class="green">nr</span>;<span class="blue">]</span></td></tr>
 </table>
 Other recognized notations:
 <table>

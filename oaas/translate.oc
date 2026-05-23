@@ -13,18 +13,28 @@ Const h_low=0x68
 Const i_low=0x69
 Const o_low=0x6F
 Const p_low=0x70
+Const t_low=0x74
 Const w_low=0x77
 
+importx "strchr" strchr
 importx "snprintf" snprintf
 importx "strstr" strstr
 
+^import "commaafter" commaafter 1
+^import "commaon" commaon 1
+^import "equalafter" equalafter 1
+import "object_com" object_com
+import "object_make" object_make
+^import "parecon" parecon 1
 ^import "replace" replace 5
-^import "spcafter" spcafter 1
+^import "semicolon" semicolon 1
+^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
 import "translated" translated
 import "untranslated" untranslated
 
 function translate_two(ss start,ss oa)
+	ss cursor
 	ss ?chr;set chr oa#
 	if chr=(s_low)
 		inc oa
@@ -60,16 +70,51 @@ function translate_two(ss start,ss oa)
 			end
 		end
 		dec oa
+	elseif chr=(o_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			inc oa
+			set chr oa#
+			inc oa
+			if oa#=(Nullchar)
+				vstr mous="Mouse"
+				set cursor start
+				if chr=(c_low)
+					set cursor translate_on(start,mous,"CLICK")
+				elseif chr=(f_low)
+					set cursor translate_on(start,"","ENTER_FRAME")
+				elseif chr=(i_low)
+					set cursor translate_on(start,mous,"MOUSE_OVER")
+				elseif chr=(o_low)
+					set cursor translate_on(start,mous,"MOUSE_OUT")
+				end
+				if cursor!=start
+					call translated("On")
+					return cursor
+				end
+			end
+			break
+		end
+	elseif chr=(t_low)
+		set cursor translate_label(start)
+		if cursor!=start
+			call translated("Label")
+			return cursor
+		end
 	end
 	return oa
 end
 
-function translate_one(ss in,ss start)
+function translate_one(ss in)
 	ss oa;set oa spcfull(in)
 	sd ?len
 	ss ?chr;set chr oa#
 	ss cursor
-	vstr blnk=""
 	if chr=(a_low)
 		inc oa
 		whiletrue
@@ -81,7 +126,7 @@ function translate_one(ss in,ss start)
 			inc oa
 
 			ss o_a;set o_a spcfull(oa) #this is for safety in case there are more whites. also, they will be preserved
-			set cursor spcafter(o_a)
+			set cursor spcfullafters(o_a)
 			ss pointer;ss ext
 			ss ?reminder
 			if cursor!=o_a
@@ -89,7 +134,7 @@ function translate_one(ss in,ss start)
 				set pointer spcfull(cursor)
 				set reminder cursor#;set cursor# (Nullchar)
 			else
-				set ext blnk
+				set ext ""
 				set pointer ext
 				set reminder (Nullchar)
 			end
@@ -168,32 +213,6 @@ function translate_one(ss in,ss start)
 			end
 			break
 		end
-	elseif chr=(o_low)
-		inc oa
-		whiletrue
-			if oa#!=(Space)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
-			set chr oa#
-			vstr mous="Mouse"
-			if chr=(c_low)
-				set cursor translate_on(oa,mous,"CLICK",start)
-			elseif chr=(f_low)
-				set cursor translate_on(oa,blnk,"ENTER_FRAME",start)
-			elseif chr=(i_low)
-				set cursor translate_on(oa,mous,"MOUSE_OVER",start)
-			elseif chr=(o_low)
-				set cursor translate_on(oa,mous,"MOUSE_OUT",start)
-			end
-			if cursor!=oa
-				call translated("On")
-				return cursor
-			end
-			break
-		end
 	elseif chr=(Nullchar)
 		call translated("Blank")
 		return in
@@ -254,19 +273,78 @@ function translate_search(ss start,ss oa)
 	return start
 end
 
-function translate_on(ss oa,ss type,ss ev,ss start)
+function translate_on(ss start,ss type,ss ev)
 	ss cursor;set cursor spcfull(start)
 	set cursor# (Nullchar)
-
-	inc oa
-	sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,oa)
-	if n>0
-		if n<(a_page_size)
-			return #globalt.a_page
+	inc cursor
+	ss pointer
+	set pointer equalafter(cursor)
+	if pointer!=cursor
+		set cursor semicolon(pointer)
+		if cursor!=pointer
+			set cursor# (Nullchar)
+			sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,pointer)
+			if n>0
+				if n<(a_page_size)
+					return #globalt.a_page
+				end
+			end
 		end
 	end
-	dec oa
-	return oa
+	return start
+end
+
+function translate_label(ss indents)
+	ss cursor;set cursor spcfull(indents)
+	set cursor# (Nullchar) #on create...
+	ss name
+	inc cursor
+	set name strchr(cursor,(Singlequote))
+	if name!=(NULL)
+		inc name
+		set cursor strchr(name,(Singlequote))
+		if cursor!=(NULL)
+			ss buffer;set buffer #globalt.a_page
+			sd ?size
+			set size object_make(indents,name,cursor,"TextField",#buffer,(a_page_size))
+			if size!=0
+				inc cursor
+				ss pointer
+				set pointer commaafter(cursor)
+				if pointer!=cursor
+					set cursor commaafter(pointer)
+					if cursor!=pointer
+						set pointer commaon(cursor)
+						if pointer!=cursor
+							sd ?len
+							set len object_com(name,"x",cursor,pointer,#buffer,size)
+							if len!=0
+								inc pointer
+								set cursor commaon(pointer)
+								if cursor!=pointer
+									set size object_com(name,"y",pointer,cursor,#buffer,len)
+									if size!=0
+										inc cursor
+										set pointer commaon(cursor)
+										set len object_com(name,"width",cursor,pointer,#buffer,size)
+										if len!=0
+											inc pointer
+											set cursor parecon(pointer)
+											set size object_com(name,"height",pointer,cursor,#buffer,len)
+											if size!=0
+												return #globalt.a_page
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return indents
 end
 
 entryraw globalt()

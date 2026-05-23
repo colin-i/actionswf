@@ -17,6 +17,32 @@ importx "snprintf" snprintf
 importx "strlen" strlen
 importx "strstr" strstr
 
+function anyafter(ss a,ss ?x)
+	ss b;set b a
+	whiletrue
+		if a#=x
+			inc a
+			return a
+		end
+		if a#=(Nullchar)
+			return b
+		end
+		inc a
+	end
+end
+function anyon(ss a,ss ?x)
+	ss b;set b a
+	whiletrue
+		if a#=x
+			return a
+		end
+		if a#=(Nullchar)
+			return b
+		end
+		inc a
+	end
+end
+
 function spc(ss a)
 	whiletrue
 		if a#=(Space)
@@ -37,7 +63,7 @@ function spcfull(ss a)
 		end
 	end
 end
-function spcafter(ss a) #first is not white
+function spcfullafters(ss a) #first is solid (not white)
 	ss b;set b a
 	whiletrue
 		if a#=(Nullchar)
@@ -51,6 +77,22 @@ function spcafter(ss a) #first is not white
 			return a
 		end
 	end
+end
+
+function commaafter(ss a)
+	callret anyafter(a,(Comma))
+end
+function commaon(ss a)
+	callret anyon(a,(Comma))
+end
+function equalafter(ss a)
+	callret anyafter(a,(Equals))
+end
+function parecon(ss a)
+	callret anyon(a,(Closeparenthesis))
+end
+function semicolon(ss a)
+	callret anyon(a,(Semicolon))
 end
 
 function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keeping it int because to not wrong it by passing an int in int64
@@ -94,7 +136,6 @@ function print_stdout(ss a)
 	svu s^stdout
 	call fputs(a,s#)
 end
-
 function translated_ratio()
 	svu ?n=100
 	mult n globalu.translations
@@ -110,6 +151,38 @@ function translated(ss s)
 	inc globalu.translations
 	inc globalu.alltranslations
 	call puts(s)
+end
+
+function object_make(ss indents,ss name,ss end,ss class,sv pbuffer,sd ?size)
+	set end# (Nullchar)
+	sd ?len;set len snprintf(pbuffer#,size,"%svar %s=new %s();",indents,name,class)
+	if len>0
+		if len<size
+			add pbuffer# len
+			sub size len
+			return size
+		end
+	end
+	return 0
+end
+function object_com(ss name,ss prop,ss value,ss end,sv pbuffer,sd ?size)
+	if value#=(_0)
+		inc value
+		if value=end
+			return size
+		end
+		dec value
+	end
+	set end# (Nullchar)
+	sd ?len;set len snprintf(pbuffer#,size,"%s.%s=%s;",name,prop,value)
+	if len>0
+		if len<size
+			add pbuffer# len
+			sub size len
+			return size
+		end
+	end
+	return 0
 end
 
 entryraw globalu()

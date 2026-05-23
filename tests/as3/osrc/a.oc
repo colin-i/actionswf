@@ -79,12 +79,7 @@ a MyClip MovieClip*/
 		//3 addChild(shape);
 
 		// a 1/5 margin
-		createTextField('label', 1, 0, 16, 120, 48);//3 var label = new TextField();
-		/*3
-		label.y = 16;
-		label.width = 120;
-		label.height = 48;
-		*/
+		createTextField('label',1,0,16, 120, 48);//3 t
 		label.text = 'Click';
 		label.selectable = false;
 
@@ -97,13 +92,13 @@ a MyClip MovieClip*/
 
 		// Interactivity
 		useHandCursor = true;//3 buttonMode = true;mouseChildren = false;
-		onRollOver = onOver;//3 o ionOver
-		onRollOut = onOut;//3 o oonOut
-		onPress = onClick;//3 o conClick
+		onRollOver = onOver;//3 o i
+		onRollOut = onOut;//3 o o
+		onPress = onClick;//3 o c
 
 		//3 addChild(label);
 
-		onEnterFrame=on_Enter_Frame; //3 o fon_Enter_Frame
+		onEnterFrame = on_Enter_Frame; //3 o f
 /*3	}
 	static
 */
