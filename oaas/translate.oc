@@ -120,11 +120,15 @@ function translate_two(ss start,ss oa)
 		end
 		dec oa
 	elseif chr=(t_low)
-		set cursor translate_label(start)
-		if cursor!=start
-			call translated("Label")
-			return cursor
+		inc oa
+		if oa#=(Nullchar)
+			set cursor translate_label(start)
+			if cursor!=start
+				call translated("Label")
+				return cursor
+			end
 		end
+		dec oa
 	end
 	return oa
 end
