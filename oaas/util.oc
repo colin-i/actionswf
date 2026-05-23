@@ -85,8 +85,8 @@ end
 function commaon(ss a)
 	callret anyon(a,(Comma))
 end
-function equalafter(ss a)
-	callret anyafter(a,(Equals))
+function equalon(ss a)
+	callret anyon(a,(Equals))
 end
 function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
