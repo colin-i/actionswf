@@ -103,7 +103,7 @@ a MyClip MovieClip*/
 
 		//3 addChild(label);
 
-		onEnterFrame=on_Enter_Frame; //3 addEventListener(Event.ENTER_FRAME, on_Enter_Frame);
+		onEnterFrame=on_Enter_Frame; //3 o fon_Enter_Frame
 /*3	}
 	static
 */

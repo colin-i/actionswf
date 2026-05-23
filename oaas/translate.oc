@@ -69,6 +69,7 @@ function translate_one(ss in,ss start)
 	sd ?len
 	ss ?chr;set chr oa#
 	ss cursor
+	vstr blnk=""
 	if chr=(a_low)
 		inc oa
 		whiletrue
@@ -88,7 +89,7 @@ function translate_one(ss in,ss start)
 				set pointer spcfull(cursor)
 				set reminder cursor#;set cursor# (Nullchar)
 			else
-				set ext ""
+				set ext blnk
 				set pointer ext
 				set reminder (Nullchar)
 			end
@@ -177,12 +178,15 @@ function translate_one(ss in,ss start)
 			end
 			inc oa
 			set chr oa#
+			vstr mous="Mouse"
 			if chr=(c_low)
-				set cursor translate_on(oa,"CLICK",start)
+				set cursor translate_on(oa,mous,"CLICK",start)
+			elseif chr=(f_low)
+				set cursor translate_on(oa,blnk,"ENTER_FRAME",start)
 			elseif chr=(i_low)
-				set cursor translate_on(oa,"MOUSE_OVER",start)
+				set cursor translate_on(oa,mous,"MOUSE_OVER",start)
 			elseif chr=(o_low)
-				set cursor translate_on(oa,"MOUSE_OUT",start)
+				set cursor translate_on(oa,mous,"MOUSE_OUT",start)
 			end
 			if cursor!=oa
 				call translated("On")
@@ -250,12 +254,12 @@ function translate_search(ss start,ss oa)
 	return start
 end
 
-function translate_on(ss oa,ss ev,ss start)
+function translate_on(ss oa,ss type,ss ev,ss start)
 	ss cursor;set cursor spcfull(start)
 	set cursor# (Nullchar)
 
 	inc oa
-	sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(MouseEvent.%s,%s);",start,ev,oa)
+	sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,oa)
 	if n>0
 		if n<(a_page_size)
 			return #globalt.a_page
