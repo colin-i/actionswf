@@ -96,11 +96,14 @@ function semicolon(ss a)
 end
 
 function strip(ss src)
+	ss start;set start src
 	ss dest;set dest src
 	whiletrue
 		if src#=(Nullchar)
-			return dest
-			break
+			if dest!=src
+				return dest
+			end
+			return start
 		end
 		if src#!=(_)
 			set dest# src#

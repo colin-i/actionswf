@@ -58,7 +58,7 @@ a MyClip MovieClip*/
 		}
 	}
 	// Handlers
-	function onClick(){//3 e
+	function onClick(){//3
 		trace('Button clicked!');
 	}
 	function onOver(){//3 e
