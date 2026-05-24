@@ -45,7 +45,7 @@ import "translated" translated
 import "untranslated" untranslated
 
 #a c Ef  i  L  OP RST v
-# b d  gh jk mn q    u wxyz
+# b d  gh jk mn  q   u wxyz
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
