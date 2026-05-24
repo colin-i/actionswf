@@ -5,7 +5,7 @@
 	f smain
 		var stage = Lib.current.stage;
 */
-		attachMovie('MyClip','shape',getNextHighestDepth());//3 var shape = new MyClip();
+		attachMovie('MyClip','shape',getNextHighestDepth());//3 v shape MyClip
 		shape._x = (Stage.width - 100) / 2;//3 s
 		shape._y = (Stage.height - 100) / 2;//3 s
 /*3

@@ -6,6 +6,7 @@ const a_page_size=0x1000
 charx a_page#a_page_size
 
 einclude "../include/common.h" "../include/common.oh"
+Const b_low=0x62
 Const c_low=0x63
 Const e_low=0x65
 Const f_low=0x66
@@ -16,6 +17,7 @@ Const o_low=0x6F
 Const p_low=0x70
 Const r_low=0x72
 Const t_low=0x74
+Const v_low=0x76
 Const w_low=0x77
 
 importx "free" free
@@ -41,11 +43,11 @@ import "object_make" object_make
 import "translated" translated
 import "untranslated" untranslated
 
-function translate_one(ss in)
+function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
 	sd ?len
 	ss ?chr;set chr oa#
-	ss cursor
+	ss cursor;ss pointer;ss ?reminder
 	if chr=(a_low)
 		inc oa
 		whiletrue
@@ -58,8 +60,7 @@ function translate_one(ss in)
 
 			ss o_a;set o_a spcfull(oa) #this is for safety in case there are more whites. also, they will be preserved
 			set cursor spcfullafters(o_a)
-			ss pointer;ss ext
-			ss ?reminder
+			ss ext
 			if cursor!=o_a
 				set ext " extends "
 				set pointer spcfull(cursor)
@@ -144,14 +145,41 @@ function translate_one(ss in)
 			end
 			break
 		end
+	elseif chr=(v_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			inc oa
+			set cursor spcfullafters(oa)
+			if cursor!=oa
+				set pointer spcfull(cursor)
+				if pointer!=cursor
+					set reminder cursor#
+					set cursor# (Nullchar)
+					set len snprintf(#globalt.a_page,(a_page_size),"%svar %s=new %s();",indents,oa,pointer)
+					if len>0
+						if len<(a_page_size)
+							call translated("Var")
+							return #globalt.a_page
+						end
+					end
+					set cursor# reminder
+				end
+			end
+			break
+		end
 	elseif chr=(Nullchar)
-		call translated("Blank")
+		call translated("blank")
 		return in
 	else
 		if oa#=(Closingbrace)
 			inc oa
 			if oa#=(Nullchar)
-				call translated("Closing")
+				call translated("closing")
 				return in
 			end
 		end
@@ -168,6 +196,21 @@ function translate_two(ss start,ss oa)
 		if oa#=(Nullchar)
 			set cursor translate_eparam(start,oa)
 			if cursor!=oa;return cursor;end
+		end
+		dec oa
+	elseif chr=(l_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			inc oa
+			set cursor translate_fill(start,oa)
+			if cursor!=oa;return cursor;end
+			dec oa
+			break
 		end
 		dec oa
 	elseif chr=(o_low)
@@ -243,6 +286,39 @@ function translate_eparam(ss start,ss oa)
 	return oa
 end
 
+function translate_fill(ss indents,ss name)
+	ss cursor;set cursor spcfull(indents)
+	ss ?chr;set chr cursor#
+	set cursor# (Nullchar)
+	sd ?len
+	if chr=(b_low)
+		inc cursor
+		ss pointer;set pointer pareoafter(cursor)
+		if pointer!=cursor
+			set cursor parecon(pointer)
+			if cursor!=pointer
+				set cursor# (Nullchar)
+				set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.beginFill(%s);",indents,name,pointer)
+				if len>0
+					if len<(a_page_size)
+						call translated("FillBegin")
+						return #globalt.a_page
+					end
+				end
+			end
+		end
+	elseif chr=(e_low)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.endFill();",indents,name)
+		if len>0
+			if len<(a_page_size)
+				call translated("FillEnd")
+				return #globalt.a_page
+			end
+		end
+	end
+	return name
+end
+
 function translate_rect(ss indents,ss name)
 	ss cursor;set cursor spcfull(indents)
 	set cursor# (Nullchar) #on lineTo...
@@ -279,6 +355,7 @@ function translate_rect(ss indents,ss name)
 								set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.drawRect(%s,%s,%s,%s);",indents,name,x,y,width,height)
 								if len>0
 									if len<(a_page_size)
+										call translated("Rect")
 										return #globalt.a_page
 									end
 								end

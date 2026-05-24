@@ -1,4 +1,4 @@
-f=~/Desktop/f_as3
+f=~/Desktop/das3
 diff ${f} dest || { read;
 	if [ -e ${f} ]; then
 		rm -r ${f}

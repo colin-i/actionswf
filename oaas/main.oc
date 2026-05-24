@@ -1,7 +1,10 @@
 
 format elfobj64
 
-^import "translate_one" translate_one 1
+einclude "../include/ascii.h" "../include/ascii.oh"
+
+^import "spcfull" spcfull 1
+^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 
 import "print_stdout" print_stdout
@@ -10,7 +13,7 @@ import "translated_ratio" translated_ratio
 
 functionx line(ss oa)
 	set oa spc(oa)
-	callret translate_one(oa)
+	callret translate_one(oa,"")
 end
 
 functionx startline(ss start,ss oa)
@@ -24,7 +27,9 @@ functionx startline(ss start,ss oa)
 	end
 
 	#or normal line
-	callret translate_one(oa)
+	ss cursor;set cursor spcfull(start)
+	set cursor# (Nullchar)
+	callret translate_one(oa,start)
 end
 
 functionx ratio()

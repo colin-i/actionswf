@@ -58,10 +58,10 @@ a MyClip MovieClip*/
 		super();
 */
 		// Simple visual so you can see it
-		//3 var shape = new Shape();
-		beginFill(0x3399FF);//3 shape.graphics.beginFill(0x3399FF);
+		//3 v shape Shape
+		beginFill(0x3399FF);//3 l shape
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
-		endFill();//3 shape.graphics.endFill();
+		endFill();//3 l shape
 		//3 addChild(shape);
 
 		// a 1/5 margin
