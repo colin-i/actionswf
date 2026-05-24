@@ -14,6 +14,7 @@ Const i_low=0x69
 Const n_low=0x6E
 Const o_low=0x6F
 Const p_low=0x70
+Const r_low=0x72
 Const t_low=0x74
 Const w_low=0x77
 
@@ -31,6 +32,7 @@ importx "strstr" strstr
 import "object_com" object_com
 import "object_make" object_make
 ^import "parecon" parecon 1
+^import "pareoafter" pareoafter 1
 ^import "replace" replace 5
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
@@ -175,6 +177,21 @@ function translate_two(ss start,ss oa)
 			if cursor!=oa;return cursor;end
 		end
 		dec oa
+	elseif chr=(r_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			inc oa
+			set cursor translate_rect(start,oa)
+			if cursor!=oa;return cursor;end
+			dec oa
+			break
+		end
+		dec oa
 	elseif chr=(s_low)
 		inc oa
 		set cursor translate_srch(start,oa)
@@ -224,6 +241,55 @@ function translate_eparam(ss start,ss oa)
 		end
 	end
 	return oa
+end
+
+function translate_rect(ss indents,ss name)
+	ss cursor;set cursor spcfull(indents)
+	set cursor# (Nullchar) #on lineTo...
+	inc cursor
+	ss width
+	set width pareoafter(cursor)
+	if width!=cursor
+		ss width_end
+		set width_end commaon(width)
+		if width_end!=width
+			ss y=1;add y width_end
+			ss y_end
+			set y_end parecon(y)
+			if y_end!=y
+				set cursor y_end
+				inc cursor
+				ss height
+				set height commaafter(cursor)
+				if height!=cursor
+					ss height_end
+					set height_end parecon(height)
+					if height_end!=height
+						set cursor height_end
+						inc cursor
+						ss x;set x pareoafter(cursor)
+						if x!=cursor
+							set cursor commaon(x)
+							if cursor!=x
+								set cursor# (Nullchar)
+								set y_end# (Nullchar)
+								set width_end# (Nullchar)
+								set height_end# (Nullchar)
+								sd ?len
+								set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.drawRect(%s,%s,%s,%s);",indents,name,x,y,width,height)
+								if len>0
+									if len<(a_page_size)
+										return #globalt.a_page
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return name
 end
 
 function translate_srch(ss start,ss oa)

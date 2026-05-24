@@ -60,7 +60,7 @@ a MyClip MovieClip*/
 		// Simple visual so you can see it
 		//3 var shape = new Shape();
 		beginFill(0x3399FF);//3 shape.graphics.beginFill(0x3399FF);
-		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 shape.graphics.drawRect(0, 0, 120, 80);
+		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
 		endFill();//3 shape.graphics.endFill();
 		//3 addChild(shape);
 

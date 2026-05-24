@@ -88,6 +88,9 @@ end
 function equalon(ss a)
 	callret anyon(a,(Equals))
 end
+function pareoafter(ss a)
+	callret anyafter(a,(Openparenthesis))
+end
 function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
 end
