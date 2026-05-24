@@ -62,10 +62,10 @@ a MyClip MovieClip*/
 		trace('Button clicked!');
 	}
 	function onOver(){//3 e
-		_alpha = 80;//3 alpha = 0.8;
+		_alpha = 80;//3 p
 	}
 	function onOut(){//3 e
-		_alpha = 100;//3 alpha = 1;
+		_alpha = 100;//3 p
 	}
 /*3
 	f pnew

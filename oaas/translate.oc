@@ -30,6 +30,7 @@ importx "strstr" strstr
 
 ^import "commaafter" commaafter 1
 ^import "commaon" commaon 1
+^import "equalafter" equalafter 1
 ^import "equalon" equalon 1
 import "object_com" object_com
 import "object_make" object_make
@@ -42,6 +43,9 @@ import "object_make" object_make
 ^import "strip" strip 1
 import "translated" translated
 import "untranslated" untranslated
+
+#a c Ef  i  L  OP RST v
+# b d  gh jk mn q    u wxyz
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
@@ -220,6 +224,13 @@ function translate_two(ss start,ss oa)
 			if cursor!=oa;return cursor;end
 		end
 		dec oa
+	elseif chr=(p_low)
+		inc oa
+		if oa#=(Nullchar)
+			set cursor translate_alpha(start,oa)
+			if cursor!=oa;return cursor;end
+		end
+		dec oa
 	elseif chr=(r_low)
 		inc oa
 		whiletrue
@@ -255,10 +266,14 @@ function translate_two(ss start,ss oa)
 			set cursor translate_srch(mem,oa)
 			if cursor=oa
 				call strcpy(mem,start)
-				set cursor translate_onev(mem,oa)
+				set cursor translate_alpha(mem,oa)
 				if cursor=oa
 					call strcpy(mem,start)
-					set cursor translate_eparam(mem,oa)
+					set cursor translate_onev(mem,oa)
+					if cursor=oa
+						call strcpy(mem,start)
+						set cursor translate_eparam(mem,oa)
+					end
 				end
 			end
 		end
@@ -317,6 +332,95 @@ function translate_fill(ss indents,ss name)
 		end
 	end
 	return name
+end
+
+function translate_onev(ss start,ss oa)
+	ss cursor
+	set cursor equalon(start)
+	if cursor!=start
+		ss pointer;set pointer cursor
+		while start!=pointer
+			dec pointer
+			if pointer#=(o_low)
+				inc pointer
+				if pointer#=(n_low)
+					inc pointer
+					vstr mous="Mouse"
+					sd ?c
+					set c memcmp(pointer,"EnterFrame",10) #memcmp is defined to compare the first 10 bytes
+					if c=0
+						set cursor translate_on(start,"","ENTER_FRAME",cursor)
+					else
+						set c memcmp(pointer,"Press",5)
+						if c=0
+							set cursor translate_on(start,mous,"CLICK",cursor)
+						else
+							set c memcmp(pointer,"RollOver",8)
+							if c=0
+								set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
+							else
+								set c memcmp(pointer,"RollOut",7)
+								if c=0
+									set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
+								end
+							end
+						end
+					end
+					if c=0
+						if cursor!=start
+							call translated("On")
+							return cursor
+						end
+					end
+					break # on is unique at the moment
+				end
+				dec pointer
+			end
+		end
+	end
+	return oa
+end
+function translate_on(ss start,ss type,ss ev,ss value)
+	inc value
+	ss cursor
+	set cursor semicolon(value)
+	if cursor!=value
+		ss pointer
+		set pointer spcfull(start)
+		set pointer# (Nullchar)
+		set cursor# (Nullchar)
+		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,value)
+		if n>0
+			if n<(a_page_size)
+				return #globalt.a_page
+			end
+		end
+	end
+	return start
+end
+
+function translate_alpha(ss indents,ss oa)
+	ss cursor;set cursor spcfull(indents)
+	set cursor# (Nullchar)
+	inc cursor
+	ss pointer
+	set pointer equalafter(cursor)
+	if pointer!=cursor
+		set pointer spcfull(pointer)
+		set cursor semicolon(pointer)
+		if cursor!=pointer
+			set cursor# (Nullchar)
+			sd ?len
+			set len snprintf(#globalt.a_page,(a_page_size),"%salpha=%s/100;",indents,pointer)
+			if len>0
+				if len<(a_page_size)
+					call translated("Alpha")
+					return #globalt.a_page
+				end
+			end
+		end
+	end
+	return oa
 end
 
 function translate_rect(ss indents,ss name)
@@ -458,76 +562,11 @@ function translate_search_base(ss start,ss ptypes)
 	return start
 end
 
-function translate_onev(ss start,ss oa)
-	ss cursor
-	set cursor equalon(start)
-	if cursor!=start
-		ss pointer;set pointer cursor
-		while start!=pointer
-			dec pointer
-			if pointer#=(o_low)
-				inc pointer
-				if pointer#=(n_low)
-					inc pointer
-					vstr mous="Mouse"
-					sd ?c
-					set c memcmp(pointer,"EnterFrame",10) #memcmp is defined to compare the first 10 bytes
-					if c=0
-						set cursor translate_on(start,"","ENTER_FRAME",cursor)
-					else
-						set c memcmp(pointer,"Press",5)
-						if c=0
-							set cursor translate_on(start,mous,"CLICK",cursor)
-						else
-							set c memcmp(pointer,"RollOver",8)
-							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
-							else
-								set c memcmp(pointer,"RollOut",7)
-								if c=0
-									set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
-								end
-							end
-						end
-					end
-					if c=0
-						if cursor!=start
-							call translated("On")
-							return cursor
-						end
-					end
-					break # on is unique at the moment
-				end
-				dec pointer
-			end
-		end
-	end
-	return oa
-end
-function translate_on(ss start,ss type,ss ev,ss value)
-	inc value
-	ss cursor
-	set cursor semicolon(value)
-	if cursor!=value
-		ss pointer
-		set pointer spcfull(start)
-		set pointer# (Nullchar)
-		set cursor# (Nullchar)
-		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,value)
-		if n>0
-			if n<(a_page_size)
-				return #globalt.a_page
-			end
-		end
-	end
-	return start
-end
-
 function translate_textfield(ss start,ss oa)
 	ss cursor
 	set cursor translate_label(start)
 	if cursor!=start
-		call translated("Label")
+		call translated("Text")
 		return cursor
 	end
 	return oa
