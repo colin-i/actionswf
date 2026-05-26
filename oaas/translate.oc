@@ -52,8 +52,9 @@ function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
 	sd ?len
 	ss ?chr;set chr oa#
-	ss cursor;ss pointer;ss ?reminder;ss ext
+	ss cursor;ss pointer;ss ?reminder;ss ext;ss o_a
 	if chr=(a_low)
+		set o_a oa
 		inc oa
 		whiletrue
 			if oa#!=(Space)
@@ -73,17 +74,20 @@ function translate_one(ss in,ss indents)
 				set pointer ext
 				set reminder (Nullchar)
 			end
-			set len snprintf(#globalt.a_page,(a_page_size),"%sclass %s%s%s{",indents,oa,ext,pointer)
+			set o_a# (Nullchar)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%sclass %s%s%s{",indents,in,oa,ext,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("Class")
 					return #globalt.a_page
 				end
 			end
+			set o_a# (a_low)
 			set cursor# reminder
 			break
 		end
 	elseif chr=(d_low)
+		set o_a oa
 		inc oa
 		whiletrue
 			if oa#!=(Space)
@@ -102,13 +106,15 @@ function translate_one(ss in,ss indents)
 				set pointer ext
 				set reminder (Nullchar)
 			end
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%saddChild(%s);",indents,pointer,ext,oa)
+			set o_a# (Nullchar)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
 			if len>0
 				if len<(a_page_size)
 					call translated("AddChild")
 					return #globalt.a_page
 				end
 			end
+			set o_a# (d_low)
 			set cursor# reminder
 			break
 		end
@@ -168,6 +174,7 @@ function translate_one(ss in,ss indents)
 			break
 		end
 	elseif chr=(i_low)
+		set cursor oa
 		inc oa
 		whiletrue
 			if oa#!=(Space)
@@ -176,16 +183,19 @@ function translate_one(ss in,ss indents)
 				end
 			end
 			vstr importstr="import"
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s;",indents,importstr,oa)
+			set cursor# (Nullchar)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%s;",indents,in,importstr,oa)
 			if len>0
 				if len<(a_page_size)
 					call translated("Import")
 					return #globalt.a_page
 				end
 			end
+			set cursor# (i_low)
 			break
 		end
 	elseif chr=(v_low)
+		set o_a oa
 		inc oa
 		whiletrue
 			if oa#!=(Space)
@@ -198,15 +208,16 @@ function translate_one(ss in,ss indents)
 			if cursor!=oa
 				set pointer spcfull(cursor)
 				if pointer!=cursor
-					set reminder cursor#
-					set cursor# (Nullchar)
-					set len snprintf(#globalt.a_page,(a_page_size),"%svar %s=new %s();",indents,oa,pointer)
+					set reminder cursor#;set cursor# (Nullchar)
+					set o_a# (Nullchar)
+					set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=new %s();",indents,in,oa,pointer)
 					if len>0
 						if len<(a_page_size)
 							call translated("Var")
 							return #globalt.a_page
 						end
 					end
+					set o_a# (v_low)
 					set cursor# reminder
 				end
 			end
