@@ -8,6 +8,7 @@ charx a_page#a_page_size
 einclude "../include/common.h" "../include/common.oh"
 Const b_low=0x62
 Const c_low=0x63
+Const d_low=0x64
 Const e_low=0x65
 Const f_low=0x66
 Const h_low=0x68
@@ -44,14 +45,14 @@ import "object_make" object_make
 import "translated" translated
 import "untranslated" untranslated
 
-#a c Ef  i  L  OP RST v
-# b d  gh jk mn  q   u wxyz
+#a cdEf  i  L  OP RST v
+# b    gh jk mn  q   u wxyz
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
 	sd ?len
 	ss ?chr;set chr oa#
-	ss cursor;ss pointer;ss ?reminder
+	ss cursor;ss pointer;ss ?reminder;ss ext
 	if chr=(a_low)
 		inc oa
 		whiletrue
@@ -62,10 +63,8 @@ function translate_one(ss in,ss indents)
 			end
 			inc oa
 
-			ss o_a;set o_a spcfull(oa) #this is for safety in case there are more whites. also, they will be preserved
-			set cursor spcfullafters(o_a)
-			ss ext
-			if cursor!=o_a
+			set cursor spcfullafters(#oa)
+			if cursor!=oa
 				set ext " extends "
 				set pointer spcfull(cursor)
 				set reminder cursor#;set cursor# (Nullchar)
@@ -74,10 +73,39 @@ function translate_one(ss in,ss indents)
 				set pointer ext
 				set reminder (Nullchar)
 			end
-			set len snprintf(#globalt.a_page,(a_page_size),"class %s%s%s{",oa,ext,pointer)
+			set len snprintf(#globalt.a_page,(a_page_size),"%sclass %s%s%s{",indents,oa,ext,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("Class")
+					return #globalt.a_page
+				end
+			end
+			set cursor# reminder
+			break
+		end
+	elseif chr=(d_low)
+		inc oa
+		whiletrue
+			if oa#!=(Space)
+				if oa#!=(HorizontalTab)
+					break
+				end
+			end
+			inc oa
+			set cursor spcfullafters(#oa)
+			if cursor!=oa
+				set ext "."
+				set pointer spcfull(cursor)
+				set reminder cursor#;set cursor# (Nullchar)
+			else
+				set ext ""
+				set pointer ext
+				set reminder (Nullchar)
+			end
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%saddChild(%s);",indents,pointer,ext,oa)
+			if len>0
+				if len<(a_page_size)
+					call translated("AddChild")
 					return #globalt.a_page
 				end
 			end
@@ -94,9 +122,17 @@ function translate_one(ss in,ss indents)
 				end
 			end
 			set cursor# (Slash)
-			set oa# (Slash)
-			call translated("Comment")
-			return in
+			set reminder oa#;set oa# (Slash)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s",indents,in)
+			if len>0
+				if len<(a_page_size)
+					call translated("Comment")
+					return #globalt.a_page
+				end
+			end
+			set oa# reminder
+			set cursor# (c_low)
+			break
 		end
 	elseif chr=(f_low)
 		set cursor oa
@@ -119,7 +155,7 @@ function translate_one(ss in,ss indents)
 				end
 				inc oa
 				set cursor# (Nullchar)
-				set len snprintf(#globalt.a_page,(a_page_size),"%s%s function %s(){",in,type,oa)
+				set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s function %s(){",indents,in,type,oa)
 				if len>0
 					if len<(a_page_size)
 						call translated("Function")
@@ -140,7 +176,7 @@ function translate_one(ss in,ss indents)
 				end
 			end
 			vstr importstr="import"
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s;",importstr,oa)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s;",indents,importstr,oa)
 			if len>0
 				if len<(a_page_size)
 					call translated("Import")
@@ -158,7 +194,7 @@ function translate_one(ss in,ss indents)
 				end
 			end
 			inc oa
-			set cursor spcfullafters(oa)
+			set cursor spcfullafters(#oa)
 			if cursor!=oa
 				set pointer spcfull(cursor)
 				if pointer!=cursor

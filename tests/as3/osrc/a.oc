@@ -76,7 +76,7 @@ a MyClip MovieClip*/
 		beginFill(0x3399FF);//3 l shape
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
 		endFill();//3 l shape
-		//3 addChild(shape);
+		//3 d shape
 
 		// a 1/5 margin
 		createTextField('label',1,0,16, 120, 48);//3 t
@@ -96,7 +96,7 @@ a MyClip MovieClip*/
 		onRollOut = onOut;//3 o
 		onPress = onClick;//3 o
 
-		//3 addChild(label);
+		//3 d label
 
 		onEnterFrame = on_Enter_Frame; //3 o
 /*3	}
@@ -119,8 +119,7 @@ call action("
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 v shape MyClip
 		shape._x = (Stage.width - 100) / 2;//3 s
 		shape._y = (Stage.height - 100) / 2;//3 s
-/*3
-		stage.addChild(shape);
+		/*3 d shape stage
 
 c		var img = new Bitmap( new MyBitmapData(0, 0) );
 c		Lib.current.addChild(img);

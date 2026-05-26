@@ -62,7 +62,7 @@ a MyClip MovieClip*/
 		beginFill(0x3399FF);//3 l shape
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
 		endFill();//3 l shape
-		//3 addChild(shape);
+		//3 d shape
 
 		// a 1/5 margin
 		createTextField('label',1,0,16, 120, 48);//3 t
@@ -82,7 +82,7 @@ a MyClip MovieClip*/
 		onRollOut = onOut;//3 o
 		onPress = onClick;//3 o
 
-		//3 addChild(label);
+		//3 d label
 
 		onEnterFrame = on_Enter_Frame; //3 o
 /*3	}

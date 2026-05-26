@@ -63,7 +63,10 @@ function spcfull(ss a)
 		end
 	end
 end
-function spcfullafters(ss a) #first is solid (not white)
+function spcfullafters(sv c)
+	set c# spcfull(c#) #this is here because when stopping at first char is same as when stopping at nullchar
+	#	and that is telling, for example, at class, to write first arg and ignore second arg
+	ss a;set a c#
 	ss b;set b a
 	whiletrue
 		if a#=(Nullchar)

@@ -34,10 +34,14 @@
 <p class="blue">[] is optional . or</p>
 <table>
 	<tr><td>a</td>                        <td><table class="red"><tr><td colspan=2>className</td></tr>
-	                                                                          <tr><td>className</td><td>extendName</td></tr></table></td>
-	                                      <td class="com"><table><tr><td>class className{</td></tr>
-	                                                             <tr><td>class className extends extendName{</td></tr></table></td></tr>
+	                                                             <tr><td>className</td><td>extendName</td></tr></table></td>
+	                                      <td class="com"><table><tr><td>class <span class="red">className</span>{</td></tr>
+	                                                             <tr><td>class <span class="red">className</span> extends <span class="red">extendName</span>{</td></tr></table></td></tr>
 	<tr><td>c</td>                        <td class="red">comment</td><td class="com">//comment</td></tr>
+	<tr><td>d</td>                        <td><table class="red"><tr><td colspan=2>childName</td></tr>
+	                                                             <tr><td>childName</td><td>parentName</td></tr></table></td>
+	                                      <td class="com"><table><tr><td>addChild(<span class="red">childName</span>);</td></tr>
+	                                                             <tr><td><span class="red">parentName</span>.addChild(<span class="red">childName</span>);</td></tr></table></td></tr>
 	<tr><td class="green" colspan=2>e</td><td class="com">is replacing first () with (e)</td></tr>
 	<tr><td>f</td>                        <td><table><tr><td>p</td><td class="red" rowspan=2>functionName</td></tr>
 	                                                 <tr><td>s</td></tr></table></td>
