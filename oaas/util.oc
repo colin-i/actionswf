@@ -100,8 +100,21 @@ end
 function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
 end
+function quotafter(ss a)
+	callret anyafter(a,(Singlequote))
+end
+function quoton(ss a)
+	callret anyon(a,(Singlequote))
+end
 function semicolon(ss a)
 	callret anyon(a,(Semicolon))
+end
+
+function to_upper(ss s,ss end)
+	while s!=end
+		sub s# (a_low-A)
+		inc s
+	end
 end
 
 function strip(ss src)

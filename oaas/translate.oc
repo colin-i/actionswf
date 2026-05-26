@@ -24,7 +24,6 @@ Const w_low=0x77
 
 importx "free" free
 importx "memcmp" memcmp
-importx "strchr" strchr
 importx "strcpy" strcpy
 importx "strdup" strdup
 importx "snprintf" snprintf
@@ -38,15 +37,18 @@ import "object_com" object_com
 import "object_make" object_make
 ^import "parecon" parecon 1
 ^import "pareoafter" pareoafter 1
+^import "quotafter" quotafter 1
+^import "quoton" quoton 1
 ^import "replace" replace 5
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
 ^import "strip" strip 1
+import "to_upper" to_upper
 import "translated" translated
 import "untranslated" untranslated
 
-#a cdEfg i  L  OP RST v x
+#a cdEfg i  L  OP RST v X
 # b     h jk mn  q   u w yz
 #also at the end
 
@@ -214,11 +216,6 @@ function translate_one(ss in,ss indents)
 			end
 			break
 		end
-	elseif chr=(x_low)
-		set cursor translate_one_1((x_low),oa,"%s%s%s.align=TextFormatAlign.CENTER;",indents,in,"TextCenter")
-		if cursor!=oa
-			return cursor
-		end
 	elseif chr=(Nullchar)
 		call translated("blank")
 		return in
@@ -324,21 +321,32 @@ function translate_two(ss start,ss oa)
 			if cursor!=oa;return cursor;end
 		end
 		dec oa
+	elseif chr=(x_low)
+		inc oa
+		if oa#=(Nullchar)
+			set cursor translate_textalign(start,oa)
+			if cursor!=oa;return cursor;end
+		end
+		dec oa
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-		set cursor translate_textfield(mem,oa)
+		set cursor translate_textalign(mem,oa)
 		if cursor=oa
 			call strcpy(mem,start)
-			set cursor translate_srch(mem,oa)
+			set cursor translate_textfield(mem,oa)
 			if cursor=oa
 				call strcpy(mem,start)
-				set cursor translate_alpha(mem,oa)
+				set cursor translate_srch(mem,oa)
 				if cursor=oa
 					call strcpy(mem,start)
-					set cursor translate_onev(mem,oa)
+					set cursor translate_alpha(mem,oa)
 					if cursor=oa
 						call strcpy(mem,start)
-						set cursor translate_eparam(mem,oa)
+						set cursor translate_onev(mem,oa)
+						if cursor=oa
+							call strcpy(mem,start)
+							set cursor translate_eparam(mem,oa)
+						end
 					end
 				end
 			end
@@ -642,11 +650,10 @@ function translate_label(ss indents)
 	set cursor# (Nullchar) #on create...
 	ss name
 	inc cursor
-	set name strchr(cursor,(Singlequote))
-	if name!=(NULL)
-		inc name
-		set cursor strchr(name,(Singlequote))
-		if cursor!=(NULL)
+	set name quotafter(cursor)
+	if name!=cursor
+		set cursor quoton(name)
+		if cursor!=name
 			ss buffer;set buffer #globalt.a_page
 			sd ?size
 			set size object_make(indents,name,cursor,"TextField",#buffer,(a_page_size))
@@ -690,6 +697,32 @@ function translate_label(ss indents)
 	return indents
 end
 
+function translate_textalign(ss start,ss oa)
+	ss cursor
+	set cursor equalafter(start)
+	if cursor!=start
+		ss type
+		set type quotafter(cursor)
+		if type!=cursor
+			ss pointer
+			set pointer quoton(type)
+			if pointer!=type
+				call to_upper(type,pointer)
+				set cursor# (Nullchar)
+				set pointer# (Nullchar)
+				sd ?len;set len snprintf(#globalt.a_page,(a_page_size),"%sTextFormatAlign.%s;",start,type)
+				if len>0
+					if len<(a_page_size)
+						call translated("TextFormat")
+						return #globalt.a_page
+					end
+				end
+			end
+		end
+	end
+	return oa
+end
+
 entryraw globalt()
 
 #!
@@ -708,5 +741,5 @@ Rect
 Search
 Stage
 Text
-TextCenter
+TextFormat
 Var
