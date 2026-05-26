@@ -52,6 +52,14 @@ import "untranslated" untranslated
 # b     h jk mn  q   u w yz
 #also at the end
 
+#s [s]
+#s [s] but diff at format
+#comment
+#p/sSTRING
+#string
+#string
+#s s
+
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
 	sd ?len
@@ -254,6 +262,15 @@ function translate_one_1(ss ?chr,ss oa,ss format,ss indents,ss in,ss ok)
 	end
 	return cursor
 end
+
+#()
+#b() or e
+#onPATTERN=
+#=;
+#(,),)(,
+#_ and more
+#'',,,,)
+#=''
 
 function translate_two(ss start,ss oa)
 	ss cursor
