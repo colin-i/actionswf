@@ -324,13 +324,13 @@ function translate_two(ss start,ss oa)
 	elseif chr=(x_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_textalign(start,oa)
+			set cursor translate_textformat(start,oa)
 			if cursor!=oa;return cursor;end
 		end
 		dec oa
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-		set cursor translate_textalign(mem,oa)
+		set cursor translate_textformat(mem,oa)
 		if cursor=oa
 			call strcpy(mem,start)
 			set cursor translate_textfield(mem,oa)
@@ -697,7 +697,7 @@ function translate_label(ss indents)
 	return indents
 end
 
-function translate_textalign(ss start,ss oa)
+function translate_textformat(ss start,ss oa)
 	ss cursor
 	set cursor equalafter(start)
 	if cursor!=start
