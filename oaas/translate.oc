@@ -35,8 +35,10 @@ importx "strstr" strstr
 ^import "equalon" equalon 1
 import "object_com" object_com
 import "object_make" object_make
+^import "parecafter" parecafter 1
 ^import "parecon" parecon 1
 ^import "pareoafter" pareoafter 1
+^import "pareoon" pareoon 1
 ^import "quotafter" quotafter 1
 ^import "quoton" quoton 1
 ^import "replace" replace 5
@@ -379,8 +381,8 @@ function translate_eparam(ss start,ss oa)
 	ss p;set p strstr(start,str)
 	if p!=(NULL)
 		set p# (Nullchar)
-		ss pp=2;add pp p
-		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%s(e)%s",start,pp)
+		inc p
+		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%s(e%s",start,p)
 		#set p# '('
 		if n>0
 			if n<(a_page_size)
@@ -399,12 +401,12 @@ function translate_fill(ss indents,ss name)
 	sd ?len
 	if chr=(b_low)
 		inc cursor
-		ss pointer;set pointer pareoafter(cursor)
+		ss pointer;set pointer pareoon(cursor)
 		if pointer!=cursor
-			set cursor parecon(pointer)
+			set cursor parecafter(pointer)
 			if cursor!=pointer
 				set cursor# (Nullchar)
-				set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.beginFill(%s);",indents,name,pointer)
+				set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.beginFill%s;",indents,name,pointer)
 				if len>0
 					if len<(a_page_size)
 						call translated("FillBegin")
@@ -497,12 +499,12 @@ function translate_alpha(ss indents,ss oa)
 	ss pointer
 	set pointer equalafter(cursor)
 	if pointer!=cursor
-		set pointer spcfull(pointer)
 		set cursor semicolon(pointer)
 		if cursor!=pointer
+			dec pointer
 			set cursor# (Nullchar)
 			sd ?len
-			set len snprintf(#globalt.a_page,(a_page_size),"%salpha=%s/100;",indents,pointer)
+			set len snprintf(#globalt.a_page,(a_page_size),"%salpha%s/100;",indents,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("Alpha")
@@ -522,32 +524,32 @@ function translate_rect(ss indents,ss name)
 	set width pareoafter(cursor)
 	if width!=cursor
 		ss width_end
-		set width_end commaon(width)
+		set width_end commaon(width) #(width,
 		if width_end!=width
 			ss y=1;add y width_end
 			ss y_end
-			set y_end parecon(y)
+			set y_end parecon(y)   #,y)
 			if y_end!=y
 				set cursor y_end
 				inc cursor
 				ss height
-				set height commaafter(cursor)
+				set height commaon(cursor)
 				if height!=cursor
 					ss height_end
-					set height_end parecon(height)
+					set height_end parecafter(height)    #,height)
 					if height_end!=height
 						set cursor height_end
 						inc cursor
-						ss x;set x pareoafter(cursor)
+						ss x;set x pareoon(cursor)
 						if x!=cursor
-							set cursor commaon(x)
+							set cursor commaafter(x) #(x,
 							if cursor!=x
 								set cursor# (Nullchar)
 								set y_end# (Nullchar)
 								set width_end# (Nullchar)
 								set height_end# (Nullchar)
 								sd ?len
-								set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.drawRect(%s,%s,%s,%s);",indents,name,x,y,width,height)
+								set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.drawRect%s%s,%s%s;",indents,name,x,y,width,height)
 								if len>0
 									if len<(a_page_size)
 										call translated("Rect")

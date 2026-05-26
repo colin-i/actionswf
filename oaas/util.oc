@@ -97,6 +97,12 @@ end
 function pareoafter(ss a)
 	callret anyafter(a,(Openparenthesis))
 end
+function pareoon(ss a)
+	callret anyon(a,(Openparenthesis))
+end
+function parecafter(ss a)
+	callret anyafter(a,(Closeparenthesis))
+end
 function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
 end
