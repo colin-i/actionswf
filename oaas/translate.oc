@@ -11,6 +11,7 @@ Const c_low=0x63
 Const d_low=0x64
 Const e_low=0x65
 Const f_low=0x66
+Const g_low=0x67
 Const h_low=0x68
 Const i_low=0x69
 Const n_low=0x6E
@@ -45,8 +46,9 @@ import "object_make" object_make
 import "translated" translated
 import "untranslated" untranslated
 
-#a cdEf  i  L  OP RST v
-# b    gh jk mn  q   u wxyz
+#a cdEfg i  L  OP RST v x
+# b     h jk mn  q   u w yz
+#also at the end
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
@@ -173,26 +175,15 @@ function translate_one(ss in,ss indents)
 			end
 			break
 		end
+	elseif chr=(g_low)
+		set cursor translate_one_1((g_low),oa,"%s%svar %s=Lib.current.stage;",indents,in,"Stage")
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(i_low)
-		set cursor oa
-		inc oa
-		whiletrue
-			if oa#!=(Space)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			vstr importstr="import"
-			set cursor# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%s;",indents,in,importstr,oa)
-			if len>0
-				if len<(a_page_size)
-					call translated("Import")
-					return #globalt.a_page
-				end
-			end
-			set cursor# (i_low)
-			break
+		set cursor translate_one_1((i_low),oa,"%s%simport %s;",indents,in,"Import")
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(v_low)
 		set o_a oa
@@ -223,6 +214,11 @@ function translate_one(ss in,ss indents)
 			end
 			break
 		end
+	elseif chr=(x_low)
+		set cursor translate_one_1((x_low),oa,"%s%s%s.align=TextFormatAlign.CENTER;",indents,in,"TextCenter")
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(Nullchar)
 		call translated("blank")
 		return in
@@ -237,6 +233,29 @@ function translate_one(ss in,ss indents)
 	end
 	call untranslated(in)
 	return in
+end
+function translate_one_1(ss ?chr,ss oa,ss format,ss indents,ss in,ss ok)
+	ss cursor;set cursor oa
+	inc oa
+	whiletrue
+		if oa#!=(Space)
+			if oa#!=(HorizontalTab)
+				break
+			end
+		end
+		inc oa
+		set cursor# (Nullchar)
+		sd ?len;set len snprintf(#globalt.a_page,(a_page_size),format,indents,in,oa)
+		if len>0
+			if len<(a_page_size)
+				call translated(ok)
+				return #globalt.a_page
+			end
+		end
+		set cursor# chr
+		break
+	end
+	return cursor
 end
 
 function translate_two(ss start,ss oa)
@@ -672,3 +691,22 @@ function translate_label(ss indents)
 end
 
 entryraw globalt()
+
+#!
+AddChild
+Alpha
+blank
+Class
+closing
+Comment
+Event
+FillBegin
+Function
+Import
+On
+Rect
+Search
+Stage
+Text
+TextCenter
+Var

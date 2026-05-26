@@ -3,7 +3,7 @@
 
 /*3 a Main
 	f smain
-		var stage = Lib.current.stage;
+		g stage
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 v shape MyClip
 		shape._x = (Stage.width - 100) / 2;//3 s

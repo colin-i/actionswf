@@ -86,7 +86,7 @@ a MyClip MovieClip*/
 		// a 2/3 size format
 		var tf = new TextFormat();
 		tf.size = 32;
-		tf.align = 'center';//3 tf.align = TextFormatAlign.CENTER;
+		tf.align = 'center';//3 x tf
 		tf.color = 0xff9933;
 		label.setTextFormat(tf);
 
@@ -114,7 +114,7 @@ call action("
 
 /*3 a Main
 	f smain
-		var stage = Lib.current.stage;
+		g stage
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 v shape MyClip
 		shape._x = (Stage.width - 100) / 2;//3 s
