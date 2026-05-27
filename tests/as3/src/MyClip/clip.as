@@ -54,8 +54,7 @@ a MyClip MovieClip*/
 		_alpha= 100;//3 p
 	}
 /*3
-	f pnew
-		super();
+	f p
 */
 		// Simple visual so you can see it
 		//3 v shape Shape
@@ -86,7 +85,7 @@ a MyClip MovieClip*/
 
 		onEnterFrame = on_Enter_Frame; //3 o
 /*3	}
-	static
+	n
 */
 	var c=%u;
 	var a=false;var b=false;

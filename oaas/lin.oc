@@ -1,0 +1,9 @@
+
+format elfobj64
+
+^importx "stdout" stdout
+
+function platform_stdout()
+	svu s^stdout
+	return s#
+end

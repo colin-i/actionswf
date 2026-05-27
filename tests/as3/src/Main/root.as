@@ -2,7 +2,7 @@
 //3 i flash.Lib
 
 /*3 a Main
-	f smain
+	f s
 		g stage
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());//3 v shape MyClip

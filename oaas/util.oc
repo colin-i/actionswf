@@ -5,7 +5,7 @@ format elfobj64
 valueu translations=0
 valueu alltranslations=0
 
-^importx "stdout" stdout
+^import "platform_stdout" platform_stdout
 
 einclude "../include/common.h" "../include/common.oh"
 
@@ -181,8 +181,9 @@ function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keepi
 end
 
 function print_stdout(ss a)
-	svu s^stdout
-	call fputs(a,s#)
+	sv ?so
+	set so platform_stdout()
+	call fputs(a,so)
 end
 function translated_ratio()
 	svu ?n=100
