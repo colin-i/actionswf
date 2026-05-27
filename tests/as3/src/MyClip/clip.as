@@ -48,10 +48,10 @@ a MyClip MovieClip*/
 		trace('Button clicked!');
 	}
 	function onOver(){//3 e
-		_alpha = 80;//3 p
+		_alpha= 80;//3 p
 	}
 	function onOut(){//3 e
-		_alpha = 100;//3 p
+		_alpha= 100;//3 p
 	}
 /*3
 	f pnew
@@ -77,7 +77,7 @@ a MyClip MovieClip*/
 		label.setTextFormat(tf);
 
 		// Interactivity
-		useHandCursor = true;//3 buttonMode = true;mouseChildren = false;
+		useHandCursor= true;//3 mb
 		onRollOver = onOver;//3 o
 		onRollOut = onOut;//3 o
 		onPress = onClick;//3 o

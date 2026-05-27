@@ -10,6 +10,10 @@
 	{
 		color:green;
 	}
+	.yellow
+	{
+		color:yellow;
+	}
 	.blue
 	{
 		color:blue;
@@ -31,7 +35,8 @@
 <h1>OA AS syntax</h1>
 <p class="red">Red = string</p>
 <p class="green">Green = left/right strings</p>
-<p class="blue">[] is optional . or</p>
+<p class="yellow">Yellow = tested but not used</p>
+<p class="blue">[] is optional , or</p>
 <table>
 	<tr><td>a</td>                        <td><table class="red"><tr><td colspan=2>className</td></tr>
 	                                                             <tr><td>className</td><td>extendName</td></tr></table></td>
@@ -49,20 +54,22 @@
 	                                                             <tr><td>static function <span class="red">functionName</span>(){</td></tr></table></td></tr>
 	<tr><td>g</td>                        <td class="red">varName</td><td class="com">var <span class="red">varName</span>=Lib.current.stage;</td></tr>
 	<tr><td>i</td>                        <td class="red">importString</td><td class="com">import <span class="red">importString</span>;</td></tr>
-	<tr><td class="green">l</td>                        <td class="red">name</td><td class="com"><span class="red">name</span>.graphics.beginFill<span class="green">(color)</span>; <span class="blue">or</span> <span class="red">name</span>.graphics.endFill();</td><td class="com">beginFill<span class="green">(color)</span>; <span class="blue">or</span> endFill();</td></tr>
-	<tr><td class="green" colspan=2 rowspan=4>o</td><td class="com">addEventListener(Event.ENTER_FRAME,<span class="green">functionName</span>);</td><td class="com">onEnterFrame=<span class="green">functionName</span>;</td></tr>
-	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_CLICK,<span class="green">functionName</span>);</td><td class="com">onPress=<span class="green">functionName</span>;</td></tr>
-	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_OVER,<span class="green">functionName</span>);</td><td class="com">onRollOver=<span class="green">functionName</span>;</td></tr>
-	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_OUT,<span class="green">functionName</span>);</td><td class="com">onRollOut=<span class="green">functionName</span>;</td></tr>
-	<tr><td class="green" colspan=2>p</td><td class="com">alpha<span class="green">=value</span>/100;</td><td class="com">_alpha<span class="green">=value</span>;</td></tr>
-	<tr><td class="green">r</td>          <td class="red">name</td><td class="com"><span class="red">name</span>.graphics.drawRect<span class="green">(x,y</span>,<span class="green">width,height)</span>;</td><td class="com">lineTo(<span class="green">width</span>,<span class="green">y</span>);lineTo(width<span class="green">,height)</span>;lineTo<span class="green">(x,</span>height);</td></tr>
+	<tr><td class="green">l</td>                        <td class="red">name</td><td class="com"><span class="red">name</span>.graphics.beginFill<span class="green">(color)</span>; <span class="blue">or</span> <span class="red">name</span>.graphics.endFill();</td><td class="com"><span class="yellow">b</span>eginFill<span class="green">(color)</span>; <span class="blue">or</span> <span class="yellow">e</span>ndFill();</td></tr>
+	<tr><td class="green" rowspan=2>m</td><td></td><td class="com">buttonMode=<span class="green">value;</span></td><td class="com">u<span class="yellow">seHandCursor=</span><span class="green">value;</span></td></tr>
+	<tr>                                  <td>b</td><td class="com">same plus <span class="green">mouseChildren=false;</span></td></tr>
+	<tr><td class="green" colspan=2 rowspan=4>o</td><td class="com">addEventListener(Event.ENTER_FRAME,<span class="green">functionName</span>);</td><td class="com"><span class="yellow">onEnterFrame=</span><span class="green">functionName</span>;</td></tr>
+	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_CLICK,<span class="green">functionName</span>);</td><td class="com"><span class="yellow">onPress=</span><span class="green">functionName</span>;</td></tr>
+	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_OVER,<span class="green">functionName</span>);</td><td class="com"><span class="yellow">onRollOver=</span><span class="green">functionName</span>;</td></tr>
+	<tr>                                            <td class="com">addEventListener(MouseEvent.MOUSE_OUT,<span class="green">functionName</span>);</td><td class="com"><span class="yellow">onRollOut=</span><span class="green">functionName</span>;</td></tr>
+	<tr><td class="green" colspan=2>p</td><td class="com"><span class="green">alpha=value</span>/100;</td><td class="com">_<span class="green">alpha=value</span>;</td></tr>
+	<tr><td class="green">r</td>          <td class="red">name</td><td class="com"><span class="red">name</span>.graphics.drawRect<span class="green">(x,y</span>,<span class="green">width,height)</span>;</td><td class="com">lineTo<span class="yellow">(</span><span class="green">width</span><span class="yellow">,</span><span class="green">y</span><span class="yellow">)</span>;lineTo(width<span class="green">,height)</span>;lineTo<span class="green">(x,</span>height);</td></tr>
 	<tr><td class="green" rowspan=4>s</td><td></td> <td class="com">all cases or at least one</td></tr>
 	<tr>                                  <td>_</td><td class="com">is removing all <span class="green">_</span></td></tr>
 	<tr>                                  <td>w</td><td class="com">is replacing all <span class="green">Stage.w</span> with <span class="green">stage.stageW</span></td></tr>
 	<tr>                                  <td>h</td><td class="com">is replacing all <span class="green">Stage.h</span> with <span class="green">stage.stageH</span></td></tr>
-	<tr><td class="green" colspan=2>t</td><td class="com">var <span class="green">label</span>=new TextField();<span class="blue">[</span><span class="green">label</span>.x=<span class="green">x</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.y=<span class="green">y</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.width=<span class="green">width</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.height=<span class="green">height</span>;<span class="blue">]</span></td><td class="com">createTextField('<span class="green">label</span>',nr,<span class="green">x</span>,<span class="green">y</span>,<span class="green">width</span>,<span class="green">height</span>);</td></tr>
+	<tr><td class="green" colspan=2>t</td><td class="com">var <span class="green">label</span>=new TextField();<span class="blue">[</span><span class="green">label</span>.x=<span class="green">x</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.y=<span class="green">y</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.width=<span class="green">width</span>;<span class="blue">]</span><span class="blue">[</span><span class="green">label</span>.height=<span class="green">height</span>;<span class="blue">]</span></td><td class="com">createTextField(<span class="yellow">'</span><span class="green">label</span><span class="yellow">',</span>nr<span class="yellow">,</span><span class="green">x</span><span class="yellow">,</span><span class="green">y</span><span class="yellow">,</span><span class="green">width</span><span class="yellow">,</span><span class="green">height</span><span class="yellow">)</span>;</td></tr>
 	<tr><td>v</td>                        <td class="red"><table><tr><td>name</td><td>class</td></tr></table></td><td class="com">var <span class="red">name</span>=new <span class="red">class</span>();</td></tr>
-	<tr><td class="green" colspan=2>x</td><td class="com"><span class="green">leftPart=</span>TextFormatAlign.<span class="green">TYPE</span>;</td><td class="com"><span class="green">leftPart=</span>'<span class="green">type</span>';</td></tr>
+	<tr><td class="green" colspan=2>x</td><td class="com"><span class="green">leftPart=</span>TextFormatAlign.<span class="green">TYPE</span>;</td><td class="com"><span class="green">leftPart=</span><span class="yellow">'</span><span class="green">type</span><span class="yellow">'</span>;</td></tr>
 </table>
 Other recognized notations:
 <table>

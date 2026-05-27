@@ -14,6 +14,7 @@ Const f_low=0x66
 Const g_low=0x67
 Const h_low=0x68
 Const i_low=0x69
+Const m_low=0x6D
 Const n_low=0x6E
 Const o_low=0x6F
 Const p_low=0x70
@@ -42,6 +43,7 @@ import "object_make" object_make
 ^import "quotafter" quotafter 1
 ^import "quoton" quoton 1
 ^import "replace" replace 5
+^import "semicolafter" semicolafter 1
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
@@ -50,17 +52,17 @@ import "to_upper" to_upper
 import "translated" translated
 import "untranslated" untranslated
 
-#a cdEfg i  L  OP RST v X
-# b     h jk mn  q   u w yz
+#a cdEfg i  LM OP RST v X
+# b     h jk  n  q   u w yz
 #also at the end
 
-#s [s]
-#s [s] but diff at format
-#comment
-#p/sSTRING
-#string
-#string
-#s s
+#a	s [s]
+#d	s [s] but diff at format
+#c	comment
+#f	p/sSTRING
+#g	string
+#i	string
+#v	s s
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
@@ -265,14 +267,15 @@ function translate_one_1(ss ?chr,ss oa,ss format,ss indents,ss in,ss ok)
 	return cursor
 end
 
-#()
-#b() or e
-#onPATTERN=
-#=;
-#(,),)(,
-#_ and more
-#'',,,,)
-#=''
+#e	()
+#l	b() or e
+#m	seHandCursor=;
+#o	onPATTERN=;
+#p	alpha=;
+#r	(,),)(,
+#s	_ and more
+#t	'',,,,)
+#x	=''
 
 function translate_two(ss start,ss oa)
 	ss cursor
@@ -280,8 +283,8 @@ function translate_two(ss start,ss oa)
 	if chr=(e_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_eparam(start,oa)
-			if cursor!=oa;return cursor;end
+			set cursor translate_eparam(start)
+			if cursor!=start;return cursor;end
 		end
 		dec oa
 	elseif chr=(l_low)
@@ -299,18 +302,23 @@ function translate_two(ss start,ss oa)
 			break
 		end
 		dec oa
+	elseif chr=(m_low)
+		inc oa
+		set cursor translate_buttonmode(start,oa)
+		if cursor!=start;return cursor;end
+		dec oa
 	elseif chr=(o_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_onev(start,oa)
-			if cursor!=oa;return cursor;end
+			set cursor translate_onev(start)
+			if cursor!=start;return cursor;end
 		end
 		dec oa
 	elseif chr=(p_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_alpha(start,oa)
-			if cursor!=oa;return cursor;end
+			set cursor translate_alpha(start)
+			if cursor!=start;return cursor;end
 		end
 		dec oa
 	elseif chr=(r_low)
@@ -336,47 +344,51 @@ function translate_two(ss start,ss oa)
 	elseif chr=(t_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_textfield(start,oa)
-			if cursor!=oa;return cursor;end
+			set cursor translate_textfield(start)
+			if cursor!=start;return cursor;end
 		end
 		dec oa
 	elseif chr=(x_low)
 		inc oa
 		if oa#=(Nullchar)
-			set cursor translate_textformat(start,oa)
-			if cursor!=oa;return cursor;end
+			set cursor translate_textformat(start)
+			if cursor!=start;return cursor;end
 		end
 		dec oa
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-		set cursor translate_textformat(mem,oa)
-		if cursor=oa
+		set cursor translate_textformat(mem)
+		if cursor=mem
 			call strcpy(mem,start)
-			set cursor translate_textfield(mem,oa)
-			if cursor=oa
+			set cursor translate_textfield(mem)
+			if cursor=mem
 				call strcpy(mem,start)
-				set cursor translate_srch(mem,oa)
-				if cursor=oa
+				set cursor translate_srch_all(mem)
+				if cursor=mem
 					call strcpy(mem,start)
-					set cursor translate_alpha(mem,oa)
-					if cursor=oa
+					set cursor translate_alpha(mem)
+					if cursor=mem
 						call strcpy(mem,start)
-						set cursor translate_onev(mem,oa)
-						if cursor=oa
+						set cursor translate_buttonmode(mem,(NULL))
+						if cursor=mem
 							call strcpy(mem,start)
-							set cursor translate_eparam(mem,oa)
+							set cursor translate_onev(mem)
+							if cursor=mem
+								call strcpy(mem,start)
+								set cursor translate_eparam(mem)
+							end
 						end
 					end
 				end
 			end
 		end
 		call free(mem)
-		if cursor!=oa;return cursor;end
+		if cursor!=mem;return cursor;end
 	end
 	return oa
 end
 
-function translate_eparam(ss start,ss oa)
+function translate_eparam(ss start)
 	ss str="()"
 	ss p;set p strstr(start,str)
 	if p!=(NULL)
@@ -391,7 +403,7 @@ function translate_eparam(ss start,ss oa)
 			end
 		end
 	end
-	return oa
+	return start
 end
 
 function translate_fill(ss indents,ss name)
@@ -427,7 +439,57 @@ function translate_fill(ss indents,ss name)
 	return name
 end
 
-function translate_onev(ss start,ss oa)
+function translate_buttonmode(ss indents,ss oa)
+	ss cursor;set cursor spcfull(indents)
+	set cursor# (Nullchar)
+	inc cursor
+	sd ?c
+	ss sizer=13
+	char against="seHandCursor="^
+	set c memcmp(cursor,#against,sizer)
+	if c=0
+		add sizer cursor
+		ss pointer
+		set pointer semicolafter(sizer)
+		if pointer!=sizer
+			set pointer# (Nullchar)
+			sd ?len
+			set cursor #globalt.a_page
+			sd ?size;set size (a_page_size)
+			set len snprintf(cursor,size,"%sbuttonMode=%s",indents,sizer)
+			if len>0
+				if len<(a_page_size)
+					ss ok="ButtonMode"
+					if oa!=(NULL)
+						if oa#!=(Nullchar)
+							#here is not always wanted to be if there are no children inside, or if disabling the button
+							if oa#=(b_low) #is set once to make it look like a button
+								inc oa
+								if oa#=(Nullchar)
+									add cursor len
+									sub size len
+									set len snprintf(cursor,size,"mouseChildren=false;")
+									if len>0
+										if len<size
+											call translated(ok)
+											return #globalt.a_page
+										end
+									end
+								end
+							end
+							return indents
+						end
+					end
+					call translated(ok)
+					return #globalt.a_page
+				end
+			end
+		end
+	end
+	return indents
+end
+
+function translate_onev(ss start)
 	ss cursor
 	set cursor equalon(start)
 	if cursor!=start
@@ -471,7 +533,7 @@ function translate_onev(ss start,ss oa)
 			end
 		end
 	end
-	return oa
+	return start
 end
 function translate_on(ss start,ss type,ss ev,ss value)
 	inc value
@@ -492,19 +554,22 @@ function translate_on(ss start,ss type,ss ev,ss value)
 	return start
 end
 
-function translate_alpha(ss indents,ss oa)
+function translate_alpha(ss indents)
 	ss cursor;set cursor spcfull(indents)
 	set cursor# (Nullchar)
 	inc cursor
-	ss pointer
-	set pointer equalafter(cursor)
-	if pointer!=cursor
-		set cursor semicolon(pointer)
-		if cursor!=pointer
-			dec pointer
-			set cursor# (Nullchar)
+	sd ?c
+	ss sizer=6
+	char against="alpha="^
+	set c memcmp(cursor,#against,sizer)
+	if c=0
+		add sizer cursor
+		ss pointer
+		set pointer semicolon(sizer)
+		if pointer!=sizer
+			set pointer# (Nullchar)
 			sd ?len
-			set len snprintf(#globalt.a_page,(a_page_size),"%salpha%s/100;",indents,pointer)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s/100;",indents,cursor)
 			if len>0
 				if len<(a_page_size)
 					call translated("Alpha")
@@ -513,7 +578,7 @@ function translate_alpha(ss indents,ss oa)
 			end
 		end
 	end
-	return oa
+	return indents
 end
 
 function translate_rect(ss indents,ss name)
@@ -570,9 +635,8 @@ function translate_srch(ss start,ss oa)
 	whiletrue
 		ss cursor
 		if oa#=(Nullchar)
-			ss ?t=7
-			set cursor translate_search_base(start,#t)
-			if t=0
+			set cursor translate_srch_all(start)
+			if cursor=start
 				break
 			end
 		else
@@ -590,6 +654,15 @@ function translate_srch(ss start,ss oa)
 		return cursor
 	end
 	return oa
+end
+function translate_srch_all(ss start)
+	ss ?t=7
+	ss cursor
+	set cursor translate_search_base(start,#t)
+	if t=0
+		return start
+	end
+	return cursor
 end
 function translate_search(ss start,ss oa)
 	ss cursor;set cursor oa
@@ -655,14 +728,14 @@ function translate_search_base(ss start,ss ptypes)
 	return start
 end
 
-function translate_textfield(ss start,ss oa)
+function translate_textfield(ss start)
 	ss cursor
 	set cursor translate_label(start)
 	if cursor!=start
 		call translated("Text")
 		return cursor
 	end
-	return oa
+	return start
 end
 function translate_label(ss indents)
 	ss cursor;set cursor spcfull(indents)
@@ -716,7 +789,7 @@ function translate_label(ss indents)
 	return indents
 end
 
-function translate_textformat(ss start,ss oa)
+function translate_textformat(ss start)
 	ss cursor
 	set cursor equalafter(start)
 	if cursor!=start
@@ -739,7 +812,7 @@ function translate_textformat(ss start,ss oa)
 			end
 		end
 	end
-	return oa
+	return start
 end
 
 entryraw globalt()
@@ -748,6 +821,7 @@ entryraw globalt()
 AddChild
 Alpha
 blank
+ButtonMode
 Class
 closing
 Comment

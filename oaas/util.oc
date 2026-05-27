@@ -112,6 +112,9 @@ end
 function quoton(ss a)
 	callret anyon(a,(Singlequote))
 end
+function semicolafter(ss a)
+	callret anyafter(a,(Semicolon))
+end
 function semicolon(ss a)
 	callret anyon(a,(Semicolon))
 end
