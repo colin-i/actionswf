@@ -1,5 +1,10 @@
 set -e
 
+if [ "$1" = clean ]; then
+	./c
+	exit
+fi
+
 cd osrc
 LD_LIBRARY_PATH=${HOME}/a/x86_64_lib ./a
 
