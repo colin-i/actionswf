@@ -52,7 +52,7 @@ import "to_upper" to_upper
 import "translated" translated
 import "untranslated" untranslated
 
-#a cdEfg i  LMnOP RST v X
+#a cdEfg i  LMnOP RST V X
 # b     h jk     q   u w yz
 #also at the end
 
@@ -238,12 +238,9 @@ function translate_one(ss in,ss indents)
 				if pointer!=cursor
 					set reminder cursor#;set cursor# (Nullchar)
 					set o_a# (Nullchar)
-					set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=new %s();",indents,in,oa,pointer)
-					if len>0
-						if len<(a_page_size)
-							call translated("Var")
-							return #globalt.a_page
-						end
+					set pointer translate_one_var(indents,in,oa,pointer)
+					if pointer!=in
+						return pointer
 					end
 					set o_a# (v_low)
 					set cursor# reminder
@@ -294,6 +291,17 @@ function translate_one_1(ss ?chr,ss oa,ss format,ss indents,ss in,ss ok)
 	end
 	return cursor
 end
+function translate_one_var(ss indents,ss in,ss oa,ss pointer)
+	sd ?len
+	set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=new %s();",indents,in,oa,pointer)
+	if len>0
+		if len<(a_page_size)
+			call translated("Var")
+			return #globalt.a_page
+		end
+	end
+	return in
+end
 
 #e	()
 #l	b() or e
@@ -303,9 +311,11 @@ end
 #r	(,),)(,
 #s	_ and more
 #t	'',,,,)
+#v	''''
 #x	=''
 
-function translate_two(ss start,ss oa)
+function translate_two(ss start,ss in)
+	ss oa;set oa spcfull(in)
 	ss cursor
 	ss ?chr;set chr oa#
 	if chr=(e_low)
@@ -376,6 +386,13 @@ function translate_two(ss start,ss oa)
 			if cursor!=start;return cursor;end
 		end
 		dec oa
+	elseif chr=(v_low)
+		inc oa
+		if oa#=(Nullchar)
+			set cursor translate_var(start)
+			if cursor!=start;return cursor;end
+		end
+		dec oa
 	elseif chr=(x_low)
 		inc oa
 		if oa#=(Nullchar)
@@ -391,19 +408,23 @@ function translate_two(ss start,ss oa)
 			set cursor translate_textfield(mem)
 			if cursor=mem
 				call strcpy(mem,start)
-				set cursor translate_srch_all(mem)
+				set cursor translate_var(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-					set cursor translate_alpha(mem)
+					set cursor translate_srch_all(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-						set cursor translate_buttonmode(mem,(NULL))
+						set cursor translate_alpha(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-							set cursor translate_onev(mem)
+							set cursor translate_buttonmode(mem,(NULL))
 							if cursor=mem
 								call strcpy(mem,start)
-								set cursor translate_eparam(mem)
+								set cursor translate_onev(mem)
+								if cursor=mem
+									call strcpy(mem,start)
+									set cursor translate_eparam(mem)
+								end
 							end
 						end
 					end
@@ -413,7 +434,7 @@ function translate_two(ss start,ss oa)
 		call free(mem)
 		if cursor!=mem;return cursor;end
 	end
-	return oa
+	return in
 end
 
 function translate_eparam(ss start)
@@ -817,6 +838,36 @@ function translate_label(ss indents)
 	return indents
 end
 
+function translate_var(ss indents)
+	ss cursor;set cursor spcfull(indents)
+	set cursor# (Nullchar) #on attach...
+	ss class
+	inc cursor
+	set class quotafter(cursor)
+	if class!=cursor
+		set cursor quoton(class)
+		if cursor!=class
+			set cursor# (Nullchar)
+			inc cursor
+			ss name
+			set name quotafter(cursor)
+			if name!=cursor
+				set cursor quoton(name)
+				if cursor!=class
+					set cursor# (Nullchar)
+					ss b=""
+					set cursor translate_one_var(indents,b,name,class)
+					if cursor!=b
+						call translated("VarMorph")
+						return cursor
+					end
+				end
+			end
+		end
+	end
+	return indents
+end
+
 function translate_textformat(ss start)
 	ss cursor
 	set cursor equalafter(start)
@@ -865,3 +916,4 @@ Static
 Text
 TextFormat
 Var
+VarMorph

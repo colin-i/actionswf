@@ -3,22 +3,17 @@ format elfobj64
 
 einclude "../include/ascii.h" "../include/ascii.oh"
 
-^import "spcfull" spcfull 1
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 
 import "print_stdout" print_stdout
-^import "spc" spc 1
 import "translated_ratio" translated_ratio
 
 functionx line(ss oa)
-	set oa spc(oa)
 	callret translate_one(oa,"")
 end
 
 functionx startline(ss start,ss oa)
-	set oa spc(oa)
-
 	#at this function first can be syntax dependent of start string
 	ss result
 	set result translate_two(start,oa)
@@ -27,8 +22,7 @@ functionx startline(ss start,ss oa)
 	end
 
 	#or normal line
-	ss cursor;set cursor spcfull(start)
-	set cursor# (Nullchar)
+	#if start was modified in a syntax, don't worry, this callret will return untranslated oa and not go in start because _one and _two letters are unique overall
 	callret translate_one(oa,start)
 end
 

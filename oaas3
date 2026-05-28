@@ -110,6 +110,7 @@ if os.environ.get('skip_src')==None:
 			multiline_backjump_start+=len(a2a.encode())
 			singleline_backjump_start+=len(a2b.encode())
 
+			was_multiline=False
 			for f in files:
 				if texts[i]:
 					text=texts[i]
@@ -158,6 +159,7 @@ if os.environ.get('skip_src')==None:
 									pos-=multiline_backjump
 									singleline()
 									pos=0
+									was_multiline=True
 								else:
 									mode=6
 						if mode==4:
@@ -166,7 +168,13 @@ if os.environ.get('skip_src')==None:
 						elif mode==6:
 							singleline()
 						else:
-							dfile.write(chars[:pos])
+							bf=chars[:pos]
+							if not was_multiline:
+								dfile.write(bf)
+							else:
+								bf=bf.rstrip(b"\r\n") #was already added one separator
+								dfile.write(bf)
+								was_multiline=False
 					#here can test if multiline was closed
 				i=i+1
 			if lib:

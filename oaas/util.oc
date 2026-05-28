@@ -43,15 +43,6 @@ function anyon(ss a,ss ?x)
 	end
 end
 
-function spc(ss a)
-	whiletrue
-		if a#=(Space)
-			inc a
-		else
-			return a
-		end
-	end
-end
 function spcfull(ss a)
 	whiletrue
 		if a#=(HorizontalTab)

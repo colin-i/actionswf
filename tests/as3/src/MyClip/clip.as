@@ -1,5 +1,5 @@
 
-/*3 i flash.display.MovieClip
+/*3i flash.display.MovieClip
 i flash.display.Shape
 i flash.events.Event
 i flash.text.TextField
@@ -54,14 +54,13 @@ a MyClip MovieClip*/
 		_alpha= 100;//3 p
 	}
 /*3
-	f p
-*/
+	f p*/
 		// Simple visual so you can see it
-		//3 v shape Shape
+		//3v shape Shape
 		beginFill(0x3399FF);//3 l shape
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
 		endFill();//3 l shape
-		//3 d shape
+		//3d shape
 
 		// a 1/5 margin
 		createTextField('label',1,0,16, 120, 48);//3 t
@@ -81,12 +80,11 @@ a MyClip MovieClip*/
 		onRollOut = onOut;//3 o
 		onPress = onClick;//3 o
 
-		//3 d label
+		//3d label
 
 		onEnterFrame = on_Enter_Frame; //3 o
 /*3	}
-	n
-*/
+	n*/
 	var c=%u;
 	var a=false;var b=false;
 //3 }
