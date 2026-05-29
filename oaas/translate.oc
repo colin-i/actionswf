@@ -3,7 +3,7 @@ format elfobj64
 
 const a_page_size=0x1000
 #multithread unsafe
-charx a_page#a_page_size
+charx a_page#a_page_size;vstr a_page_switch^a_page
 
 einclude "../include/common.h" "../include/common.oh"
 Const b_low=0x62
@@ -238,7 +238,7 @@ function translate_one(ss in,ss indents)
 				if pointer!=cursor
 					set reminder cursor#;set cursor# (Nullchar)
 					set o_a# (Nullchar)
-					set pointer translate_one_var(indents,in,oa,pointer)
+					set pointer translate_one_var(indents,in,oa,pointer) #,#globalt.a_page)
 					if pointer!=in
 						return pointer
 					end
@@ -291,13 +291,13 @@ function translate_one_1(ss ?chr,ss oa,ss format,ss indents,ss in,ss ok)
 	end
 	return cursor
 end
-function translate_one_var(ss indents,ss in,ss oa,ss pointer)
+function translate_one_var(ss indents,ss in,ss oa,ss pointer) #,ss out)
 	sd ?len
-	set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=new %s();",indents,in,oa,pointer)
+	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%svar %s=new %s();",indents,in,oa,pointer)
 	if len>0
 		if len<(a_page_size)
 			call translated("Var")
-			return #globalt.a_page
+			return globalt.a_page_switch
 		end
 	end
 	return in
@@ -443,12 +443,12 @@ function translate_eparam(ss start)
 	if p!=(NULL)
 		set p# (Nullchar)
 		inc p
-		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%s(e%s",start,p)
+		sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%s(e%s",start,p)
 		#set p# '('
 		if n>0
 			if n<(a_page_size)
 				call translated("Event")
-				return #globalt.a_page
+				return globalt.a_page_switch
 			end
 		end
 	end
@@ -467,21 +467,21 @@ function translate_fill(ss indents,ss name)
 			set cursor parecafter(pointer)
 			if cursor!=pointer
 				set cursor# (Nullchar)
-				set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.beginFill%s;",indents,name,pointer)
+				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.beginFill%s;",indents,name,pointer)
 				if len>0
 					if len<(a_page_size)
 						call translated("FillBegin")
-						return #globalt.a_page
+						return globalt.a_page_switch
 					end
 				end
 			end
 		end
 	elseif chr=(e_low)
-		set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.endFill();",indents,name)
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.endFill();",indents,name)
 		if len>0
 			if len<(a_page_size)
 				call translated("FillEnd")
-				return #globalt.a_page
+				return globalt.a_page_switch
 			end
 		end
 	end
@@ -503,7 +503,7 @@ function translate_buttonmode(ss indents,ss oa)
 		if pointer!=sizer
 			set pointer# (Nullchar)
 			sd ?len
-			set cursor #globalt.a_page
+			set cursor globalt.a_page_switch
 			sd ?size;set size (a_page_size)
 			set len snprintf(cursor,size,"%sbuttonMode=%s",indents,sizer)
 			if len>0
@@ -521,7 +521,7 @@ function translate_buttonmode(ss indents,ss oa)
 									if len>0
 										if len<size
 											call translated(ok)
-											return #globalt.a_page
+											return globalt.a_page_switch
 										end
 									end
 								end
@@ -530,7 +530,7 @@ function translate_buttonmode(ss indents,ss oa)
 						end
 					end
 					call translated(ok)
-					return #globalt.a_page
+					return globalt.a_page_switch
 				end
 			end
 		end
@@ -593,10 +593,10 @@ function translate_on(ss start,ss type,ss ev,ss value)
 		set pointer spcfull(start)
 		set pointer# (Nullchar)
 		set cursor# (Nullchar)
-		sd ?n;set n snprintf(#globalt.a_page,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,value)
+		sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%saddEventListener(%sEvent.%s,%s);",start,type,ev,value)
 		if n>0
 			if n<(a_page_size)
-				return #globalt.a_page
+				return globalt.a_page_switch
 			end
 		end
 	end
@@ -618,11 +618,11 @@ function translate_alpha(ss indents)
 		if pointer!=sizer
 			set pointer# (Nullchar)
 			sd ?len
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s/100;",indents,cursor)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s/100;",indents,cursor)
 			if len>0
 				if len<(a_page_size)
 					call translated("Alpha")
-					return #globalt.a_page
+					return globalt.a_page_switch
 				end
 			end
 		end
@@ -663,11 +663,11 @@ function translate_rect(ss indents,ss name)
 								set width_end# (Nullchar)
 								set height_end# (Nullchar)
 								sd ?len
-								set len snprintf(#globalt.a_page,(a_page_size),"%s%s.graphics.drawRect%s%s,%s%s;",indents,name,x,y,width,height)
+								set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.drawRect%s%s,%s%s;",indents,name,x,y,width,height)
 								if len>0
 									if len<(a_page_size)
 										call translated("Rect")
-										return #globalt.a_page
+										return globalt.a_page_switch
 									end
 								end
 							end
@@ -757,7 +757,7 @@ function translate_search_base(ss start,ss ptypes)
 	set t 2
 	and t ptypes#
 	if t!=0
-		set str replace(start,"Stage.w","stage.stageW",#globalt.a_page,(a_page_size))
+		set str replace(start,"Stage.w","stage.stageW",globalt.a_page_switch,(a_page_size))
 		if str!=start
 			set start str
 		else
@@ -767,7 +767,7 @@ function translate_search_base(ss start,ss ptypes)
 	set t 4
 	and t ptypes#
 	if t!=0
-		set str replace(start,"Stage.h","stage.stageH",#globalt.a_page,(a_page_size))
+		set str replace(start,"Stage.h","stage.stageH",globalt.a_page_switch,(a_page_size))
 		if str!=start
 			set start str
 		else
@@ -795,7 +795,7 @@ function translate_label(ss indents)
 	if name!=cursor
 		set cursor quoton(name)
 		if cursor!=name
-			ss buffer;set buffer #globalt.a_page
+			ss buffer;set buffer globalt.a_page_switch
 			sd ?size
 			set size object_make(indents,name,cursor,"TextField",#buffer,(a_page_size))
 			if size!=0
@@ -823,7 +823,7 @@ function translate_label(ss indents)
 											set cursor parecon(pointer)
 											set size object_com(name,"height",pointer,cursor,#buffer,len)
 											if size!=0
-												return #globalt.a_page
+												return globalt.a_page_switch
 											end
 										end
 									end
@@ -856,7 +856,7 @@ function translate_var(ss indents)
 				if cursor!=class
 					set cursor# (Nullchar)
 					ss b=""
-					set cursor translate_one_var(indents,b,name,class)
+					set cursor translate_one_var(indents,b,name,class) #,globalt.a_page_switch)
 					if cursor!=b
 						call translated("VarMorph")
 						return cursor
@@ -881,11 +881,11 @@ function translate_textformat(ss start)
 				call to_upper(type,pointer)
 				set cursor# (Nullchar)
 				set pointer# (Nullchar)
-				sd ?len;set len snprintf(#globalt.a_page,(a_page_size),"%sTextFormatAlign.%s;",start,type)
+				sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%sTextFormatAlign.%s;",start,type)
 				if len>0
 					if len<(a_page_size)
 						call translated("TextFormat")
-						return #globalt.a_page
+						return globalt.a_page_switch
 					end
 				end
 			end
