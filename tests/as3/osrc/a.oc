@@ -128,6 +128,9 @@ c import flash.display.Bitmap;
 c @:bitmap('relative/path/to/myfile.png')
 c class MyBitmapData extends BitmapData { }//*
 */
+/*more tests
+function ()()//3 e+e
+*/
 ")
 
 call swf_done()
