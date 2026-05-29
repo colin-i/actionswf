@@ -11,15 +11,17 @@ if len(sys.argv)!=3:
 
 import os
 
+OAPATH=""
 if os.environ.get('OAPATH'):
-	os.add_dll_directory(os.environ.get('OAPATH'))
+	OAPATH=os.environ.get('OAPATH')
+	#this is windows specific os.add_dll_directory(os.environ.get('OAPATH'))
 
 import ctypes
 try: #in LD_LIBRARY_PATH
-	lib=ctypes.cdll.LoadLibrary("liboaas.so")
+	lib=ctypes.cdll.LoadLibrary(os.path.join(OAPATH,"liboaas.so"))
 except Exception:
 	try:
-		lib=ctypes.cdll.LoadLibrary("liboaas.dll")
+		lib=ctypes.cdll.LoadLibrary(os.path.join(OAPATH,"liboaas.dll"))
 	except Exception:
 		lib = None
 		# print('no liboaas support')

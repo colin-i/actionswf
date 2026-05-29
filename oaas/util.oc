@@ -97,6 +97,9 @@ end
 function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
 end
+function pluson(ss a)
+	callret anyon(a,(Plus))
+end
 function quotafter(ss a)
 	callret anyafter(a,(Singlequote))
 end
@@ -117,19 +120,26 @@ function to_upper(ss s,ss end)
 	end
 end
 
-function strip(ss src)
+function strip(ss src,ss dest,sd ?out_size)
 	ss start;set start src
-	ss dest;set dest src
+	ss start_dest;set start_dest dest
+	ss end_dest;set end_dest dest;add end_dest out_size
 	whiletrue
 		if src#=(Nullchar)
-			if dest!=src
-				return dest
+			set dest# (Nullchar)
+			sub src start
+			sub dest start_dest
+			if src!=dest
+				return start_dest
 			end
 			return start
 		end
 		if src#!=(_)
 			set dest# src#
 			inc dest
+			if dest=end_dest
+				return start
+			end
 		end
 		inc src
 	end

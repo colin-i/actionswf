@@ -22,4 +22,5 @@ c class MyBitmapData extends BitmapData { }//*
 */
 /*more tests
 function ()()//3 e+e
+begin(a);_x//3 l q+s
 */

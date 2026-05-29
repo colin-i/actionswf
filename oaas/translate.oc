@@ -40,6 +40,7 @@ import "object_make" object_make
 ^import "parecon" parecon 1
 ^import "pareoafter" pareoafter 1
 ^import "pareoon" pareoon 1
+^import "pluson" pluson 1
 ^import "quotafter" quotafter 1
 ^import "quoton" quoton 1
 ^import "replace" replace 5
@@ -47,7 +48,7 @@ import "object_make" object_make
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
-^import "strip" strip 1
+^import "strip" strip 3
 import "to_upper" to_upper
 import "translated" translated
 import "untranslated" untranslated
@@ -313,7 +314,7 @@ function translate_one_var(ss indents,ss in,ss oa,ss pointer,ss out)
 end
 
 #e	()
-#l	b() or e
+#l	b or e
 #m	seHandCursor=; same as p but diff at format and continuation
 #o	onPATTERN=;
 #p	alpha=;
@@ -345,8 +346,24 @@ function translate_two(ss start,ss in)
 				end
 			end
 			inc oa
+			ss pointer;set pointer pluson(oa)
+			if pointer!=oa
+				set pointer# (Nullchar)
+			end
 			set cursor translate_fill(start,oa)
-			if cursor!=oa;return cursor;end
+			if pointer!=oa
+				if cursor!=oa
+					set cursor translate_two_switcher(pointer)
+					if cursor!=pointer
+						return cursor
+					end
+				end
+				set pointer# (Plus)
+			else
+				if cursor!=oa
+					return cursor
+				end
+			end
 			dec oa
 			break
 		end
@@ -443,14 +460,18 @@ function translate_two_switch(ss oa,ss cursor)
 		return cursor
 	end
 	if oa#=(Plus)
-		inc oa
-		ss page;set page switch_page()
-		set cursor translate_two(page,oa)
-		if cursor!=oa
-			return cursor
-		end
-		dec oa
+		callret translate_two_switcher(oa)
 	end
+	return oa
+end
+function translate_two_switcher(ss oa)
+	inc oa
+	ss page;set page switch_page()
+	set page translate_two(page,oa)
+	if page!=oa
+		return page
+	end
+	dec oa
 	return oa
 end
 
@@ -475,29 +496,19 @@ end
 function translate_fill(ss indents,ss name)
 	ss cursor;set cursor spcfull(indents)
 	ss ?chr;set chr cursor#
-	set cursor# (Nullchar)
-	sd ?len
-	if chr=(b_low)
-		inc cursor
-		ss pointer;set pointer pareoon(cursor)
-		if pointer!=cursor
-			set cursor parecafter(pointer)
-			if cursor!=pointer
-				set cursor# (Nullchar)
-				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.beginFill%s;",indents,name,pointer)
-				if len>0
-					if len<(a_page_size)
-						call translated("FillBegin")
-						return globalt.a_page_switch
-					end
-				end
+	whiletrue
+		if chr!=(b_low)
+			if chr!=(e_low)
+				break
 			end
 		end
-	elseif chr=(e_low)
-		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.endFill();",indents,name)
+		set cursor# (Nullchar)
+		inc cursor
+		sd ?len
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.%c%s",indents,name,chr,cursor)
 		if len>0
 			if len<(a_page_size)
-				call translated("FillEnd")
+				call translated("Fill")
 				return globalt.a_page_switch
 			end
 		end
@@ -760,22 +771,29 @@ function translate_search(ss start,ss oa)
 	return oa
 end
 function translate_search_base(ss start,ss ptypes)
+	ss cursor;set cursor start
+	ss str
 	ss ?t=1
 	and t ptypes#
 	if t!=0
-		ss dest;set dest strip(start)
-		if dest!=start
-			set dest# (Nullchar)
+		set str strip(start,globalt.a_page_switch,(a_page_size)) #can't recognize at search all if is good or bad without different buffer
+		if str!=start
+			set start str
 		else
 			xor ptypes# 1
 		end
 	end
-	ss str
 	set t 2
 	and t ptypes#
 	if t!=0
+		if cursor!=start
+			set start strdup(start) #else will be a collision
+		end
 		set str replace(start,"Stage.w","stage.stageW",globalt.a_page_switch,(a_page_size))
 		if str!=start
+			if cursor!=start
+				call free(start)
+			end
 			set start str
 		else
 			xor ptypes# 2
@@ -784,8 +802,14 @@ function translate_search_base(ss start,ss ptypes)
 	set t 4
 	and t ptypes#
 	if t!=0
+		if cursor!=start
+			set start strdup(start)
+		end
 		set str replace(start,"Stage.h","stage.stageH",globalt.a_page_switch,(a_page_size))
 		if str!=start
+			if cursor!=start
+				call free(start)
+			end
 			set start str
 		else
 			xor ptypes# 4
@@ -922,7 +946,7 @@ Class
 closing
 Comment
 Event
-FillBegin
+Fill
 Function
 Import
 On
