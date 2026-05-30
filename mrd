@@ -1,1 +1,3 @@
-cd src && ./mrd && cd ../oad && ./md && cd ../dev && make
+
+cd src && ./mrd && cd ../dev && make && cd ../example && ./rtest && cd ../csrc && ./md && cd ../oaas && ./md \
+ && cd ../tests && ./a && ./c 1 && ./ac && ./c 1 && cd ffdec && ./f && cd ../data && ./b && cd ../as3 && ./arf echo ok

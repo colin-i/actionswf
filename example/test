@@ -1,2 +1,2 @@
-. ~/games/ep/ffdec
+. ~/games/ffdec
 ffdec=${ffd} ./m${m}d test

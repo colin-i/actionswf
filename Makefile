@@ -3,7 +3,7 @@ MEDTARGETS := test clean distclean
 TOPTARGETS := all install uninstall
 #distclean is called at launchpad build, for here if there were configures
 
-SUBDIRS := dev src oad
+SUBDIRS := dev src oad oaas
 ALLDIRS := example $(SUBDIRS)
 
 ifndef prefix
