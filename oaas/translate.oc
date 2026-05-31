@@ -834,7 +834,7 @@ function translate_search(ss start,ss oa)
 end
 function translate_search_base(ss start,ss ptypes)
 	ss cursor;set cursor start
-	ss pointer;ss str
+	ss str
 	ss ?t=1
 	and t ptypes#
 	if t!=0
@@ -845,6 +845,7 @@ function translate_search_base(ss start,ss ptypes)
 			xor ptypes# 1
 		end
 	end
+	ss pointer
 	set t 2
 	and t ptypes#
 	if t!=0

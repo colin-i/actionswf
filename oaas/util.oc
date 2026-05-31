@@ -145,12 +145,12 @@ function strip(ss src,ss dest,sd ?out_size)
 	end
 end
 function replace(ss string,ss from,ss to,ss out,sd ?out_size) #only for C: keeping it int because to not wrong it by passing an int in int64
-	ss pos
 	ss src;set src string
 	ss dst;set dst out
 	svu ?slen;set slen strlen(from)
 	svu ?dlen;set dlen strlen(to)
 	whiletrue
+		ss pos
 		set pos strstr(src,from)
 		if pos=(NULL)
 			if dst!=out
