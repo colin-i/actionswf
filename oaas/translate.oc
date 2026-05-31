@@ -834,7 +834,7 @@ function translate_search(ss start,ss oa)
 end
 function translate_search_base(ss start,ss ptypes)
 	ss cursor;set cursor start
-	ss str
+	ss pointer;ss str
 	ss ?t=1
 	and t ptypes#
 	if t!=0
@@ -849,13 +849,13 @@ function translate_search_base(ss start,ss ptypes)
 	and t ptypes#
 	if t!=0
 		if cursor!=start
-			set start strdup(start) #else will be a collision
+			set pointer strdup(start) #else will be a collision
 		end
-		set str replace(start,"Stage.w","stage.stageW",globalt.a_page_switch,(a_page_size))
-		if str!=start
-			if cursor!=start
-				call free(start)
-			end
+		set str replace(pointer,"Stage.w","stage.stageW",globalt.a_page_switch,(a_page_size))
+		if cursor!=start
+			call free(pointer)
+		end
+		if str!=pointer
 			set start str
 		else
 			xor ptypes# 2
@@ -865,13 +865,13 @@ function translate_search_base(ss start,ss ptypes)
 	and t ptypes#
 	if t!=0
 		if cursor!=start
-			set start strdup(start)
+			set pointer strdup(start)
 		end
-		set str replace(start,"Stage.h","stage.stageH",globalt.a_page_switch,(a_page_size))
-		if str!=start
-			if cursor!=start
-				call free(start)
-			end
+		set str replace(pointer,"Stage.h","stage.stageH",globalt.a_page_switch,(a_page_size))
+		if cursor!=start
+			call free(pointer)
+		end
+		if str!=pointer
 			set start str
 		else
 			xor ptypes# 4
