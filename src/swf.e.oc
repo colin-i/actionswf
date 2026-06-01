@@ -475,9 +475,11 @@ functionX swf_removeobject(sd ?depth)
 endfunction
 
 import "swf_showframe_base" swf_showframe_base
+import "default_error" default_error
 
 functionX swf_showframe()
 	base globalw.jmp_data;call ebase(globalw.jmp_data)
+	call default_error()
 #	sd p;set p swf_frames_pointer()
 	call swf_showframe_base() #p if on error will error at unregistered input id
 endfunction

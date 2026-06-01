@@ -226,11 +226,14 @@ function swf_mem_init(ss path,sd len,sd ?flags)
 		set globals.is_file_write (FALSE)
 	end
 end
-function swf_mem(sd ?proc,sd arg,sd ?len)
+function default_error() #also at swf_showframe
 	if globals.path_mem=(NULL)
 	#swf_(placeobject...)->mem_exp_add;swf_sprite_(placeobject...)->mem_exp_change;swf_done->mem_exp_done
 		call error("there isn't a swf started")
 	endif
+end
+function swf_mem(sd ?proc,sd arg,sd ?len)
+	call default_error()
 	if proc=(mem_exp_add)
 		#blockMain blockPool
 		sv p_block
