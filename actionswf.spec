@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.171
+Version: 1.172
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -57,7 +57,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.171-0
+* Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.172-0
+- order (costin.botescu@gmail.com)
+- fix oaas Makefile (mail@flashixy.com)
 - mainly, about oaas (mail@flashixy.com)
 - swf_showframe call protection (costin.botescu@gmail.com)
 - no dest (costin.botescu@gmail.com)
