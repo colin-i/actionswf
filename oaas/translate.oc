@@ -849,6 +849,7 @@ function translate_search_base(ss start,ss ptypes)
 	set t 2
 	and t ptypes#
 	if t!=0
+		set pointer start
 		if cursor!=start
 			set pointer strdup(start) #else will be a collision
 		end
@@ -865,6 +866,7 @@ function translate_search_base(ss start,ss ptypes)
 	set t 4
 	and t ptypes#
 	if t!=0
+		set pointer start
 		if cursor!=start
 			set pointer strdup(start)
 		end

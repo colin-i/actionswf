@@ -20,14 +20,14 @@ o a${interext}.oc logfile 0 conv_64 ${conv_64} ${inc} && {
 		if [ -z "${LD_LIBRARY_PATH}" ]; then
 			#local cc has -lz? bionic i386 cc has no -lz? who cares
 			echo cc a${interext}.o ${l_z} -L${_L}../${inter}src -lactionswf
-			cc a${interext}.o ${l_z} -L${_L}../${inter}src -lactionswf
+			cc a${interext}.o -L${_L}../${inter}src -lactionswf ${l_z}
 		else
 			echo cc a.o ${l_z} -L${LD_LIBRARY_PATH} -lactionswf
 			cc a.o ${l_z} -L${LD_LIBRARY_PATH} -lactionswf
 		fi
 	fi && {
 		if [ -z "${LD_LIBRARY_PATH}" ]; then LD_LIBRARY_PATH=${_L}../${inter}src; fi
-		echo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out ${extra}
-		LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./a.out ${extra}
+		echo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${launcher} ./a.out ${extra}
+		LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${launcher} ./a.out ${extra}
 	}
 }
