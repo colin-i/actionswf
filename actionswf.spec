@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.169
+Version: 1.170
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -57,6 +57,62 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.170-0
+- swf_showframe call protection (costin.botescu@gmail.com)
+- no dest (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- free fix (costin.botescu@gmail.com)
+- oaas in specs (costin.botescu@gmail.com)
+- recursive for rest of two (costin.botescu@gmail.com)
+- l_low recursive (costin.botescu@gmail.com)
+- first recursive translate_two (costin.botescu@gmail.com)
+- a_switch (costin.botescu@gmail.com)
+- make w (costin.botescu@gmail.com)
+- v_low at translate_two (costin.botescu@gmail.com)
+- ms test (costin.botescu@gmail.com)
+- buttonMode (costin.botescu@gmail.com)
+- clarifications (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- x_low is replacement (costin.botescu@gmail.com)
+- Stage TextCenter (costin.botescu@gmail.com)
+- keep indents for all t1 coms (costin.botescu@gmail.com)
+- addChild (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- alpha (costin.botescu@gmail.com)
+- Fill Var (costin.botescu@gmail.com)
+- drawRect (costin.botescu@gmail.com)
+- maybe someone want to translate_two for all cases (costin.botescu@gmail.com)
+- strip can be with no ids (costin.botescu@gmail.com)
+- t_low fix (costin.botescu@gmail.com)
+- on looking few letters behind for easy typing (costin.botescu@gmail.com)
+- order (costin.botescu@gmail.com)
+- textfield (costin.botescu@gmail.com)
+- on enter frame (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- p/s function (costin.botescu@gmail.com)
+- class extends (costin.botescu@gmail.com)
+- on in/out/click (costin.botescu@gmail.com)
+- closing brace (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- stats (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- s _wh (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- comments (costin.botescu@gmail.com)
+- translate (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- e (costin.botescu@gmail.com)
+- docs (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- first 2 oaas translations (costin.botescu@gmail.com)
+- startline (costin.botescu@gmail.com)
+- also at multiline (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- separate from exports (costin.botescu@gmail.com)
+- spc (costin.botescu@gmail.com)
+
 * Sun May 10 2026 costin <costin.botescu@gmail.com> 1.169-0
 - "up" (costin.botescu@gmail.com)
 - sf fix (costin.botescu@gmail.com)
