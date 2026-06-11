@@ -45,10 +45,15 @@ firstname=liboaas
 libname=${firstname}.so
 libnamedll=${firstname}.dll
 
-objs=translate util ${platform}
+objs_needing_headers=translate util
+objs_not_needing_headers=${platform}
+objs=${objs_needing_headers} ${objs_not_needing_headers}
 
-$(eval obs = )
-$(foreach var,$(objs),$(eval obs += ${var}.o))
+$(eval obs_needing_headers = )
+$(foreach var,$(objs_needing_headers),$(eval obs_needing_headers += ${var}.o))
+$(eval obs_not_needing_headers = )
+$(foreach var,$(objs_not_needing_headers),$(eval obs_not_needing_headers += ${var}.o))
+obs = ${obs_needing_headers} ${obs_not_needing_headers}
 $(eval logs = )
 $(foreach var,$(objs),$(eval logs += ${var}.oc.log))
 $(eval cfiles = )
@@ -61,19 +66,23 @@ exte=libexte.a
 
 all: ${libname}
 
-${libname}: headers ${objects} ${exte}
+${libname}: ${objects} ${exte}
 	${OLINK} main.oc.log ${logs}
 	if [ "${platform}" = "lin" ]; then \
-		$(CC) ${model} ${linkerflags} -shared ${objects} ${exte} -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} ${obs} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
+#$< is the first one only, main.o
 
-headers:
+#headers: this is not good because will trigger no timestamp rebuilds
+../include/common.h:
 	$(MAKE) -C ../include common.h
+${obs_needing_headers}: ../include/common.h
 
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
+#                      | is good if adding prerequisite like 'headers' but want to exclude them from $^
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
@@ -99,4 +108,4 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
 
-.PHONY: all headers install install-lib clean distclean uninstall test
+.PHONY: all install install-lib clean distclean uninstall test
