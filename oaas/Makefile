@@ -59,18 +59,18 @@ $(foreach var,$(objs),$(eval xfiles += ${var}.oc.x))
 objects=main.o
 exte=libexte.a
 
-all: headers ${libname}
+all: ${libname}
 
-headers:
-	$(MAKE) -C ../include common.h
-
-${libname}: ${objects} ${exte}
+${libname}: headers ${objects} ${exte}
 	${OLINK} main.oc.log ${logs}
 	if [ "${platform}" = "lin" ]; then \
-		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		$(CC) ${model} ${linkerflags} -shared ${objects} ${exte} -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} ${obs} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
+
+headers:
+	$(MAKE) -C ../include common.h
 
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^

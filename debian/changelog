@@ -1,3 +1,9 @@
+actionswf (1-171) bionic; urgency=medium
+
+  * fix oaas Makefile
+
+ -- bc <bc@ubuntu>  Thu, 11 Jun 2026 15:35:14 +0300
+
 actionswf (1-170) bionic; urgency=medium
 
   * mainly, about oaas
