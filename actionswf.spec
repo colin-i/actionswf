@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.172
+Version: 1.173
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -57,7 +57,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.172-0
+* Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.173-0
+- search base fix (costin.botescu@gmail.com)
+- Makefile (mail@flashixy.com)
 - order (costin.botescu@gmail.com)
 - fix oaas Makefile (mail@flashixy.com)
 - mainly, about oaas (mail@flashixy.com)
