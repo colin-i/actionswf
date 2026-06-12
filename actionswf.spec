@@ -1,7 +1,7 @@
 
 Name: actionswf
 Version: 1.173
-Release: 0
+Release: 1
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -57,6 +57,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Fri Jun 12 2026 costin <costin.botescu@gmail.com> 1.173-1
+- install number (costin.botescu@gmail.com)
+
 * Thu Jun 11 2026 costin <costin.botescu@gmail.com> 1.173-0
 - search base fix (costin.botescu@gmail.com)
 - Makefile (mail@flashixy.com)
