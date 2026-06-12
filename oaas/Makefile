@@ -101,11 +101,11 @@ test:
 	echo "Nothing"
 
 install-lib:
-	install -D ${libname} $(DESTDIR)$(prefix)/lib/${libname}
+	install -D ${libname} $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 
 install: all install-lib
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/lib/${libname}
+	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 
 .PHONY: all install install-lib clean distclean uninstall test
