@@ -4,6 +4,7 @@ format elfobj64
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 
+^import "openfl" openfl #full
 import "print_stdout" print_stdout
 import "translated_ratio" translated_ratio
 
@@ -28,4 +29,9 @@ functionx ratio()
 	call print_stdout("Ratio: ")
 	call translated_ratio()
 	call print_stdout("\n")
+end
+
+functionx flash_to_openfl(ss ?bol)
+	ss p;set p openfl()
+	set p# bol
 end

@@ -1,3 +1,6 @@
 
 include "ascii.h" "ascii.oh"
 const NULL=0
+
+const TRUE=1
+const FALSE=0

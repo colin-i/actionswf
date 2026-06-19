@@ -1,9 +1,6 @@
 
 include "common.h" "common.oh"
 
-const TRUE=1
-const FALSE=0
-
 #const MAX_PATH=260
 
 #const ENOENT=2
