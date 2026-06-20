@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<app title="Test" file="test" main="Main" version="1.0.0" />
+	<window width="550" height="400" fps="1" background="#FFFFFF" />
+
+	<source path="dest" />
+	<haxelib name="openfl" />
+
+	<haxedef name="debug" />
+	<haxedef name="no-optimize" />
+	<haxedef name="no-inline"/>
+	<haxedef name="source-map" />
+	<haxedef name="source-map-content" />
+</project>

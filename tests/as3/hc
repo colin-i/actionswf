@@ -1,0 +1,3 @@
+set -e
+./c
+rm -r bin

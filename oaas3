@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # break OAPATH target
-# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext
+# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext   allow_untranslated
 # skip_comp header ffdec compiler no_clean no_confirm
 
 import sys
@@ -29,6 +29,7 @@ if lib:
 	try:
 		lib.line.argtypes = [ctypes.c_char_p]; lib.line.restype = ctypes.c_char_p
 		lib.startline.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.startline.restype = ctypes.c_char_p
+		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 	except Exception:
 		print('lib oaas error')
@@ -43,14 +44,16 @@ def hx_ext(fl):
 out_file_name=sys.argv[2]
 
 target=os.environ.get('target')
-if target!=None:
+if target:
 	if target!="html5":
 		print('target not available')
 		exit(1)
-	if lib:
-		lib.flash_to_openfl(True)
 
-if os.environ.get('skip_src')==None:
+if not os.environ.get('skip_src'):
+	if target:
+		if lib:
+			lib.flash_to_openfl(True)
+
 	def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
 	changeable('a','1','/')
 	changeable('a','2a','/')
@@ -63,16 +66,16 @@ if os.environ.get('skip_src')==None:
 		#environ or defaults at edor and src
 
 		splits_folder=os.environ.get('splits_folder')
-		if splits_folder==None:
+		if not splits_folder:
 			splits_folder='osrc'
 
 		splits_format_ext=os.environ.get('splits_format_ext')
-		if splits_format_ext==None:
+		if not splits_format_ext:
 			splits_format_ext='split'
 
 		#and here at src
 		splits_printf_ext=os.environ.get('splits_printf_ext')
-		if splits_printf_ext==None:
+		if not splits_printf_ext:
 			splits_printf_ext='format'
 
 		def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not directly connected with my edor and src, is like a guardian?
@@ -80,15 +83,23 @@ if os.environ.get('skip_src')==None:
 
 		return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
 
+	allow_untranslated=os.environ.get('allow_untranslated')
 	def singleline():
 		bf=chars[:pos]
 		if lib:
 			bf = bf.rstrip(b"\r\n") #this is extra at inline comments
+			byts = bytes(bf)
 			if len(stored):
-				bf=lib.startline(bytes(stored),bytes(bf))
+				bf=lib.startline(bytes(stored),byts)
 				stored.clear()
 			else:
-				bf=lib.line(bytes(bf))
+				bf=lib.line(byts)
+			if not allow_untranslated:
+				if byts == bf:
+					r = lib.ratio(False)
+					if ord(r) !=  100: #can be blank closing comment
+						print("Untranslated. 'if not os.environ.get('allow_untranslated') failed")
+						exit(1)
 			dfile.write(bf)
 			dfile.write(os.linesep.encode())
 		else:
@@ -189,23 +200,22 @@ if os.environ.get('skip_src')==None:
 					#here can test if multiline was closed
 				i=i+1
 			if lib:
-				lib.ratio()
+				lib.ratio(True)
 
-if os.environ.get('skip_comp')==None:
+if not os.environ.get('skip_comp'):
+	def error():
+		if r.returncode:
+			print('error')
+			exit(r.returncode)
+	import subprocess
+	compiler=os.environ.get('compiler')
 	if not target:
-		def error():
-			if r.returncode:
-				print('error')
-				exit(r.returncode)
-
-		import subprocess
+		if not compiler:
+			compiler='haxe'
 
 		c_dir=os.getcwd() #haxe says no to abs path
 		dest_file=os.path.realpath(out_file_name)
 		os.chdir(dest)
-		compiler=os.environ.get('compiler')
-		if compiler==None:
-			compiler='haxe'
 		hd=os.environ.get('header')
 		if hd:
 			r=subprocess.run([compiler,'-swf',dest_file,'-main','Main','-swf-header',hd])
@@ -218,12 +228,12 @@ if os.environ.get('skip_comp')==None:
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
-		if os.environ.get('no_confirm')==None:
+		if not os.environ.get('no_confirm'):
 			#confirm is as3
 
 			dest_file_tmp=dest_file+'.tmp'
 			ffdec=os.environ.get('ffdec')
-			if ffdec==None:
+			if not ffdec:
 				ffdec='ffdec'
 			r=subprocess.run([ffdec,'-decompress',dest_file,dest_file_tmp])
 			error()
@@ -258,10 +268,13 @@ if os.environ.get('skip_comp')==None:
 
 			os.remove(dest_file_tmp)
 
-		if os.environ.get('no_clean')==None:
+		if not os.environ.get('no_clean'):
 			for f in files:
 				os.remove(hx_ext(f))
 			os.rmdir(dest)
 
 	else:
-		print("this target will be implemented soon")
+		if not compiler:
+			compiler='openfl'
+		r=subprocess.run([compiler,'build','html5'])
+		error()

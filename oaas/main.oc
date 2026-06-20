@@ -8,6 +8,8 @@ format elfobj64
 import "print_stdout" print_stdout
 import "translated_ratio" translated_ratio
 
+einclude "../include/common.h" "../include/common.oh"
+
 functionx line(ss oa)
 	callret translate_one(oa,"")
 end
@@ -25,10 +27,14 @@ functionx startline(ss start,ss oa)
 	callret translate_one(oa,start)
 end
 
-functionx ratio()
-	call print_stdout("Ratio: ")
-	call translated_ratio()
-	call print_stdout("\n")
+functionx ratio(ss ?print)
+	if print=(TRUE)
+		call print_stdout("Ratio: ")
+		call translated_ratio((TRUE))
+		call print_stdout("\n")
+	else
+		callret translated_ratio((FALSE))
+	end
 end
 
 functionx flash_to_openfl(ss ?bol)

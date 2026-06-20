@@ -186,15 +186,18 @@ function print_stdout(ss a)
 	set so platform_stdout()
 	call fputs(a,so)
 end
-function translated_ratio()
+function translated_ratio(ss ?print)
 	svu ?n=100
 	mult n globalu.translations
 	divu n globalu.alltranslations
-	call printf("%u%%",n)
+	if print=(TRUE)
+		call printf("%u%%",n)
+	end
+	return n
 end
 function untranslated(ss oa)
 	inc globalu.alltranslations
-	call translated_ratio()
+	call translated_ratio((TRUE))
 	call printf(". Untranslated: %s\n",oa)
 end
 function translated(ss s)

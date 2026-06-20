@@ -1,0 +1,2 @@
+
+target=html5 no_confirm=x no_clean=x ./arl
