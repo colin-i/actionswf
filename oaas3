@@ -242,7 +242,7 @@ if not os.environ.get('skip_comp'):
 						#print(json.dumps(d,indent=10))
 						#os.execv(sys.executable, [sys.executable] + sys.argv)
 						#print("never reached")
-			exit(1)
+						exit(1)
 
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
