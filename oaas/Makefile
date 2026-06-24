@@ -78,7 +78,7 @@ ${libname}: ${objects} ${exte}
 #headers: this is not good because will trigger no timestamp rebuilds
 ../include/common.h:
 	$(MAKE) -C ../include common.h
-${obs_needing_headers}: ../include/common.h
+${obs_needing_headers} main.o: ../include/common.h
 
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
