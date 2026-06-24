@@ -2,7 +2,7 @@
 
 # break OAPATH target
 # skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext   allow_untranslated
-# skip_comp   compiler   header  no_diagnostics  no_confirm ffdec  no_clean
+# skip_comp   compiler   header  no_diagnostics  only_diagnostics  no_confirm ffdec  no_clean
 
 import sys
 if len(sys.argv)!=3:
@@ -224,30 +224,34 @@ if not os.environ.get('skip_comp'):
 			baser.extend(['-swf-header',hd])
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
+		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
 			srun(baser)
 		else:
-			baser.extend(['--display','diagnostics'])
-			p=srun(baser,capture_output=True)
-			import json
-			diagnostics = json.loads(p.stderr)
-			for file in diagnostics:
-				for d in file["diagnostics"]:
-					if d["severity"] == 1 and d["kind"] == 7:
-						f=d["args"]["moduleType"]["name"]
-						n=d["args"]["entries"][0]["fields"][0]["field"]["name"]
-						l=d["range"]["start"]["line"]
-						#now is like: fix one error will fix another 4
-						print(f+' '+str(l)+' '+n)
-						#print(json.dumps(d,indent=10))
-						#os.execv(sys.executable, [sys.executable] + sys.argv)
-						#print("never reached")
-						exit(1)
+			if not o_d:
+				r=subprocess.run(baser)
+			if o_d or r.returncode:
+				baser.extend(['--display','diagnostics'])
+				p=srun(baser,capture_output=True)
+				import json
+				diagnostics = json.loads(p.stderr)
+				for file in diagnostics:
+					for d in file["diagnostics"]:
+						if d["severity"] == 1 and d["kind"] == 7:
+							f=d["args"]["moduleType"]["name"]
+							n=d["args"]["entries"][0]["fields"][0]["field"]["name"]
+							l=d["range"]["start"]["line"]
+							#now is like: fix one error will fix another 4
+							print(f+' '+str(l)+' '+n)
+							#print(json.dumps(d,indent=10))
+							#os.execv(sys.executable, [sys.executable] + sys.argv)
+							#print("never reached")
+							exit(1)
 
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
-		if not os.environ.get('no_confirm'):
+		if not os.environ.get('no_confirm') and not o_d: #only diagnostics is a dry run at haxe
 			#confirm is as3
 
 			dest_file_tmp=dest_file+'.tmp'
