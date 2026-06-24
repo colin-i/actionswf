@@ -227,9 +227,9 @@ if not os.environ.get('skip_comp'):
 		if os.environ.get('no_diagnostics'):
 			srun(baser)
 		else:
-			import json
 			baser.extend(['--display','diagnostics'])
 			p=srun(baser,capture_output=True)
+			import json
 			diagnostics = json.loads(p.stderr)
 			for file in diagnostics:
 				for d in file["diagnostics"]:
