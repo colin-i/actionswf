@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 
-# break OAPATH target
-# skip_src   a1 a2a a2b a3 b1b b2b   splits_folder splits_format_ext splits_printf_ext   allow_untranslated
+# break OAPATH target src_name
+# a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
+
+# skip_orig mirror_name
+# skip_src allow_untranslated
 # skip_comp   compiler   header  no_diagnostics  only_diagnostics  no_confirm ffdec  no_clean
 
 import sys
@@ -43,45 +46,95 @@ def hx_ext(fl):
 	return os.path.join(dest,os.path.basename(os.path.dirname(fl))+'.hx')
 out_file_name=sys.argv[2]
 
+def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
+changeable('a','1','/')
+changeable('a','2a','/')
+changeable('a','2b','*')
+changeable('a','3','3')
+changeable('b','1b','*')
+changeable('b','2b','/')
+def premade_formats():
+	#environ or defaults at edor and src
+
+	splits_folder=os.environ.get('splits_folder')
+	if not splits_folder:
+		splits_folder='osrc'
+
+	splits_format_ext=os.environ.get('splits_format_ext')
+	if not splits_format_ext:
+		splits_format_ext='split'
+
+	#and here at src
+	splits_printf_ext=os.environ.get('splits_printf_ext')
+	if not splits_printf_ext:
+		splits_printf_ext='format'
+
+	def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not directly connected with my edor and src, is like a guardian?
+	a=('' if splits_folder=='' else splits_folder+os.sep)
+
+	return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
+def splits_data(mix=False,orig=False):
+	splits_file, splits_mix = premade_formats()
+	#for filename in os.listdir(src):
+	with open(splits_file) as splits_file:
+		splits_file_data=splits_file.read()
+		with open(splits_mix) as splits_mix:
+			splits_mix_data=splits_mix.read()
+
+			files = splits_file_data.split('\x00')
+			files.pop() # Remove the last empty string
+			files_src = [str(Path(src_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
+			if not mix:
+				if not orig:
+					return files_src
+				files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
+				return (files,files_mirror,files_src)
+
+			texts = splits_mix_data.split('\x00')
+			texts.pop()
+
+			return (files_src,texts)
+
 target=os.environ.get('target')
 if target:
 	if target!="html5":
 		print('target not available')
 		exit(1)
 
+src_name=os.environ.get('src_name')
+if not src_name:
+	src_name='src'
+
+from pathlib import Path
+
+if not os.environ.get('skip_orig'):
+	mirror_name=os.environ.get('mirror_name')
+	if not mirror_name:
+		mirror_name='mirror'
+
+	files,files_mirror,files_src = splits_data(orig=True)
+
+	import shutil
+
+	for i, f in enumerate(files):
+		orig = Path(f)
+		mirror = Path(files_mirror[i])
+		src = Path(files_src[i])
+		if not mirror.exists():
+			# create parent folders
+			mirror.parent.mkdir(parents=True, exist_ok=True)
+			src.parent.mkdir(parents=True, exist_ok=True)
+
+			# create mirror copy
+			shutil.copy2(orig, mirror) # Identical to copy() except that copy2() also attempts to preserve file metadata.
+
+			# create src copy
+			shutil.copy2(orig, src)
+
 if not os.environ.get('skip_src'):
 	if target:
 		if lib:
 			lib.flash_to_openfl(True)
-
-	def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
-	changeable('a','1','/')
-	changeable('a','2a','/')
-	changeable('a','2b','*')
-	changeable('a','3','3')
-	changeable('b','1b','*')
-	changeable('b','2b','/')
-
-	def premade_formats():
-		#environ or defaults at edor and src
-
-		splits_folder=os.environ.get('splits_folder')
-		if not splits_folder:
-			splits_folder='osrc'
-
-		splits_format_ext=os.environ.get('splits_format_ext')
-		if not splits_format_ext:
-			splits_format_ext='split'
-
-		#and here at src
-		splits_printf_ext=os.environ.get('splits_printf_ext')
-		if not splits_printf_ext:
-			splits_printf_ext='format'
-
-		def ext(a): return '' if a=='' else os.extsep+a     #notice: os.extsep is not directly connected with my edor and src, is like a guardian?
-		a=('' if splits_folder=='' else splits_folder+os.sep)
-
-		return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
 
 	allow_untranslated=os.environ.get('allow_untranslated')
 	def singleline():
@@ -105,102 +158,91 @@ if not os.environ.get('skip_src'):
 		else:
 			dfile.write(bf)
 
-	splits_file, splits_mix = premade_formats()
-
 	try:
 		os.mkdir(dest)
 	except FileExistsError:
 		pass
 
-	#for filename in os.listdir(src):
-	with open(splits_file) as splits_file:
-		splits_file_data=splits_file.read()
-		with open(splits_mix) as splits_mix:
-			splits_mix_data=splits_mix.read()
+	files,texts = splits_data(mix=True)
+	i=0
 
-			files = splits_file_data.split('\x00')
-			files.pop() # Remove the last empty string
-			texts = splits_mix_data.split('\x00')
-			texts.pop()
-			i=0
+	multiline_backjump=len(b1b.encode())+len(b2b.encode())
 
-			multiline_backjump=len(b1b.encode())+len(b2b.encode())
+	stored=bytearray()
+	multiline_backjump_start=len(a1.encode())+len(a3.encode())
+	singleline_backjump_start=multiline_backjump_start
+	multiline_backjump_start+=len(a2a.encode())
+	singleline_backjump_start+=len(a2b.encode())
 
-			stored=bytearray()
-			multiline_backjump_start=len(a1.encode())+len(a3.encode())
-			singleline_backjump_start=multiline_backjump_start
-			multiline_backjump_start+=len(a2a.encode())
-			singleline_backjump_start+=len(a2b.encode())
-
-			was_multiline=False
-			for f in files:
-				if texts[i]:
-					text=texts[i]
-				else:
-					with open(f) as sfile:
-						text=sfile.read()
-				text=text.splitlines(keepends=True)
-				with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
-					mode=0
-					for line in text:
-						chars = bytearray(len(line.encode())) #'utf-8'
-						pos = 0
-						for c in line:
-							ch=c.encode()
-							positions=len(ch)
-							for j in range(0,positions):
-								chars[pos]=ch[j]
-								pos+=1
-							if mode==0:
-								if c==a1:
-									mode=1
-							elif mode==1:
-								if c==a2a:
-									mode=2
-								elif c==a2b:
-									mode=3
-								else:
-									mode=0
-							elif mode==2 or mode==3:
-								if c==a3:
-									if mode==2:
-										xpos=singleline_backjump_start
-									else:
-										xpos=multiline_backjump_start
-									stored=chars[:pos-xpos]
-									mode*=2
-									pos=0    #notice: both //3 and /*3 will reset the line
-								else:
-									mode=0
-							elif mode==6:
-								if c==b1b:
-									mode=7
-							elif mode==7:
-								if c==b2b:
-									mode=0
-									pos-=multiline_backjump
-									singleline()
-									pos=0
-									was_multiline=True
-								else:
-									mode=6
-						if mode==4:
-							mode=0
-							singleline()
-						elif mode==6:
-							singleline()
+	was_multiline=False
+	for f in files:
+		if texts[i]:
+			text=texts[i]
+		else:
+			with open(f) as sfile:
+				text=sfile.read()
+		text=text.splitlines(keepends=True)
+		with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
+			mode=0
+			for line in text:
+				chars = bytearray(len(line.encode())) #'utf-8'
+				pos = 0
+				for c in line:
+					ch=c.encode()
+					positions=len(ch)
+					for j in range(0,positions):
+						chars[pos]=ch[j]
+						pos+=1
+					if mode==0:
+						if c==a1:
+							mode=1
+					elif mode==1:
+						if c==a2a:
+							mode=2
+						elif c==a2b:
+							mode=3
 						else:
-							bf=chars[:pos]
-							if not was_multiline:
-								dfile.write(bf)
+							mode=0
+					elif mode==2 or mode==3:
+						if c==a3:
+							if mode==2:
+								xpos=singleline_backjump_start
 							else:
-								bf=bf.rstrip(b"\r\n") #was already added one separator
-								dfile.write(bf)
-								was_multiline=False
-					#here can test if multiline was closed
-				i=i+1
-			if lib:
-				lib.ratio(True)
+								xpos=multiline_backjump_start
+							stored=chars[:pos-xpos]
+							mode*=2
+							pos=0    #notice: both //3 and /*3 will reset the line
+						else:
+							mode=0
+					elif mode==6:
+						if c==b1b:
+							mode=7
+					elif mode==7:
+						if c==b2b:
+							mode=0
+							pos-=multiline_backjump
+							singleline()
+							pos=0
+							was_multiline=True
+						else:
+							mode=6
+				if mode==4:
+					mode=0
+					singleline()
+				elif mode==6:
+					singleline()
+				else:
+					bf=chars[:pos]
+					if not was_multiline:
+						dfile.write(bf)
+					else:
+						bf=bf.rstrip(b"\r\n") #was already added one separator
+						dfile.write(bf)
+						was_multiline=False
+			#here can test if multiline was closed
+		i=i+1
+	if lib:
+		lib.ratio(True)
 
 if not os.environ.get('skip_comp'):
 	import subprocess
@@ -233,20 +275,36 @@ if not os.environ.get('skip_comp'):
 			if o_d or r.returncode:
 				baser.extend(['--display','diagnostics'])
 				p=srun(baser,capture_output=True)
+
 				import json
 				diagnostics = json.loads(p.stderr)
 				for file in diagnostics:
 					for d in file["diagnostics"]:
 						if d["severity"] == 1 and d["kind"] == 7:
-							f=d["args"]["moduleType"]["name"]
-							n=d["args"]["entries"][0]["fields"][0]["field"]["name"]
-							l=d["range"]["start"]["line"]
-							#now is like: fix one error will fix another 4
-							print(f+' '+str(l)+' '+n)
 							#print(json.dumps(d,indent=10))
-							#os.execv(sys.executable, [sys.executable] + sys.argv)
-							#print("never reached")
-							exit(1)
+							module=d["args"]["moduleType"]["name"]
+							line=d["range"]["start"]["line"]
+							value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
+							print(module+' '+str(line)+' '+value)
+
+							#now is like: fix one error will fix another 4
+
+							os.chdir(c_dir) #back to original folder
+							files=splits_data()
+							for f in files:
+								mod = os.path.basename(os.path.dirname(f))
+								if mod == module:
+									if not lib:
+										print('missing oaas lib')
+										exit(1)
+									print('to do')
+									#if not lib.solve(f,line,value):
+									#	print('oaas lib cannot solve')
+									#	exit(1)
+									#os.execv(sys.executable, [sys.executable] + sys.argv)
+									#print("never reached")
+				print("diagnostics failed")
+				exit(1)
 
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
