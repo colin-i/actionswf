@@ -45,7 +45,7 @@ firstname=liboaas
 libname=${firstname}.so
 libnamedll=${firstname}.dll
 
-objs_needing_headers=translate util
+objs_needing_headers=translate util solve
 objs_not_needing_headers=${platform}
 objs=${objs_needing_headers} ${objs_not_needing_headers}
 
@@ -78,7 +78,8 @@ ${libname}: ${objects} ${exte}
 #headers: this is not good because will trigger no timestamp rebuilds
 ../include/common.h:
 	$(MAKE) -C ../include common.h
-${obs_needing_headers} main.o: ../include/common.h
+oaas.h: ../include/common.h
+${obs_needing_headers} main.o: oaas.h
 
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
@@ -88,9 +89,17 @@ ${exte}: ${obs}
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+%.h: %.ohi
+	${OCOMP} $< x_file 2 logfile 0 include_sec 1
+	${OCONV} $<.x
+%.ohi: %.oh
+	echo "format elfobj64" > $@
+	echo "orphan off" >> $@
+	cat $< >> $@
 
 clean:
 	$(MAKE) -C ../include clean
+	-rm -f oaas.h oaas.ohi.x
 	-rm -f main.oc.log main.oc.x main.c
 	-rm -f ${objects} ${exte} ${libname} ${libnamedll}
 	-rm -f ${obs} ${logs} ${xfiles} ${cfiles}

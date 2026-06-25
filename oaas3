@@ -7,6 +7,9 @@
 # skip_src allow_untranslated
 # skip_comp   compiler   header  no_diagnostics  only_diagnostics  no_confirm ffdec  no_clean
 
+# / / 3
+#   *   * /
+
 import sys
 if len(sys.argv)!=3:
 	print('Usage: as3.py output_folder output_file')
@@ -34,6 +37,7 @@ if lib:
 		lib.startline.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.startline.restype = ctypes.c_char_p
 		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
+		lib.solve.argtypes = [ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
 	except Exception:
 		print('lib oaas error')
 		exit(1)
@@ -107,7 +111,8 @@ if not src_name:
 
 from pathlib import Path
 
-if not os.environ.get('skip_orig'):
+skip_orig='skip_orig'
+if not os.environ.get(skip_orig):
 	mirror_name=os.environ.get('mirror_name')
 	if not mirror_name:
 		mirror_name='mirror'
@@ -115,6 +120,7 @@ if not os.environ.get('skip_orig'):
 	files,files_mirror,files_src = splits_data(orig=True)
 
 	import shutil
+	import difflib
 
 	for i, f in enumerate(files):
 		orig = Path(f)
@@ -126,12 +132,47 @@ if not os.environ.get('skip_orig'):
 			src.parent.mkdir(parents=True, exist_ok=True)
 
 			# create mirror copy
-			shutil.copy2(orig, mirror) # Identical to copy() except that copy2() also attempts to preserve file metadata.
+			shutil.copy(orig, mirror) # or copy2: Identical to copy() except that copy2() also attempts to preserve file metadata.
 
 			# create src copy
-			shutil.copy2(orig, src)
+			shutil.copy(orig, src)
+		else:
+			old = mirror.read_text().splitlines(keepends=True)
+			new = orig.read_text().splitlines(keepends=True)
+			out = src.read_text().splitlines(keepends=True)
+			matcher = difflib.SequenceMatcher(None, old, new)
+			offset = 0
+			#        old     new
+			for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+				if tag == "equal":
+					continue
+				print(tag)
+				print("old:", old[i1:i2])
+				print("new:", new[j1:j2])
 
-if not os.environ.get('skip_src'):
+				i1 += offset
+				i2 += offset
+				if tag == "insert":
+					out[i1:i1] = new[j1:j2]
+					offset += (j2 - j1)
+					continue
+				if tag == "replace":
+					out[i1:i2] = new[j1:j2]
+					offset += (j2 - j1) - (i2 - i1)
+					continue
+				if tag == "delete":
+					del out[i1:i2]
+					offset -= (i2 - i1)
+					continue
+				print('?')
+				exit(1)
+			src.write_text(''.join(out))#os.linesep
+			mirror.write_text(''.join(new))
+
+terminations="\r\n"
+
+skip_src='skip_src'
+if not os.environ.get(skip_src):
 	if target:
 		if lib:
 			lib.flash_to_openfl(True)
@@ -140,7 +181,7 @@ if not os.environ.get('skip_src'):
 	def singleline():
 		bf=chars[:pos]
 		if lib:
-			bf = bf.rstrip(b"\r\n") #this is extra at inline comments
+			bf = bf.rstrip(terminations.encode()) #this is extra at inline comments
 			byts = bytes(bf)
 			if len(stored):
 				bf=lib.startline(bytes(stored),byts)
@@ -236,7 +277,7 @@ if not os.environ.get('skip_src'):
 					if not was_multiline:
 						dfile.write(bf)
 					else:
-						bf=bf.rstrip(b"\r\n") #was already added one separator
+						bf=bf.rstrip(terminations.encode()) #was already added one separator
 						dfile.write(bf)
 						was_multiline=False
 			#here can test if multiline was closed
@@ -257,6 +298,11 @@ if not os.environ.get('skip_comp'):
 		if not compiler:
 			compiler='haxe'
 
+		def clean(files):
+			for f in files:
+				os.remove(hx_ext(f))
+			os.rmdir(dest)
+
 		c_dir=os.getcwd() #haxe says no to abs path
 		dest_file=os.path.realpath(out_file_name)
 		os.chdir(dest)
@@ -276,35 +322,52 @@ if not os.environ.get('skip_comp'):
 				baser.extend(['--display','diagnostics'])
 				p=srun(baser,capture_output=True)
 
+				def diags(diagnostics):
+					for file in diagnostics:
+						for d in file["diagnostics"]:
+							if d["severity"] == 1 and d["kind"] == 7:
+								#print(json.dumps(d,indent=10))
+								module=d["args"]["moduleType"]["name"]
+								line=d["range"]["start"]["line"]
+								value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
+								print(module+' '+str(line)+' '+value)
+
+								#now is like: fix one error will fix another 4
+
+								os.chdir(c_dir) #back to original folder
+								files=splits_data()
+								for f in files:
+									mod = os.path.basename(os.path.dirname(f))
+									if mod == module:
+										if not lib:
+											print('missing oaas lib')
+											exit(1)
+										solved = lib.solve(value.encode())
+										if not solved:
+											exit(1)
+										with open(f) as file:
+											lines = file.readlines()
+										linestr = lines[line]
+										if linestr[-1] in terminations:
+											linestr = linestr.rstrip(terminations)
+											has_term=True
+										else:
+											has_term=False
+										lines[line] = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+										with open(f,"w") as file:
+										    file.writelines(lines)
+
+										if not o_d:
+											clean(files)
+											os.environ[skip_orig] = "1"
+											os.execv(sys.executable, [sys.executable] + sys.argv)
+											#print("never reached")
+										return
+					print("diagnostics failed")
+					exit(1)
+
 				import json
-				diagnostics = json.loads(p.stderr)
-				for file in diagnostics:
-					for d in file["diagnostics"]:
-						if d["severity"] == 1 and d["kind"] == 7:
-							#print(json.dumps(d,indent=10))
-							module=d["args"]["moduleType"]["name"]
-							line=d["range"]["start"]["line"]
-							value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
-							print(module+' '+str(line)+' '+value)
-
-							#now is like: fix one error will fix another 4
-
-							os.chdir(c_dir) #back to original folder
-							files=splits_data()
-							for f in files:
-								mod = os.path.basename(os.path.dirname(f))
-								if mod == module:
-									if not lib:
-										print('missing oaas lib')
-										exit(1)
-									print('to do')
-									#if not lib.solve(f,line,value):
-									#	print('oaas lib cannot solve')
-									#	exit(1)
-									#os.execv(sys.executable, [sys.executable] + sys.argv)
-									#print("never reached")
-				print("diagnostics failed")
-				exit(1)
+				diags(json.loads(p.stderr))
 
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
@@ -349,9 +412,7 @@ if not os.environ.get('skip_comp'):
 			os.remove(dest_file_tmp)
 
 		if not os.environ.get('no_clean'):
-			for f in files:
-				os.remove(hx_ext(f))
-			os.rmdir(dest)
+			clean(splits_data()) #files are also at orig src or diagnostics
 
 	else:
 		if not compiler:

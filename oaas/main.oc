@@ -1,14 +1,19 @@
 
 format elfobj64
 
+importx "printf" printf
+
+import "print_stdout" print_stdout
+
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
-
-^import "openfl" openfl #full
-import "print_stdout" print_stdout
 import "translated_ratio" translated_ratio
 
-einclude "../include/common.h" "../include/common.oh"
+^import "openfl" openfl #full
+
+^import "solver" solver 1
+
+einclude "oaas.h" "oaas.oh"
 
 functionx line(ss oa)
 	callret translate_one(oa,"")
@@ -40,4 +45,12 @@ end
 functionx flash_to_openfl(ss ?bol)
 	ss p;set p openfl()
 	set p# bol
+end
+
+functionx solve(ss value)
+	ss out;set out solver(value)
+	if out=(NULL)
+		call printf("cannot solve %s\n",value)
+	end
+	return out
 end

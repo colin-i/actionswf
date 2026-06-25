@@ -1,7 +1,7 @@
 
 format elfobj64
 
-einclude "../include/common.h" "../include/common.oh"
+einclude "oaas.h" "oaas.oh"
 
 const a_page_size=0x1000
 #multithread unsafe
@@ -22,7 +22,6 @@ Const o_low=0x6F
 Const p_low=0x70
 Const r_low=0x72
 Const t_low=0x74
-Const v_low=0x76
 Const w_low=0x77
 
 importx "free" free
@@ -278,7 +277,7 @@ function translate_one(ss in,ss indents)
 			end
 			set o_a# (n_low)
 		end
-	elseif chr=(v_low)
+	elseif chr=(var_const)
 		set o_a oa
 		inc oa
 		whiletrue
@@ -298,7 +297,7 @@ function translate_one(ss in,ss indents)
 					if pointer!=in
 						return pointer
 					end
-					set o_a# (v_low)
+					set o_a# (var_const)
 					set cursor# reminder
 				end
 			end
@@ -437,7 +436,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(v_low)
+	elseif chr=(var_const)
 		inc oa
 		set cursor translate_var(start)
 		if cursor!=start

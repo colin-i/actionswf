@@ -1,0 +1,23 @@
+
+format elfobj64
+
+#multithread unsafe
+charx outvalue#2
+
+importx "memcmp" memcmp
+importx "sprintf" sprintf
+
+einclude "oaas.h" "oaas.oh"
+
+function solver(ss value)
+	sd ?c
+	char var_string="attachMovie"^
+	set c memcmp(value,#var_string,\.var_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(var_const))
+		return #globals.outvalue
+	end
+	return (NULL)
+end
+
+entryraw globals()

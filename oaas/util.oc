@@ -7,7 +7,7 @@ valueu alltranslations=0
 
 ^import "platform_stdout" platform_stdout
 
-einclude "../include/common.h" "../include/common.oh"
+einclude "oaas.h" "oaas.oh"
 
 importx "fputs" fputs
 importx "memcpy" memcpy

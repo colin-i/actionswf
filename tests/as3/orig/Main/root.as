@@ -5,7 +5,7 @@
 	f s
 		g stage
 */
-		attachMovie('MyClip','shape',getNextHighestDepth());//3 v
+		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;//3 s
 		shape._y = (Stage.height - 100) / 2;//3 s
 		/*3d shape stage
