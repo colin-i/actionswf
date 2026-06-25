@@ -1,13 +1,14 @@
 
 format elfobj64
 
-#multithread unsafe
-valueu translations=0
-valueu alltranslations=0
-
 ^import "platform_stdout" platform_stdout
 
 einclude "oaas.h" "oaas.oh"
+
+#multithread unsafe
+valueu translations=0
+valueu alltranslations=0
+char silent_bool=FALSE
 
 importx "fputs" fputs
 importx "memcpy" memcpy
@@ -203,7 +204,12 @@ end
 function translated(ss s)
 	inc globalu.translations
 	inc globalu.alltranslations
-	call puts(s)
+	if globalu.silent_bool=(FALSE)
+		call puts(s)
+	end
+end
+function silentp()
+	return #globalu.silent_bool
 end
 
 function object_make(ss indents,ss name,ss end,ss class,sv pbuffer,sd ?size)
