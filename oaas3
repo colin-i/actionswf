@@ -340,7 +340,11 @@ if not os.environ.get('skip_comp'):
 
 		import time
 
-		os.chdir(dest)
+		try:
+			os.chdir(dest)
+		except FileNotFoundError:
+			print('cannot compile without dest') # if skip_src, and was not
+			exit(1)
 		server_pid=os.environ.get('SERVER_PID')
 		if not server_pid:
 			import socket
