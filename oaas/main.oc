@@ -4,7 +4,7 @@ format elfobj64
 importx "printf" printf
 
 import "print_stdout" print_stdout
-^import "silentp" silentp
+^import "verbosep" verbosep
 
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
@@ -42,8 +42,8 @@ functionx ratio(ss ?print)
 		callret translated_ratio((FALSE))
 	end
 end
-functionx silent(ss ?bol)
-	ss p;set p silentp()
+functionx verbose(ss ?bol)
+	ss p;set p verbosep()
 	set p# bol
 end
 

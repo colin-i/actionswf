@@ -8,4 +8,4 @@ fi
 if [ -z "${OAPATH}" ]; then
 	export OAPATH=../../oaas
 fi
-header=550:400:12:ffFFff $p ../../oaas3 dest a.swf
+verbose=x header=550:400:12:ffFFff $p ../../oaas3 dest a.swf

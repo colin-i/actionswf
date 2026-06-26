@@ -4,7 +4,7 @@
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
 
 # skip_orig mirror_name
-# skip_src allow_untranslated silent
+# skip_src allow_untranslated verbose
 # skip_comp   compiler   header  no_diagnostics  only_diagnostics  no_confirm ffdec  no_clean
 
 # / / 3
@@ -36,7 +36,7 @@ if lib:
 		lib.line.argtypes = [ctypes.c_char_p]; lib.line.restype = ctypes.c_char_p
 		lib.startline.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.startline.restype = ctypes.c_char_p
 		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
-		lib.silent.argtypes = [ctypes.c_char]
+		lib.verbose.argtypes = [ctypes.c_char]
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 		lib.solve.argtypes = [ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
 	except Exception:
@@ -177,8 +177,8 @@ if not os.environ.get(skip_src):
 	if lib:
 		if target:
 			lib.flash_to_openfl(True)
-		if os.environ.get('silent'):
-			lib.silent(True)
+		if os.environ.get('verbose'):
+			lib.verbose(True)
 
 	allow_untranslated=os.environ.get('allow_untranslated')
 	def singleline():
