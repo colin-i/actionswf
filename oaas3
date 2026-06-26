@@ -5,7 +5,7 @@
 
 # skip_orig mirror_name
 # skip_src allow_untranslated verbose
-# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump OACACHE  no_confirm ffdec  no_clean
+# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics from_diagnostics dump OACACHE  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -377,6 +377,7 @@ if not os.environ.get('skip_comp'):
 			if r.returncode:
 				print('error')
 				exiting()
+			os.chdir(c_dir) #same like to other plus for diagnostics all cases
 			return r
 
 		OACACHE=os.environ.get('OACACHE')
@@ -386,9 +387,11 @@ if not os.environ.get('skip_comp'):
 		if os.environ.get('no_diagnostics'):
 			crun(baser)
 		else:
-			if not o_d:
+			from_diagnostics='from_diagnostics'
+			f_d=os.environ.get(from_diagnostics)
+			if not o_d and not f_d:
 				r=subprocess.run(baser)
-			if o_d or r.returncode:
+			if o_d or f_d or r.returncode:
 				baser.extend(['--display','diagnostics'])
 				p=crun(baser,capture_output=True)
 
@@ -403,8 +406,16 @@ if not os.environ.get('skip_comp'):
 								return False
 						file.write_text(str(line))
 						return True
+					def exec_proc():
+						for f in files:
+							os.remove(hx_ext(f))
+						os.environ[skip_orig] = "1"
+						os.environ["SERVER_PID"] = server_pid
+						os.execv(sys.executable, [sys.executable] + sys.argv)
+						#print("never reached")
 					dump=os.environ.get('dump')
 					to_go=False
+					files=splits_data()
 					for file in diagnostics:
 						for d in file["diagnostics"]:
 							if d["severity"] == 1:
@@ -421,8 +432,6 @@ if not os.environ.get('skip_comp'):
 
 									#now is like: fix one error will fix another 4
 
-									os.chdir(c_dir) #back to original folder
-									files=splits_data()
 									for f in files:
 										mod = os.path.basename(os.path.dirname(f))
 										if mod == module:
@@ -452,24 +461,23 @@ if not os.environ.get('skip_comp'):
 												file.writelines(lines)
 
 											if not o_d:
-												for f in files:
-													os.remove(hx_ext(f))
-												os.environ[skip_orig] = "1"
-												os.environ["SERVER_PID"] = server_pid
-												os.execv(sys.executable, [sys.executable] + sys.argv)
-												#print("never reached")
+												os.environ[from_diagnostics] = "1"
+												exec_proc()
 											return
 								to_go=True
 					if to_go:
 						print("diagnostics failed")
 						exiting()
+					elif f_d:
+						os.environ.pop(from_diagnostics)
+						exec_proc()
 
 				import json
 				diags(json.loads(p.stderr))
+			else:
+				os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
 		stop_server()
-		#done for output_folder
-		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
 		if not os.environ.get('no_confirm') and not o_d: #only diagnostics is a dry run at haxe
 			#confirm is as3
