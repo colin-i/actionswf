@@ -2,4 +2,5 @@
 einclude "../include/common.h" "../include/common.oh"
 Const v_low=0x76
 
+const search_const=s_low
 const var_const=v_low

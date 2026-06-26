@@ -17,6 +17,12 @@ function solver(ss value)
 		call sprintf(#globals.outvalue,"%c",(var_const))
 		return #globals.outvalue
 	end
+	char stage_string="Stage"
+	set c memcmp(value,#stage_string,\.stage_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(search_const)) #or look deeper for Stage.w/Stage.h
+		return #globals.outvalue
+	end
 	return (NULL)
 end
 

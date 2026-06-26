@@ -256,7 +256,7 @@ function translate_one(ss in,ss indents)
 			set len snprintf(#globalt.a_page,(a_page_size),"%s%simport %s%s;",indents,in,pointer,oa)
 			if len>0
 				if len<(a_page_size)
-					call translated("Stage")
+					call translated("Import")
 					return #globalt.a_page
 				end
 			end
@@ -423,7 +423,7 @@ function translate_two(ss start,ss in)
 			dec oa
 			break
 		end
-	elseif chr=(s_low)
+	elseif chr=(search_const)
 		inc oa
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end

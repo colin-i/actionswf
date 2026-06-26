@@ -6,8 +6,8 @@
 		g stage
 */
 		attachMovie('MyClip','shape',getNextHighestDepth());
-		shape._x = (Stage.width - 100) / 2;//3 s
-		shape._y = (Stage.height - 100) / 2;//3 s
+		shape._x = (Stage.width - 100) / 2;
+		shape._y = (Stage.height - 100) / 2;
 		/*3d shape stage
 
 c		var img = new Bitmap( new MyBitmapData(0, 0) );

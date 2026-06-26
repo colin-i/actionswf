@@ -5,12 +5,23 @@
 
 # skip_orig mirror_name
 # skip_src allow_untranslated verbose
-# skip_comp   compiler   header  no_diagnostics  only_diagnostics  no_confirm ffdec  no_clean
+# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
 
+#import ctypes
+#import difflib
+#import json
+#import os
+#from pathlib import Path
+#import pdb
+#import signal
+#import shutil
+#import subprocess
 import sys
+#import time
+
 if len(sys.argv)!=3:
 	print('Usage: as3.py output_folder output_file')
 	exit(1)
@@ -301,20 +312,23 @@ if not os.environ.get('skip_comp'):
 		if not compiler:
 			compiler='haxe'
 
-		def clean(files):
-			for f in files:
-				os.remove(hx_ext(f))
-			os.rmdir(dest)
-
 		c_dir=os.getcwd() #haxe says no to abs path
 		dest_file=os.path.realpath(out_file_name)
+
 		os.chdir(dest)
+		server_pid=os.environ.get('SERVER_PID')
+		if not server_pid:
+			server = subprocess.Popen([compiler, "--wait", "6000"])
+			server_pid=str(server.pid)
+
+		baser=[compiler,'--connect','6000','-swf',dest_file,'-main','Main']
+
 		hd=os.environ.get('header')
-		baser=[compiler,'-swf',dest_file,'-main','Main']
 		if hd:
 			baser.extend(['-swf-header',hd])
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
+
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
 			srun(baser)
@@ -326,10 +340,12 @@ if not os.environ.get('skip_comp'):
 				p=srun(baser,capture_output=True)
 
 				def diags(diagnostics):
+					dump=os.environ.get('dump')
 					for file in diagnostics:
 						for d in file["diagnostics"]:
-							if d["severity"] == 1 and d["kind"] == 7:
-								#print(json.dumps(d,indent=10))
+							if d["severity"] == 1 and d["kind"] in [2,7]:
+								if dump:
+									print(json.dumps(d,indent=10))
 								module=d["args"]["moduleType"]["name"]
 								line=d["range"]["start"]["line"]
 								value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
@@ -361,8 +377,10 @@ if not os.environ.get('skip_comp'):
 										    file.writelines(lines)
 
 										if not o_d:
-											clean(files)
+											for f in files:
+												os.remove(hx_ext(f))
 											os.environ[skip_orig] = "1"
+											os.environ["SERVER_PID"] = server_pid
 											os.execv(sys.executable, [sys.executable] + sys.argv)
 											#print("never reached")
 										return
@@ -372,6 +390,28 @@ if not os.environ.get('skip_comp'):
 				import json
 				diags(json.loads(p.stderr))
 
+		import time
+		import signal
+		def stop_server():
+			pid=int(server_pid)
+			try:
+				os.kill(pid, signal.SIGTERM) #async
+			except ProcessLookupError:
+				return
+			deadline = time.time() + 3
+			while time.time() < deadline:
+				try:
+					os.kill(pid, 0)  # signal 0 = just checks if it's alive
+				except ProcessLookupError:
+					return
+				time.sleep(1)
+			else:
+				try:
+					os.kill(pid, signal.SIGKILL)
+				except ProcessLookupError:
+					return
+
+		stop_server()
 		#done for output_folder
 		os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
@@ -415,7 +455,9 @@ if not os.environ.get('skip_comp'):
 			os.remove(dest_file_tmp)
 
 		if not os.environ.get('no_clean'):
-			clean(splits_data()) #files are also at orig src or diagnostics
+			for f in files:
+				os.remove(hx_ext(f))  #files are also at orig src or diagnostics
+			os.rmdir(dest)
 
 	else:
 		if not compiler:
