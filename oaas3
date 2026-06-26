@@ -18,6 +18,7 @@
 #import pdb
 #import signal
 #import shutil
+#import socket
 #import subprocess
 import sys
 #import time
@@ -315,11 +316,49 @@ if not os.environ.get('skip_comp'):
 		c_dir=os.getcwd() #haxe says no to abs path
 		dest_file=os.path.realpath(out_file_name)
 
+		import signal
+		def stop_server():
+			pid=int(server_pid)
+			try:
+				os.kill(pid, signal.SIGTERM) #async
+			except ProcessLookupError:
+				return
+			try:
+				os.kill(pid, 0)  # signal 0 = just checks if it's alive
+			except ProcessLookupError:
+				return
+			time.sleep(1)
+			try:
+				os.kill(pid, 0)
+			except ProcessLookupError:
+				return
+			try:
+				os.kill(pid, signal.SIGKILL)
+			except ProcessLookupError:
+				return
+		def exiting():
+			stop_server()
+			exit(1)
+
+		import time
+
 		os.chdir(dest)
 		server_pid=os.environ.get('SERVER_PID')
 		if not server_pid:
+			import socket
 			server = subprocess.Popen([compiler, "--wait", "6000"])
 			server_pid=str(server.pid)
+			try:
+				with socket.create_connection(("127.0.0.1", 6000), timeout=1):
+					pass
+			except OSError:
+				time.sleep(1)
+				try:
+					with socket.create_connection(("127.0.0.1", 6000), timeout=1):
+						pass
+				except OSError:
+					print('server error')
+					exiting()
 
 		baser=[compiler,'--connect','6000','-swf',dest_file,'-main','Main']
 
@@ -360,10 +399,10 @@ if not os.environ.get('skip_comp'):
 									if mod == module:
 										if not lib:
 											print('missing oaas lib')
-											exit(1)
+											exiting()
 										solved = lib.solve(value.encode())
 										if not solved:
-											exit(1)
+											exiting()
 										with open(f) as file:
 											lines = file.readlines()
 										linestr = lines[line]
@@ -385,31 +424,10 @@ if not os.environ.get('skip_comp'):
 											#print("never reached")
 										return
 					print("diagnostics failed")
-					exit(1)
+					exiting()
 
 				import json
 				diags(json.loads(p.stderr))
-
-		import time
-		import signal
-		def stop_server():
-			pid=int(server_pid)
-			try:
-				os.kill(pid, signal.SIGTERM) #async
-			except ProcessLookupError:
-				return
-			deadline = time.time() + 3
-			while time.time() < deadline:
-				try:
-					os.kill(pid, 0)  # signal 0 = just checks if it's alive
-				except ProcessLookupError:
-					return
-				time.sleep(1)
-			else:
-				try:
-					os.kill(pid, signal.SIGKILL)
-				except ProcessLookupError:
-					return
 
 		stop_server()
 		#done for output_folder
