@@ -39,7 +39,7 @@ function solver(ss value,ss after)
 		if value#=(x_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c %c",(search_const),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c%c",(search_const),(spacer),(usc_pref))
 				return #globals.outvalue
 			end
 			return (NULL)
@@ -47,7 +47,7 @@ function solver(ss value,ss after)
 		if value#=(y_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c %c",(search_const),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c%c",(search_const),(spacer),(usc_pref))
 				return #globals.outvalue
 			end
 			#return (NULL)

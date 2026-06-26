@@ -48,7 +48,7 @@ function spcfull(ss a)
 	whiletrue
 		if a#=(HorizontalTab)
 			inc a
-		elseif a#=(Space)
+		elseif a#=(spacer)
 			inc a
 		else
 			return a
@@ -65,7 +65,7 @@ function spcfullafters(sv c)
 			return b
 		end
 		inc a
-		if a#=(Space)
+		if a#=(spacer)
 			return a
 		end
 		if a#=(HorizontalTab)

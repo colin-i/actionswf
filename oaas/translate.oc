@@ -71,7 +71,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -104,7 +104,7 @@ function translate_one(ss in,ss indents)
 		set cursor oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -126,7 +126,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -158,7 +158,7 @@ function translate_one(ss in,ss indents)
 		set cursor oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -197,7 +197,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -218,7 +218,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -265,7 +265,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -346,7 +346,7 @@ function translate_two(ss start,ss in)
 	elseif chr=(l_low)
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -389,7 +389,7 @@ function translate_two(ss start,ss in)
 	elseif chr=(r_low)
 		inc oa
 		whiletrue
-			if oa#!=(Space)
+			if oa#!=(spacer)
 				if oa#!=(HorizontalTab)
 					break
 				end
@@ -776,7 +776,7 @@ function translate_srch(ss start,ss oa)
 		return oa
 	end
 	whiletrue
-		if oa#!=(Space)
+		if oa#!=(spacer)
 			if oa#!=(HorizontalTab)
 				break
 			end

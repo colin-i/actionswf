@@ -18,6 +18,9 @@ Const r_low=0x72
 Const t_low=0x74
 Const w_low=0x77
 
+#translate util solve
+const spacer=Space
+
 #translate solve
 Const v_low=0x76
 const search_const=s_low
