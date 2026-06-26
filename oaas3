@@ -50,6 +50,7 @@ if lib:
 		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
 		lib.verbose.argtypes = [ctypes.c_char]
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
+		lib.sep.restype = ctypes.c_char
 		lib.solve.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
 	except Exception:
 		print('lib oaas error')
@@ -403,61 +404,65 @@ if not os.environ.get('skip_comp'):
 						file.write_text(str(line))
 						return True
 					dump=os.environ.get('dump')
+					to_go=False
 					for file in diagnostics:
 						for d in file["diagnostics"]:
-							if d["severity"] == 1 and d["kind"] in [2,7]:
+							if d["severity"] == 1:
 								if dump:
 									print(json.dumps(d,indent=10))
-								# this is unstable: module=d["args"]["moduleType"]["name"]
-								field=d["args"]["entries"][0]["fields"][0]["field"]
-								module=os.path.splitext(field["pos"]["file"])[0]
-								positions=d["range"]["end"]
-								line=positions["line"]
-								value=field["name"]
-								print(module+' '+str(line)+' '+value)
+								if d["kind"] == 7: #in [2,7]:
+									# this is unstable: module=d["args"]["moduleType"]["name"]
+									field=d["args"]["entries"][0]["fields"][0]["field"]
+									module=os.path.splitext(field["pos"]["file"])[0]
+									positions=d["range"]["end"]
+									line=positions["line"]
+									value=field["name"]
+									print(module+' '+str(line)+' '+value)
 
-								#now is like: fix one error will fix another 4
+									#now is like: fix one error will fix another 4
 
-								os.chdir(c_dir) #back to original folder
-								files=splits_data()
-								for f in files:
-									mod = os.path.basename(os.path.dirname(f))
-									if mod == module:
-										if not lib:
-											print('missing oaas lib')
-											exiting()
-										with open(f) as file:
-											lines = file.readlines()
-										linestr = lines[line]
+									os.chdir(c_dir) #back to original folder
+									files=splits_data()
+									for f in files:
+										mod = os.path.basename(os.path.dirname(f))
+										if mod == module:
+											if not lib:
+												print('missing oaas lib')
+												exiting()
+											with open(f) as file:
+												lines = file.readlines()
+											linestr = lines[line]
 
-										solved = lib.solve(value.encode(),linestr[positions["character"]+1:].encode())
+											solved = lib.solve(value.encode(),linestr[positions["character"]+1:].encode())
 
-										if not solved:
-											exiting()
-										if linestr[-1] in terminations:
-											linestr = linestr.rstrip(terminations)
-											has_term=True
-										else:
-											has_term=False
-										if save_line(module,line):
-											linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
-										else:
-											linestr = linestr + '+' + solved.decode() + (os.linesep if has_term else "")
-										lines[line] = linestr
+											if not solved:
+												exiting()
+											if linestr[-1] in terminations:
+												linestr = linestr.rstrip(terminations)
+												has_term=True
+											else:
+												has_term=False
+											if save_line(module,line):
+												linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+											else:
+												linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
+											lines[line] = linestr
 
-										with open(f,"w") as file:
-										    file.writelines(lines)
+											with open(f,"w") as file:
+												file.writelines(lines)
 
-										if not o_d:
-											for f in files:
-												os.remove(hx_ext(f))
-											os.environ[skip_orig] = "1"
-											os.environ["SERVER_PID"] = server_pid
-											os.execv(sys.executable, [sys.executable] + sys.argv)
-											#print("never reached")
-										return
-					print("diagnostics failed")
-					exiting()
+											if not o_d:
+												for f in files:
+													os.remove(hx_ext(f))
+												os.environ[skip_orig] = "1"
+												os.environ["SERVER_PID"] = server_pid
+												os.execv(sys.executable, [sys.executable] + sys.argv)
+												#print("never reached")
+											return
+								to_go=True
+					if to_go:
+						print("diagnostics failed")
+						exiting()
 
 				import json
 				diags(json.loads(p.stderr))

@@ -478,7 +478,7 @@ function translate_two_switch(ss oa,ss cursor)
 	if oa#=(Nullchar)
 		return cursor
 	end
-	if oa#=(Plus)
+	if oa#=(switch_char)
 		callret translate_two_switcher(oa)
 	end
 	return oa
@@ -501,7 +501,7 @@ function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 				return cursor
 			end
 		end
-		set pointer# (Plus)
+		set pointer# (switch_char)
 	else
 		if cursor!=oa
 			return cursor
@@ -588,7 +588,7 @@ function translate_buttonmode(ss indents,ss oa)
 							return indents
 						end
 					end
-					if oa#=(Plus)
+					if oa#=(switch_char)
 						call translated(ok)
 						set cursor translate_two_switcher(oa)
 						if cursor!=oa
@@ -758,14 +758,14 @@ function translate_srch(ss start,ss oa)
 	ss cursor
 	whiletrue
 		if oa#!=(Nullchar)
-			if oa#!=(Plus)
+			if oa#!=(switch_char)
 				break
 			end
 		end
 		set cursor translate_srch_all(start)
 		if cursor!=start
 			call translated("SearchAll")
-			if oa#=(Plus)
+			if oa#=(switch_char)
 				set cursor translate_two_switcher(oa)
 				if cursor=oa
 					return oa
@@ -818,7 +818,7 @@ function translate_search(ss start,ss oa)
 			inc cursor
 			continue
 		end
-		if cursor#=(Plus)
+		if cursor#=(switch_char)
 			break
 		end
 		return oa
@@ -828,7 +828,7 @@ function translate_search(ss start,ss oa)
 	set pointer translate_search_base(start,#types)
 	if types=t
 		call translated("Search")
-		if cursor#=(Plus)
+		if cursor#=(switch_char)
 			set pointer translate_two_switcher(cursor)
 			if pointer=cursor
 				return cursor

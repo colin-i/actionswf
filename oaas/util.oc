@@ -99,7 +99,7 @@ function parecon(ss a)
 	callret anyon(a,(Closeparenthesis))
 end
 function pluson(ss a)
-	callret anyon(a,(Plus))
+	callret anyon(a,(switch_char))
 end
 function quotafter(ss a)
 	callret anyafter(a,(Singlequote))

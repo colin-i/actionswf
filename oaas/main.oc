@@ -42,14 +42,17 @@ functionx ratio(ss ?print)
 		callret translated_ratio((FALSE))
 	end
 end
+
 functionx verbose(ss ?bol)
 	ss p;set p verbosep()
 	set p# bol
 end
-
 functionx flash_to_openfl(ss ?bol)
 	ss p;set p openfl()
 	set p# bol
+end
+functionx sep()
+	return (switch_char)
 end
 
 functionx solve(ss value,ss after)
