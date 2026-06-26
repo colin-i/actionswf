@@ -455,8 +455,9 @@ if not os.environ.get('skip_comp'):
 			os.remove(dest_file_tmp)
 
 		if not os.environ.get('no_clean'):
+			files=splits_data() #if not files , are also at: orig src diagnostics
 			for f in files:
-				os.remove(hx_ext(f))  #files are also at orig src or diagnostics
+				os.remove(hx_ext(f))
 			os.rmdir(dest)
 
 	else:
