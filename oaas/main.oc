@@ -12,7 +12,7 @@ import "translated_ratio" translated_ratio
 
 ^import "openfl" openfl #full
 
-^import "solver" solver 1
+^import "solver" solver 2
 
 einclude "oaas.h" "oaas.oh"
 
@@ -52,8 +52,8 @@ functionx flash_to_openfl(ss ?bol)
 	set p# bol
 end
 
-functionx solve(ss value)
-	ss out;set out solver(value)
+functionx solve(ss value,ss after)
+	ss out;set out solver(value,after)
 	if out=(NULL)
 		call printf("cannot solve %s\n",value)
 	end

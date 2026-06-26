@@ -135,7 +135,7 @@ function strip(ss src,ss dest,sd ?out_size)
 			end
 			return start
 		end
-		if src#!=(_)
+		if src#!=(usc_pref)
 			set dest# src#
 			inc dest
 			if dest=end_dest

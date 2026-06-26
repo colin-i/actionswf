@@ -8,22 +8,6 @@ const a_page_size=0x1000
 charx a_page#a_page_size;vstr a_page_switch^a_page;charx b_page#a_page_size
 char openfl_bool=FALSE
 
-Const b_low=0x62
-Const c_low=0x63
-Const d_low=0x64
-Const e_low=0x65
-Const f_low=0x66
-Const g_low=0x67
-Const h_low=0x68
-Const i_low=0x69
-Const m_low=0x6D
-Const n_low=0x6E
-Const o_low=0x6F
-Const p_low=0x70
-Const r_low=0x72
-Const t_low=0x74
-Const w_low=0x77
-
 importx "free" free
 importx "memcmp" memcmp
 importx "strcpy" strcpy

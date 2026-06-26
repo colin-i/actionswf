@@ -5,7 +5,7 @@
 
 # skip_orig mirror_name
 # skip_src allow_untranslated verbose
-# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
+# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump OACACHE  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -14,7 +14,7 @@
 #import difflib
 #import json
 #import os
-#from pathlib import Path
+from pathlib import Path
 #import pdb
 #import signal
 #import shutil
@@ -24,7 +24,7 @@ import sys
 #import time
 
 if len(sys.argv)!=3:
-	print('Usage: as3.py output_folder output_file')
+	print(f"Usage: {Path(sys.argv[0]).name} output_folder output_file")
 	exit(1)
 
 import os
@@ -50,7 +50,7 @@ if lib:
 		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
 		lib.verbose.argtypes = [ctypes.c_char]
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
-		lib.solve.argtypes = [ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
+		lib.solve.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
 	except Exception:
 		print('lib oaas error')
 		exit(1)
@@ -302,12 +302,11 @@ if not os.environ.get(skip_src):
 
 if not os.environ.get('skip_comp'):
 	import subprocess
-	def srun(a,capture_output=False):
-		r=subprocess.run(a,capture_output=capture_output)
+	def srun(a):
+		r=subprocess.run(a)
 		if r.returncode:
 			print('error')
 			exit(r.returncode)
-		return r
 	compiler=os.environ.get('compiler')
 	if not target:
 		if not compiler:
@@ -360,7 +359,8 @@ if not os.environ.get('skip_comp'):
 					print('server error')
 					exiting()
 
-		baser=[compiler,'--connect','6000','-swf',dest_file,'-main','Main']
+		baser=[compiler,'--connect','6000','-swf',dest_file,'-main','Main','-D','flash_strict']
+		#                                                                   this flag for _x to be error
 
 		hd=os.environ.get('header')
 		if hd:
@@ -368,26 +368,49 @@ if not os.environ.get('skip_comp'):
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
 
+		def crun(a,capture_output=False):
+			r=subprocess.run(a,capture_output=capture_output)
+			if r.returncode:
+				print('error')
+				exiting()
+			return r
+
+		OACACHE=os.environ.get('OACACHE')
+		if not OACACHE:
+			OACACHE="__oaas__"
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
-			srun(baser)
+			crun(baser)
 		else:
 			if not o_d:
 				r=subprocess.run(baser)
 			if o_d or r.returncode:
 				baser.extend(['--display','diagnostics'])
-				p=srun(baser,capture_output=True)
+				p=crun(baser,capture_output=True)
 
 				def diags(diagnostics):
+					def save_line(module, line):
+						folder = Path(OACACHE)
+						folder.mkdir(exist_ok=True)
+						file = folder / module  # this is not + , on windows is backslash
+						if file.exists():
+							old_line = file.read_text()
+							if old_line == str(line):
+								return False
+						file.write_text(str(line))
+						return True
 					dump=os.environ.get('dump')
 					for file in diagnostics:
 						for d in file["diagnostics"]:
 							if d["severity"] == 1 and d["kind"] in [2,7]:
 								if dump:
 									print(json.dumps(d,indent=10))
-								module=d["args"]["moduleType"]["name"]
-								line=d["range"]["start"]["line"]
-								value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
+								# this is unstable: module=d["args"]["moduleType"]["name"]
+								field=d["args"]["entries"][0]["fields"][0]["field"]
+								module=os.path.splitext(field["pos"]["file"])[0]
+								positions=d["range"]["end"]
+								line=positions["line"]
+								value=field["name"]
 								print(module+' '+str(line)+' '+value)
 
 								#now is like: fix one error will fix another 4
@@ -400,18 +423,25 @@ if not os.environ.get('skip_comp'):
 										if not lib:
 											print('missing oaas lib')
 											exiting()
-										solved = lib.solve(value.encode())
-										if not solved:
-											exiting()
 										with open(f) as file:
 											lines = file.readlines()
 										linestr = lines[line]
+
+										solved = lib.solve(value.encode(),linestr[positions["character"]+1:].encode())
+
+										if not solved:
+											exiting()
 										if linestr[-1] in terminations:
 											linestr = linestr.rstrip(terminations)
 											has_term=True
 										else:
 											has_term=False
-										lines[line] = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+										if save_line(module,line):
+											linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+										else:
+											linestr = linestr + '+' + solved.decode() + (os.linesep if has_term else "")
+										lines[line] = linestr
+
 										with open(f,"w") as file:
 										    file.writelines(lines)
 
@@ -477,6 +507,8 @@ if not os.environ.get('skip_comp'):
 			for f in files:
 				os.remove(hx_ext(f))
 			os.rmdir(dest)
+			import shutil
+			shutil.rmtree(OACACHE, ignore_errors=True)
 
 	else:
 		if not compiler:
