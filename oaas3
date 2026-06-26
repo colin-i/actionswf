@@ -122,7 +122,7 @@ src_name=os.environ.get('src_name')
 if not src_name:
 	src_name='src'
 
-from pathlib import Path
+import shutil
 
 skip_orig='skip_orig'
 if not os.environ.get(skip_orig):
@@ -132,7 +132,6 @@ if not os.environ.get(skip_orig):
 
 	files,files_mirror,files_src = splits_data(orig=True)
 
-	import shutil
 	import difflib
 
 	for i, f in enumerate(files):
@@ -507,7 +506,6 @@ if not os.environ.get('skip_comp'):
 			for f in files:
 				os.remove(hx_ext(f))
 			os.rmdir(dest)
-			import shutil
 			shutil.rmtree(OACACHE, ignore_errors=True)
 
 	else:
