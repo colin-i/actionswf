@@ -2,10 +2,11 @@
 
 # break OAPATH target src_name
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
+# OACACHE from_diagnostics
 
 # skip_orig mirror_name
 # skip_src allow_untranslated verbose
-# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics from_diagnostics dump OACACHE  no_confirm ffdec  no_clean
+# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -60,8 +61,10 @@ if os.environ.get('break'):
 	import pdb; pdb.set_trace()
 
 dest=sys.argv[1]
+def get_module(fl):
+	return os.path.basename(os.path.dirname(fl))
 def hx_ext(fl):
-	return os.path.join(dest,os.path.basename(os.path.dirname(fl))+'.hx')
+	return os.path.join(dest,get_module(fl))+'.hx'
 out_file_name=sys.argv[2]
 
 def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
@@ -96,22 +99,21 @@ def splits_data(mix=False,orig=False):
 	#for filename in os.listdir(src):
 	with open(splits_file) as splits_file:
 		splits_file_data=splits_file.read()
-		with open(splits_mix) as splits_mix:
-			splits_mix_data=splits_mix.read()
+		files = splits_file_data.split('\x00')
+		files.pop() # Remove the last empty string
+		files_src = [str(Path(src_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
+		if not mix:
+			if not orig:
+				return files_src
+			files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
+			return (files,files_mirror,files_src)
+	with open(splits_mix) as splits_mix:
+		splits_mix_data=splits_mix.read()
 
-			files = splits_file_data.split('\x00')
-			files.pop() # Remove the last empty string
-			files_src = [str(Path(src_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
-			if not mix:
-				if not orig:
-					return files_src
-				files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
-				return (files,files_mirror,files_src)
+		texts = splits_mix_data.split('\x00')
+		texts.pop()
 
-			texts = splits_mix_data.split('\x00')
-			texts.pop()
-
-			return (files_src,texts)
+		return (files_src,texts)
 
 target=os.environ.get('target')
 if target:
@@ -184,6 +186,37 @@ if not os.environ.get(skip_orig):
 
 terminations="\r\n"
 
+OACACHE=os.environ.get('OACACHE')
+if not OACACHE:
+	OACACHE="__oacache__"
+from_diagnostics='from_diagnostics'
+f_d=os.environ.get(from_diagnostics)
+
+import signal
+import time
+def stop_server():
+	pid=int(server_pid)
+	try:
+		os.kill(pid, signal.SIGTERM) #async
+	except ProcessLookupError:
+		return
+	try:
+		os.kill(pid, 0)  # signal 0 = just checks if it's alive
+	except ProcessLookupError:
+		return
+	time.sleep(1)
+	try:
+		os.kill(pid, 0)
+	except ProcessLookupError:
+		return
+	try:
+		os.kill(pid, signal.SIGKILL)
+	except ProcessLookupError:
+		return
+def exiting():
+	stop_server()
+	exit(1)
+
 skip_src='skip_src'
 if not os.environ.get(skip_src):
 	if lib:
@@ -193,24 +226,25 @@ if not os.environ.get(skip_src):
 			lib.verbose(True)
 
 	allow_untranslated=os.environ.get('allow_untranslated')
+	def make_line(bf):
+		bf = bf.rstrip(terminations.encode()) #this is extra at inline comments
+		byts = bytes(bf)
+		if len(stored):
+			bf=lib.startline(bytes(stored),byts)
+			stored.clear()
+		else:
+			bf=lib.line(byts)
+		if not allow_untranslated:
+			if byts == bf:
+				r = lib.ratio(False)
+				if ord(r) !=  100: #can be blank closing comment
+					print("Untranslated. 'if not os.environ.get('allow_untranslated') failed")
+					exit(1)
+		return bf+os.linesep.encode()
 	def singleline():
 		bf=chars[:pos]
 		if lib:
-			bf = bf.rstrip(terminations.encode()) #this is extra at inline comments
-			byts = bytes(bf)
-			if len(stored):
-				bf=lib.startline(bytes(stored),byts)
-				stored.clear()
-			else:
-				bf=lib.line(byts)
-			if not allow_untranslated:
-				if byts == bf:
-					r = lib.ratio(False)
-					if ord(r) !=  100: #can be blank closing comment
-						print("Untranslated. 'if not os.environ.get('allow_untranslated') failed")
-						exit(1)
-			dfile.write(bf)
-			dfile.write(os.linesep.encode())
+			dfile.write(make_line(bf))
 		else:
 			dfile.write(bf)
 
@@ -238,64 +272,86 @@ if not os.environ.get(skip_src):
 			with open(f) as sfile:
 				text=sfile.read()
 		text=text.splitlines(keepends=True)
-		with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
-			mode=0
-			for line in text:
-				chars = bytearray(len(line.encode())) #'utf-8'
-				pos = 0
-				for c in line:
-					ch=c.encode()
-					positions=len(ch)
-					for j in range(0,positions):
-						chars[pos]=ch[j]
-						pos+=1
-					if mode==0:
-						if c==a1:
-							mode=1
-					elif mode==1:
-						if c==a2a:
-							mode=2
-						elif c==a2b:
-							mode=3
-						else:
-							mode=0
-					elif mode==2 or mode==3:
-						if c==a3:
-							if mode==2:
-								xpos=singleline_backjump_start
+		if f_d==None:
+			with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
+				mode=0
+				for line in text:
+					chars = bytearray(len(line.encode())) #'utf-8'
+					pos = 0
+					for c in line:
+						ch=c.encode()
+						positions=len(ch)
+						for j in range(0,positions):
+							chars[pos]=ch[j]
+							pos+=1
+						if mode==0:
+							if c==a1:
+								mode=1
+						elif mode==1:
+							if c==a2a:
+								mode=2
+							elif c==a2b:
+								mode=3
 							else:
-								xpos=multiline_backjump_start
-							stored=chars[:pos-xpos]
-							mode*=2
-							pos=0    #notice: both //3 and /*3 will reset the line
-						else:
-							mode=0
+								mode=0
+						elif mode==2 or mode==3:
+							if c==a3:
+								if mode==2:
+									xpos=singleline_backjump_start
+								else:
+									xpos=multiline_backjump_start
+								stored=chars[:pos-xpos]
+								mode*=2
+								pos=0    #notice: both //3 and /*3 will reset the line
+							else:
+								mode=0
+						elif mode==6:
+							if c==b1b:
+								mode=7
+						elif mode==7:
+							if c==b2b:
+								mode=0
+								pos-=multiline_backjump
+								singleline()
+								pos=0
+								was_multiline=True
+							else:
+								mode=6
+					if mode==4:
+						mode=0
+						singleline()
 					elif mode==6:
-						if c==b1b:
-							mode=7
-					elif mode==7:
-						if c==b2b:
-							mode=0
-							pos-=multiline_backjump
-							singleline()
-							pos=0
-							was_multiline=True
-						else:
-							mode=6
-				if mode==4:
-					mode=0
-					singleline()
-				elif mode==6:
-					singleline()
-				else:
-					bf=chars[:pos]
-					if not was_multiline:
-						dfile.write(bf)
+						singleline()
 					else:
-						bf=bf.rstrip(terminations.encode()) #was already added one separator
-						dfile.write(bf)
-						was_multiline=False
-			#here can test if multiline was closed
+						bf=chars[:pos]
+						if not was_multiline:
+							dfile.write(bf)
+						else:
+							bf=bf.rstrip(terminations.encode()) #was already added one separator
+							dfile.write(bf)
+							was_multiline=False
+				#here can test if multiline was closed
+		else:
+			mod = get_module(f)
+			folder = Path(OACACHE)
+			file = folder / folder / mod
+			if file.exists():
+				lines = file.read_text().splitlines()
+				with open(hx_ext(f),'rb') as dfile:
+					out_text = dfile.readlines()
+				for line in lines:
+					#lib is because from_diagnostics tested that
+					line=int(line)
+					in_text=text[line]
+					parts=in_text.split((a1+a2a+a3))
+					if len(parts)!=2:
+						print('error at rerun')
+						exiting()
+					stored = bytearray(parts[0].encode())
+					out_text[line]=make_line(parts[1].encode())
+				with open(hx_ext(f),'wb') as dfile:
+					dfile.writelines(out_text)
+				os.remove(file)
 		i=i+1
 	if lib:
 		lib.ratio(True)
@@ -314,32 +370,6 @@ if not os.environ.get('skip_comp'):
 
 		c_dir=os.getcwd() #haxe says no to abs path
 		dest_file=os.path.realpath(out_file_name)
-
-		import signal
-		def stop_server():
-			pid=int(server_pid)
-			try:
-				os.kill(pid, signal.SIGTERM) #async
-			except ProcessLookupError:
-				return
-			try:
-				os.kill(pid, 0)  # signal 0 = just checks if it's alive
-			except ProcessLookupError:
-				return
-			time.sleep(1)
-			try:
-				os.kill(pid, 0)
-			except ProcessLookupError:
-				return
-			try:
-				os.kill(pid, signal.SIGKILL)
-			except ProcessLookupError:
-				return
-		def exiting():
-			stop_server()
-			exit(1)
-
-		import time
 
 		try:
 			os.chdir(dest)
@@ -380,15 +410,10 @@ if not os.environ.get('skip_comp'):
 			os.chdir(c_dir) #same like to other plus for diagnostics all cases
 			return r
 
-		OACACHE=os.environ.get('OACACHE')
-		if not OACACHE:
-			OACACHE="__oacache__"
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
 			crun(baser)
 		else:
-			from_diagnostics='from_diagnostics'
-			f_d=os.environ.get(from_diagnostics)
 			if not o_d and not f_d:
 				r=subprocess.run(baser)
 			if o_d or f_d or r.returncode:
@@ -396,6 +421,12 @@ if not os.environ.get('skip_comp'):
 				p=crun(baser,capture_output=True)
 
 				def diags(diagnostics):
+					files=splits_data()
+					file_cache = {}
+					touched = set()
+					line_cache = {}
+					line_cache_last = {}
+
 					def save_line(module, line):
 						folder = Path(OACACHE)
 						folder.mkdir(exist_ok=True)
@@ -406,31 +437,32 @@ if not os.environ.get('skip_comp'):
 								line_cache[module] = set(file.read_text().splitlines())
 							else:
 								line_cache[module] = set()
+							line_cache_last[module] = set()
 
 						cache = line_cache[module]
+						cache_last = line_cache_last[module]
+
 						line = str(line)
+
+						if not line in cache_last:
+							cache_last.add(line)
+
+							last = folder / folder
+							last.mkdir(exist_ok=True)
+							last_file = last / module
+							with open(last_file, "a") as fp:
+								fp.write(line + os.linesep)
+
 						if line in cache:
 							return False
-						cache.add(line)
 
+						cache.add(line)
 						with open(file, "a") as fp:
 							fp.write(line + os.linesep)
 						return True
-					def exec_proc():
-						for f in files:
-							os.remove(hx_ext(f))
-						os.environ[skip_orig] = "1"
-						os.environ["SERVER_PID"] = server_pid
-						os.execv(sys.executable, [sys.executable] + sys.argv)
-						#print("never reached")
 
 					dump=os.environ.get('dump')
 					unresolved=False;resolved=False
-
-					files=splits_data()
-					file_cache = {}
-					touched = set()
-					line_cache = {}
 
 					for file in diagnostics:
 						for d in file["diagnostics"]:
@@ -450,7 +482,7 @@ if not os.environ.get('skip_comp'):
 									#now is like: fix one error will fix another 4
 
 									for f in files:
-										mod = os.path.basename(os.path.dirname(f))
+										mod = get_module(f)
 										if mod == module:
 											if not lib:
 												print('missing oaas lib')
@@ -491,12 +523,15 @@ if not os.environ.get('skip_comp'):
 								fp.writelines(file_cache[f])
 						if o_d:
 							return
-						if f_d:
-							if not unresolved:
-								os.environ.pop(from_diagnostics)
-						elif unresolved:
+						if unresolved:
 							os.environ[from_diagnostics] = "1"
-						exec_proc()
+						else:
+							os.environ[from_diagnostics]='' # still needed at src
+
+						os.environ[skip_orig] = "1"
+						os.environ["SERVER_PID"] = server_pid
+						os.execv(sys.executable, [sys.executable] + sys.argv)
+						#print("never reached")
 					if unresolved:
 						print("diagnostics failed")
 						exiting()
