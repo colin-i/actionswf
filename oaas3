@@ -382,7 +382,7 @@ if not os.environ.get('skip_comp'):
 
 		OACACHE=os.environ.get('OACACHE')
 		if not OACACHE:
-			OACACHE="__oaas__"
+			OACACHE="__oacache__"
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
 			crun(baser)
@@ -400,14 +400,21 @@ if not os.environ.get('skip_comp'):
 						folder = Path(OACACHE)
 						folder.mkdir(exist_ok=True)
 						file = folder / module  # this is not + , on windows is backslash
-						if file.exists():
-							old_lines = file.read_text().splitlines()
-							if str(line) in old_lines:
-								return False
-						else:
-							old_lines = []
-						old_lines.append(str(line))
-						file.write_text(os.linesep.join(old_lines))
+
+						if module not in line_cache:
+							if file.exists():
+								line_cache[module] = set(file.read_text().splitlines())
+							else:
+								line_cache[module] = set()
+
+						cache = line_cache[module]
+						line = str(line)
+						if line in cache:
+							return False
+						cache.add(line)
+
+						with open(file, "a") as fp:
+							fp.write(line + os.linesep)
 						return True
 					def exec_proc():
 						for f in files:
@@ -416,12 +423,14 @@ if not os.environ.get('skip_comp'):
 						os.environ["SERVER_PID"] = server_pid
 						os.execv(sys.executable, [sys.executable] + sys.argv)
 						#print("never reached")
+
 					dump=os.environ.get('dump')
 					unresolved=False;resolved=False
 
 					files=splits_data()
 					file_cache = {}
 					touched = set()
+					line_cache = {}
 
 					for file in diagnostics:
 						for d in file["diagnostics"]:

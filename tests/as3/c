@@ -3,4 +3,7 @@ rm -f a.swf
 if [ -e dest ]; then
 	rm -r dest
 fi
+if [ -e __oacache__ ]; then
+	rm -r __oacache__
+fi
 cd osrc && ${RUN__SHELL} ./c
