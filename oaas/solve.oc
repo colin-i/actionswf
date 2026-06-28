@@ -53,6 +53,12 @@ function solver(ss value,ss after)
 			#return (NULL)
 		end
 	end
+	char evfunc_string="() -> Void should be Dynamic -> Void"^
+	set c memcmp(value,#evfunc_string,\.evfunc_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(evfunc_char))
+		return #globals.outvalue
+	end
 	return (NULL)
 end
 

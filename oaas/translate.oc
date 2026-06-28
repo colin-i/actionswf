@@ -334,7 +334,7 @@ function translate_two(ss start,ss in)
 	ss oa;set oa spcfull(in)
 	ss cursor;ss pointer
 	ss ?chr;set chr oa#
-	if chr=(e_low)
+	if chr=(evfunc_char)
 		inc oa
 		set cursor translate_eparam(start) #why here? who is using untranslated, anyway
 		if cursor!=start

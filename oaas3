@@ -4,7 +4,7 @@
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
 # OACACHE from_diagnostics
 
-# skip_orig mirror_name
+# skip_orig origf_name mirror_name
 # skip_src allow_untranslated verbose
 # skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
 
@@ -13,6 +13,7 @@
 
 #import ctypes
 #import difflib
+#import filecmp
 #import json
 #import os
 from pathlib import Path
@@ -23,6 +24,7 @@ from pathlib import Path
 #import subprocess
 import sys
 #import time
+#import xml.etree.ElementTree as ET
 
 if len(sys.argv)!=3:
 	print(f"Usage: {Path(sys.argv[0]).name} output_folder output_file")
@@ -94,7 +96,7 @@ def premade_formats():
 	a=('' if splits_folder=='' else splits_folder+os.sep)
 
 	return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
-def splits_data(mix=False,orig=False):
+def splits_data(orig=False):
 	splits_file, splits_mix = premade_formats()
 	#for filename in os.listdir(src):
 	with open(splits_file) as splits_file:
@@ -102,18 +104,15 @@ def splits_data(mix=False,orig=False):
 		files = splits_file_data.split('\x00')
 		files.pop() # Remove the last empty string
 		files_src = [str(Path(src_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
-		if not mix:
-			if not orig:
-				return files_src
-			files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
-			return (files,files_mirror,files_src)
+		if not orig:
+			return files_src
+	files_f = [str(Path(origf_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
+	files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
 	with open(splits_mix) as splits_mix:
 		splits_mix_data=splits_mix.read()
-
 		texts = splits_mix_data.split('\x00')
 		texts.pop()
-
-		return (files_src,texts)
+	return (files,files_f,files_mirror,files_src,texts)
 
 target=os.environ.get('target')
 if target:
@@ -129,16 +128,34 @@ import shutil
 
 skip_orig='skip_orig'
 if not os.environ.get(skip_orig):
+	origf_name=os.environ.get('origf')
+	if not origf_name:
+		origf_name='origf'
 	mirror_name=os.environ.get('mirror_name')
 	if not mirror_name:
 		mirror_name='mirror'
 
-	files,files_mirror,files_src = splits_data(orig=True)
+	files,files_f,files_mirror,files_src,texts = splits_data(orig=True)
+
+	import filecmp
+	#first is the format
+	for i, f in enumerate(files):
+		orig = Path(f)
+		origf = Path(files_f[i])
+		not_ex=not origf.exists()
+		if not_ex:
+			origf.parent.mkdir(parents=True, exist_ok=True)
+		if texts[i]:
+			if not_ex or origf.read_text() != texts[i]:
+				with open(origf,"w") as file:
+					file.write(texts[i])
+		elif not_ex or not filecmp.cmp(orig, origf, shallow=False):
+			shutil.copy(orig, origf)
 
 	import difflib
 
-	for i, f in enumerate(files):
-		orig = Path(f)
+	for i, f in enumerate(files_f):
+		origf = Path(f)
 		mirror = Path(files_mirror[i])
 		src = Path(files_src[i])
 		if not mirror.exists():
@@ -147,13 +164,13 @@ if not os.environ.get(skip_orig):
 			src.parent.mkdir(parents=True, exist_ok=True)
 
 			# create mirror copy
-			shutil.copy(orig, mirror) # or copy2: Identical to copy() except that copy2() also attempts to preserve file metadata.
+			shutil.copy(origf, mirror) # or copy2: Identical to copy() except that copy2() also attempts to preserve file metadata.
 
 			# create src copy
-			shutil.copy(orig, src)
+			shutil.copy(origf, src)
 		else:
 			old = mirror.read_text().splitlines(keepends=True)
-			new = orig.read_text().splitlines(keepends=True)
+			new = origf.read_text().splitlines(keepends=True)
 			out = src.read_text().splitlines(keepends=True)
 			matcher = difflib.SequenceMatcher(None, old, new)
 			offset = 0
@@ -253,8 +270,6 @@ if not os.environ.get(skip_src):
 	except FileExistsError:
 		pass
 
-	files,texts = splits_data(mix=True)
-	i=0
 
 	multiline_backjump=len(b1b.encode())+len(b2b.encode())
 
@@ -265,13 +280,11 @@ if not os.environ.get(skip_src):
 	singleline_backjump_start+=len(a2b.encode())
 
 	was_multiline=False
+
+	files = splits_data()
 	for f in files:
-		if texts[i]:
-			text=texts[i]
-		else:
-			with open(f) as sfile:
-				text=sfile.read()
-		text=text.splitlines(keepends=True)
+		with open(f) as sfile:
+			text=sfile.readlines()
 		if f_d==None:
 			with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
 				mode=0
@@ -352,7 +365,6 @@ if not os.environ.get(skip_src):
 				with open(hx_ext(f),'wb') as dfile:
 					dfile.writelines(out_text)
 				os.remove(file)
-		i=i+1
 	if lib:
 		lib.ratio(True)
 
@@ -417,7 +429,9 @@ if not os.environ.get('skip_comp'):
 			if not o_d and not f_d:
 				r=subprocess.run(baser)
 			if o_d or f_d or r.returncode:
-				baser.extend(['--display','diagnostics'])
+				baser.extend(['--display'])
+				reuser=list(baser)
+				baser.extend(['diagnostics'])
 				p=crun(baser,capture_output=True)
 
 				def diags(diagnostics):
@@ -464,67 +478,91 @@ if not os.environ.get('skip_comp'):
 					dump=os.environ.get('dump')
 					unresolved=False;resolved=False
 
+					import xml.etree.ElementTree as ET
+
 					for file in diagnostics:
+						if dump:
+							print(json.dumps(file,indent=10))
+						fullfilename=file["file"]
+						filename=os.path.basename(fullfilename)
+						module=os.path.splitext(filename)[0]
 						for d in file["diagnostics"]:
 							if d["severity"] == 1:
-								if dump:
-									print(json.dumps(d,indent=10))
 								solved = None
 								k=d["kind"]
 								if k in [2,7]:
 									if k==7:
 										# this is unstable: module=d["args"]["moduleType"]["name"]
-										field=d["args"]["entries"][0]["fields"][0]["field"]
-										module=os.path.splitext(field["pos"]["file"])[0]
+										#field=d["args"]["entries"][0]["fields"][0]["field"]
+										#module=os.path.splitext(field["pos"]["file"])[0]
 
 										positions=d["range"]["end"]
 										line=positions["line"]
 
-										value=field["name"]
+										value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
 
 										print(module+' '+str(line)+' '+value)
-
-										#now is like: fix one error will fix another 4
-
-										for f in files:
-											mod = get_module(f)
-											if mod == module:
-												if not lib:
-													print('missing oaas lib')
-													exiting()
-
-												if f not in file_cache:
-													with open(f) as fp:
-														file_cache[f] = fp.readlines()
-												lines = file_cache[f]
-												linestr = lines[line]
-
-												solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
-												if not solved:
-													break
-
-												if linestr[-1] in terminations:
-													linestr = linestr.rstrip(terminations)
-													has_term=True
-												else:
-													has_term=False
-												if save_line(module,line):
-													linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
-												else:
-													linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
-												lines[line] = linestr
-												touched.add(f)
-
-												with open(f,"w") as file:
-													file.writelines(lines)
-
-												resolved=True
-												break
 									else:
 										positions=d["range"]["start"]
-										line=positions["line"]
+										baseline=positions["line"]
 										character=positions["character"]
-										print(str(line)+':'+str(character))
+										value=d["args"]
+
+										src = Path(fullfilename).read_text() #encoding="utf-8"
+										lines = src.splitlines(keepends=True)
+										# get text before the target line
+										before = "".join(lines[:baseline])
+										# add characters in the target line
+										offset_chars = len(before) + character
+										# convert character offset -> UTF-8 byte offset
+										offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
+										offset_bytes=str(offset_bytes)
+
+										os.chdir(dest)
+										reuser.extend([filename+'@'+offset_bytes+'@position'])
+										xm=crun(reuser,capture_output=True)
+										reuser.pop()
+										xm = ET.fromstring(xm.stderr).find('pos').text
+										line=xm[len(fullfilename)+1:]
+										line=line.split(':')[0]
+
+										line=int(line)-1 # from human
+										print(module+' ('+str(baseline)+':'+str(character)+' at '+offset_bytes+' to '+str(line)+') '+value)
+									#now is like: fix one error will fix another 4
+									for f in files:
+										mod = get_module(f)
+										if mod == module:
+											if not lib:
+												print('missing oaas lib')
+												exiting()
+
+											if f not in file_cache:
+												with open(f) as fp:
+													file_cache[f] = fp.readlines()
+											lines = file_cache[f]
+											linestr = lines[line]
+
+											solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
+											if not solved:
+												break
+
+											if linestr[-1] in terminations:
+												linestr = linestr.rstrip(terminations)
+												has_term=True
+											else:
+												has_term=False
+											if save_line(module,line):
+												linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+											else:
+												linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
+											lines[line] = linestr
+											touched.add(f)
+
+											with open(f,"w") as file:
+												file.writelines(lines)
+
+											resolved=True
+											break
 								if not solved:
 									unresolved=True
 					if resolved:

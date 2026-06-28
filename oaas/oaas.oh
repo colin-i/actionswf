@@ -8,7 +8,6 @@ const switch_char=Plus
 Const b_low=0x62
 Const c_low=0x63
 Const d_low=0x64
-Const e_low=0x65
 Const f_low=0x66
 Const g_low=0x67
 Const h_low=0x68
@@ -25,7 +24,9 @@ Const w_low=0x77
 const spacer=Space
 
 #translate solve
+Const e_low=0x65
 Const v_low=0x76
+const evfunc_char=e_low
 const search_const=s_low
 const var_const=v_low
 
