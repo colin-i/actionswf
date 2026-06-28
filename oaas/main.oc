@@ -58,7 +58,7 @@ end
 functionx solve(ss value,ss after)
 	ss out;set out solver(value,after)
 	if out=(NULL)
-		call printf("cannot solve %s\n",value)
+		call printf("postponed %s\n",value)
 	end
 	return out
 end

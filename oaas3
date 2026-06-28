@@ -470,51 +470,61 @@ if not os.environ.get('skip_comp'):
 								if dump:
 									print(json.dumps(d,indent=10))
 								solved = None
-								if d["kind"] == 7: #in [2,7]:
-									# this is unstable: module=d["args"]["moduleType"]["name"]
-									field=d["args"]["entries"][0]["fields"][0]["field"]
-									module=os.path.splitext(field["pos"]["file"])[0]
-									positions=d["range"]["end"]
-									line=positions["line"]
-									value=field["name"]
-									print(module+' '+str(line)+' '+value)
+								k=d["kind"]
+								if k in [2,7]:
+									if k==7:
+										# this is unstable: module=d["args"]["moduleType"]["name"]
+										field=d["args"]["entries"][0]["fields"][0]["field"]
+										module=os.path.splitext(field["pos"]["file"])[0]
 
-									#now is like: fix one error will fix another 4
+										positions=d["range"]["end"]
+										line=positions["line"]
 
-									for f in files:
-										mod = get_module(f)
-										if mod == module:
-											if not lib:
-												print('missing oaas lib')
-												exiting()
+										value=field["name"]
 
-											if f not in file_cache:
-												with open(f) as fp:
-													file_cache[f] = fp.readlines()
-											lines = file_cache[f]
-											linestr = lines[line]
+										print(module+' '+str(line)+' '+value)
 
-											solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
-											if not solved:
+										#now is like: fix one error will fix another 4
+
+										for f in files:
+											mod = get_module(f)
+											if mod == module:
+												if not lib:
+													print('missing oaas lib')
+													exiting()
+
+												if f not in file_cache:
+													with open(f) as fp:
+														file_cache[f] = fp.readlines()
+												lines = file_cache[f]
+												linestr = lines[line]
+
+												solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
+												if not solved:
+													break
+
+												if linestr[-1] in terminations:
+													linestr = linestr.rstrip(terminations)
+													has_term=True
+												else:
+													has_term=False
+												if save_line(module,line):
+													linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
+												else:
+													linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
+												lines[line] = linestr
+												touched.add(f)
+
+												with open(f,"w") as file:
+													file.writelines(lines)
+
+												resolved=True
 												break
-
-											if linestr[-1] in terminations:
-												linestr = linestr.rstrip(terminations)
-												has_term=True
-											else:
-												has_term=False
-											if save_line(module,line):
-												linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
-											else:
-												linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
-											lines[line] = linestr
-											touched.add(f)
-
-											with open(f,"w") as file:
-												file.writelines(lines)
-
-											resolved=True
-											break
+									else:
+										positions=d["range"]["start"]
+										line=positions["line"]
+										character=positions["character"]
+										print(str(line)+':'+str(character))
 								if not solved:
 									unresolved=True
 					if resolved:
