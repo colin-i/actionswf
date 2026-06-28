@@ -3,7 +3,7 @@ if [ -z $p ]; then
 	p=python3
 fi
 if [ -e dest ] && [ -z "${skip_src}" ]; then
-	rm -r dest
+	rm -rf dest/* __oacache__/*
 fi
 if [ -z "${OAPATH}" ]; then
 	export OAPATH=../../oaas

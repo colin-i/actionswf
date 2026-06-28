@@ -313,7 +313,7 @@ function translate_one_var(ss indents,ss in,ss oa,ss pointer,ss out,ss two)
 	if len>0
 		if len<(a_page_size)
 			call translated("Var")
-			return globalt.a_page_switch
+			return out
 		end
 	end
 	return in
@@ -377,7 +377,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(p_low)
+	elseif chr=(alpha_char)
 		inc oa
 		set cursor translate_alpha(start)
 		if cursor!=start
@@ -411,7 +411,7 @@ function translate_two(ss start,ss in)
 		inc oa
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
-	elseif chr=(t_low)
+	elseif chr=(text_char)
 		inc oa
 		set cursor translate_textfield(start)
 		if cursor!=start
@@ -429,7 +429,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(x_low)
+	elseif chr=(align_char)
 		inc oa
 		set cursor translate_textformat(start)
 		if cursor!=start

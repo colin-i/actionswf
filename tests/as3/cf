@@ -1,2 +1,2 @@
 ./c
-rm -r origf mirror src
+rm -r mirror src

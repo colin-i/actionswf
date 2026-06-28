@@ -1,9 +1,9 @@
 #!/bin/sh
 rm -f a.swf
 if [ -e dest ]; then
-	rm -r dest
+	rm -f dest/*
 fi
 if [ -e __oacache__ ]; then
-	rm -r __oacache__
+	rm -rf __oacache__/*
 fi
 cd osrc && ${RUN__SHELL} ./c

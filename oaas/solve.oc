@@ -50,13 +50,32 @@ function solver(ss value,ss after)
 				call sprintf(#globals.outvalue,"%c%c%c",(search_const),(spacer),(usc_pref))
 				return #globals.outvalue
 			end
-			#return (NULL)
+			return (NULL)
 		end
+		char alpha_string="alpha"^
+		set c memcmp(value,#alpha_string,\.alpha_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(alpha_char))
+			return #globals.outvalue
+		end
+		return (NULL)
 	end
 	char evfunc_string="() -> Void should be Dynamic -> Void"^
 	set c memcmp(value,#evfunc_string,\.evfunc_string)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(evfunc_char))
+		return #globals.outvalue
+	end
+	char text_string="createTextField"^
+	set c memcmp(value,#text_string,\.text_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(text_char))
+		return #globals.outvalue
+	end
+	char align_string="String should be flash.text.TextFormatAlign"^
+	set c memcmp(value,#align_string,\.align_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(align_char))
 		return #globals.outvalue
 	end
 	return (NULL)

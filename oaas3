@@ -13,7 +13,6 @@
 
 #import ctypes
 #import difflib
-#import filecmp
 #import json
 #import os
 from pathlib import Path
@@ -59,8 +58,7 @@ if lib:
 		print('lib oaas error')
 		exit(1)
 
-if os.environ.get('break'):
-	import pdb; pdb.set_trace()
+if os.environ.get('break'): import pdb; pdb.set_trace()
 
 dest=sys.argv[1]
 def get_module(fl):
@@ -106,13 +104,12 @@ def splits_data(orig=False):
 		files_src = [str(Path(src_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
 		if not orig:
 			return files_src
-	files_f = [str(Path(origf_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
 	files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
 	with open(splits_mix) as splits_mix:
 		splits_mix_data=splits_mix.read()
 		texts = splits_mix_data.split('\x00')
 		texts.pop()
-	return (files,files_f,files_mirror,files_src,texts)
+	return (files,files_mirror,files_src,texts)
 
 target=os.environ.get('target')
 if target:
@@ -135,27 +132,16 @@ if not os.environ.get(skip_orig):
 	if not mirror_name:
 		mirror_name='mirror'
 
-	files,files_f,files_mirror,files_src,texts = splits_data(orig=True)
-
-	import filecmp
-	#first is the format
-	for i, f in enumerate(files):
-		orig = Path(f)
-		origf = Path(files_f[i])
-		not_ex=not origf.exists()
-		if not_ex:
-			origf.parent.mkdir(parents=True, exist_ok=True)
-		if texts[i]:
-			if not_ex or origf.read_text() != texts[i]:
-				with open(origf,"w") as file:
-					file.write(texts[i])
-		elif not_ex or not filecmp.cmp(orig, origf, shallow=False):
-			shutil.copy(orig, origf)
+	files,files_mirror,files_src,texts = splits_data(orig=True)
 
 	import difflib
 
-	for i, f in enumerate(files_f):
-		origf = Path(f)
+	for i, f in enumerate(files):
+		txt=texts[i]
+		if txt:
+			origf = None
+		else:
+			origf = Path(f)
 		mirror = Path(files_mirror[i])
 		src = Path(files_src[i])
 		if not mirror.exists():
@@ -163,14 +149,21 @@ if not os.environ.get(skip_orig):
 			mirror.parent.mkdir(parents=True, exist_ok=True)
 			src.parent.mkdir(parents=True, exist_ok=True)
 
-			# create mirror copy
-			shutil.copy(origf, mirror) # or copy2: Identical to copy() except that copy2() also attempts to preserve file metadata.
-
-			# create src copy
-			shutil.copy(origf, src)
+			# create mirror/src copy
+			if origf:
+				shutil.copy(origf, mirror) # or copy2: Identical to copy() except that copy2() also attempts to preserve file metadata.
+				shutil.copy(origf, src)
+			else:
+				with open(mirror,"w") as fl:
+					fl.write(txt)
+				with open(src,"w") as fl:
+					fl.write(txt)
 		else:
 			old = mirror.read_text().splitlines(keepends=True)
-			new = origf.read_text().splitlines(keepends=True)
+			if origf:
+				new = origf.read_text().splitlines(keepends=True)
+			else:
+				new = txt.splitlines(keepends=True)
 			out = src.read_text().splitlines(keepends=True)
 			matcher = difflib.SequenceMatcher(None, old, new)
 			offset = 0
@@ -522,11 +515,14 @@ if not os.environ.get('skip_comp'):
 										reuser.extend([filename+'@'+offset_bytes+'@position'])
 										xm=crun(reuser,capture_output=True)
 										reuser.pop()
-										xm = ET.fromstring(xm.stderr).find('pos').text
-										line=xm[len(fullfilename)+1:]
-										line=line.split(':')[0]
-
-										line=int(line)-1 # from human
+										xm = ET.fromstring(xm.stderr).find('pos')
+										if xm:
+											xm=xm.text
+											line=xm[len(fullfilename)+1:]
+											line=line.split(':')[0]
+											line=int(line)-1 # from human
+										else:
+											line=baseline
 										print(module+' ('+str(baseline)+':'+str(character)+' at '+offset_bytes+' to '+str(line)+') '+value)
 									#now is like: fix one error will fix another 4
 									for f in files:

@@ -10,48 +10,48 @@ i flash.events.MouseEvent
 a MyClip MovieClip*/
 	function on_Enter_Frame(){
 		if(a){
-			_x-=c;//3 s _
+			_x-=c;
 			if(b){
-				_y-=c;//3 s _
-				if(_y<=0){//3 s _
+				_y-=c;
+				if(_y<=0){
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s _
-				if(_y+_height>=Stage.height){//3 s _h
+				_y+=c;
+				if(_y+_height>=Stage.height){
 					b=true;
 				}
 			}
-			if(_x<=0){//3 s _
+			if(_x<=0){
 				a=false;
 			}
 		}else{
-			_x+=c;//3 s _
+			_x+=c;
 			if(b){
-				_y-=c;//3 s _
-				if(_y<=0){//3 s _
+				_y-=c;
+				if(_y<=0){
 					b=false;
 				}
 			}else{
-				_y+=c;//3 s _
-				if(_y+_height>=Stage.height){//3 s _h
+				_y+=c;
+				if(_y+_height>=Stage.height){
 					b=true;
 				}
 			}
-			if(_x+_width>=Stage.width){//3 s _w
+			if(_x+_width>=Stage.width){
 				a=true;
 			}
 		}
 	}
 	// Handlers
-	function onClick(){//3
+	function onClick(){
 		trace('Button clicked!');
 	}
-	function onOver(){//3 e
-		_alpha= 80;//3 p
+	function onOver(){
+		_alpha= 80;
 	}
-	function onOut(){//3 e
-		_alpha= 100;//3 p
+	function onOut(){
+		_alpha= 100;
 	}
 /*3
 	f p*/
@@ -63,14 +63,14 @@ a MyClip MovieClip*/
 		//3d shape
 
 		// a 1/5 margin
-		createTextField('label',1,0,16, 120, 48);//3 t
+		createTextField('label',1,0,16, 120, 48);
 		label.text = 'Click';
 		label.selectable = false;
 
 		// a 2/3 size format
 		var tf = new TextFormat();
 		tf.size = 32;
-		tf.align = 'center';//3 x
+		tf.align = 'center';
 		tf.color = 0xff9933;
 		label.setTextFormat(tf);
 
