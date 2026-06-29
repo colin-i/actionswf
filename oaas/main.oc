@@ -9,10 +9,11 @@ import "print_stdout" print_stdout
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 import "translated_ratio" translated_ratio
-
 ^import "openfl" openfl #full
+import "_postpone_char" _postpone_char
 
 ^import "solver" solver 2
+import "_resolve" _resolve
 
 einclude "oaas.h" "oaas.oh"
 
@@ -54,6 +55,11 @@ end
 functionx sep()
 	return (switch_char)
 end
+functionx postpone_char()
+	ss ?a
+	set a _postpone_char()
+	return a
+end
 
 functionx solve(ss value,ss after)
 	ss out;set out solver(value,after)
@@ -61,4 +67,9 @@ functionx solve(ss value,ss after)
 		call printf("postponed %s\n",value)
 	end
 	return out
+end
+functionx resolve()
+	ss ?a
+	set a _resolve()
+	return a
 end

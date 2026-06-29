@@ -57,7 +57,7 @@ a MyClip MovieClip*/
 	f p*/
 		// Simple visual so you can see it
 		//3v shape Shape
-		beginFill(0x3399FF);//3 l shape
+		beginFill(0x3399FF);//3 _ shape
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
 		endFill();//3 l shape
 		//3d shape

@@ -3,6 +3,7 @@ format elfobj64
 
 #multithread unsafe
 charx outvalue#4
+char stored_char#1
 
 importx "memcmp" memcmp
 importx "sprintf" sprintf
@@ -14,6 +15,10 @@ einclude "oaas.h" "oaas.oh"
 ^import "press_string_get" press_string_get 1
 ^import "rollover_string_get" rollover_string_get 1
 ^import "rollout_string_get" rollout_string_get 1
+
+function _resolve()
+	return globals.stored_char
+end
 
 function solver(ss value,ss after)
 	sd ?c
@@ -115,6 +120,12 @@ function solver(ss value,ss after)
 			call sprintf(#globals.outvalue,"%c",(onev_char))
 			return #globals.outvalue
 		end
+	end
+	char bfil_string="beginFill"^
+	set c memcmp(value,#bfil_string,\.bfil_string)
+	if c=0
+		set globals.stored_char (fill_char)
+		return ""
 	end
 	return (NULL)
 end

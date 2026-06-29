@@ -53,7 +53,9 @@ if lib:
 		lib.verbose.argtypes = [ctypes.c_char]
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 		lib.sep.restype = ctypes.c_char
+		lib.postpone_char.restype = ctypes.c_char
 		lib.solve.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
+		lib.resolve.restype = ctypes.c_char
 	except Exception:
 		print('lib oaas error')
 		exit(1)
@@ -538,24 +540,37 @@ if not os.environ.get('skip_comp'):
 											lines = file_cache[f]
 											linestr = lines[line]
 
-											solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
-											if not solved:
-												break
-
 											if linestr[-1] in terminations:
 												linestr = linestr.rstrip(terminations)
 												has_term=True
 											else:
 												has_term=False
-											if save_line(module,line):
-												linestr = linestr + a1 + a2a + a3 + solved.decode() + (os.linesep if has_term else "")
-											else:
-												linestr = linestr + lib.sep().decode() + solved.decode() + (os.linesep if has_term else "")
-											lines[line] = linestr
-											touched.add(f)
 
-											with open(f,"w") as file:
-												file.writelines(lines)
+											solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
+											if not solved:
+												if solved==None:
+													break
+												#this case is with the postpone_char
+												save_line(module,line)
+												solved = lib.resolve().decode()
+												delim = a1 + a2a + a3
+
+												part1, part2 = linestr.split(delim)
+												tokens = part2.split(lib.sep().decode())
+												result = []
+												for token in tokens:
+													token = token.lstrip()          # remove leading whitespace
+													if token.startswith(lib.postpone_char().decode()):
+														token = solved + token[1:]
+													result.append(token)
+												linestr = part1 + delim + "".join(result)
+											else:
+												if save_line(module,line):
+													linestr = linestr + a1 + a2a + a3 + solved.decode()
+												else:
+													linestr = linestr + lib.sep().decode() + solved.decode()
+											lines[line] = linestr + (os.linesep if has_term else "")
+											touched.add(f)
 
 											resolved=True
 											break
