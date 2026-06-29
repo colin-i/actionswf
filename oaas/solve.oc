@@ -127,6 +127,18 @@ function solver(ss value,ss after)
 		set globals.stored_char (fill_char)
 		return ""
 	end
+	char efil_string="endFill"^
+	set c memcmp(value,#efil_string,\.efil_string)
+	if c=0
+		set globals.stored_char (fill_char)
+		return ""
+	end
+	char rect_string="lineTo"^
+	set c memcmp(value,#rect_string,\.rect_string)
+	if c=0
+		set globals.stored_char (rect_char)
+		return ""
+	end
 	return (NULL)
 end
 

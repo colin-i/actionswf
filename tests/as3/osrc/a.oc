@@ -72,8 +72,8 @@ a MyClip MovieClip*/
 		// Simple visual so you can see it
 		//3v shape Shape
 		beginFill(0x3399FF);//3 _ shape
-		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
-		endFill();//3 l shape
+		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 _ shape
+		endFill();//3 _ shape
 		//3d shape
 
 		// a 1/5 margin
@@ -89,7 +89,7 @@ a MyClip MovieClip*/
 		label.setTextFormat(tf);
 
 		// Interactivity
-		useHandCursor= true;//3 mb
+		useHandCursor= true;//3 bm
 		onRollOver = onOver;
 		onRollOut = onOut;
 		onPress = onClick;
@@ -131,7 +131,7 @@ c class MyBitmapData extends BitmapData { }//*
 /*more tests
 function ()()//3 e+e
 begin(a);_x//3 l q+s
-*seHandCursor=_x;//3 m+s
+useHandCursor=_x;//3 b+s
 onEnterFrame=_fune;//3 o+s
 _alpha=_x;//3 p+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s

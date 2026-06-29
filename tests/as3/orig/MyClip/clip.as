@@ -58,8 +58,8 @@ a MyClip MovieClip*/
 		// Simple visual so you can see it
 		//3v shape Shape
 		beginFill(0x3399FF);//3 _ shape
-		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 r shape
-		endFill();//3 l shape
+		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);//3 _ shape
+		endFill();//3 _ shape
 		//3d shape
 
 		// a 1/5 margin
@@ -75,7 +75,7 @@ a MyClip MovieClip*/
 		label.setTextFormat(tf);
 
 		// Interactivity
-		useHandCursor= true;//3 mb
+		useHandCursor= true;//3 bm
 		onRollOver = onOver;
 		onRollOut = onOut;
 		onPress = onClick;

@@ -23,7 +23,7 @@ c class MyBitmapData extends BitmapData { }//*
 /*more tests
 function ()()//3 e+e
 begin(a);_x//3 l q+s
-*seHandCursor=_x;//3 m+s
+useHandCursor=_x;//3 b+s
 onEnterFrame=_fune;//3 o+s
 _alpha=_x;//3 p+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s

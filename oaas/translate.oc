@@ -76,8 +76,8 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#a cdEfg i  LMnOP RST V X
-# b     h jk     q   u w yz
+#aBcdEfg i  L nOP RST V X
+#       h jk m   q   u w yz
 #also at the end
 
 #a	s [s]
@@ -294,7 +294,7 @@ end
 
 #e	()
 #l	b or e
-#m	seHandCursor=; same as p but diff at format and continuation
+#m	useHandCursor=; same as p but diff at format and continuation
 #o	onPATTERN=;
 #p	alpha=;
 #r	(,),)(,
@@ -332,7 +332,7 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(m_low)
+	elseif chr=(b_low)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
@@ -354,7 +354,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(r_low)
+	elseif chr=(rect_char)
 		inc oa
 		set oa spcfull(oa)
 
@@ -515,18 +515,17 @@ end
 
 function translate_buttonmode(ss indents,ss oa)
 	ss cursor;set cursor spcfull(indents)
-	set cursor# (Nullchar)
-	inc cursor
 	sd ?c
-	char against="seHandCursor="^
-	set c memcmp(cursor,#against,13)
+	char against="useHandCursor="^
+	set c memcmp(cursor,#against,14)
 	if c=0
-		add cursor 13
+		set cursor# (Nullchar)
+		add cursor 14
 		ss pointer
 		sd ?len
 		set pointer globalt.a_page_switch
 		sd ?size;set size (a_page_size)
-		set len snprintf(pointer,size,"%sbuttonMode=%s",indents,cursor)
+		set len snprintf(pointer,size,"%sbuttonMode=%s%s%s",indents,cursor,against,cursor)
 		if len>0
 			if len<(a_page_size)
 				ss ok="ButtonMode"
@@ -538,7 +537,7 @@ function translate_buttonmode(ss indents,ss oa)
 						break
 					end
 					#here is not always wanted to be if there are no children inside, or if disabling the button
-					if oa#=(b_low) #is set once to make it look like a button
+					if oa#=(m_low) #is set once to make it look like a button
 						inc oa
 						add pointer len
 						sub size len

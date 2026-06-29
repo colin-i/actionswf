@@ -501,7 +501,7 @@ if not os.environ.get('skip_comp'):
 										positions=d["range"]["start"]
 										baseline=positions["line"]
 										character=positions["character"]
-										value=d["args"]
+										value=d["args"].split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
 
 										src = Path(fullfilename).read_text() #encoding="utf-8"
 										lines = src.splitlines(keepends=True)
@@ -551,18 +551,25 @@ if not os.environ.get('skip_comp'):
 												if solved==None:
 													break
 												#this case is with the postpone_char
-												save_line(module,line)
-												solved = lib.resolve().decode()
+												solved = lib.resolve()
+												#forking = solved.isupper(); if forking: solved=solved.lower()
 												delim = a1 + a2a + a3
 
 												part1, part2 = linestr.split(delim)
 												tokens = part2.split(lib.sep().decode())
+												n = lib.postpone_char().decode()
 												result = []
 												for token in tokens:
 													token = token.lstrip()          # remove leading whitespace
-													if token.startswith(lib.postpone_char().decode()):
-														token = solved + token[1:]
+													if isinstance(solved, bytes):
+														if token.startswith(n):
+															solved = solved.decode()
+															token = solved + token[len(n):]
 													result.append(token)
+												if isinstance(solved, bytes):
+													#can verify in cached lines
+													break # a case is at rect where there are multiple lineTo
+												save_line(module,line)
 												linestr = part1 + delim + "".join(result)
 											else:
 												if save_line(module,line):

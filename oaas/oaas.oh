@@ -14,13 +14,13 @@ Const h_low=0x68
 Const i_low=0x69
 Const m_low=0x6D
 Const n_low=0x6E
-Const r_low=0x72
 Const w_low=0x77
 
 #translate solve
 Const e_low=0x65
 Const o_low=0x6F
 Const p_low=0x70
+Const r_low=0x72
 Const t_low=0x74
 Const v_low=0x76
 const align_char=x_low
@@ -28,6 +28,7 @@ const alpha_char=p_low
 const evfunc_char=e_low
 const fill_char=l_low
 const onev_char=o_low
+const rect_char=r_low
 const search_const=s_low
 const text_char=t_low
 const var_const=v_low
