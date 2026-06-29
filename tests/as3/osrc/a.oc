@@ -90,13 +90,13 @@ a MyClip MovieClip*/
 
 		// Interactivity
 		useHandCursor= true;//3 mb
-		onRollOver = onOver;//3 o
-		onRollOut = onOut;//3 o
-		onPress = onClick;//3 o
+		onRollOver = onOver;
+		onRollOut = onOut;
+		onPress = onClick;
 
 		//3d label
 
-		onEnterFrame = on_Enter_Frame; //3 o
+		onEnterFrame = on_Enter_Frame;
 /*3	}
 	n*/
 	var c=%u;

@@ -7,6 +7,33 @@ const a_page_size=0x1000
 #multithread unsafe
 charx a_page#a_page_size;vstr a_page_switch^a_page;charx b_page#a_page_size
 char openfl_bool=FALSE
+#
+char on_string="on"^
+char enterframe_string="EnterFrame"^
+char press_string="Press"^
+char rollover_string="RollOver"^
+char rollout_string="RollOut"^
+
+function on_string_get(ss z)
+	set z# \globalt.on_string
+	return #globalt.on_string
+end
+function enterframe_string_get(ss z)
+	set z# \globalt.enterframe_string
+	return #globalt.enterframe_string
+end
+function press_string_get(ss z)
+	set z# \globalt.press_string
+	return #globalt.press_string
+end
+function rollover_string_get(ss z)
+	set z# \globalt.rollover_string
+	return #globalt.rollover_string
+end
+function rollout_string_get(ss z)
+	set z# \globalt.rollout_string
+	return #globalt.rollout_string
+end
 
 importx "free" free
 importx "memcmp" memcmp
@@ -304,7 +331,7 @@ function translate_two(ss start,ss in)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
-	elseif chr=(o_low)
+	elseif chr=(onev_char)
 		inc oa
 		set cursor translate_onev(start)
 		if cursor!=start
@@ -541,40 +568,37 @@ function translate_onev(ss start)
 		ss pointer;set pointer cursor
 		while start!=pointer
 			dec pointer
-			if pointer#=(o_low)
-				inc pointer
-				if pointer#=(n_low)
-					inc pointer
-					vstr mous="Mouse"
-					sd ?c
-					set c memcmp(pointer,"EnterFrame",10) #memcmp is defined to compare the first 10 bytes
+			sd ?c
+			set c memcmp(pointer,#globalt.on_string,\globalt.on_string)
+			if c=0
+				add pointer \globalt.on_string
+				vstr mous="Mouse"
+				set c memcmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #memcmp is defined to compare the first 10 bytes
+				if c=0
+					set cursor translate_on(start,"","ENTER_FRAME",cursor)
+				else
+					set c memcmp(pointer,#globalt.press_string,\globalt.press_string)
 					if c=0
-						set cursor translate_on(start,"","ENTER_FRAME",cursor)
+						set cursor translate_on(start,mous,"CLICK",cursor)
 					else
-						set c memcmp(pointer,"Press",5)
+						set c memcmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 						if c=0
-							set cursor translate_on(start,mous,"CLICK",cursor)
+							set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
 						else
-							set c memcmp(pointer,"RollOver",8)
+							set c memcmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
-							else
-								set c memcmp(pointer,"RollOut",7)
-								if c=0
-									set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
-								end
+								set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
 							end
 						end
 					end
-					if c=0
-						if cursor!=start
-							call translated("On")
-							return cursor
-						end
-					end
-					break # on is unique at the moment
 				end
-				dec pointer
+				if c=0
+					if cursor!=start
+						call translated("On")
+						return cursor
+					end
+				end
+				break # on is unique at the moment
 			end
 		end
 	end
