@@ -558,19 +558,18 @@ if not os.environ.get('skip_comp'):
 												part1, part2 = linestr.split(delim)
 												tokens = part2.split(lib.sep().decode())
 												n = lib.postpone_char().decode()
-												result = []
-												for token in tokens:
+												for i,token in enumerate(tokens):
 													token = token.lstrip()          # remove leading whitespace
 													if isinstance(solved, bytes):
 														if token.startswith(n):
 															solved = solved.decode()
 															token = solved + token[len(n):]
-													result.append(token)
+													tokens[i]=token
 												if isinstance(solved, bytes):
 													#can verify in cached lines
 													break # a case is at rect where there are multiple lineTo
 												save_line(module,line)
-												linestr = part1 + delim + "".join(result)
+												linestr = part1 + delim + "".join(tokens)
 											else:
 												if save_line(module,line):
 													linestr = linestr + a1 + a2a + a3 + solved.decode()
