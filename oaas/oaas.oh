@@ -18,9 +18,6 @@ Const o_low=0x6F
 Const r_low=0x72
 Const w_low=0x77
 
-#translate util solve
-const spacer=Space
-
 #translate solve
 Const e_low=0x65
 Const p_low=0x70
@@ -34,6 +31,7 @@ const text_char=t_low
 const var_const=v_low
 
 #util solve
+const spacer=Space
 const usc_pref=_
 
 #solve

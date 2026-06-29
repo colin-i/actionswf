@@ -516,7 +516,7 @@ if not os.environ.get('skip_comp'):
 										xm=crun(reuser,capture_output=True)
 										reuser.pop()
 										xm = ET.fromstring(xm.stderr).find('pos')
-										if xm:
+										if xm is not None:
 											xm=xm.text
 											line=xm[len(fullfilename)+1:]
 											line=line.split(':')[0]

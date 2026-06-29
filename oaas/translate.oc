@@ -70,183 +70,134 @@ function translate_one(ss in,ss indents)
 	if chr=(a_low)
 		set o_a oa
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
+		set oa spcfull(oa)
 
-			set cursor spcfullafters(#oa)
-			if cursor!=oa
-				set ext " extends "
-				set pointer spcfull(cursor)
-				set reminder cursor#;set cursor# (Nullchar)
-			else
-				set ext #blank
-				set pointer ext
-				set reminder (Nullchar)
-			end
-			set o_a# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%sclass %s%s%s{",indents,in,oa,ext,pointer)
-			if len>0
-				if len<(a_page_size)
-					call translated("Class")
-					return #globalt.a_page
-				end
-			end
-			set o_a# (a_low)
-			set cursor# reminder
-			break
+		set cursor spcfullafters(#oa)
+		if cursor!=oa
+			set ext " extends "
+			set pointer spcfull(cursor)
+			set reminder cursor#;set cursor# (Nullchar)
+		else
+			set ext #blank
+			set pointer ext
+			set reminder (Nullchar)
 		end
+		set o_a# (Nullchar)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%sclass %s%s%s{",indents,in,oa,ext,pointer)
+		if len>0
+			if len<(a_page_size)
+				call translated("Class")
+				return #globalt.a_page
+			end
+		end
+		set o_a# (a_low)
+		set cursor# reminder
 	elseif chr=(c_low)
-		set cursor oa
-		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
+		set oa# (Slash)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%c%s",indents,(Slash),in)
+		if len>0
+			if len<(a_page_size)
+				call translated("Comment")
+				return #globalt.a_page
 			end
-			set cursor# (Slash)
-			set reminder oa#;set oa# (Slash)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s",indents,in)
-			if len>0
-				if len<(a_page_size)
-					call translated("Comment")
-					return #globalt.a_page
-				end
-			end
-			set oa# reminder
-			set cursor# (c_low)
-			break
 		end
+		set oa# (c_low)
 	elseif chr=(d_low)
 		set o_a oa
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
-			set cursor spcfullafters(#oa)
-			if cursor!=oa
-				set ext "."
-				set pointer spcfull(cursor)
-				set reminder cursor#;set cursor# (Nullchar)
-			else
-				set ext #blank
-				set pointer ext
-				set reminder (Nullchar)
-			end
-			set o_a# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
-			if len>0
-				if len<(a_page_size)
-					call translated("AddChild")
-					return #globalt.a_page
-				end
-			end
-			set o_a# (d_low)
-			set cursor# reminder
-			break
+		set oa spcfull(oa)
+
+		set cursor spcfullafters(#oa)
+		if cursor!=oa
+			set ext "."
+			set pointer spcfull(cursor)
+			set reminder cursor#;set cursor# (Nullchar)
+		else
+			set ext #blank
+			set pointer ext
+			set reminder (Nullchar)
 		end
+		set o_a# (Nullchar)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
+		if len>0
+			if len<(a_page_size)
+				call translated("AddChild")
+				return #globalt.a_page
+			end
+		end
+		set o_a# (d_low)
+		set cursor# reminder
 	elseif chr=(f_low)
 		set cursor oa
 		inc oa
+		set oa spcfull(oa)
+
 		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
+			ss type;ss name
+			if oa#=(p_low)
+				set type "public"
+				set name "new"
+				set ext "super();"
+			elseif oa#=(s_low)
+				set type "static"
+				set name "main"
+				set ext #blank
+			else
+				break
 			end
 			inc oa
-			whiletrue
-				ss type;ss name
-				if oa#=(p_low)
-					set type "public"
-					set name "new"
-					set ext "super();"
-				elseif oa#=(s_low)
-					set type "static"
-					set name "main"
-					set ext #blank
-				else
-					break
-				end
-				inc oa
-				if oa#=(Nullchar)
-					set cursor# (Nullchar)
-					set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s function %s(){%s",indents,in,type,name,ext)
-					if len>0
-						if len<(a_page_size)
-							call translated("Function")
-							return #globalt.a_page
-						end
+			if oa#=(Nullchar)
+				set cursor# (Nullchar)
+				set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s function %s(){%s",indents,in,type,name,ext)
+				if len>0
+					if len<(a_page_size)
+						call translated("Function")
+						return #globalt.a_page
 					end
-					set cursor# (f_low)
 				end
-				break
+				set cursor# (f_low)
 			end
 			break
 		end
 	elseif chr=(g_low)
 		set o_a oa
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
+		set oa spcfull(oa)
+
+		set o_a# (Nullchar)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=Lib.current.stage;",indents,in,oa)
+		if len>0
+			if len<(a_page_size)
+				call translated("Stage")
+				return #globalt.a_page
 			end
-			inc oa
-			set o_a# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=Lib.current.stage;",indents,in,oa)
-			if len>0
-				if len<(a_page_size)
-					call translated("Stage")
-					return #globalt.a_page
-				end
-			end
-			set o_a# (g_low)
-			break
 		end
+		set o_a# (g_low)
 	elseif chr=(i_low)
 		set o_a oa
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
+		set oa spcfull(oa)
 
-			set pointer #blank
-			if globalt.openfl_bool=(TRUE)
-				sd ?c
-				char fl="flash."^
-				set c memcmp(oa,#fl,\.fl)
-				if c=0
-					set pointer "openfl."
-					add oa \.fl
-				end
+		set pointer #blank
+		if globalt.openfl_bool=(TRUE)
+			sd ?c
+			char fl="flash."^
+			set c memcmp(oa,#fl,\.fl)
+			if c=0
+				set pointer "openfl."
+				add oa \.fl
 			end
-
-			set o_a# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%simport %s%s;",indents,in,pointer,oa)
-			if len>0
-				if len<(a_page_size)
-					call translated("Import")
-					return #globalt.a_page
-				end
-			end
-			set o_a# (i_low)
-			break
 		end
+
+		set o_a# (Nullchar)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%simport %s%s;",indents,in,pointer,oa)
+		if len>0
+			if len<(a_page_size)
+				call translated("Import")
+				return #globalt.a_page
+			end
+		end
+		set o_a# (i_low)
 	elseif chr=(n_low)
 		set o_a oa
 		inc oa
@@ -264,28 +215,21 @@ function translate_one(ss in,ss indents)
 	elseif chr=(var_const)
 		set o_a oa
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
+		set oa spcfull(oa)
+
+		set cursor spcfullafters(#oa)
+		if cursor!=oa
+			set pointer spcfull(cursor)
+			if pointer!=cursor
+				set reminder cursor#;set cursor# (Nullchar)
+				set o_a# (Nullchar)
+				set pointer translate_one_var(indents,in,oa,pointer,#globalt.a_page,#blank)
+				if pointer!=in
+					return pointer
 				end
+				set o_a# (var_const)
+				set cursor# reminder
 			end
-			inc oa
-			set cursor spcfullafters(#oa)
-			if cursor!=oa
-				set pointer spcfull(cursor)
-				if pointer!=cursor
-					set reminder cursor#;set cursor# (Nullchar)
-					set o_a# (Nullchar)
-					set pointer translate_one_var(indents,in,oa,pointer,#globalt.a_page,#blank)
-					if pointer!=in
-						return pointer
-					end
-					set o_a# (var_const)
-					set cursor# reminder
-				end
-			end
-			break
 		end
 	elseif chr=(Nullchar)
 		call translated("blank")
@@ -345,24 +289,16 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(l_low)
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
-			set pointer pluson(oa)
-			if pointer!=oa
-				set pointer# (Nullchar)
-			end
-			set cursor translate_fill(start,oa)
-			set cursor translate_two_switchAfter(cursor,oa,pointer)
-			if cursor!=oa
-				return cursor
-			end
-			dec oa
-			break
+		set oa spcfull(oa)
+
+		set pointer pluson(oa)
+		if pointer!=oa
+			set pointer# (Nullchar)
+		end
+		set cursor translate_fill(start,oa)
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(m_low)
 		inc oa
@@ -388,24 +324,16 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(r_low)
 		inc oa
-		whiletrue
-			if oa#!=(spacer)
-				if oa#!=(HorizontalTab)
-					break
-				end
-			end
-			inc oa
-			set pointer pluson(oa)
-			if pointer!=oa
-				set pointer# (Nullchar)
-			end
-			set cursor translate_rect(start,oa)
-			set cursor translate_two_switchAfter(cursor,oa,pointer)
-			if cursor!=oa
-				return cursor
-			end
-			dec oa
-			break
+		set oa spcfull(oa)
+
+		set pointer pluson(oa)
+		if pointer!=oa
+			set pointer# (Nullchar)
+		end
+		set cursor translate_rect(start,oa)
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(search_const)
 		inc oa
@@ -775,17 +703,9 @@ function translate_srch(ss start,ss oa)
 		end
 		return oa
 	end
-	whiletrue
-		if oa#!=(spacer)
-			if oa#!=(HorizontalTab)
-				break
-			end
-		end
-		set cursor translate_search(start,oa)
-		if cursor!=oa
-			return cursor
-		end
-		break
+	set cursor translate_search(start,oa)
+	if cursor!=oa
+		return cursor
 	end
 	return oa
 end
@@ -799,8 +719,7 @@ function translate_srch_all(ss start)
 	return cursor
 end
 function translate_search(ss start,ss oa)
-	ss cursor;set cursor oa
-	inc cursor
+	ss cursor;set cursor spcfull(oa)
 	ss ?types=0
 	while cursor#!=(Nullchar)
 		if cursor#=(_)
