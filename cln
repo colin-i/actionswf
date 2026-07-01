@@ -1,2 +1,6 @@
 
-cd example && make clean && cd .. && make clean && cd csrc && make clean && cd .. && cd oaas && make clean && cd .. && git status
+cd example && make clean && cd ../csrc && make clean && cd .. && make clean && \
+#if [ -n "${general}" ]; then
+#	cd tests/as3 && ./cf
+#fi &&
+git status
