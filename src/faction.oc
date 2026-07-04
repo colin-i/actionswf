@@ -30,6 +30,7 @@ import "debug_x_pointers" debug_x_pointers
 import "debug_action_phase" debug_action_phase
 import "debug_phase_code_flush_end" debug_phase_code_flush_end
 import "debug_x" debug_x
+import "alt_splitter" alt_splitter
 function action_base(ss ac)
 #ss ac       actionscript string to be parsed
 	sd p_values
@@ -82,4 +83,5 @@ function action_base(ss ac)
 		#free mem ok,another free is at errors
 		call action_debug_free_macro()
 	end
+	callg alt_splitter()
 endfunction

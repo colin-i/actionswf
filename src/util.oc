@@ -13,7 +13,7 @@ importx "memcmp" memcmp
 include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
-vdatax structures#max_structures     #again, : swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures    ,    pool.constants
+vdatax structures#max_structures     #others: swapdata_max  brace_blocks_max  dup_member  max_char_records  max_structures(also at alt)    ,    pool.constants
 data index=0
 char throwless=FALSE
 charx ainit_bool#1
