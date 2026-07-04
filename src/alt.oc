@@ -9,7 +9,7 @@ vstrx concat_point#1
 datax flag_dup#1
 #
 datax flag_splitter#1
-datax markers#max_structures
+charx markers#max_structures
 charx splitdelim#1+3+1
 
 importx "strrchr" strrchr
@@ -79,12 +79,12 @@ function alt_init(sd flags,sd path)
 		set globall.concat_point size
 		call alt_join()
 
-		sd p;set p #globall.markers
-		sd end=max_structures*DWORD
+		ss p;set p #globall.markers
+		sd end=max_structures
 		add end p
 		while p!=end
 			set p# 0
-			add p (DWORD)
+			inc p
 		end
 		if globall.flag_splitter!=0
 			ss s;set s #globall.splitdelim
@@ -114,8 +114,7 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 			#setcall block struct_ids_action((ids_get),preid)
 			#setcall size block_get_size(block)
 			#if size=0 #at alt, first action from the frame is with all
-			sd mark=DWORD
-			mult mark preid
+			ss mark;set mark preid
 			add mark #globall.markers
 			if mark#=0
 				whiletrue
@@ -143,6 +142,7 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 				whiletrue
 					if globall.flag_splitter!=0
 						ss junction;set junction strstr(mem,#globall.splitdelim) #this has indentations in button action
+						#                                                   why still at button? 5 splits for action_base + 3 for action_sprite_base
 						if junction!=(NULL)
 							set junction# (Nullchar)
 							add junction \globall.splitdelim-1

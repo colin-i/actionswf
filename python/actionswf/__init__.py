@@ -22,6 +22,10 @@ class flag(IntEnum):
 	noDuplicate=     0x10000
 	verbose=         0x20000
 	xx=              0x40000
+	format=          0x80000
+	splitter_n=      0x100000
+	splitter_r=      0x200000
+
 class flags(IntEnum):
 	pool=        flag.pre_pool_write|flag.pool_read
 	x=           flag.pre_x|flag.x
@@ -30,6 +34,7 @@ class flags(IntEnum):
 	antix_read=  flag.pre_log|flag.alt|flag.pre_x
 	antixx_write=flag.titles
 	xx=          flag.pool_read|flag.xx
+	splitters=   flag.splitter_n|flag.splitter_r
 class flagss(IntEnum):
 	x=        flag.x|flag.pool_read
 	xu=       x|flag.pool_read_unlink

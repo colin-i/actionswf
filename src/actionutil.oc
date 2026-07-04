@@ -413,6 +413,7 @@ endfunction
 #format and alt
 
 import "action_base" action_base
+import "action_base_main" action_base_main
 
 function action_format(ss buffer,sv %the_va_list)
 	if buffer!=(NULL)
@@ -466,7 +467,11 @@ function action_sprite_base(sd sprite,ss actions,ss ?has_frames)
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call swf_actionblock_change(sprite)
-		call action_base(alt_ac)
+		if has_frames=(TRUE)
+			call action_base(alt_ac)
+		else
+			call action_base_main(alt_ac)
+		end
 		if alt_ac!=actions
 			call file_get_content__resources_free()
 		end
