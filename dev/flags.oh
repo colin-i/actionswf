@@ -35,4 +35,4 @@ const prexx_flags=prex_flags|flag_xx            #will turn off antixx_write
 const antix_read=flagpre_log|flag_alt|flagpre_x
 const antixx_write=flag_titles                  #oad and ffdec are counting on this
 const flags_xx=flag_pool_read|flag_xx
-const flag_splitters=flag_splitter_n|flag_splitter_r #ignored at flag_x
+const flag_splitters=flag_splitter_n|flag_splitter_r
