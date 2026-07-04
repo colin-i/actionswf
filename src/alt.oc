@@ -141,11 +141,11 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 				#call unlink(globall.folder) #if there are two action() at one frame, the second one must not see this
 				whiletrue
 					if globall.flag_splitter!=0
-						ss junction;set junction strstr(mem,#globall.splitdelim) #this has indentations in button action
-						#                                                   why still at button? 5 splits for action_base + 3 for action_sprite_base
+						ss junction;set junction strstr(mem,#globall.splitdelim)
 						if junction!=(NULL)
+							inc junction ##prexx and alt can go together, must keep system line endings
 							set junction# (Nullchar)
-							add junction \globall.splitdelim-1
+							add junction \globall.splitdelim-2
 							svu ?sz;set sz strlen(junction)
 
 							sd file;set file f_open(globall.folder,"wb")
