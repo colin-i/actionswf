@@ -405,7 +405,7 @@ if not os.environ.get('skip_comp'):
 
 		hd=os.environ.get('header')
 		if hd:
-			baser.extend(['-swf-header',hd])
+			baser.extend(['-D','-swf-header='+hd])
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
 
