@@ -2,11 +2,11 @@
 
 # break OAPATH target src_name
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
-# OACACHE from_diagnostics
+# OACACHE from_diagnostics verbose
 
 # skip_orig origf_name mirror_name
-# skip_src allow_untranslated verbose
-# skip_comp  compiler  SERVER_PID header  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
+# skip_src allow_untranslated
+# skip_comp  compiler  SERVER_PID header main  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -63,10 +63,13 @@ if lib:
 if os.environ.get('break'): import pdb; pdb.set_trace()
 
 dest=sys.argv[1]
-def get_module(fl):
-	return os.path.basename(os.path.dirname(fl))
+def get_module(fl,first_letter_uppercase=False):
+	f=os.path.basename(os.path.dirname(fl))
+	if first_letter_uppercase:
+		f=f[:1].upper() + f[1:]
+	return f
 def hx_ext(fl):
-	return os.path.join(dest,get_module(fl))+'.hx'
+	return os.path.join(dest,get_module(fl,first_letter_uppercase=True))+'.hx'
 out_file_name=sys.argv[2]
 
 def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
@@ -229,12 +232,14 @@ def exiting():
 	stop_server()
 	exit(1)
 
+verbose=os.environ.get('verbose')
+
 skip_src='skip_src'
 if not os.environ.get(skip_src):
 	if lib:
 		if target:
 			lib.flash_to_openfl(True)
-		if os.environ.get('verbose'):
+		if verbose:
 			lib.verbose(True)
 
 	allow_untranslated=os.environ.get('allow_untranslated')
@@ -400,7 +405,10 @@ if not os.environ.get('skip_comp'):
 					print('server error')
 					exiting()
 
-		baser=[compiler,'--connect','6000','-swf',dest_file,'-main','Main','-D','flash_strict']
+		main=os.environ.get('main')
+		if not main:
+			main='Main'
+		baser=[compiler,'--connect','6000','-swf',dest_file,'-main',main,'-D','flash_strict']
 		#                                                                   this flag for _x to be error
 
 		hd=os.environ.get('header')
@@ -409,8 +417,12 @@ if not os.environ.get('skip_comp'):
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
 
+		def prun(a,capture_output=False):
+			if verbose:
+				print(a)
+			return subprocess.run(a,capture_output=capture_output)
 		def crun(a,capture_output=False):
-			r=subprocess.run(a,capture_output=capture_output)
+			r=prun(a,capture_output=capture_output)
 			if r.returncode:
 				print('error')
 				exiting()
@@ -422,7 +434,7 @@ if not os.environ.get('skip_comp'):
 			crun(baser)
 		else:
 			if not o_d and not f_d:
-				r=subprocess.run(baser)
+				r=prun(baser)
 			if o_d or f_d or r.returncode:
 				baser.extend(['--display'])
 				reuser=list(baser)
