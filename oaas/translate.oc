@@ -78,8 +78,8 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#aBcdEfg i  L nOP RST V X
-#       h jk m   q   u w yz
+#aBcdEfg i  LmnOP RST V X
+#       h jk     q   u w yz
 #also at the end
 
 #a	s [s]
@@ -88,6 +88,7 @@ end
 #f	p/s
 #g	string
 #i	string
+#m      same like v
 #n	a letter and predef format
 #v	s s
 #}	mix indents and in
@@ -228,6 +229,11 @@ function translate_one(ss in,ss indents)
 			end
 		end
 		set o_a# (i_low)
+	elseif chr=(m_low)
+		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends BitmapData { }%s",indents,in,oa,"Bitmap")
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(n_low)
 		set o_a oa
 		inc oa
@@ -994,6 +1000,7 @@ s
 
 AddChild
 Alpha
+Bitmap
 blank
 ButtonMode
 Class

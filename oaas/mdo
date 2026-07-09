@@ -1,2 +1,2 @@
 
-linkerflags='-g -fsanitize=undefined -O3 -march=native' make
+linkerflags='-g -fsanitize=address,undefined -O3 -march=native' make

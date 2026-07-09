@@ -1,7 +1,13 @@
 
 //3i flash.Lib
 
-/*3a Main
+/*3
+
+i flash.display.BitmapData
+i flash.display.Bitmap
+m ../a.png MyBitmapData
+
+a Main
 	f s
 		g stage
 */
@@ -14,11 +20,6 @@ c		var img = new Bitmap( new MyBitmapData(0, 0) );
 c		Lib.current.addChild(img);
 	}
 }
-
-c import flash.display.BitmapData;
-c import flash.display.Bitmap;
-c @:bitmap('relative/path/to/myfile.png')
-c class MyBitmapData extends BitmapData { }//*
 */
 /*more tests
 function ()()//3 e+e

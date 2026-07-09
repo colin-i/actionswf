@@ -18,6 +18,6 @@ else #same as apy
 	launcher=qq
 fi
 ${CC} ${model} -g a.c -o ${out} -L${L1} -lactionswf ${L2} -lz || exit 1
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH} eval ${launcher} ./a.out && \
+LD_PRELOAD=$(gcc -print-file-name=libasan.so) LD_LIBRARY_PATH=${LD_LIBRARY_PATH} eval ${launcher} ./a.out && \
 #eval is to expand gd alias
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH} eval ${launcher} ./a.out x
+LD_PRELOAD=$(gcc -print-file-name=libasan.so) LD_LIBRARY_PATH=${LD_LIBRARY_PATH} eval ${launcher} ./a.out x

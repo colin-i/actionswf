@@ -50,10 +50,12 @@ int main(int argc,char**argv){
 	char*a=text("./aoc/a");
 	size_t sz;char*b=0;
 	actionsf(&sz,&b,a,1,"a");
-	free(b);
+	free(b);free(a);
 	int presprite=swf_sprite_new();
 	action_sprite(presprite,"trace('b'+this.value)");
-	action_init_sprite(presprite,text("./aoc/b"));
+	a=text("./aoc/b");
+	action_init_sprite(presprite,a);
+	free(a);
 	int sprite=swf_sprite_done(presprite);
 	swf_exports_add(sprite,"carSymbol");
 

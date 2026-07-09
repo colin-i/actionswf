@@ -1,2 +1,5 @@
 
-compilerflags="-g" linkerflags=" " ./m${what_m2} $@
+if [ -z "${compilerflags}" ]; then
+	compilerflags="-fsanitize=address -g"
+fi
+compilerflags="${compilerflags}" linkerflags=" " ./m${what_m2} $@

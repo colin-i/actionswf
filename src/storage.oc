@@ -419,7 +419,7 @@ function swf_actionblock_add(sd value,sd size)
 	callg mem_block_add(p_block,value,size)
 endfunction
 import "debug_phase_code_add_if" debug_phase_code_add_if
-function actionrecordheader_core(sd ?tag,sd ?size)
+function actionrecordheader_core(ss ?tag,sd ?size)
 	char ar#actionrecordheader_size;ss arh^ar
 	set arh# tag
 	ss psz=actionrecordheader_tag_size
@@ -429,17 +429,17 @@ function actionrecordheader_core(sd ?tag,sd ?size)
 	callg debug_phase_code_add_if((TRUE),psz)
 end
 import "actionpush" actionpush
-function actionrecordheader(sd tag,sd size)
+function actionrecordheader(ss ?tag,sd size)
 #push pool dummy_jump( },for(a;,continue ) store(mixt,enum) if(remForIns) write_jump(breakW,breakForIn) writeif_jump(_add(forin,ifwithnot),break) jump(else) goto definef
 	call actionpush()
-	call actionrecordheader_core(tag,size)
+	callg actionrecordheader_core(tag,size)
 endfunction
-function swf_actionrecordheader(sd tag,sd size)
-    char t#1
-    char length#2
-    set t tag
-    call stack_to_word_arg(size,#length)
-    call swf_mem_add(#t,3)
+function swf_actionrecordheader(ss tag,sd size)
+	char ar#actionrecordheader_size;ss arh^ar
+	set arh# tag
+	add arh (actionrecordheader_tag_size)
+	call stack_to_word_arg(size,arh)
+	callg swf_mem_add(#ar,(actionrecordheader_size))
 endfunction
 
 #preid

@@ -259,6 +259,7 @@ function restore_branch_inners_free(valueu br)
 		call restore_branch_free(cursor#)
 		incst cursor
 	end
+	call free(br#:branch.innerbranches)
 end
 function restore_branch_cuts_free(valueu br)
 	valueu cursor#1;set cursor br#:branch.cuts
@@ -283,6 +284,7 @@ function restore_frame_free(valueu fr)
 	call restore_strings_free(fr#:preframe.restore_ustrings,fr#:preframe.ustrings,fr#:preframe.ussize)
 	call restore_strings_free(fr#:preframe.restore_dstrings,fr#:preframe.strings,fr#:preframe.ssize)
 	call restore_branch_free(fr#:preframe.abranch)
+	call free(fr)
 end
 function restore_free(svu predata)
 	svu pss#1;set pss predata#:preoadata.presprites
