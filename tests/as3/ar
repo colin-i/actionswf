@@ -1,1 +1,6 @@
-ffdec=~/ffdec/bin/ffdec ./a
+go_to_another_launcher=r ./a
+
+#hax like:
+##!/bin/bash
+#unset LD_PRELOAD
+#exec /usr/bin/haxe "$@"

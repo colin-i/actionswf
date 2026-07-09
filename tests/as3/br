@@ -1,1 +1,1 @@
-ffdec=~/ffdec/bin/ffdec ./b
+ffdec=~/ffdec/bin/ffdec LD_PRELOAD=$(gcc -print-file-name=libasan.so) compiler=hax ./b
