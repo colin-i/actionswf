@@ -27,6 +27,7 @@ const align_char=x_low
 const alpha_char=p_low
 const evfunc_char=e_low
 const fill_char=l_low
+const bitmap_char=m_low
 const onev_char=o_low
 const rect_char=r_low
 const search_const=s_low

@@ -48,6 +48,7 @@ importx "strstr" strstr
 
 ^import "commaafter" commaafter 1
 ^import "commaon" commaon 1
+^import "dotbackafter" dotbackafter 2
 ^import "equalafter" equalafter 1
 ^import "equalon" equalon 1
 import "object_com" object_com
@@ -231,7 +232,7 @@ function translate_one(ss in,ss indents)
 			end
 		end
 		set o_a# (i_low)
-	elseif chr=(m_low)
+	elseif chr=(bitmap_char)
 		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends BitmapData { }%s",indents,in,oa,"Bitmap")
 		if cursor!=oa
 			return cursor
@@ -352,11 +353,12 @@ function translate_two(ss start,ss in)
 			set pointer# (Nullchar)
 		end
 		set cursor translate_fill(start,oa)
+		#here is not required the comparation, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(m_low)
+	elseif chr=(bitmap_char)
 		inc oa
 		set cursor translate_bitmap(start)
 		if cursor!=start
@@ -392,11 +394,10 @@ function translate_two(ss start,ss in)
 			set pointer# (Nullchar)
 		end
 		set cursor translate_rect(start,oa)
+		#here is not required the comparation, is inside
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
-			set cursor translate_two_switchAfter(cursor,oa,pointer)
-			if cursor!=oa
-				return cursor
-			end
+			return cursor
 		end
 	elseif chr=(search_const)
 		inc oa
@@ -496,7 +497,7 @@ function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 				return cursor
 			end
 		end
-		set pointer# (switch_char)
+		set pointer# (switch_char) #this was set short time outside of this function
 	else
 		if cursor!=oa
 			return cursor
@@ -579,6 +580,21 @@ end
 
 function translate_fill(ss indents,ss name)
 	ss cursor;set cursor spcfull(indents)
+	if name#=(Nullchar)
+		whiletrue
+			ss pointer
+			set pointer pareoon(cursor)
+			if pointer!=cursor
+				ss dotp
+				set dotp dotbackafter(cursor,pointer)
+				if dotp!=pointer
+					set cursor dotp
+				end
+				break
+			end
+			return name
+		end
+	end
 	ss ?chr;set chr cursor#
 	whiletrue
 		if chr!=(b_low)
@@ -589,7 +605,12 @@ function translate_fill(ss indents,ss name)
 		set cursor# (Nullchar)
 		inc cursor
 		sd ?len
-		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.%c%s",indents,name,chr,cursor)
+		vstr g="graphics."
+		if name#=(Nullchar)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%c%s",indents,g,chr,cursor)
+		else
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.%s%c%s",indents,name,g,chr,cursor)
+		end
 		if len>0
 			if len<(a_page_size)
 				call translated("Fill")

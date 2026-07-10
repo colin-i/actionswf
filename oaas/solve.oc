@@ -22,29 +22,6 @@ end
 
 function solver(ss value,ss after)
 	sd ?c
-	char var_string="attachMovie"^
-	set c memcmp(value,#var_string,\.var_string)
-	if c=0
-		call sprintf(#globals.outvalue,"%c",(var_const))
-		return #globals.outvalue
-	end
-	char stage_string="Stage"^
-	set c memcmp(value,#stage_string,\.stage_string)
-	if c=0
-		char w=".w"^
-		set c memcmp(after,#w,\.w)
-		if c=0
-			call sprintf(#globals.outvalue,"%c w",(search_const))
-			return #globals.outvalue
-		end
-		char h=".h"^
-		set c memcmp(after,#h,\.h)
-		if c=0
-			call sprintf(#globals.outvalue,"%c h",(search_const))
-			return #globals.outvalue
-		end
-		return (NULL)
-	end
 	if value#=(usc_pref)
 		inc value
 		if value#=(x_low)
@@ -71,11 +48,17 @@ function solver(ss value,ss after)
 		end
 		return (NULL)
 	end
-	char evfunc_string="() -> Void should be Dynamic -> Void"^
-	set c memcmp(value,#evfunc_string,\.evfunc_string)
+	char var_string="attachMovie"^
+	set c memcmp(value,#var_string,\.var_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(evfunc_char))
+		call sprintf(#globals.outvalue,"%c",(var_const))
 		return #globals.outvalue
+	end
+	char bfil_string="beginFill"^
+	set c memcmp(value,#bfil_string,\.bfil_string)
+	if c=0
+		set globals.stored_char (fill_char)
+		return ""
 	end
 	char text_string="createTextField"^
 	set c memcmp(value,#text_string,\.text_string)
@@ -83,11 +66,54 @@ function solver(ss value,ss after)
 		call sprintf(#globals.outvalue,"%c",(text_char))
 		return #globals.outvalue
 	end
-	char align_string="String should be flash.text.TextFormatAlign"^
-	set c memcmp(value,#align_string,\.align_string)
+	char efil_string="endFill"^
+	set c memcmp(value,#efil_string,\.efil_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(align_char))
-		return #globals.outvalue
+		set globals.stored_char (fill_char)
+		return ""
+	end
+	if value#=(l_low)
+		inc value
+		char rect_string="ineTo"^
+		set c memcmp(value,#rect_string,\.rect_string)
+		if c=0
+			set globals.stored_char (rect_char)
+			return ""
+		end
+		char bitmap_string="oadBitmap"^
+		set c memcmp(value,#bitmap_string,\.bitmap_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(bitmap_char))
+			return #globals.outvalue
+		end
+		return (NULL)
+	end
+	if value#=(S)
+		inc value
+		char stage_string="tage"^
+		set c memcmp(value,#stage_string,\.stage_string)
+		if c=0
+			char w=".w"^
+			set c memcmp(after,#w,\.w)
+			if c=0
+				call sprintf(#globals.outvalue,"%c w",(search_const))
+				return #globals.outvalue
+			end
+			char h=".h"^
+			set c memcmp(after,#h,\.h)
+			if c=0
+				call sprintf(#globals.outvalue,"%c h",(search_const))
+				return #globals.outvalue
+			end
+			return (NULL)
+		end
+		char align_string="tring should be flash.text.TextFormatAlign"^
+		set c memcmp(value,#align_string,\.align_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(align_char))
+			return #globals.outvalue
+		end
+		return (NULL)
 	end
 	ss ?z
 	ss cursor
@@ -121,23 +147,11 @@ function solver(ss value,ss after)
 			return #globals.outvalue
 		end
 	end
-	char bfil_string="beginFill"^
-	set c memcmp(value,#bfil_string,\.bfil_string)
+	char evfunc_string="() -> Void should be Dynamic -> Void"^
+	set c memcmp(value,#evfunc_string,\.evfunc_string)
 	if c=0
-		set globals.stored_char (fill_char)
-		return ""
-	end
-	char efil_string="endFill"^
-	set c memcmp(value,#efil_string,\.efil_string)
-	if c=0
-		set globals.stored_char (fill_char)
-		return ""
-	end
-	char rect_string="lineTo"^
-	set c memcmp(value,#rect_string,\.rect_string)
-	if c=0
-		set globals.stored_char (rect_char)
-		return ""
+		call sprintf(#globals.outvalue,"%c",(evfunc_char))
+		return #globals.outvalue
 	end
 	return (NULL)
 end

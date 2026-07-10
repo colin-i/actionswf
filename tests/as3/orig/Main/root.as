@@ -10,7 +10,7 @@ a Main
 	f s
 		g stage
 */
-		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');//3 m
+		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
@@ -26,7 +26,7 @@ c		Lib.current.addChild(img);
 function ()()//3 e+e
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
-useHandCursor=_x;//3
+useHandCursor=x;//3
 useHandCursor=_x;//3 b+s
 onEnterFrame=_fune;//3 o+s
 _alpha=_x;//3 p+s
@@ -36,4 +36,6 @@ _y()//3 s _+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
+begin();//3 l
+q.begin();//3 l
 */

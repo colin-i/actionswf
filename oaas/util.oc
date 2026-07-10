@@ -98,6 +98,20 @@ end
 function commaon(ss a)
 	callret anyon(a,(Comma))
 end
+function dotbackafter(ss start,ss right)
+	ss left
+	set left right
+	whiletrue
+		dec left
+		if left#=(Period)
+			inc left
+			return left
+		end
+		if left=start
+			return right
+		end
+	end
+end
 function equalafter(ss a)
 	callret anyafter(a,(Equals))
 end
