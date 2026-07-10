@@ -17,6 +17,7 @@ char rollover_string="RollOver"^
 char rollout_string="RollOut"^
 char var_translate="%s%svar %s=new %s();%s"
 char blank=""
+vstr graphics="graphics."
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -314,11 +315,11 @@ end
 
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
-#l	b or e
-#m	tot spcback= ''
+#l	.( b or e
+#m	all spcback= ''
 #o	onPATTERN=;
 #p	alpha=;
-#r	(,),)(,
+#r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
 #v	''''
@@ -605,11 +606,10 @@ function translate_fill(ss indents,ss name)
 		set cursor# (Nullchar)
 		inc cursor
 		sd ?len
-		vstr g="graphics."
 		if name#=(Nullchar)
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%c%s",indents,g,chr,cursor)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%c%s",indents,globalt.graphics,chr,cursor)
 		else
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.%s%c%s",indents,name,g,chr,cursor)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.%s%c%s",indents,name,globalt.graphics,chr,cursor)
 		end
 		if len>0
 			if len<(a_page_size)
@@ -747,6 +747,21 @@ end
 
 function translate_rect(ss indents,ss name)
 	ss cursor;set cursor spcfull(indents)
+	if name#=(Nullchar)
+		whiletrue
+			ss pointer
+			set pointer pareoon(cursor)
+			if pointer!=cursor
+				ss dotp
+				set dotp dotbackafter(cursor,pointer)
+				if dotp!=pointer
+					set cursor dotp
+				end
+				break
+			end
+			return name
+		end
+	end
 	set cursor# (Nullchar) #on lineTo...
 	inc cursor
 	ss width
@@ -781,7 +796,11 @@ function translate_rect(ss indents,ss name)
 									set width_end# (Nullchar)
 									set height_end# (Nullchar)
 									sd ?len
-									set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.graphics.drawRect%s%s,%s%s%s",indents,name,x,y,width,height,cursor)
+									if name#=(Nullchar)
+										set len snprintf(globalt.a_page_switch,(a_page_size),"%s%sdrawRect%s%s,%s%s%s",indents,globalt.graphics,x,y,width,height,cursor)
+									else
+										set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s.%sdrawRect%s%s,%s%s%s",indents,name,globalt.graphics,x,y,width,height,cursor)
+									end
 									if len>0
 										if len<(a_page_size)
 											call translated("Rect")

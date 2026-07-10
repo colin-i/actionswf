@@ -38,4 +38,6 @@ attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
 begin();//3 l
 q.begin();//3 l
+line(_width,_y);line(_width,_height);line(_x,_height);//3 r
+q.line(_width,_y);line(_width,_height);line(_x,_height);//3 r
 */
