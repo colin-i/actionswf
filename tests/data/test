@@ -30,6 +30,7 @@ at_folder=../ . ../integ && {
 	if [ "${platform}" = "win" ]; then
 		sed -i 's/\r$//' data.txt
 	fi
+	echo diff ../.expected/data${e}.txt data.txt
 	diff ../.expected/data${e}.txt data.txt
 	if [ $? != 0 ]; then
 		if [ -n "${1}" ]; then exit 1; fi
@@ -41,6 +42,7 @@ at_folder=../ . ../integ && {
 	etestexp=../.expected/example.swf.data${e}
 	etestexpt=${etestexp}.txt
 	base64 -d ${etestexpt} > ${etestexp}
+	echo diff ${etestexp} ${etest}
 	diff ${etestexp} ${etest}
 	if [ $? -ne 0 ]; then
 		if [ -n "${1}" ]; then exit 1; fi

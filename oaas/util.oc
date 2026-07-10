@@ -73,6 +73,24 @@ function spcfullafters(sv c)
 		end
 	end
 end
+function spcfullback(ss start,ss right)
+	ss left
+	set left right
+	whiletrue
+		dec left
+		if left#=(spacer)
+			inc left
+			return left
+		end
+		if left#=(HorizontalTab)
+			inc left
+			return left
+		end
+		if left=start
+			return left
+		end
+	end
+end
 
 function commaafter(ss a)
 	callret anyafter(a,(Comma))
