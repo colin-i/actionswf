@@ -112,13 +112,13 @@ call action("
 /*3
 
 i flash.display.BitmapData
-m ../a.png MyBitmapData
+m ../a.png My_BitmapData
 
 a Main
 	f s
 		g stage
 */
-		var texture=flash.display.BitmapData.loadBitmap('MyBitmapData');//3 m
+		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');//3 m
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
@@ -133,7 +133,7 @@ c		Lib.current.addChild(img);
 /*more tests
 function ()()//3 e+e
 begin(a);_x//3 l q+s
-var texture=flash.display.BitmapData._loadBitmap('MyBitmapData');//3 s+m
+var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
 useHandCursor=_x;//3
 useHandCursor=_x;//3 b+s
 onEnterFrame=_fune;//3 o+s
