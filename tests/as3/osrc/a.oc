@@ -13,15 +13,14 @@ call swf_new_ex("a.swf",550,400,0xffFFff,12,(flag_format))
 sd presprite;set presprite swf_sprite_new()
 char buf#3000
 call actionf_sprite(presprite,#buf,"
-/*3i flash.display.MovieClip
-i flash.display.Shape
+/*3i flash.display.Sprite
 i flash.events.Event
 i flash.text.TextField
 i flash.text.TextFormat
 i flash.text.TextFormatAlign
 i flash.events.MouseEvent
 
-a MyClip MovieClip*/
+a MyClip Sprite*/
 	function on_Enter_Frame(){
 		if(a){
 			_x-=c;
@@ -117,6 +116,7 @@ a Main
 		g stage
 */
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
+		createEmptyMovieClip('text',getNextHighestDepth());
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;

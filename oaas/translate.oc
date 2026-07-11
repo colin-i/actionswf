@@ -15,7 +15,7 @@ char enterframe_string="EnterFrame"^
 char press_string="Press"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
-char var_translate="%s%svar %s=new %s();%s"
+char var_translate="%s%svar %s=new %s();"
 char blank=""
 vstr graphics="graphics."
 
@@ -62,7 +62,7 @@ import "object_make" object_make
 ^import "quotafter" quotafter 1
 ^import "quoton" quoton 1
 ^import "replace" replace 5
-^import "semicolafter" semicolafter 1
+#^import "semicolafter" semicolafter 1
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
@@ -234,7 +234,7 @@ function translate_one(ss in,ss indents)
 		end
 		set o_a# (i_low)
 	elseif chr=(bitmap_char)
-		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends BitmapData { }%s",indents,in,oa,"Bitmap")
+		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends BitmapData { }",indents,in,oa,"Bitmap")
 		if cursor!=oa
 			return cursor
 		end
@@ -252,7 +252,7 @@ function translate_one(ss in,ss indents)
 			end
 			set o_a# (n_low)
 		end
-	elseif chr=(var_const)
+	elseif chr=(var_char)
 		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var")
 		if cursor!=oa
 			return cursor
@@ -291,20 +291,21 @@ function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
 			ss ?reminder
 			set reminder cursor#;set cursor# (Nullchar)
 			set o_a# (Nullchar)
-			set pointer translate_one_trio(format,indents,in,oa,pointer,#globalt.a_page,#globalt.blank)
+			set pointer translate_leftright(format,indents,in,oa,pointer,#globalt.a_page) #,#globalt.blank)
 			if pointer!=in
 				call translated(onOk)
 				return pointer
 			end
-			set o_a# (var_const)
+			set o_a# (var_char)
 			set cursor# reminder
 		end
 	end
 	return o_a
 end
-function translate_one_trio(ss format,ss indents,ss in,ss oa,ss pointer,ss out,ss two)
+
+function translate_leftright(ss format,ss indents,ss in,ss oa,ss pointer,ss out) #,ss two)
 	sd ?len
-	set len snprintf(out,(a_page_size),format,indents,in,oa,pointer,two)
+	set len snprintf(out,(a_page_size),format,indents,in,oa,pointer) #,two)
 	if len>0
 		if len<(a_page_size)
 			return out
@@ -400,7 +401,7 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(search_const)
+	elseif chr=(search_char)
 		inc oa
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
@@ -413,7 +414,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(var_const)
+	elseif chr=(var_char)
 		inc oa
 		set cursor translate_var(start)
 		if cursor!=start
@@ -990,16 +991,16 @@ function translate_label(ss indents)
 											set cursor parecon(pointer)
 											set size object_com(name,"height",pointer,cursor,#buffer,len)
 											if size!=0
-												inc cursor
-												set pointer semicolafter(cursor) # this for + case
-												if pointer!=cursor
-													set len snprintf(buffer,size,"%s",pointer) #strncat or strncpy are not good here
-													if len>=0
-														if len<size
-															return globalt.a_page_switch
-														end
-													end
-												end
+												#inc cursor
+												#set pointer semicolafter(cursor) # this for + case
+												#if pointer!=cursor
+												#	set len snprintf(buffer,size,"%s",pointer) #strncat or strncpy are not good here
+												#	if len>=0
+												#		if len<size
+												return globalt.a_page_switch
+												#		end
+												#	end
+												#end
 											end
 										end
 									end
@@ -1027,20 +1028,26 @@ function translate_var(ss indents)
 			inc cursor
 			ss name
 			set name quotafter(cursor)
-			if name!=cursor
+			if name!=cursor ##going on attachMovie
 				set cursor quoton(name)
 				if cursor!=class
 					set cursor# (Nullchar)
-					inc cursor
-					ss pointer
-					set pointer semicolafter(cursor)
-					if pointer!=cursor
-						set cursor translate_one_trio(#globalt.var_translate,indents,#globalt.blank,name,class,globalt.a_page_switch,pointer)
-						if cursor!=#globalt.blank
-							call translated("VarMorph")
-							return cursor
-						end
+					#inc cursor
+					#ss pointer
+					#set pointer semicolafter(cursor)
+					#if pointer!=cursor
+					set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,name,class,globalt.a_page_switch) #,pointer)
+					if cursor!=#globalt.blank
+						call translated("VarAttach")
+						return cursor
 					end
+					#end
+				end
+			else #going on createEmptyMovieClip
+				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,class,"Shape",globalt.a_page_switch) #,pointer)
+				if cursor!=#globalt.blank
+					call translated("VarCreate")
+					return cursor
 				end
 			end
 		end

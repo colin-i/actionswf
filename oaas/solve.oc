@@ -27,7 +27,7 @@ function solver(ss value,ss after)
 		if value#=(x_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c%c%c",(search_const),(spacer),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c%c",(search_char),(spacer),(usc_pref))
 				return #globals.outvalue
 			end
 			return (NULL)
@@ -35,7 +35,7 @@ function solver(ss value,ss after)
 		if value#=(y_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c%c%c",(search_const),(spacer),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c%c",(search_char),(spacer),(usc_pref))
 				return #globals.outvalue
 			end
 			return (NULL)
@@ -51,7 +51,7 @@ function solver(ss value,ss after)
 	char var_string="attachMovie"^
 	set c memcmp(value,#var_string,\.var_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(var_const))
+		call sprintf(#globals.outvalue,"%c",(var_char))
 		return #globals.outvalue
 	end
 	char bfil_string="beginFill"^
@@ -60,11 +60,23 @@ function solver(ss value,ss after)
 		set globals.stored_char (fill_char)
 		return ""
 	end
-	char text_string="createTextField"^
-	set c memcmp(value,#text_string,\.text_string)
+	char create_string="create"^
+	set c memcmp(value,#create_string,\.create_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(text_char))
-		return #globals.outvalue
+		add value \.create_string
+		char emclip_string="EmptyMovieClip"^
+		set c memcmp(value,#emclip_string,\.emclip_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(var_char))
+			return #globals.outvalue
+		end
+		char text_string="TextField"^
+		set c memcmp(value,#text_string,\.text_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(text_char))
+			return #globals.outvalue
+		end
+		return (NULL)
 	end
 	char efil_string="endFill"^
 	set c memcmp(value,#efil_string,\.efil_string)
@@ -96,13 +108,13 @@ function solver(ss value,ss after)
 			char w=".w"^
 			set c memcmp(after,#w,\.w)
 			if c=0
-				call sprintf(#globals.outvalue,"%c w",(search_const))
+				call sprintf(#globals.outvalue,"%c w",(search_char))
 				return #globals.outvalue
 			end
 			char h=".h"^
 			set c memcmp(after,#h,\.h)
 			if c=0
-				call sprintf(#globals.outvalue,"%c h",(search_const))
+				call sprintf(#globals.outvalue,"%c h",(search_char))
 				return #globals.outvalue
 			end
 			return (NULL)
