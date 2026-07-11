@@ -116,7 +116,7 @@ a Main
 		g stage
 */
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
-		createEmptyMovieClip('text',getNextHighestDepth());
+		//createEmptyMovieClip('text',getNextHighestDepth());
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;

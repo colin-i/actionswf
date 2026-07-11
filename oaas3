@@ -594,8 +594,8 @@ if not os.environ.get('skip_comp'):
 
 											resolved=True
 											break
-									if not solved: #for example, if is kind 1 is a copy of 7
-										unresolved=True
+								if not solved:
+									unresolved=True
 					if resolved:
 						for f in touched:
 							with open(f, "w") as fp:
