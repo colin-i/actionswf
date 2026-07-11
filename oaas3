@@ -562,27 +562,29 @@ if not os.environ.get('skip_comp'):
 											if not solved:
 												if solved==None:
 													break
-												#this case is with the postpone_char
+												#this case is with the postpone_char. or normal
 												solved = lib.resolve()
 												#forking = solved.isupper(); if forking: solved=solved.lower()
-												delim = a1 + a2a + a3
-
-												part1, part2 = linestr.split(delim)
-												tokens = part2.split(lib.sep().decode())
-												n = lib.postpone_char().decode()
-												for i,token in enumerate(tokens):
-													token = token.lstrip()          # remove leading whitespace
-													if isinstance(solved, bytes):
-														if token.startswith(n):
-															solved = solved.decode()
-															token = solved + token[len(n):]
-													tokens[i]=token
-												if isinstance(solved, bytes):
-													#can verify in cached lines
-													break # a case is at rect where there are multiple lineTo
-												save_line(module,line)
-												linestr = part1 + delim + "".join(tokens)
-											else:
+												comparator = solved.decode()
+												part1, delim, part2 = linestr.partition(a1 + a2a + a3)
+												if delim:
+													tokens = part2.split(lib.sep().decode())
+													n = lib.postpone_char().decode()
+													for i,token in enumerate(tokens):
+														token = token.lstrip()          # remove leading whitespace
+														if isinstance(solved, bytes):
+															if token == n:
+																solved = comparator
+																token = solved + token[len(n):]
+															elif token == comparator:
+																break #example at rect, else will be r+r+r
+														tokens[i]=token
+													if not isinstance(solved, bytes):
+														save_line(module,line)
+														linestr = part1 + delim + "".join(tokens)
+													elif token == comparator:
+														break #example at rect, else will be r+r+r
+											if isinstance(solved, bytes):
 												if save_line(module,line):
 													linestr = linestr + a1 + a2a + a3 + solved.decode()
 												else:
@@ -592,8 +594,8 @@ if not os.environ.get('skip_comp'):
 
 											resolved=True
 											break
-								if not solved:
-									unresolved=True
+									if not solved: #for example, if is kind 1 is a copy of 7
+										unresolved=True
 					if resolved:
 						for f in touched:
 							with open(f, "w") as fp:

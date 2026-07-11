@@ -23,11 +23,12 @@ c		Lib.current.addChild(img);
 }
 */
 /*more tests
+//3v shape Shape
+useHandCursor=x;//3
+useHandCursor=_x;//3 b+s
 function ()()//3 e+e
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
-useHandCursor=x;//3
-useHandCursor=_x;//3 b+s
 onEnterFrame=_fune;//3 o+s
 _alpha=_x;//3 p+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
@@ -36,8 +37,6 @@ _y()//3 s _+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
-begin();//3 l
 q.begin();//3 l
-line(_width,_y);line(_width,_height);line(_x,_height);//3 r
 q.line(_width,_y);line(_width,_height);line(_x,_height);//3 r
 */
