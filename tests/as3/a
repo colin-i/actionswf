@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
-convert -size 1x1 xc:black a.png #or none for transparent
+
+base64 -d a.jpg.txt > a.jpg
+#convert -size 1x1 xc:black a.png #or none for transparent
+
 cd osrc
 ${RUN__SHELL} ./a
 cd ..

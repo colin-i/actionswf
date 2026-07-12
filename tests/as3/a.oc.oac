@@ -16,6 +16,10 @@ call actionf_sprite(presprite,#buf,"|||orig/MyClip/clip.as|||",2)
 sd sprite;set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip")
 
+sd img
+set img swf_jpeg("../a.jpg")
+call swf_exports_add(img,"My_BitmapData")
+
 call action("|||orig/Main/root.as|||")
 
 call swf_done()

@@ -54,11 +54,22 @@ function solver(ss value,ss after)
 		call sprintf(#globals.outvalue,"%c",(var_char))
 		return #globals.outvalue
 	end
-	char bfil_string="beginFill"^
+	char bfil_string="begin"^
 	set c memcmp(value,#bfil_string,\.bfil_string)
 	if c=0
-		set globals.stored_char (fill_char)
-		return ""
+		add value \.bfil_string
+		char bfilbitmap_string="BitmapFill"^
+		set c memcmp(value,#bfilbitmap_string,\.bfilbitmap_string)
+		if c=0
+			set globals.stored_char (fill_char)
+			return ""
+		end
+		char bfilsimple_string="Fill"^
+		set c memcmp(value,#bfilsimple_string,\.bfilsimple_string)
+		if c=0
+			set globals.stored_char (fill_char)
+			return ""
+		end
 	end
 	char create_string="create"^
 	set c memcmp(value,#create_string,\.create_string)
