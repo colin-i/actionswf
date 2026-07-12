@@ -1,5 +1,5 @@
 #!/bin/sh
-rm -f a.swf a.png
+rm -f a.swf a.jpg
 if [ -e dest ]; then
 	rm -f dest/*
 fi
