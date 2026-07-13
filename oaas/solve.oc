@@ -27,7 +27,7 @@ function solver(ss value,ss after)
 		if value#=(x_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c%c%c",(search_char),(spacer),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c",(search_char),(usc_pref))
 				return #globals.outvalue
 			end
 			return (NULL)
@@ -35,7 +35,7 @@ function solver(ss value,ss after)
 		if value#=(y_low)
 			inc value
 			if value#=(Nullchar)
-				call sprintf(#globals.outvalue,"%c%c%c",(search_char),(spacer),(usc_pref))
+				call sprintf(#globals.outvalue,"%c%c",(search_char),(usc_pref))
 				return #globals.outvalue
 			end
 			return (NULL)
@@ -119,13 +119,13 @@ function solver(ss value,ss after)
 			char w=".w"^
 			set c memcmp(after,#w,\.w)
 			if c=0
-				call sprintf(#globals.outvalue,"%c w",(search_char))
+				call sprintf(#globals.outvalue,"%cw",(search_char))
 				return #globals.outvalue
 			end
 			char h=".h"^
 			set c memcmp(after,#h,\.h)
 			if c=0
-				call sprintf(#globals.outvalue,"%c h",(search_char))
+				call sprintf(#globals.outvalue,"%ch",(search_char))
 				return #globals.outvalue
 			end
 			return (NULL)

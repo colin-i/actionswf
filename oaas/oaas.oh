@@ -36,7 +36,6 @@ const text_char=t_low
 const var_char=v_low
 
 #util solve
-const spacer=Space
 const usc_pref=_
 
 #solve

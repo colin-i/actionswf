@@ -302,8 +302,8 @@ function translate_one_add(ss indents,ss in,ss oa)
 		set reminder cursor#;set cursor# (Nullchar)
 		set ext "."
 	else
-		set pointer ext
-		set ext #globalt.blank
+		set pointer #globalt.blank
+		set ext pointer
 		set reminder (Nullchar)
 	end
 	set o_a# (Nullchar)
@@ -873,7 +873,9 @@ function translate_srch_all(ss start)
 	return cursor
 end
 function translate_search(ss start,ss oa)
-	ss cursor;set cursor spcfull(oa)
+	ss cursor
+	#set cursor spcfull(oa) #at py there is a comparation that is not spcfull there
+	set cursor oa
 	ss ?types=0
 	while cursor#!=(Nullchar)
 		if cursor#=(_)
@@ -1133,4 +1135,5 @@ Static
 Text
 TextFormat
 Var
-VarMorph
+VarAttach
+VarCreate

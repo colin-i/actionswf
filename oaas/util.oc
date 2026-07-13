@@ -48,7 +48,7 @@ function spcfull(ss a)
 	whiletrue
 		if a#=(HorizontalTab)
 			inc a
-		elseif a#=(spacer)
+		elseif a#=(Space)
 			inc a
 		else
 			return a
@@ -65,7 +65,7 @@ function spcfullafters(sv c)
 			return b
 		end
 		inc a
-		if a#=(spacer)
+		if a#=(Space)
 			return a
 		end
 		if a#=(HorizontalTab)
@@ -78,7 +78,7 @@ function spcfullback(ss start,ss right)
 	set left right
 	whiletrue
 		dec left
-		if left#=(spacer)
+		if left#=(Space)
 			inc left
 			return left
 		end
