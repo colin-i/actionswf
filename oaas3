@@ -579,7 +579,7 @@ if not os.environ.get('skip_comp'):
 															against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
 															if against == n:
 																solved = comparator
-																token = solved + token[len(n):]
+																token = solved + token[nn:]
 															#elif against == c0: #this comparation was going with another case at next code
 															#	break #example at rect, else will be r x+r+r
 														tokens[i]=token
