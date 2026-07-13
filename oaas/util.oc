@@ -220,9 +220,14 @@ function print_stdout(ss a)
 	call fputs(a,so)
 end
 function translated_ratio(ss ?print)
-	svu ?n=100
-	mult n globalu.translations
-	divu n globalu.alltranslations
+	svu ?n
+	if globalu.alltranslations=0
+		set n 0
+	else
+		set n 100
+		mult n globalu.translations
+		divu n globalu.alltranslations
+	end
 	if print=(TRUE)
 		call printf("%u%%",n)
 	end

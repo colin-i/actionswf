@@ -109,17 +109,14 @@ call swf_exports_add(img,"My_BitmapData")
 
 call action("
 //3i flash.Lib
-
-/*3
-
-i flash.display.Shape
+/*3i flash.display.Shape
 i flash.display.BitmapData
 m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
 a Main
 	f s
-		g stage
+		g
 */
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
 		createEmptyMovieClip('text',getNextHighestDepth());
@@ -127,15 +124,12 @@ a Main
 		text.beginBitmapFill(texture,matrix,true);
 		text.lineTo(120, 0);text.lineTo(120, 80);text.lineTo(0, 80);
 		text.endFill();
-		//3 d text stage
+		//3d text stage
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
-		/*3d shape stage
-
-c		var img = new Bitmap( new MyBitmapData(0, 0) );
-c		Lib.current.addChild(img);
+		/*3d shape @
 	}
 }
 */

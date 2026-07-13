@@ -90,7 +90,7 @@ end
 #c	comment
 #d	s [s] but diff at format
 #f	p/s
-#g	string
+#g	like n
 #i	string
 #m      same like v
 #n	a letter and predef format
@@ -101,8 +101,9 @@ function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
 	sd ?len
 	ss ?chr;set chr oa#
-	ss cursor;ss pointer;ss ?reminder;ss ext;ss o_a
+	ss cursor;ss o_a;ss pointer;ss ext
 	if chr=(a_low)
+		ss ?reminder
 		set o_a oa
 		inc oa
 		set oa spcfull(oa)
@@ -138,30 +139,10 @@ function translate_one(ss in,ss indents)
 		end
 		set oa# (c_low)
 	elseif chr=(d_low)
-		set o_a oa
-		inc oa
-		set oa spcfull(oa)
-
-		set cursor spcfullafters(#oa)
+		set cursor translate_one_add(indents,in,oa)
 		if cursor!=oa
-			set ext "."
-			set pointer spcfull(cursor)
-			set reminder cursor#;set cursor# (Nullchar)
-		else
-			set ext #globalt.blank
-			set pointer ext
-			set reminder (Nullchar)
+			return cursor
 		end
-		set o_a# (Nullchar)
-		set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
-		if len>0
-			if len<(a_page_size)
-				call translated("AddChild")
-				return #globalt.a_page
-			end
-		end
-		set o_a# (d_low)
-		set cursor# reminder
 	elseif chr=(f_low)
 		set cursor oa
 		inc oa
@@ -195,19 +176,10 @@ function translate_one(ss in,ss indents)
 			break
 		end
 	elseif chr=(g_low)
-		set o_a oa
-		inc oa
-		set oa spcfull(oa)
-
-		set o_a# (Nullchar)
-		set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=Lib.current.stage;",indents,in,oa)
-		if len>0
-			if len<(a_page_size)
-				call translated("Stage")
-				return #globalt.a_page
-			end
+		set cursor translate_one_simple(indents,in,oa,"var stage=Lib.current.stage;","Stage",(g_low))
+		if cursor!=oa
+			return cursor
 		end
-		set o_a# (g_low)
 	elseif chr=(i_low)
 		set o_a oa
 		inc oa
@@ -239,18 +211,9 @@ function translate_one(ss in,ss indents)
 			return cursor
 		end
 	elseif chr=(n_low)
-		set o_a oa
-		inc oa
-		if oa#=(Nullchar)
-			set o_a# (Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),"%s%sstatic",indents,in)
-			if len>0
-				if len<(a_page_size)
-					call translated("Static")
-					return #globalt.a_page
-				end
-			end
-			set o_a# (n_low)
+		set cursor translate_one_simple(indents,in,oa,"static","Static",(n_low))
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(var_char)
 		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var")
@@ -277,6 +240,24 @@ function translate_one(ss in,ss indents)
 	call untranslated(in)
 	return in
 end
+function translate_one_simple(ss indents,ss in,ss oa,ss specific,ss onOk,ss ?chr)
+	ss o_a
+	set o_a oa
+	inc oa
+	if oa#=(Nullchar)
+		set o_a# (Nullchar)
+		sd ?len
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s",indents,in,specific)
+		if len>0
+			if len<(a_page_size)
+				call translated(onOk)
+				return #globalt.a_page
+			end
+		end
+		set o_a# chr
+	end
+	return o_a
+end
 function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
 	ss o_a
 	set o_a oa
@@ -300,6 +281,42 @@ function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
 			set cursor# reminder
 		end
 	end
+	return o_a
+end
+function translate_one_add(ss indents,ss in,ss oa)
+	ss o_a
+	set o_a oa
+	inc oa
+	set oa spcfull(oa)
+	ss cursor;ss ext;ss pointer;ss ?reminder
+	set cursor spcfullafters(#oa)
+	if cursor!=oa
+		set pointer spcfull(cursor)
+		if pointer#=(Atsymbol)
+			inc pointer
+			if pointer#!=(Nullchar)
+				return o_a
+			end
+			set pointer "stage"
+		end
+		set reminder cursor#;set cursor# (Nullchar)
+		set ext "."
+	else
+		set pointer ext
+		set ext #globalt.blank
+		set reminder (Nullchar)
+	end
+	set o_a# (Nullchar)
+	sd ?len
+	set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
+	if len>0
+		if len<(a_page_size)
+			call translated("AddChild")
+			return #globalt.a_page
+		end
+	end
+	set o_a# (d_low)
+	set cursor# reminder
 	return o_a
 end
 
