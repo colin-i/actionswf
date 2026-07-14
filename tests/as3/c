@@ -6,4 +6,7 @@ fi
 if [ -e __oacache__ ]; then
 	rm -rf __oacache__/*
 fi
+if [ -e mirror ]; then
+	rm -r mirror src
+fi
 cd osrc && ${RUN__SHELL} ./c

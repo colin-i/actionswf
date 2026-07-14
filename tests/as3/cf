@@ -1,6 +1,0 @@
-
-#if [ -z "${general}" ]; then
-./c
-#fi
-#else simple ./c is already implemented in Makefile
-rm -r mirror src
