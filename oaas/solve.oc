@@ -138,6 +138,24 @@ function solver(ss value,ss after)
 		end
 		return (NULL)
 	end
+	char unex_string="Unexpected "^
+	set c memcmp(value,#unex_string,\.unex_string)
+	if c=0
+		add value (\.unex_string)
+		char main_string="main"^
+		set c memcmp(value,#main_string,\.main_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(ignore_pref))
+			return #globals.outvalue
+		end
+		char new_string="keyword \"new\""^
+		set c memcmp(value,#new_string,\.new_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(ignore_pref))
+			return #globals.outvalue
+		end
+		return (NULL)
+	end
 	ss ?z
 	ss cursor
 	set cursor on_string_get(#z)

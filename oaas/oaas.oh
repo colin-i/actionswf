@@ -16,6 +16,7 @@ Const i_low=0x69
 Const m_low=0x6D
 Const n_low=0x6E
 Const w_low=0x77
+const func_char=f_low
 
 #translate solve
 Const e_low=0x65
@@ -34,6 +35,7 @@ const rect_char=r_low
 const search_char=s_low
 const text_char=t_low
 const var_char=v_low
+const ignore_pref=Exclamationmark
 
 #util solve
 const usc_pref=_

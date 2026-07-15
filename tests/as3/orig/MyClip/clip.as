@@ -52,8 +52,7 @@ a MyClip Sprite*/
 	function onOut(){
 		_alpha= 100;
 	}
-/*3
-	f p*/
+	function new(){//3 f
 		// Simple visual so you can see it
 		beginFill(0x3399FF);
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);
@@ -80,8 +79,9 @@ a MyClip Sprite*/
 		//3d label
 
 		onEnterFrame = on_Enter_Frame;
-/*3	}
-	n*/
+	}
+	//3n
 	var c=%u;
 	var a=false;var b=false;
 //3 }
+new();

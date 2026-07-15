@@ -18,6 +18,8 @@ char rollout_string="RollOut"^
 char var_translate="%s%svar %s=new %s();"
 char blank=""
 vstr graphics="graphics."
+vstr public="public"
+vstr super="super();"
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -81,8 +83,8 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#            m        v
-#aBcdEfg i  LMnOP RST V X
+#     f      m        v
+#aBcdEFg i  LMnOP RST V X
 #       h jk     q   u w yz
 #also at the end
 
@@ -143,7 +145,7 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(f_low)
+	elseif chr=(func_char)
 		set cursor oa
 		inc oa
 		set oa spcfull(oa)
@@ -151,9 +153,9 @@ function translate_one(ss in,ss indents)
 		whiletrue
 			ss type;ss name
 			if oa#=(p_low)
-				set type "public"
+				set type globalt.public
 				set name "new"
-				set ext "super();"
+				set ext globalt.super
 			elseif oa#=(s_low)
 				set type "static"
 				set name "main"
@@ -171,7 +173,7 @@ function translate_one(ss in,ss indents)
 						return #globalt.a_page
 					end
 				end
-				set cursor# (f_low)
+				set cursor# (func_char)
 			end
 			break
 		end
@@ -333,6 +335,7 @@ end
 
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
+#f
 #l	.( b or e
 #m	all spcback= ''
 #o	onPATTERN=;
@@ -350,14 +353,27 @@ function translate_two(ss start,ss in)
 	if chr=(postpone_char)
 		return start
 	end
+	if chr=(ignore_pref)
+		call translated("Ignored")
+		return #globalt.blank
+	end
 	if chr=(b_low)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
 	elseif chr=(evfunc_char)
-		inc oa
 		set cursor translate_eparam(start) #why here? who is using untranslated, anyway
 		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(func_char)
+		set cursor translate_function(start)
+		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
@@ -378,27 +394,27 @@ function translate_two(ss start,ss in)
 			return cursor
 		end
 	elseif chr=(bitmap_char)
-		inc oa
 		set cursor translate_bitmap(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
 			end
 		end
 	elseif chr=(onev_char)
-		inc oa
 		set cursor translate_onev(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
 			end
 		end
 	elseif chr=(alpha_char)
-		inc oa
 		set cursor translate_alpha(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
@@ -423,27 +439,27 @@ function translate_two(ss start,ss in)
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
 	elseif chr=(text_char)
-		inc oa
 		set cursor translate_textfield(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
 			end
 		end
 	elseif chr=(var_char)
-		inc oa
 		set cursor translate_var(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
 			end
 		end
 	elseif chr=(align_char)
-		inc oa
 		set cursor translate_textformat(start)
 		if cursor!=start
+			inc oa
 			set cursor translate_two_switch(oa,cursor)
 			if cursor!=oa
 				return cursor
@@ -454,10 +470,10 @@ function translate_two(ss start,ss in)
 		set cursor translate_textformat(mem)
 		if cursor=mem
 			call strcpy(mem,start)
-			set cursor translate_textfield(mem)
+			set cursor translate_var(mem)
 			if cursor=mem
 				call strcpy(mem,start)
-				set cursor translate_var(mem)
+				set cursor translate_textfield(mem)
 				if cursor=mem
 					call strcpy(mem,start)
 					set cursor translate_srch_all(mem)
@@ -595,6 +611,17 @@ function translate_eparam(ss start)
 		end
 	end
 	return start
+end
+
+function translate_function(ss start)
+	sd ?len
+	set len snprintf(globalt.a_page_switch,(a_page_size),"%s %s%s",globalt.public,start,globalt.super)
+	if len>0
+		if len<(a_page_size)
+			call translated("FunctionMorph")
+			return globalt.a_page_switch
+		end
+	end
 end
 
 function translate_fill(ss indents,ss name)
@@ -1125,6 +1152,7 @@ Comment
 Event
 Fill
 Function
+FunctionMorph
 Import
 On
 Rect

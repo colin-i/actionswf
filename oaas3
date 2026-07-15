@@ -212,21 +212,13 @@ def stop_server():
 	pid=int(server_pid)
 	try:
 		os.kill(pid, signal.SIGTERM) #async
-	except ProcessLookupError:
-		return
-	try:
 		os.kill(pid, 0)  # signal 0 = just checks if it's alive
-	except ProcessLookupError:
-		return
-	time.sleep(1)
-	try:
+		time.sleep(1)
 		os.kill(pid, 0)
-	except ProcessLookupError:
-		return
-	try:
 		os.kill(pid, signal.SIGKILL)
-	except ProcessLookupError:
+	except ProcessLookupError: #only from os.kill
 		return
+	os.waitpid(pid,0)
 def exiting():
 	stop_server()
 	exit(1)
@@ -493,11 +485,13 @@ if not os.environ.get('skip_comp'):
 						fullfilename=file["file"]
 						filename=os.path.basename(fullfilename)
 						module=os.path.splitext(filename)[0]
+						print(module)
 						for d in file["diagnostics"]:
 							if d["severity"] == 1:
 								solved = None
 								k=d["kind"]
-								if k in [2,7]:
+								if k in [2,4,7]:
+									pp=''
 									if k==7:
 										# this is unstable: module=d["args"]["moduleType"]["name"]
 										#field=d["args"]["entries"][0]["fields"][0]["field"]
@@ -507,37 +501,36 @@ if not os.environ.get('skip_comp'):
 										line=positions["line"]
 
 										value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
-
-										print(module+' '+str(line)+' '+value)
 									else:
-										positions=d["range"]["start"]
-										baseline=positions["line"]
-										character=positions["character"]
 										value=d["args"].split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
+										positions=d["range"]["start"]
+										line=positions["line"]
+										if k==2:
+											character=positions["character"]
 
-										src = Path(fullfilename).read_text() #encoding="utf-8"
-										lines = src.splitlines(keepends=True)
-										# get text before the target line
-										before = "".join(lines[:baseline])
-										# add characters in the target line
-										offset_chars = len(before) + character
-										# convert character offset -> UTF-8 byte offset
-										offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
-										offset_bytes=str(offset_bytes)
+											src = Path(fullfilename).read_text() #encoding="utf-8"
+											lines = src.splitlines(keepends=True)
+											# get text before the target line
+											before = "".join(lines[:line])
+											# add characters in the target line
+											offset_chars = len(before) + character
+											# convert character offset -> UTF-8 byte offset
+											offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
+											offset_bytes=str(offset_bytes)
 
-										os.chdir(dest)
-										reuser.extend([filename+'@'+offset_bytes+'@position'])
-										xm=crun(reuser,capture_output=True)
-										reuser.pop()
-										xm = ET.fromstring(xm.stderr).find('pos')
-										if xm is not None:
-											xm=xm.text
-											line=xm[len(fullfilename)+1:]
-											line=line.split(':')[0]
-											line=int(line)-1 # from human
-										else:
-											line=baseline
-										print(module+' ('+str(baseline)+':'+str(character)+' at '+offset_bytes+' to '+str(line)+') '+value)
+											pp='('+str(line)+':'+str(character)+' at '+offset_bytes+') to '
+
+											os.chdir(dest)
+											reuser.extend([filename+'@'+offset_bytes+'@position'])
+											xm=crun(reuser,capture_output=True)
+											reuser.pop()
+											xm = ET.fromstring(xm.stderr).find('pos')
+											if xm is not None:
+												xm=xm.text
+												line=xm[len(fullfilename)+1:]
+												line=line.split(':')[0]
+												line=int(line)-1 # from human
+									print(pp+str(line)+' '+value)
 									#now is like: fix one error will fix another 4
 									for f in files:
 										mod = get_module_insens(f)

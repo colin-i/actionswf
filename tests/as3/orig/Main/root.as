@@ -6,9 +6,10 @@ m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
 a Main
-	f s
-		g
-*/
+	n*/
+	function main(){
+		//3g
+
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
 		createEmptyMovieClip('text',getNextHighestDepth());
 		var matrix=new flash.geom.Matrix();
@@ -20,11 +21,13 @@ a Main
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
-		/*3d shape @
+		//3d shape @
 	}
-}
-*/
+//3}
+
 /*more tests
+//3f s
+//3f p
 //3v shape Shape
 useHandCursor=x;//3
 useHandCursor=_x;//3 b+s
@@ -39,4 +42,6 @@ _y()//3 s_+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
+_a//3 f+s
 */
+main();

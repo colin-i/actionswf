@@ -66,8 +66,7 @@ a MyClip Sprite*/
 	function onOut(){
 		_alpha= 100;
 	}
-/*3
-	f p*/
+	function new(){//3 f
 		// Simple visual so you can see it
 		beginFill(0x3399FF);
 		lineTo(120, 0);lineTo(120, 80);lineTo(0, 80);
@@ -94,11 +93,12 @@ a MyClip Sprite*/
 		//3d label
 
 		onEnterFrame = on_Enter_Frame;
-/*3	}
-	n*/
+	}
+	//3n
 	var c=%u;
 	var a=false;var b=false;
 //3 }
+new();
 ",2)
 sd sprite;set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip")
@@ -115,9 +115,10 @@ m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
 a Main
-	f s
-		g
-*/
+	n*/
+	function main(){
+		//3g
+
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
 		createEmptyMovieClip('text',getNextHighestDepth());
 		var matrix=new flash.geom.Matrix();
@@ -129,11 +130,13 @@ a Main
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
-		/*3d shape @
+		//3d shape @
 	}
-}
-*/
+//3}
+
 /*more tests
+//3f s
+//3f p
 //3v shape Shape
 useHandCursor=x;//3
 useHandCursor=_x;//3 b+s
@@ -148,7 +151,9 @@ _y()//3 s_+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
+_a//3 f+s
 */
+main();
 ")
 
 call swf_done()
