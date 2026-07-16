@@ -1,12 +1,9 @@
 
-/*3i flash.display.Sprite
-i flash.events.Event
-i flash.text.TextField
+/*3
 i flash.text.TextFormat
 i flash.text.TextFormatAlign
-i flash.events.MouseEvent
 
-a MyClip Sprite*/
+a MyClip flash.display.Sprite*/
 	function on_Enter_Frame(){
 		if(a){
 			_x-=c;

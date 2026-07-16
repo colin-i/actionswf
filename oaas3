@@ -54,7 +54,9 @@ if lib:
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 		lib.sep.restype = ctypes.c_char
 		lib.postpone_char.restype = ctypes.c_char
-		lib.solve.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve.restype = ctypes.c_char_p
+		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
+		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
+		lib.solve7.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve7.restype = ctypes.c_char_p
 		lib.resolve.restype = ctypes.c_char
 	except Exception:
 		print('lib oaas error')
@@ -489,10 +491,10 @@ if not os.environ.get('skip_comp'):
 						for d in file["diagnostics"]:
 							if d["severity"] == 1:
 								solved = None
-								k=d["kind"]
-								if k in [2,4,7]:
+								kind=d["kind"]
+								if kind in [2,4,7]:
 									pp=''
-									if k==7:
+									if kind==7:
 										# this is unstable: module=d["args"]["moduleType"]["name"]
 										#field=d["args"]["entries"][0]["fields"][0]["field"]
 										#module=os.path.splitext(field["pos"]["file"])[0]
@@ -505,7 +507,7 @@ if not os.environ.get('skip_comp'):
 										value=d["args"].split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
 										positions=d["range"]["start"]
 										line=positions["line"]
-										if k==2:
+										if kind==2:
 											character=positions["character"]
 
 											src = Path(fullfilename).read_text() #encoding="utf-8"
@@ -551,7 +553,13 @@ if not os.environ.get('skip_comp'):
 											else:
 												has_term=False
 
-											solved = lib.solve(value.encode(),linestr[positions["character"]:].encode())
+											match kind:
+												case 7:
+													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
+												case 4:
+													solved = lib.solve4(value.encode())
+												case _: #2
+													solved = lib.solve2(value.encode())
 											if not solved:
 												if solved==None:
 													break

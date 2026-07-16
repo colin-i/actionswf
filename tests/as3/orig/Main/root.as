@@ -1,7 +1,5 @@
 
-//3i flash.Lib
-/*3i flash.display.Shape
-i flash.display.BitmapData
+/*3
 m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
@@ -26,6 +24,7 @@ a Main
 //3}
 
 /*more tests
+//3i a.b.c
 //3f s
 //3f p
 //3v shape Shape
@@ -43,5 +42,6 @@ create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
 _a//3 f+s
+qwer//3z we asd
 */
 main();

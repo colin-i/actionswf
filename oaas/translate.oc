@@ -46,6 +46,7 @@ importx "free" free
 importx "memcmp" memcmp
 importx "strcpy" strcpy
 importx "strdup" strdup
+importx "strlen" strlen
 importx "snprintf" snprintf
 importx "strstr" strstr
 
@@ -84,8 +85,8 @@ function switch_page()
 end
 
 #     f      m        v
-#aBcdEFg i  LMnOP RST V X
-#       h jk     q   u w yz
+#aBcdEFg i  LMnOP RST V X Z
+#       h jk     q   u w y
 #also at the end
 
 #a	s [s]
@@ -109,8 +110,7 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		set oa spcfull(oa)
-
-		set cursor spcfullafters(#oa)
+		set cursor spcfullafters(oa)
 		if cursor!=oa
 			set ext " extends "
 			set pointer spcfull(cursor)
@@ -178,7 +178,7 @@ function translate_one(ss in,ss indents)
 			break
 		end
 	elseif chr=(g_low)
-		set cursor translate_one_simple(indents,in,oa,"var stage=Lib.current.stage;","Stage",(g_low))
+		set cursor translate_one_simple(indents,in,oa,"var stage=flash.Lib.current.stage;","Stage",(g_low))
 		if cursor!=oa
 			return cursor
 		end
@@ -208,7 +208,7 @@ function translate_one(ss in,ss indents)
 		end
 		set o_a# (i_low)
 	elseif chr=(bitmap_char)
-		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends BitmapData { }",indents,in,oa,"Bitmap")
+		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends flash.display.BitmapData { }",indents,in,oa,"Bitmap")
 		if cursor!=oa
 			return cursor
 		end
@@ -266,7 +266,7 @@ function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
 	inc oa
 	set oa spcfull(oa)
 	ss cursor
-	set cursor spcfullafters(#oa)
+	set cursor spcfullafters(oa)
 	if cursor!=oa
 		ss pointer
 		set pointer spcfull(cursor)
@@ -291,7 +291,7 @@ function translate_one_add(ss indents,ss in,ss oa)
 	inc oa
 	set oa spcfull(oa)
 	ss cursor;ss ext;ss pointer;ss ?reminder
-	set cursor spcfullafters(#oa)
+	set cursor spcfullafters(oa)
 	if cursor!=oa
 		set pointer spcfull(cursor)
 		if pointer#=(Atsymbol)
@@ -345,6 +345,7 @@ end
 #t	'',,,,)
 #v	''''
 #x	=''
+#z	replacing a to b
 
 function translate_two(ss start,ss in)
 	ss oa;set oa spcfull(in)
@@ -380,13 +381,7 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(fill_char)
-		inc oa
-		set oa spcfull(oa)
-
-		set pointer pluson(oa)
-		if pointer!=oa
-			set pointer# (Nullchar)
-		end
+		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_fill(start,oa)
 		#here is not required the comparation, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
@@ -421,13 +416,7 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(rect_char)
-		inc oa
-		set oa spcfull(oa)
-
-		set pointer pluson(oa)
-		if pointer!=oa
-			set pointer# (Nullchar)
-		end
+		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_rect(start,oa)
 		#here is not required the comparation, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
@@ -464,6 +453,13 @@ function translate_two(ss start,ss in)
 			if cursor!=oa
 				return cursor
 			end
+		end
+	elseif chr=(insert_char)
+		set pointer translate_two_switchBefore(#oa)
+		set cursor transplate_insert(start,oa) #here is not required the comparation, is inside
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
@@ -523,6 +519,19 @@ function translate_two_switcher(ss oa)
 	end
 	dec oa
 	return oa
+end
+function translate_two_switchBefore(sv _oa)
+	ss oa
+	set oa _oa#
+	inc oa
+	set oa spcfull(oa)
+	ss pointer
+	set pointer pluson(oa)
+	if pointer!=oa
+		set pointer# (Nullchar)
+	end
+	set _oa# oa
+	return pointer
 end
 function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 	if pointer!=oa
@@ -752,7 +761,7 @@ function translate_on(ss start,ss type,ss ev,ss value)
 		set pointer# (Nullchar)
 		set cursor# (Nullchar)
 		inc cursor
-		sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%saddEventListener(%sEvent.%s,%s);%s",start,type,ev,value,cursor)
+		sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%saddEventListener(flash.events.%sEvent.%s,%s);%s",start,type,ev,value,cursor)
 		if n>0
 			if n<(a_page_size)
 				return globalt.a_page_switch
@@ -1011,7 +1020,7 @@ function translate_label(ss indents)
 		if cursor!=name
 			ss buffer;set buffer globalt.a_page_switch
 			sd ?size
-			set size object_make(indents,name,cursor,"TextField",#buffer,(a_page_size))
+			set size object_make(indents,name,cursor,"flash.text.TextField",#buffer,(a_page_size))
 			if size!=0
 				inc cursor
 				ss pointer
@@ -1090,7 +1099,7 @@ function translate_var(ss indents)
 					#end
 				end
 			else #going on createEmptyMovieClip
-				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,class,"Shape",globalt.a_page_switch) #,pointer)
+				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,class,"flash.display.Shape",globalt.a_page_switch) #,pointer)
 				if cursor!=#globalt.blank
 					call translated("VarCreate")
 					return cursor
@@ -1128,6 +1137,32 @@ function translate_textformat(ss start)
 	return start
 end
 
+function transplate_insert(ss start,ss oa)
+	ss cursor
+	set cursor spcfullafters(oa)
+	if cursor!=oa
+		ss pointer
+		set pointer spcfull(cursor)
+		ss ?reminder
+		set reminder cursor#;set cursor# (Nullchar)
+		ss pos
+		set pos strstr(start,oa)
+		if pos!=(NULL)
+			set pos# (Nullchar)
+			add pos strlen(oa)
+			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s",start,pointer,oa,pos)
+			if len>0
+				if len<(a_page_size)
+					call translated("Replace")
+					return globalt.a_page_switch
+				end
+			end
+		end
+		set cursor# reminder
+	end
+	return oa
+end
+
 function openfl()
 	return #globalt.openfl_bool
 end
@@ -1156,6 +1191,7 @@ FunctionMorph
 Import
 On
 Rect
+Replace
 Search
 SearchAll
 Stage

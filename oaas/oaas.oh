@@ -17,6 +17,7 @@ Const m_low=0x6D
 Const n_low=0x6E
 Const w_low=0x77
 const func_char=f_low
+const insert_char=z_low
 
 #translate solve
 Const e_low=0x65

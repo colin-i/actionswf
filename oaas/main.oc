@@ -1,8 +1,6 @@
 
 format elfobj64
 
-importx "printf" printf
-
 import "print_stdout" print_stdout
 ^import "verbosep" verbosep
 
@@ -12,6 +10,9 @@ import "translated_ratio" translated_ratio
 ^import "openfl" openfl #full
 import "_postpone_char" _postpone_char
 
+^import "solver2" solver2 1
+^import "solver4" solver4 1
+^import "solver7" solver7 2
 ^import "solver" solver 2
 import "_resolve" _resolve
 
@@ -56,20 +57,24 @@ functionx sep()
 	return (switch_char)
 end
 functionx postpone_char()
-	ss ?a
-	set a _postpone_char()
-	return a
+	callret _postpone_char()
 end
 
-functionx solve(ss value,ss after)
-	ss out;set out solver(value,after)
-	if out=(NULL)
-		call printf("postponed %s\n",value)
-	end
-	return out
+functionx solve2(ss value)
+	ss s
+	set s solver2(value)
+	callret solver(value,s)
+end
+functionx solve4(ss value)
+	ss s
+	set s solver4(value)
+	callret solver(value,s)
+end
+functionx solve7(ss value,ss after)
+	ss s
+	set s solver7(value,after)
+	callret solver(value,s)
 end
 functionx resolve()
-	ss ?a
-	set a _resolve()
-	return a
+	callret _resolve()
 end

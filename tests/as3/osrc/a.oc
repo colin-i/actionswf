@@ -13,14 +13,11 @@ call swf_new_ex("a.swf",550,400,0xffFFff,12,(flag_format))
 sd presprite;set presprite swf_sprite_new()
 char buf#3000
 call actionf_sprite(presprite,#buf,"
-/*3i flash.display.Sprite
-i flash.events.Event
-i flash.text.TextField
+/*3
 i flash.text.TextFormat
 i flash.text.TextFormatAlign
-i flash.events.MouseEvent
 
-a MyClip Sprite*/
+a MyClip flash.display.Sprite*/
 	function on_Enter_Frame(){
 		if(a){
 			_x-=c;
@@ -108,9 +105,7 @@ set img swf_jpeg("../a.jpg")
 call swf_exports_add(img,"My_BitmapData")
 
 call action("
-//3i flash.Lib
-/*3i flash.display.Shape
-i flash.display.BitmapData
+/*3
 m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
@@ -135,6 +130,7 @@ a Main
 //3}
 
 /*more tests
+//3i a.b.c
 //3f s
 //3f p
 //3v shape Shape
@@ -152,6 +148,7 @@ create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
 _a//3 f+s
+qwer//3z we asd
 */
 main();
 ")
