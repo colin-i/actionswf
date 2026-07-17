@@ -42,6 +42,6 @@ create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
 _leftPart='type';//3 x+s
 _a//3 f+s
-_qwer//3z we asd+s
+_qty//3z wer ty+s
 */
 main();

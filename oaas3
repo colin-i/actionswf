@@ -54,6 +54,7 @@ if lib:
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 		lib.sep.restype = ctypes.c_char
 		lib.postpone_char.restype = ctypes.c_char
+		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
 		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
 		lib.solve7.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve7.restype = ctypes.c_char_p
@@ -475,6 +476,54 @@ if not os.environ.get('skip_comp'):
 							fp.write(line + os.linesep)
 						return True
 
+					def diag():
+						pp=''
+						if kind==7:
+							# this is unstable: module=d["args"]["moduleType"]["name"]
+							#field=d["args"]["entries"][0]["fields"][0]["field"]
+							#module=os.path.splitext(field["pos"]["file"])[0]
+
+							positions=d["range"]["end"]
+							line=positions["line"]
+
+							value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
+						else:
+							positions=d["range"]["start"]
+							line=positions["line"]
+							args=d["args"]
+							if kind==1:
+								if not args:
+									return None
+								value=args[0]["name"]
+							else:
+								value=args.split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
+								if kind==2:
+									character=positions["character"]
+
+									src = Path(fullfilename).read_text() #encoding="utf-8"
+									lines = src.splitlines(keepends=True)
+									# get text before the target line
+									before = "".join(lines[:line])
+									# add characters in the target line
+									offset_chars = len(before) + character
+									# convert character offset -> UTF-8 byte offset
+									offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
+									offset_bytes=str(offset_bytes)
+
+									pp='('+str(line)+':'+str(character)+' at '+offset_bytes+') to '
+
+									os.chdir(dest)
+									reuser.extend([filename+'@'+offset_bytes+'@position'])
+									xm=crun(reuser,capture_output=True)
+									reuser.pop()
+									xm = ET.fromstring(xm.stderr).find('pos')
+									if xm is not None:
+										xm=xm.text
+										line=xm[len(fullfilename)+1:]
+										line=line.split(':')[0]
+										line=int(line)-1 # from human
+						return value,line,positions,pp
+
 					dump=os.environ.get('dump')
 					unresolved=False;resolved=False
 					tr_sep = a1 + a2a + a3
@@ -492,129 +541,95 @@ if not os.environ.get('skip_comp'):
 							if d["severity"] == 1:
 								solved = None
 								kind=d["kind"]
-								if kind in [2,4,7]:
-									pp=''
-									if kind==7:
-										# this is unstable: module=d["args"]["moduleType"]["name"]
-										#field=d["args"]["entries"][0]["fields"][0]["field"]
-										#module=os.path.splitext(field["pos"]["file"])[0]
+								if kind in [1,2,4,7]:
+									values=diag()
+									if values:
+										value,line,positions,pp=values
+										print(pp+str(line)+' '+value)
+										#now is like: fix one error will fix another 4
+										for f in files:
+											mod = get_module_insens(f)
+											if mod == module:
+												if not lib:
+													print('missing oaas lib')
+													exiting()
 
-										positions=d["range"]["end"]
-										line=positions["line"]
+												if f not in file_cache:
+													with open(f) as fp:
+														file_cache[f] = fp.readlines()
+												lines = file_cache[f]
+												linestr = lines[line]
 
-										value=d["args"]["entries"][0]["fields"][0]["field"]["name"]
-									else:
-										value=d["args"].split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
-										positions=d["range"]["start"]
-										line=positions["line"]
-										if kind==2:
-											character=positions["character"]
-
-											src = Path(fullfilename).read_text() #encoding="utf-8"
-											lines = src.splitlines(keepends=True)
-											# get text before the target line
-											before = "".join(lines[:line])
-											# add characters in the target line
-											offset_chars = len(before) + character
-											# convert character offset -> UTF-8 byte offset
-											offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
-											offset_bytes=str(offset_bytes)
-
-											pp='('+str(line)+':'+str(character)+' at '+offset_bytes+') to '
-
-											os.chdir(dest)
-											reuser.extend([filename+'@'+offset_bytes+'@position'])
-											xm=crun(reuser,capture_output=True)
-											reuser.pop()
-											xm = ET.fromstring(xm.stderr).find('pos')
-											if xm is not None:
-												xm=xm.text
-												line=xm[len(fullfilename)+1:]
-												line=line.split(':')[0]
-												line=int(line)-1 # from human
-									print(pp+str(line)+' '+value)
-									#now is like: fix one error will fix another 4
-									for f in files:
-										mod = get_module_insens(f)
-										if mod == module:
-											if not lib:
-												print('missing oaas lib')
-												exiting()
-
-											if f not in file_cache:
-												with open(f) as fp:
-													file_cache[f] = fp.readlines()
-											lines = file_cache[f]
-											linestr = lines[line]
-
-											if linestr[-1] in terminations:
-												linestr = linestr.rstrip(terminations)
-												has_term=True
-											else:
-												has_term=False
-
-											match kind:
-												case 7:
-													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
-												case 4:
-													solved = lib.solve4(value.encode())
-												case _: #2
-													solved = lib.solve2(value.encode())
-											if not solved:
-												if solved==None:
-													break
-												#this case is with the postpone_char. or normal
-												solved = lib.resolve()
-												#forking = solved.isupper(); if forking: solved=solved.lower()
-												comparator = solved.decode()
-												part1, delim, part2 = linestr.partition(tr_sep)
-												if delim:
-													sep=lib.sep().decode()
-													tokens = part2.split(sep)
-													n = lib.postpone_char().decode()
-													nn = len(n)
-													#c0 = comparator[0] # to compare less, like sw , sh
-													for i,token in enumerate(tokens):
-														token = token.lstrip()          # remove leading whitespace
-														if isinstance(solved, bytes):
-															against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
-															if against == n:
-																solved = comparator
-																token = solved + token[nn:]
-															#elif against == c0: #this comparation was going with another case at next code
-															#	break #example at rect, else will be r x+r+r
-														tokens[i]=token
-													if not isinstance(solved, bytes):
-														save_line(module,line)
-														linestr = part1 + delim + sep.join(tokens)
-													#elif against == c0:
-													#	break #example at rect, else will be r+r+r
-											if isinstance(solved, bytes):
-												solved = solved.decode()
-												if save_line(module,line):
-													linestr = linestr + tr_sep + solved
+												if linestr[-1] in terminations:
+													linestr = linestr.rstrip(terminations)
+													has_term=True
 												else:
-													s1 = solved[1:]
-													s0 = solved[0]
-													sep=lib.sep().decode()
-													part1, part2 = linestr.split(tr_sep)
-													tokens = part2.split(sep)
-													not_added=True
-													for i,token in enumerate(tokens):
-														if token[0] == s0:
-															if s1: # a case sw then sh, must combine them
-																if not s1 in token[1:]:
-																	tokens[i] = token + s1
-															not_added=False
-															break
-													if not_added:
-														tokens.extend(solved)
-													linestr = part1 + tr_sep + sep.join(tokens)
-											lines[line] = linestr + (os.linesep if has_term else "")
-											touched.add(f)
+													has_term=False
 
-											resolved=True
-											break
+												match kind:
+													case 7:
+														solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
+													case 4:
+														solved = lib.solve4(value.encode())
+													case 2:
+														solved = lib.solve2(value.encode())
+													case _: #1:
+														solved = lib.solve1(value.encode())
+												if not solved:
+													if solved==None:
+														break
+													#this case is with the postpone_char. or normal
+													solved = lib.resolve()
+													#forking = solved.isupper(); if forking: solved=solved.lower()
+													comparator = solved.decode()
+													part1, delim, part2 = linestr.partition(tr_sep)
+													if delim:
+														sep=lib.sep().decode()
+														tokens = part2.split(sep)
+														n = lib.postpone_char().decode()
+														nn = len(n)
+														#c0 = comparator[0] # to compare less, like sw , sh
+														for i,token in enumerate(tokens):
+															token = token.lstrip()          # remove leading whitespace
+															if isinstance(solved, bytes):
+																against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
+																if against == n:
+																	solved = comparator
+																	token = solved + token[nn:]
+																#elif against == c0: #this comparation was going with another case at next code
+																#	break #example at rect, else will be r x+r+r
+															tokens[i]=token
+														if not isinstance(solved, bytes):
+															save_line(module,line)
+															linestr = part1 + delim + sep.join(tokens)
+														#elif against == c0:
+														#	break #example at rect, else will be r+r+r
+												if isinstance(solved, bytes):
+													solved = solved.decode()
+													if save_line(module,line):
+														linestr = linestr + tr_sep + solved
+													else:
+														s1 = solved[1:]
+														s0 = solved[0]
+														sep=lib.sep().decode()
+														part1, part2 = linestr.split(tr_sep)
+														tokens = part2.split(sep)
+														not_added=True
+														for i,token in enumerate(tokens):
+															if token[0] == s0:
+																if s1: # a case sw then sh, must combine them
+																	if not s1 in token[1:]:
+																		tokens[i] = token + s1
+																not_added=False
+																break
+														if not_added:
+															tokens.extend(solved)
+														linestr = part1 + tr_sep + sep.join(tokens)
+												lines[line] = linestr + (os.linesep if has_term else "")
+												touched.add(f)
+
+												resolved=True
+												break
 								if not solved:
 									unresolved=True
 					if resolved:

@@ -2,7 +2,7 @@
 format elfobj64
 
 #multithread unsafe
-charx outvalue#4
+charx outvalue#1+11+1+10+1 ;#zflash.text. TextFormat\0
 char stored_char#1
 
 importx "memcmp" memcmp
@@ -26,6 +26,21 @@ function solver(ss value,ss s)
 		call printf("postponed %s\n",value)
 	end
 	return s
+end
+function solver1(ss value)
+	sd ?c
+	char flashtext_string="flash.text."
+	set c memcmp(value,#flashtext_string,\.flashtext_string-1)
+	if c=0
+		add value \.flashtext_string-1
+		char textformat_string="TextFormat"
+		set c memcmp(value,#textformat_string,\.textformat_string-1)
+		if c=0
+			call sprintf(#globals.outvalue,"%c%s %s",(insert_char),#flashtext_string,#textformat_string)
+			return #globals.outvalue
+		end
+	end
+	return (NULL)
 end
 function solver2(ss value)
 	sd ?c

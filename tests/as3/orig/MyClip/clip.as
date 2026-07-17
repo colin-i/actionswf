@@ -1,6 +1,5 @@
 
 /*3
-i flash.text.TextFormat
 i flash.text.TextFormatAlign
 
 a MyClip flash.display.Sprite*/

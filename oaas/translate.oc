@@ -1143,22 +1143,22 @@ function transplate_insert(ss start,ss oa)
 	if cursor!=oa
 		ss pointer
 		set pointer spcfull(cursor)
-		ss ?reminder
-		set reminder cursor#;set cursor# (Nullchar)
 		ss pos
-		set pos strstr(start,oa)
+		set pos strstr(start,pointer)
 		if pos!=(NULL)
+			ss ?reminder
+			set reminder cursor#;set cursor# (Nullchar)
 			set pos# (Nullchar)
-			add pos strlen(oa)
-			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s",start,pointer,oa,pos)
+			add pos strlen(pointer)
+			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s",start,oa,pointer,pos)
 			if len>0
 				if len<(a_page_size)
 					call translated("Replace")
 					return globalt.a_page_switch
 				end
 			end
+			set cursor# reminder
 		end
-		set cursor# reminder
 	end
 	return oa
 end
