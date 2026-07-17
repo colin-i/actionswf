@@ -73,7 +73,7 @@
 
 		onEnterFrame = on_Enter_Frame;
 	}
-	//3n
+	//3x
 	var c=%u;
 	var a=false;var b=false;
 //3}

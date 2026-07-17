@@ -3,7 +3,7 @@ m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
 a Main
-	n*/
+	x*/
 	function main(){
 		//3g
 
@@ -19,9 +19,13 @@ a Main
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
 		//3d shape @
+
+		//3n
+		Loader();
 	}
 //3}
 function Loader(){//3f
+trace('the loader is working');
 }
 //3}
 
@@ -33,17 +37,17 @@ function Loader(){//3f
 
 useHandCursor=_x;//3 b+s
 function ()()//3 e+e
+function dollar$_isok_at_as2(){//3 f+e
+_leftPart='type';//3 j+s
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
 onEnterFrame=_fune;//3 o+s
-_alpha=_x;//3 p+s
+_alpha=_x;//3 h+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
 _x()//3 s+e
 _y()//3 s_+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
-_leftPart='type';//3 j+s
-function new(_){//3 f+s
 _qty//3z wer ty+s
 
 useHandCursor=x;//3

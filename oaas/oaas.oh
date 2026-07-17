@@ -28,17 +28,17 @@ Const r_low=0x72
 Const t_low=0x74
 Const v_low=0x76
 const align_char=j_low
-const alpha_char=p_low
+const alpha_char=h_low
+const bitmap_char=m_low
 const evfunc_char=e_low
 const fill_char=l_low
-const bitmap_char=m_low
+const ignore_pref=Exclamationmark
+const insert_char=z_low
 const onev_char=o_low
 const rect_char=r_low
 const search_char=s_low
 const text_char=t_low
 const var_char=v_low
-const insert_char=z_low
-const ignore_pref=Exclamationmark
 
 #util solve
 const usc_pref=_

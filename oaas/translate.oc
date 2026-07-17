@@ -23,6 +23,7 @@ vstr graphics="graphics."
 vstr public="public"
 vstr super="super();"
 vstr class="class"
+vstr sttic="static"
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -89,8 +90,8 @@ function switch_page()
 end
 
 #     f      m        v
-#aBcdEFg iJ LMnOP RST V   Z
-#       h  k     q   u wxy
+#aBcdEFgHiJ LMnO  RST V x Z
+#          k    pq   u wxy
 #also at the end
 
 #a	s [s]
@@ -161,7 +162,7 @@ function translate_one(ss in,ss indents)
 				set name globalt.nw
 				set ext globalt.super
 			elseif oa#=(s_low)
-				set type "static"
+				set type globalt.sttic
 				set name "main"
 				set ext #globalt.blank
 			else
@@ -217,12 +218,17 @@ function translate_one(ss in,ss indents)
 			return cursor
 		end
 	elseif chr=(n_low)
-		set cursor translate_one_simple(indents,in,oa,"static","Static",(n_low))
+		set cursor translate_one_simple(indents,in,oa,#globalt.nw,"New",(n_low))
 		if cursor!=oa
 			return cursor
 		end
 	elseif chr=(var_char)
 		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var")
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(x_low)
+		set cursor translate_one_simple(indents,in,oa,globalt.sttic,"Static",(x_low))
 		if cursor!=oa
 			return cursor
 		end
@@ -340,11 +346,11 @@ end
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
 #f	function newOther
+#h	alpha=;
 #l	.( b or e
 #j	=''
 #m	all spcback= ''
 #o	onPATTERN=;
-#p	alpha=;
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
@@ -392,6 +398,15 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
+	elseif chr=(alpha_char)
+		set cursor translate_alpha(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
 	elseif chr=(align_char)
 		set cursor translate_textformat(start)
 		if cursor!=start
@@ -412,15 +427,6 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(onev_char)
 		set cursor translate_onev(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
-		end
-	elseif chr=(alpha_char)
-		set cursor translate_alpha(start)
 		if cursor!=start
 			inc oa
 			set cursor translate_two_switch(oa,cursor)
@@ -476,16 +482,16 @@ function translate_two(ss start,ss in)
 									set cursor translate_function(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-								set cursor translate_textformat(mem)
+								set cursor translate_alpha(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-							set cursor translate_bitmap(mem)
+							set cursor translate_textformat(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-						set cursor translate_onev(mem)
+						set cursor translate_bitmap(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-					set cursor translate_alpha(mem)
+					set cursor translate_onev(mem)
 								if cursor=mem
 									call strcpy(mem,start)
 				set cursor translate_srch_all(mem)

@@ -212,14 +212,14 @@ f_d=os.environ.get(from_diagnostics)
 import signal
 import time
 def stop_server(s):
-	pid=int(s)
 	try:
+		pid=int(s) #TypeError at exiting without a sever
 		os.kill(pid, signal.SIGTERM) #async
 		os.kill(pid, 0)  # signal 0 = just checks if it's alive
 		time.sleep(1)
 		os.kill(pid, 0)
 		os.kill(pid, signal.SIGKILL)
-	except ProcessLookupError: #only from os.kill
+	except TypeError,ProcessLookupError: #only from os.kill
 		return
 	os.waitpid(pid,0)
 def exiting_serv(s):
