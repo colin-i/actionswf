@@ -90,7 +90,7 @@ call actionf_sprite(presprite,#buf,"
 	//3n
 	var c=%u;
 	var a=false;var b=false;
-//3 }
+//3}
 new();
 ",2)
 sd sprite;set sprite swf_sprite_done(presprite)
