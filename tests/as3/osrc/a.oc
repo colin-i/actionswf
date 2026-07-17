@@ -13,10 +13,7 @@ call swf_new_ex("a.swf",550,400,0xffFFff,12,(flag_format))
 sd presprite;set presprite swf_sprite_new()
 char buf#3000
 call actionf_sprite(presprite,#buf,"
-/*3
-i flash.text.TextFormatAlign
-
-a MyClip flash.display.Sprite*/
+//3a MyClip flash.display.Sprite
 	function on_Enter_Frame(){
 		if(a){
 			_x-=c;

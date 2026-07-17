@@ -211,8 +211,8 @@ f_d=os.environ.get(from_diagnostics)
 
 import signal
 import time
-def stop_server():
-	pid=int(server_pid)
+def stop_server(s):
+	pid=int(s)
 	try:
 		os.kill(pid, signal.SIGTERM) #async
 		os.kill(pid, 0)  # signal 0 = just checks if it's alive
@@ -222,9 +222,11 @@ def stop_server():
 	except ProcessLookupError: #only from os.kill
 		return
 	os.waitpid(pid,0)
-def exiting():
-	stop_server()
+def exiting_serv(s):
+	stop_server(s)
 	exit(1)
+def exiting():
+	exiting_serv(server_pid)
 
 verbose=os.environ.get('verbose')
 
@@ -236,6 +238,8 @@ if not os.environ.get(skip_src):
 		if verbose:
 			lib.verbose(True)
 
+	def exiting_verif():
+		exiting_serv(os.environ.get('SERVER_PID'))
 	allow_untranslated=os.environ.get('allow_untranslated')
 	def make_line(bf):
 		bf = bf.rstrip(terminations.encode()) #this is extra at inline comments
@@ -250,7 +254,7 @@ if not os.environ.get(skip_src):
 				r = lib.ratio(False)
 				if ord(r) !=  100: #can be blank closing comment
 					print("Untranslated. 'if not os.environ.get('allow_untranslated') failed")
-					exit(1)
+					exiting_verif()
 		return bf+os.linesep.encode()
 	def singleline():
 		bf=chars[:pos]
@@ -353,7 +357,7 @@ if not os.environ.get(skip_src):
 					parts=in_text.split((a1+a2a+a3))
 					if len(parts)!=2:
 						print('error at rerun')
-						exiting()
+						exiting_verif()
 					stored = bytearray(parts[0].encode())
 					out_text[line]=make_line(parts[1].encode())
 				with open(hx_ext(f),'wb') as dfile:
@@ -545,7 +549,7 @@ if not os.environ.get('skip_comp'):
 									values=diag()
 									if values:
 										value,line,positions,pp=values
-										print(pp+str(line)+' '+value)
+										print(str(kind)+' '+pp+str(line)+' '+value)
 										#now is like: fix one error will fix another 4
 										for f in files:
 											mod = get_module_insens(f)
@@ -656,7 +660,7 @@ if not os.environ.get('skip_comp'):
 			else:
 				os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 
-		stop_server()
+		stop_server(server_pid)
 
 		if not os.environ.get('no_confirm') and not o_d: #only diagnostics is a dry run at haxe
 			#confirm is as3

@@ -1,8 +1,5 @@
 
-/*3
-i flash.text.TextFormatAlign
-
-a MyClip flash.display.Sprite*/
+//3a MyClip flash.display.Sprite
 	function on_Enter_Frame(){
 		if(a){
 			_x-=c;
@@ -79,5 +76,5 @@ a MyClip flash.display.Sprite*/
 	//3n
 	var c=%u;
 	var a=false;var b=false;
-//3 }
+//3}
 new();

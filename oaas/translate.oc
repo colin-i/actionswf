@@ -1124,7 +1124,7 @@ function translate_textformat(ss start)
 				set cursor# (Nullchar)
 				set pointer# (Nullchar)
 				inc pointer
-				sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%sTextFormatAlign.%s%s",start,type,pointer)
+				sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%sflash.text.TextFormatAlign.%s%s",start,type,pointer)
 				if len>0
 					if len<(a_page_size)
 						call translated("TextFormat")

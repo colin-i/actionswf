@@ -21,6 +21,20 @@ function _resolve()
 	return globals.stored_char
 end
 
+function solver_end(ss value,ss ?small_size)
+	add value small_size
+	if value#=(Nullchar)
+		return #globals.outvalue
+	end
+	return (NULL)
+end
+function solver_endb(ss value,ss ?small_size)
+	add value small_size
+	if value#=(Nullchar)
+		return ""
+	end
+	return (NULL)
+end
 function solver(ss value,ss s)
 	if s=(NULL)
 		call printf("postponed %s\n",value)
@@ -37,7 +51,7 @@ function solver1(ss value)
 		set c memcmp(value,#textformat_string,\.textformat_string-1)
 		if c=0
 			call sprintf(#globals.outvalue,"%c%s %s",(insert_char),#flashtext_string,#textformat_string)
-			return #globals.outvalue
+			callret solver_end(value,\.textformat_string-1)
 		end
 	end
 	return (NULL)
@@ -48,13 +62,13 @@ function solver2(ss value)
 	set c memcmp(value,#align_string,\.align_string)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(align_char))
-		return #globals.outvalue
+		callret solver_end(value,\.align_string)
 	end
 	char evfunc_string="() -> Void should be Dynamic -> Void"^
 	set c memcmp(value,#evfunc_string,\.evfunc_string)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(evfunc_char))
-		return #globals.outvalue
+		callret solver_end(value,\.evfunc_string)
 	end
 	return (NULL)
 end
@@ -68,13 +82,13 @@ function solver4(ss value)
 		set c memcmp(value,#main_string,\.main_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
-			return #globals.outvalue
+			callret solver_end(value,\.main_string)
 		end
 		char new_string="keyword \"new\""^
 		set c memcmp(value,#new_string,\.new_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
-			return #globals.outvalue
+			callret solver_end(value,\.new_string)
 		end
 	end
 	return (NULL)
@@ -103,7 +117,7 @@ function solver7(ss value,ss after)
 		set c memcmp(value,#alpha_string,\.alpha_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(alpha_char))
-			return #globals.outvalue
+			callret solver_end(value,\.alpha_string)
 		end
 		return (NULL)
 	end
@@ -111,7 +125,7 @@ function solver7(ss value,ss after)
 	set c memcmp(value,#var_string,\.var_string)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(var_char))
-		return #globals.outvalue
+		callret solver_end(value,\.var_string)
 	end
 	char bfil_string="begin"^
 	set c memcmp(value,#bfil_string,\.bfil_string)
@@ -121,13 +135,13 @@ function solver7(ss value,ss after)
 		set c memcmp(value,#bfilbitmap_string,\.bfilbitmap_string)
 		if c=0
 			set globals.stored_char (fill_char)
-			return ""
+			callret solver_endb(value,\.bfilbitmap_string)
 		end
 		char bfilsimple_string="Fill"^
 		set c memcmp(value,#bfilsimple_string,\.bfilsimple_string)
 		if c=0
 			set globals.stored_char (fill_char)
-			return ""
+			callret solver_endb(value,\.bfilsimple_string)
 		end
 	end
 	char create_string="create"^
@@ -138,13 +152,13 @@ function solver7(ss value,ss after)
 		set c memcmp(value,#emclip_string,\.emclip_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(var_char))
-			return #globals.outvalue
+			callret solver_end(value,\.emclip_string)
 		end
 		char text_string="TextField"^
 		set c memcmp(value,#text_string,\.text_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(text_char))
-			return #globals.outvalue
+			callret solver_end(value,\.text_string)
 		end
 		return (NULL)
 	end
@@ -152,7 +166,7 @@ function solver7(ss value,ss after)
 	set c memcmp(value,#efil_string,\.efil_string)
 	if c=0
 		set globals.stored_char (fill_char)
-		return ""
+		callret solver_endb(value,\.efil_string)
 	end
 	if value#=(l_low)
 		inc value
@@ -160,13 +174,13 @@ function solver7(ss value,ss after)
 		set c memcmp(value,#rect_string,\.rect_string)
 		if c=0
 			set globals.stored_char (rect_char)
-			return ""
+			callret solver_endb(value,\.rect_string)
 		end
 		char bitmap_string="oadBitmap"^
 		set c memcmp(value,#bitmap_string,\.bitmap_string)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(bitmap_char))
-			return #globals.outvalue
+			callret solver_end(value,\.bitmap_string)
 		end
 		return (NULL)
 	end
@@ -177,13 +191,13 @@ function solver7(ss value,ss after)
 		set c memcmp(after,#w,\.w)
 		if c=0
 			call sprintf(#globals.outvalue,"%cw",(search_char))
-			return #globals.outvalue
+			callret solver_end(value,\.stage_string)
 		end
 		char h=".h"^
 		set c memcmp(after,#h,\.h)
 		if c=0
 			call sprintf(#globals.outvalue,"%ch",(search_char))
-			return #globals.outvalue
+			callret solver_end(value,\.stage_string)
 		end
 		return (NULL)
 	end
@@ -198,25 +212,25 @@ function solver7(ss value,ss after)
 		set c memcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(onev_char))
-			return #globals.outvalue
+			callret solver_end(value,z)
 		end
 		set cursor press_string_get(#z)
 		set c memcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(onev_char))
-			return #globals.outvalue
+			callret solver_end(value,z)
 		end
 		set cursor rollover_string_get(#z)
 		set c memcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(onev_char))
-			return #globals.outvalue
+			callret solver_end(value,z)
 		end
 		set cursor rollout_string_get(#z)
 		set c memcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(onev_char))
-			return #globals.outvalue
+			callret solver_end(value,z)
 		end
 	end
 	return (NULL)
