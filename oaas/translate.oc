@@ -17,9 +17,12 @@ char rollover_string="RollOver"^
 char rollout_string="RollOut"^
 char var_translate="%s%svar %s=new %s();"
 char blank=""
+char nw="new"
+char func="function"
 vstr graphics="graphics."
 vstr public="public"
 vstr super="super();"
+vstr class="class"
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -44,6 +47,7 @@ end
 
 importx "free" free
 importx "memcmp" memcmp
+importx "strncmp" strncmp
 importx "strcpy" strcpy
 importx "strdup" strdup
 importx "strlen" strlen
@@ -85,8 +89,8 @@ function switch_page()
 end
 
 #     f      m        v
-#aBcdEFg i  LMnOP RST V X Z
-#       h jk     q   u w y
+#aBcdEFg iJ LMnOP RST V   Z
+#       h  k     q   u wxy
 #also at the end
 
 #a	s [s]
@@ -121,7 +125,7 @@ function translate_one(ss in,ss indents)
 			set reminder (Nullchar)
 		end
 		set o_a# (Nullchar)
-		set len snprintf(#globalt.a_page,(a_page_size),"%s%sclass %s%s%s{",indents,in,oa,ext,pointer)
+		set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s %s%s%s{",indents,in,globalt.class,oa,ext,pointer)
 		if len>0
 			if len<(a_page_size)
 				call translated("Class")
@@ -154,7 +158,7 @@ function translate_one(ss in,ss indents)
 			ss type;ss name
 			if oa#=(p_low)
 				set type globalt.public
-				set name "new"
+				set name globalt.nw
 				set ext globalt.super
 			elseif oa#=(s_low)
 				set type "static"
@@ -166,7 +170,7 @@ function translate_one(ss in,ss indents)
 			inc oa
 			if oa#=(Nullchar)
 				set cursor# (Nullchar)
-				set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s function %s(){%s",indents,in,type,name,ext)
+				set len snprintf(#globalt.a_page,(a_page_size),"%s%s%s %s %s(){%s",indents,in,type,#globalt.func,name,ext)
 				if len>0
 					if len<(a_page_size)
 						call translated("Function")
@@ -191,7 +195,7 @@ function translate_one(ss in,ss indents)
 		if globalt.openfl_bool=(TRUE)
 			sd ?c
 			char fl="flash."^
-			set c memcmp(oa,#fl,\.fl)
+			set c strncmp(oa,#fl,\.fl)
 			if c=0
 				set pointer "openfl."
 				add oa \.fl
@@ -335,8 +339,9 @@ end
 
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
-#f
+#f	function newOther
 #l	.( b or e
+#j	=''
 #m	all spcback= ''
 #o	onPATTERN=;
 #p	alpha=;
@@ -344,7 +349,6 @@ end
 #s	_ and more
 #t	'',,,,)
 #v	''''
-#x	=''
 #z	replacing a to b
 
 function translate_two(ss start,ss in)
@@ -387,6 +391,15 @@ function translate_two(ss start,ss in)
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
+		end
+	elseif chr=(align_char)
+		set cursor translate_textformat(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
 		end
 	elseif chr=(bitmap_char)
 		set cursor translate_bitmap(start)
@@ -445,15 +458,6 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(align_char)
-		set cursor translate_textformat(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
-		end
 	elseif chr=(insert_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor transplate_insert(start,oa) #here is not required the comparation, is inside
@@ -463,31 +467,35 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-		set cursor translate_textformat(mem)
+											set cursor translate_buttonmode(mem,(NULL))
 		if cursor=mem
 			call strcpy(mem,start)
-			set cursor translate_var(mem)
+										set cursor translate_eparam(mem)
 			if cursor=mem
 				call strcpy(mem,start)
-				set cursor translate_textfield(mem)
+									set cursor translate_function(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-					set cursor translate_srch_all(mem)
+								set cursor translate_textformat(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-						set cursor translate_alpha(mem)
+							set cursor translate_bitmap(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-							set cursor translate_onev(mem)
+						set cursor translate_onev(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-								set cursor translate_bitmap(mem)
+					set cursor translate_alpha(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-									set cursor translate_eparam(mem)
+				set cursor translate_srch_all(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-										set cursor translate_buttonmode(mem,(NULL))
+			set cursor translate_textfield(mem)
+										if cursor=mem
+											call strcpy(mem,start)
+		set cursor translate_var(mem)
+										end
 									end
 								end
 							end
@@ -554,7 +562,7 @@ function translate_buttonmode(ss indents,ss oa)
 	ss cursor;set cursor spcfull(indents)
 	sd ?c
 	char against="useHandCursor="
-	set c memcmp(cursor,#against,14)
+	set c strncmp(cursor,#against,14)
 	if c=0
 		set cursor# (Nullchar)
 		add cursor 14
@@ -622,15 +630,75 @@ function translate_eparam(ss start)
 	return start
 end
 
-function translate_function(ss start)
-	sd ?len
-	set len snprintf(globalt.a_page_switch,(a_page_size),"%s %s%s",globalt.public,start,globalt.super)
-	if len>0
-		if len<(a_page_size)
-			call translated("FunctionMorph")
-			return globalt.a_page_switch
+function translate_function(ss indents)
+	ss cursor
+	set cursor spcfull(indents)
+	sd ?c
+	set c strncmp(cursor,#globalt.func,\globalt.func-1)
+	if c=0
+		set cursor# (Nullchar)
+		add cursor \globalt.func-1
+		ss pointer
+		set pointer spcfull(cursor)
+		if pointer!=cursor
+			sd ?len
+			set c strncmp(pointer,#globalt.nw,\globalt.nw-1)
+			if c=0
+				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s %s%s",indents,globalt.public,#globalt.func,pointer,globalt.super)
+			else
+				set cursor pointer
+				ss ?a
+				whiletrue
+					set a cursor#
+					if a<(_0)
+						if a=(Dollar)
+							inc cursor
+							continue
+						end
+						break
+					end
+					if a<=(_9)
+						inc cursor
+						continue
+					end
+					if a<(A)
+						break
+					end
+					if a<=(Z)
+						inc cursor
+						continue
+					end
+					if a<(a_low)
+						if a=(_)
+							inc cursor
+							continue
+						end
+						break
+					end
+					if a<=(z_low)
+						inc cursor
+						continue
+					end
+					break
+				end
+				set a cursor#
+				if a!=(Nullchar)
+					set cursor# (Nullchar)
+					inc cursor
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s{%s %s %s%c%s",indents,globalt.class,pointer,globalt.public,#globalt.func,#globalt.nw,a,cursor)
+				else
+					set len 0
+				end
+			end
+			if len>0
+				if len<(a_page_size)
+					call translated("FunctionMorph")
+					return globalt.a_page_switch
+				end
+			end
 		end
 	end
+	return indents
 end
 
 function translate_fill(ss indents,ss name)
@@ -694,7 +762,7 @@ function translate_bitmap(ss start)
 					inc texture
 					set cursor# (Nullchar)
 					set pointer# (Nullchar)
-					sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%s%c%s=new %s(0,0);",start,reminder,texture,name)
+					sd ?n;set n snprintf(globalt.a_page_switch,(a_page_size),"%s%c%s=%s %s(0,0);",start,reminder,texture,#globalt.nw,name)
 					if n>0
 						if n<(a_page_size)
 							call translated("BitmapMorph")
@@ -716,23 +784,23 @@ function translate_onev(ss start)
 		while start!=pointer
 			dec pointer
 			sd ?c
-			set c memcmp(pointer,#globalt.on_string,\globalt.on_string)
+			set c memcmp(pointer,#globalt.on_string,\globalt.on_string) #on is to short for strncmp
 			if c=0
 				add pointer \globalt.on_string
 				vstr mous="Mouse"
-				set c memcmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #memcmp is defined to compare the first 10 bytes
+				set c strncmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #strncmp is defined to compare the first 10 bytes
 				if c=0
 					set cursor translate_on(start,#globalt.blank,"ENTER_FRAME",cursor)
 				else
-					set c memcmp(pointer,#globalt.press_string,\globalt.press_string)
+					set c strncmp(pointer,#globalt.press_string,\globalt.press_string)
 					if c=0
 						set cursor translate_on(start,mous,"CLICK",cursor)
 					else
-						set c memcmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
+						set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 						if c=0
 							set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
 						else
-							set c memcmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
+							set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 							if c=0
 								set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
 							end
@@ -778,7 +846,7 @@ function translate_alpha(ss indents)
 	sd ?c
 	ss sizer=6
 	char against="alpha="^
-	set c memcmp(cursor,#against,sizer)
+	set c strncmp(cursor,#against,sizer)
 	if c=0
 		add sizer cursor
 		ss pointer
@@ -1073,25 +1141,25 @@ end
 function translate_var(ss indents)
 	ss cursor;set cursor spcfull(indents)
 	set cursor# (Nullchar) #on attach...
-	ss class
+	ss cls
 	inc cursor
-	set class quotafter(cursor)
-	if class!=cursor
-		set cursor quoton(class)
-		if cursor!=class
+	set cls quotafter(cursor)
+	if cls!=cursor
+		set cursor quoton(cls)
+		if cursor!=cls
 			set cursor# (Nullchar)
 			inc cursor
 			ss name
 			set name quotafter(cursor)
 			if name!=cursor ##going on attachMovie
 				set cursor quoton(name)
-				if cursor!=class
+				if cursor!=cls
 					set cursor# (Nullchar)
 					#inc cursor
 					#ss pointer
 					#set pointer semicolafter(cursor)
 					#if pointer!=cursor
-					set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,name,class,globalt.a_page_switch) #,pointer)
+					set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,name,cls,globalt.a_page_switch) #,pointer)
 					if cursor!=#globalt.blank
 						call translated("VarAttach")
 						return cursor
@@ -1099,7 +1167,7 @@ function translate_var(ss indents)
 					#end
 				end
 			else #going on createEmptyMovieClip
-				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,class,"flash.display.Shape",globalt.a_page_switch) #,pointer)
+				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch) #,pointer)
 				if cursor!=#globalt.blank
 					call translated("VarCreate")
 					return cursor
@@ -1114,9 +1182,9 @@ function translate_textformat(ss start)
 	ss cursor
 	set cursor equalafter(start)
 	if cursor!=start
-		ss type
-		set type quotafter(cursor)
-		if type!=cursor
+		if cursor#=(Singlequote) #enforcing this for no name translations?
+			ss type=1
+			add type cursor
 			ss pointer
 			set pointer quoton(type)
 			if pointer!=type

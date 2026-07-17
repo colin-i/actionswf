@@ -59,7 +59,7 @@
 		// a 2/3 size format
 		var tf = new TextFormat();
 		tf.size = 32;
-		tf.align = 'center';
+		tf.align ='center';
 		tf.color = 0xff9933;
 		label.setTextFormat(tf);
 

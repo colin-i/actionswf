@@ -1,4 +1,3 @@
-
 /*3
 m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
@@ -22,13 +21,16 @@ a Main
 		//3d shape @
 	}
 //3}
+function Loader(){//3f
+}
+//3}
 
 /*more tests
 //3i a.b.c
 //3f s
 //3f p
 //3v shape Shape
-useHandCursor=x;//3
+
 useHandCursor=_x;//3 b+s
 function ()()//3 e+e
 begin(a);_x//3 l q+s
@@ -40,8 +42,19 @@ _x()//3 s+e
 _y()//3 s_+e
 create('q',n,_x,_y,_width,_height);//3 t+s
 attach('q','_p',d);//3 v+s
-_leftPart='type';//3 x+s
-_a//3 f+s
+_leftPart='type';//3 j+s
+function new(_){//3 f+s
 _qty//3z wer ty+s
+
+useHandCursor=x;//3
+()//3
+function new//3
+a= 'q'//3
+onEnterFrame=q;//3
+_alpha=x;//3
+_x//3
+createTextField('label',1,0,16, 120, 48);//3
+att('name','q',getNextHighest);//3
+='type';//3
 */
 main();
