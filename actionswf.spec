@@ -1,7 +1,7 @@
 
 Name: actionswf
-Version: 1.173
-Release: 1
+Version: 1.174
+Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -57,6 +57,76 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Sat Jul 18 2026 costin <costin.botescu@gmail.com> 1.174-0
+- .expected test (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- new (costin.botescu@gmail.com)
+- the inner side of //3f (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- solver, verifying better (costin.botescu@gmail.com)
+- insert_char oaas3 (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- translate insert (costin.botescu@gmail.com)
+- loaders (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- fix sw and then another sw (costin.botescu@gmail.com)
+- @ as stage (costin.botescu@gmail.com)
+- c (costin.botescu@gmail.com)
+- rest of the bitmap (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- var_char on another fork for createEmptyMovieClip (costin.botescu@gmail.com)
+- oaas3 auto fill (costin.botescu@gmail.com)
+- also at rect (costin.botescu@gmail.com)
+- auto fill (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- oaas bitmap left search (costin.botescu@gmail.com)
+- asan fixes. oaas bitmap (costin.botescu@gmail.com)
+- readying for bitmap (costin.botescu@gmail.com)
+- main and uppercase (costin.botescu@gmail.com)
+- keep \r\n (costin.botescu@gmail.com)
+- -D (costin.botescu@gmail.com)
+- action_base_main (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- split ffdec back like action calls to keep max_structures
+  (costin.botescu@gmail.com)
+- fl (costin.botescu@gmail.com)
+- extra (costin.botescu@gmail.com)
+- less memory (costin.botescu@gmail.com)
+- bm (costin.botescu@gmail.com)
+- postpone solver (costin.botescu@gmail.com)
+- onev solver (costin.botescu@gmail.com)
+- relaxed first space rule (costin.botescu@gmail.com)
+- more solvers (costin.botescu@gmail.com)
+- layer for mix. evfunc solve (costin.botescu@gmail.com)
+- kind 2 (costin.botescu@gmail.com)
+- more optimizations (costin.botescu@gmail.com)
+- line cache optimization (costin.botescu@gmail.com)
+- optimizations (costin.botescu@gmail.com)
+- from_diagnostics (costin.botescu@gmail.com)
+- lib.sep (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- solver multiple times on same line (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- search solves (costin.botescu@gmail.com)
+- verbose (costin.botescu@gmail.com)
+- silent (costin.botescu@gmail.com)
+- solver (costin.botescu@gmail.com)
+- will add another strategy for keeping the source without translate_two marks
+  (costin.botescu@gmail.com)
+- only_diagnostics (costin.botescu@gmail.com)
+- safe (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- diagnostics (costin.botescu@gmail.com)
+- rest of html5 test (costin.botescu@gmail.com)
+- for debugger (costin.botescu@gmail.com)
+- html5 target for debug (costin.botescu@gmail.com)
+
 * Fri Jun 12 2026 costin <costin.botescu@gmail.com> 1.173-1
 - install number (costin.botescu@gmail.com)
 

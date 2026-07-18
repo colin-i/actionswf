@@ -1,3 +1,9 @@
+actionswf (1-174) bionic; urgency=medium
+
+  * sync last month
+
+ -- bc <bc@ubuntu>  Sat, 18 Jul 2026 16:07:13 +0300
+
 actionswf (1-173) bionic; urgency=medium
 
   * fix search base
