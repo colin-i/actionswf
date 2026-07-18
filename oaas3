@@ -549,7 +549,8 @@ if not os.environ.get('skip_comp'):
 									values=diag()
 									if values:
 										value,line,positions,pp=values
-										print(str(kind)+' '+pp+str(line)+' '+value)
+										if verbose:
+											print(str(kind)+' '+pp+str(line)+' '+value)
 										#now is like: fix one error will fix another 4
 										for f in files:
 											mod = get_module_insens(f)

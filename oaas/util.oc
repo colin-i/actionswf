@@ -248,6 +248,9 @@ end
 function verbosep()
 	return #globalu.verbose_bool
 end
+function verbosev()
+	return globalu.verbose_bool
+end
 
 function object_make(ss indents,ss name,ss end,ss class,sv pbuffer,sd ?size)
 	set end# (Nullchar)

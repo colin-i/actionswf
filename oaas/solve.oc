@@ -11,6 +11,7 @@ importx "sprintf" sprintf
 
 einclude "oaas.h" "oaas.oh"
 
+import "verbosev" verbosev
 ^import "on_string_get" on_string_get 1
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "press_string_get" press_string_get 1
@@ -37,7 +38,11 @@ function solver_endb(ss value,ss ?small_size)
 end
 function solver(ss value,ss s)
 	if s=(NULL)
-		call printf("postponed %s\n",value)
+		ss ?v
+		set v verbosev()
+		if v!=(FALSE)
+			call printf("postponed %s\n",value)
+		end
 	end
 	return s
 end
