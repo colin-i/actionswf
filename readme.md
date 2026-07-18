@@ -52,10 +52,12 @@ pip install actionswf
 ```
 
 ## From source
-Compile with [O Compiler](https://github.com/colin-i/o).
+Compile with [O Compiler](https://github.com/colin-i/o). Or convert to C with ocompiler+oconv (more at csrc folder).
 
 ## Info
-A brief intro is at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
+[OAAS Syntax](https://htmlpreview.github.io/?https://github.com/colin-i/actionswf/blob/master/oaas.html)\
+[X Syntax](https://htmlpreview.github.io/?https://github.com/colin-i/actionswf/blob/master/x.html)\
+More info at [readme.txt](https://raw.githubusercontent.com/colin-i/actionswf/master/readme.txt).\
 Games by this program at [flashixy](https://flashixy.com).
 
 [//]: # (https://www.kongregate.com/games/bitplayer)
