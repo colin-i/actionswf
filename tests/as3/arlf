@@ -1,1 +1,1 @@
-no_confirm=x no_clean=x ./arl && ./df
+interact=x no_confirm=x ./arl

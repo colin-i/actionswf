@@ -25,7 +25,6 @@ skip_comp=x OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p='wine6 python.exe' ./b
 cd dest #this for ./df
 	find . -type f -exec dos2unix {} \;
 cd ..
-no_clean=x skip_src=x ./br
-./df
+skip_src=x ./br
 echo $?
 rm -r dest
