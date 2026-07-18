@@ -11,7 +11,8 @@ ifndef OCONV
 OCONV=otoc
 endif
 ifndef linkerflags
-	linkerflags=-O3 -s
+	linkerflags=-O3 -flto=auto  -s
+	#unlike csrc or oad, flto here is not breaking, a clue is that libubsan is erroring
 	ifeq ($(findstring mingw,$(CC)),)
 		linkerflags += -march=native
 	endif
