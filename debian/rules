@@ -10,6 +10,8 @@ export DH_VERBOSE = 1
 # --with autoreconf
 
 override_dh_auto_install:
+	touch include_dev
+
 	#modify also where include_dev flag is
 	echo usr/include/actionswf/oadbgdatas.oh usr/include/actionswf/ > debian/libactionswf-dev.install
 	echo usr/include/actionswf/oadbgdata.oh usr/include/actionswf/ >> debian/libactionswf-dev.install
@@ -38,6 +40,8 @@ override_dh_auto_install:
 	echo usr/lib/liboaas.so usr/lib/ >> debian/actionswf.install
 
 	dh_auto_install -- prefix=/usr
+
+	rm include_dev
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 override_dh_gencontrol:
