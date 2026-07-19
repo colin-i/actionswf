@@ -70,8 +70,10 @@ def get_module_insens(fl):
 	f=os.path.basename(os.path.dirname(fl))
 	f=f[0].upper() + f[1:]
 	return f
+def hx_exte(fl):
+	return get_module_insens(fl)+'.hx'
 def hx_ext(fl):
-	return os.path.join(dest,get_module_insens(fl))+'.hx'
+	return os.path.join(dest,hx_exte(fl))
 out_file_name=sys.argv[2]
 
 def changeable(a,b,c): globals()[a + b] = c if os.environ.get(a + b) == None else os.environ.get(a + b)
@@ -101,10 +103,10 @@ def premade_formats():
 	a=('' if splits_folder=='' else splits_folder+os.sep)
 
 	return (a+os.path.splitext(out_file_name)[0]+ext(splits_format_ext),a+out_file_name+ext(splits_printf_ext))
-def splits_data(orig=False):
+def splits_data(orig=False,dirs=''):
 	splits_file, splits_mix = premade_formats()
 	#for filename in os.listdir(src):
-	with open(splits_file) as splits_file:
+	with open(dirs+splits_file) as splits_file:
 		splits_file_data=splits_file.read()
 		files = splits_file_data.split('\x00')
 		files.pop() # Remove the last empty string
@@ -112,7 +114,7 @@ def splits_data(orig=False):
 		if not orig:
 			return files_src
 	files_mirror = [str(Path(mirror_name)) + os.sep + str(Path(*Path(f).parts[1:])) for f in files]
-	with open(splits_mix) as splits_mix:
+	with open(dirs+splits_mix) as splits_mix:
 		splits_mix_data=splits_mix.read()
 		texts = splits_mix_data.split('\x00')
 		texts.pop()
@@ -219,7 +221,7 @@ def stop_server(s):
 		time.sleep(1)
 		os.kill(pid, 0)
 		os.kill(pid, signal.SIGKILL)
-	except TypeError,ProcessLookupError: #only from os.kill
+	except (TypeError,ProcessLookupError): #only from os.kill
 		return
 	os.waitpid(pid,0)
 def exiting_serv(s):
@@ -418,29 +420,43 @@ if not os.environ.get('skip_comp'):
 		def prun(a,capture_output=False):
 			if verbose:
 				print(a)
-			return subprocess.run(a,capture_output=capture_output)
+			kwargs = {}
+			if capture_output:
+				#kwargs['stdout'] = subprocess.PIPE
+				kwargs['stderr'] = subprocess.PIPE
+			return subprocess.run(a,**kwargs)
 		def crun(a,capture_output=False):
 			r=prun(a,capture_output=capture_output)
 			if r.returncode:
 				print('error')
 				exiting()
+			return r
+		def crund(a,capture_output=False):
+			r=crun(a,capture_output=capture_output)
 			os.chdir(c_dir) #same like to other plus for diagnostics all cases
 			return r
 
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
-			crun(baser)
+			crund(baser)
 		else:
 			if not o_d and not f_d:
 				r=prun(baser)
 			if o_d or f_d or r.returncode:
-				baser.extend(['--display'])
-				reuser=list(baser)
-				baser.extend(['diagnostics'])
-				p=crun(baser,capture_output=True)
+				def diags():
+					baser.extend(['--display'])
+					reuser=list(baser)
+					files=splits_data(dirs='../')
 
-				def diags(diagnostics):
-					files=splits_data()
+					import json
+					diagnostics=[]
+					for f in files:
+						ruser=list(reuser)
+						ruser.extend([hx_exte(f)+'@0@diagnostics'])
+						p=crun(ruser,capture_output=True)
+						diagnostics.extend(json.loads(p.stderr))
+					os.chdir(c_dir)
+
 					file_cache = {}
 					touched = set()
 					line_cache = {}
@@ -518,14 +534,14 @@ if not os.environ.get('skip_comp'):
 
 									os.chdir(dest)
 									reuser.extend([filename+'@'+offset_bytes+'@position'])
-									xm=crun(reuser,capture_output=True)
+									xm=crund(reuser,capture_output=True)
 									reuser.pop()
 									xm = ET.fromstring(xm.stderr).find('pos')
 									if xm is not None:
 										xm=xm.text
-										line=xm[len(fullfilename)+1:]
-										line=line.split(':')[0]
-										line=int(line)-1 # from human
+										lineparts=xm.split(':')
+										if lineparts[0]==fullfilename: #first case at bionic
+											line=int(lineparts[1])-1 # from human
 						return value,line,positions,pp
 
 					dump=os.environ.get('dump')
@@ -571,15 +587,14 @@ if not os.environ.get('skip_comp'):
 												else:
 													has_term=False
 
-												match kind:
-													case 7:
-														solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
-													case 4:
-														solved = lib.solve4(value.encode())
-													case 2:
-														solved = lib.solve2(value.encode())
-													case _: #1:
-														solved = lib.solve1(value.encode())
+												if kind==7:
+													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
+												elif kind==4:
+													solved = lib.solve4(value.encode())
+												elif kind==2:
+													solved = lib.solve2(value.encode())
+												else: #1:
+													solved = lib.solve1(value.encode())
 												if not solved:
 													if solved==None:
 														break
@@ -656,8 +671,7 @@ if not os.environ.get('skip_comp'):
 						print("diagnostics failed")
 						exiting()
 
-				import json
-				diags(json.loads(p.stderr))
+				diags()
 			else:
 				os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath
 

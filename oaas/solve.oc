@@ -11,12 +11,13 @@ importx "sprintf" sprintf
 
 einclude "oaas.h" "oaas.oh"
 
-import "verbosev" verbosev
+^import "new_string_get" new_string_get 1
 ^import "on_string_get" on_string_get 1
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "press_string_get" press_string_get 1
 ^import "rollover_string_get" rollover_string_get 1
 ^import "rollout_string_get" rollout_string_get 1
+import "verbosev" verbosev
 
 function _resolve()
 	return globals.stored_char
@@ -94,6 +95,14 @@ function solver4(ss value)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
 			callret solver_end(value,\.new_string)
+		end
+		ss ?z
+		ss cursor
+		set cursor new_string_get(#z)
+		set c strncmp(value,cursor,z)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(ignore_pref))
+			callret solver_end(value,z)
 		end
 	end
 	return (NULL)

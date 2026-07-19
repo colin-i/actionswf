@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ -z $p ]; then
+if [ -z "$p" ]; then
 	p=python3
 fi
 if [ -e dest ] && [ -z "${skip_src}" ]; then

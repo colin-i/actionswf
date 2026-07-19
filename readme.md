@@ -1,7 +1,7 @@
 # Action SWF
 
 ## Install
-On Ubuntu(amd64 i386)(bionic focal jammy noble resolute) from PPA.
+On Ubuntu(amd64)(jammy noble resolute) from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```

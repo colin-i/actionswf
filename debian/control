@@ -2,13 +2,15 @@ Source: actionswf
 Section: utils
 Priority: optional
 Maintainer: Botescu Costin <costin.botescu@gmail.com>
-Build-Depends: debhelper-compat (= 11), ocompiler, jpexs-decompiler, pkg-config, zlib1g-dev, bc, python3, haxe
+Build-Depends: debhelper-compat (= 13), ocompiler, jpexs-decompiler, pkg-config, zlib1g-dev, bc, python3, haxe
+#              bionic 11, bionic/focal were dropped since haxe diagnostics
 #, ostriputil [amd64]
 Standards-Version: 4.5.0
 Homepage: https://github.com/colin-i/actionswf
 
 Package: actionswf
-Architecture: amd64 i386
+Architecture: amd64
+#                   i386 #bionic was last i386
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}, python3
 Description: Action Swf library

@@ -45,6 +45,10 @@ function rollout_string_get(ss z)
 	set z# \globalt.rollout_string
 	return #globalt.rollout_string
 end
+function new_string_get(ss z)
+	set z# \globalt.nw-1
+	return #globalt.nw
+end
 
 importx "free" free
 importx "memcmp" memcmp
