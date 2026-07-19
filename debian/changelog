@@ -1,3 +1,9 @@
+actionswf (1-175) jammy; urgency=medium
+
+  * haxe backward compat
+
+ -- bc <bc@ubuntu>  Sun, 19 Jul 2026 12:58:51 +0300
+
 actionswf (1-174) bionic; urgency=medium
 
   * sync last month

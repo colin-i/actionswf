@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.174
+Version: 1.175
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -57,7 +57,11 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Sat Jul 18 2026 costin <costin.botescu@gmail.com> 1.174-0
+* Sun Jul 19 2026 costin <costin.botescu@gmail.com> 1.175-0
+- haxe backward compat (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- verbose on more values (costin.botescu@gmail.com)
+- sync last month (mail@flashixy.com)
 - .expected test (costin.botescu@gmail.com)
 - "up" (costin.botescu@gmail.com)
 - new (costin.botescu@gmail.com)
@@ -126,6 +130,9 @@ install_number=64 %make_install
 - rest of html5 test (costin.botescu@gmail.com)
 - for debugger (costin.botescu@gmail.com)
 - html5 target for debug (costin.botescu@gmail.com)
+- Automatic commit of package [actionswf] release [1.173-1].
+  (costin.botescu@gmail.com)
+- install number (costin.botescu@gmail.com)
 
 * Fri Jun 12 2026 costin <costin.botescu@gmail.com> 1.173-1
 - install number (costin.botescu@gmail.com)
