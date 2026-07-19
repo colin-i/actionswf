@@ -1,3 +1,9 @@
+actionswf (1-177) jammy; urgency=medium
+
+  * debhelper 13 fix
+
+ -- bc <bc@ubuntu>  Sun, 19 Jul 2026 15:14:45 +0300
+
 actionswf (1-176) jammy; urgency=medium
 
   * fix deb
