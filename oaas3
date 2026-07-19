@@ -482,9 +482,9 @@ if not os.environ.get('skip_comp'):
 				#b="$2"
 				#shift 2
 				#if [ $b != 0 ]; then
-				#	/usr/bin/haxe "$@" 2> "$b"
+				#	/usr/bin/haxe "$@" 2>"$b"
 				#else
-				#	/usr/bin/haxe "$@" 
+				#	/usr/bin/haxe "$@"
 				#fi
 				#echo -n $? > "$a"
 
