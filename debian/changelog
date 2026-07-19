@@ -1,3 +1,9 @@
+actionswf (1-176) jammy; urgency=medium
+
+  * fix deb
+
+ -- bc <bc@ubuntu>  Sun, 19 Jul 2026 13:58:16 +0300
+
 actionswf (1-175) jammy; urgency=medium
 
   * haxe backward compat

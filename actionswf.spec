@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.175
+Version: 1.176
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -57,7 +57,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Sun Jul 19 2026 costin <costin.botescu@gmail.com> 1.175-0
+* Sun Jul 19 2026 costin <costin.botescu@gmail.com> 1.176-0
+- verbose (costin.botescu@gmail.com)
+- haxe backward compat (mail@flashixy.com)
 - haxe backward compat (costin.botescu@gmail.com)
 - "up" (costin.botescu@gmail.com)
 - verbose on more values (costin.botescu@gmail.com)
