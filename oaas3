@@ -6,7 +6,7 @@
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  compiler  SERVER_PID header main  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler sentinel  SERVER_PID server_extern header main  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -36,12 +36,24 @@ if os.environ.get('OAPATH'):
 	OAPATH=os.environ.get('OAPATH')
 	#this is windows specific os.add_dll_directory(os.environ.get('OAPATH'))
 
+sentinel=os.environ.get('sentinel')
 import ctypes
 try: #in LD_LIBRARY_PATH
 	lib=ctypes.cdll.LoadLibrary(os.path.join(OAPATH,"liboaas.so"))
 except Exception:
 	try:
 		lib=ctypes.cdll.LoadLibrary(os.path.join(OAPATH,"liboaas.dll"))
+		if sentinel: #needed at wine
+			import _winapi
+			_orig_close_handle = _winapi.CloseHandle
+			def _safe_close_handle(h):
+				try:
+					_orig_close_handle(h)
+				except OSError:
+					print('sentinel')  # Wine gives bogus thread handles for native Unix children
+					pass
+					#return _winapi.WAIT_OBJECT_0  # pretend it finished
+			_winapi.CloseHandle = _safe_close_handle
 	except Exception:
 		lib = None
 		# print('no liboaas support')
@@ -211,19 +223,41 @@ if not OACACHE:
 from_diagnostics='from_diagnostics'
 f_d=os.environ.get(from_diagnostics)
 
-import signal
 import time
 def stop_server(s):
 	try:
-		pid=int(s) #TypeError at exiting without a sever
-		os.kill(pid, signal.SIGTERM) #async
-		os.kill(pid, 0)  # signal 0 = just checks if it's alive
+		pid = int(s)
+	except TypeError,ValueError:  #TypeError at exiting without a sever , ValueError at server_extern
+		return
+	if sys.platform == "win32":
+		_stop_windows(pid)
+	else:
+		_stop_posix(pid)
+def _stop_posix(pid):
+	import signal
+	try:
+		os.kill(pid, signal.SIGTERM)
+		os.kill(pid, 0)
 		time.sleep(1)
 		os.kill(pid, 0)
 		os.kill(pid, signal.SIGKILL)
-	except (TypeError,ProcessLookupError): #only from os.kill
+	except ProcessLookupError:
 		return
-	os.waitpid(pid,0)
+	os.waitpid(pid, 0)
+def _stop_windows(pid):
+	PROCESS_TERMINATE = 0x0001
+	SYNCHRONIZE = 0x00100000
+	kernel32 = ctypes.windll.kernel32
+	handle = kernel32.OpenProcess(PROCESS_TERMINATE | SYNCHRONIZE, False, pid)
+	if not handle:
+		return  # no such process
+	try:
+		time.sleep(1)
+		kernel32.TerminateProcess(handle, 1)
+		kernel32.WaitForSingleObject(handle, 5000)  # wait up to 5s, ms
+	finally:
+		kernel32.CloseHandle(handle)
+
 def exiting_serv(s):
 	stop_server(s)
 	exit(1)
@@ -392,18 +426,21 @@ if not os.environ.get('skip_comp'):
 			exit(1)
 		server_pid=os.environ.get('SERVER_PID')
 		if not server_pid:
-			import socket
-			server = subprocess.Popen([compiler, "--wait", "6000"])
-			server_pid=str(server.pid)
-			try:
-				with socket.create_connection(("127.0.0.1", 6000), timeout=1):
-					pass
-			except OSError:
-				time.sleep(1)
-				try:
-					with socket.create_connection(("127.0.0.1", 6000), timeout=1):
-						pass
-				except OSError:
+			server_extern=os.environ.get('server_extern')
+			if not server_extern:
+				import socket
+				server = subprocess.Popen([compiler, "--wait", "6000"])
+				server_pid=str(server.pid)
+				wait_some=10  #wine is longer
+				while wait_some:
+					try:
+						with socket.create_connection(("127.0.0.1", 6000),timeout=1): #timeout is at success
+							break
+					except: # OSError:
+						time.sleep(1)
+						wait_some-=1
+						continue
+				if not wait_some:
 					print('server error')
 					exiting()
 
@@ -412,6 +449,9 @@ if not os.environ.get('skip_comp'):
 			main='Main'
 		baser=[compiler,'--connect','6000','-swf',dest_file,'-main',main,'-D','flash_strict']
 		#                                                                   this flag for _x to be error
+		launcher=os.environ.get('launcher')
+		if launcher:
+			baser.insert(0,launcher)
 
 		hd=os.environ.get('header')
 		if hd:
@@ -419,28 +459,68 @@ if not os.environ.get('skip_comp'):
 			# -swf-header 960:640:60:f68712 -swf-version 15
 			#w:h:fps:rgb
 
-		def prun(a,capture_output=False):
+		import tempfile
+		def prun(a, capture_output=False):
 			if verbose:
 				print(a)
-			kwargs = {}
-			if capture_output:
-				#kwargs['stdout'] = subprocess.PIPE
-				kwargs['stderr'] = subprocess.PIPE
-			return subprocess.run(a,**kwargs)
+			if not sentinel:
+				kwargs = {}
+				if capture_output:
+					kwargs['stderr'] = subprocess.PIPE
+				return subprocess.run(a,**kwargs)
+			else: #wine always Invalid handle and never reaches return
+				done_path = sentinel+".done"
+				if capture_output:
+					err_path = sentinel+".err"
+				else:
+					err_path = '0'
+				# a = ['/bin/sh', '/home/bc/a/whaxe', ...actual haxe args...]
+				# wrapper script expects: whaxe <done_path> <err_path> <haxe args...>
+				full_cmd = a[:2] + [done_path, err_path] + a[2:]
+				##!/bin/sh
+				#a="$1"
+				#b="$2"
+				#shift 2
+				#if [ $b != 0 ]; then
+				#	/usr/bin/haxe "$@" 2> "$b"
+				#else
+				#	/usr/bin/haxe "$@" 
+				#fi
+				#echo -n $? > "$a"
+
+				#kwargs = {'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
+				proc = subprocess.Popen(full_cmd) #, **kwargs)
+
+				#start = time.monotonic()
+				poll_interval=0.5
+				while not os.path.exists(done_path):
+					#if timeout is not None and time.monotonic() - start > timeout:
+					#	break
+					time.sleep(poll_interval)
+
+				#returncode = 0
+				#if os.path.exists(done_path):
+				with open(done_path) as f:
+					returncode = int(f.read()) #.strip() or "0")
+				os.remove(done_path)
+
+				result = subprocess.CompletedProcess(a, returncode)
+
+				if capture_output:
+					result.stderr = open(err_path).read() #if os.path.exists(err_path) else b""
+					os.remove(err_path)
+				return result
 		def crun(a,capture_output=False):
 			r=prun(a,capture_output=capture_output)
 			if r.returncode:
 				print('error')
 				exiting()
 			return r
-		def crund(a,capture_output=False):
-			r=crun(a,capture_output=capture_output)
-			os.chdir(c_dir) #same like to other plus for diagnostics all cases
-			return r
 
 		o_d=os.environ.get('only_diagnostics')
 		if os.environ.get('no_diagnostics'):
-			crund(baser)
+			crun(baser)
+			os.chdir(c_dir) #same like to other plus for diagnostics all cases
 		else:
 			if not o_d and not f_d:
 				r=prun(baser)
@@ -487,14 +567,14 @@ if not os.environ.get('skip_comp'):
 							last = folder / folder
 							last.mkdir(exist_ok=True)
 							last_file = last / module
-							with open(last_file, "a") as fp:
+							with open(last_file, "a", newline="") as fp: #newline="" good on wine else will be \r\r\n
 								fp.write(line + os.linesep)
 
 						if line in cache:
 							return False
 
 						cache.add(line)
-						with open(file, "a") as fp:
+						with open(file, "a", newline="") as fp:
 							fp.write(line + os.linesep)
 						return True
 
@@ -536,14 +616,16 @@ if not os.environ.get('skip_comp'):
 
 									os.chdir(dest)
 									reuser.extend([filename+'@'+offset_bytes+'@position'])
-									xm=crund(reuser,capture_output=True)
-									reuser.pop()
-									xm = ET.fromstring(xm.stderr).find('pos')
-									if xm is not None:
-										xm=xm.text
-										lineparts=xm.split(':')
-										if lineparts[0]==fullfilename: #first case at bionic
-											line=int(lineparts[1])-1 # from human
+									xm=prun(reuser,capture_output=True)
+									os.chdir(c_dir)
+									if not xm.returncode: # was not needed only when was fast at normal run
+										reuser.pop()
+										xm = ET.fromstring(xm.stderr).find('pos')
+										if xm is not None:
+											xm=xm.text
+											lineparts=xm.split(':')
+											if lineparts[0]==fullfilename: #first case at bionic
+												line=int(lineparts[1])-1 # from human
 						return value,line,positions,pp
 
 					dump=os.environ.get('dump')
@@ -656,7 +738,7 @@ if not os.environ.get('skip_comp'):
 									unresolved=True
 					if resolved:
 						for f in touched:
-							with open(f, "w") as fp:
+							with open(f, "w", newline="") as fp: # , newline="" was already explained
 								fp.writelines(file_cache[f])
 						if o_d:
 							return
@@ -666,7 +748,11 @@ if not os.environ.get('skip_comp'):
 							os.environ[from_diagnostics]='' # still needed at src
 
 						os.environ[skip_orig] = "1"
-						os.environ["SERVER_PID"] = server_pid
+						os.environ["SERVER_PID"] = server_pid if server_pid else '' # server_extern, then here = None is exception
+
+						if os.environ.get("no_execv"):
+							result = subprocess.run([sys.executable] + sys.argv)
+							sys.exit(result.returncode)
 						os.execv(sys.executable, [sys.executable] + sys.argv)
 						#print("never reached")
 					if unresolved:

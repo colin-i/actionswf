@@ -5,10 +5,8 @@ if [ "$1" = clean ]; then
 	exit
 fi
 
-cd osrc
-LD_LIBRARY_PATH=${HOME}/a/x86_64_lib ./a
+LD_LIBRARY_PATH=${HOME}/a/x86_64_lib ./ao
 
-cd ..
 #get a wine python from https://www.python.org/downloads/windows/ python-3.14.5-amd64.exe
 #if not at installer, then:
 #	wine6 reg add "HKCU\Environment" /v PATH /t REG_SZ /d "C:\users\bc\AppData\Local\Programs\Python\Python314;%PATH%" /f
@@ -20,11 +18,12 @@ cd ..
 #REG_EXPAND_SZ to expand only
 #F or Z? wine6 cmd
 #WINEDEBUG=+loaddll,+module
-skip_comp=x OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p='wine6 python.exe' ./b
 
-cd dest #this for ./df
-	find . -type f -exec dos2unix {} \;
-cd ..
-skip_src=x ./br
+if [ -z "${p}" ]; then
+	p='wine6 python.exe'
+fi
+#compiler="F:\\home\\bc\\a\\haxe\\haxe.exe" #having troubles at @position
+no_execv=x server_extern=x sentinel=0 launcher=/bin/sh compiler=/home/bc/a/whaxe ffdec=~/ffdec/bin/ffdec platform=win OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p="$p" ./b
 echo $?
+
 rm -r dest

@@ -1,4 +1,9 @@
 f=../.expected/as3
+if [ "${platform}" = win ]; then
+	cd dest
+		find . -type f -exec dos2unix {} \;
+	cd ..
+fi
 diff ${f} dest || {
 	if [ -z "${interact}" ]; then
 		exit 1
