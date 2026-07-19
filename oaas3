@@ -231,6 +231,8 @@ def exiting():
 	exiting_serv(server_pid)
 
 verbose=os.environ.get('verbose')
+if verbose:
+	print(sys.argv[1]+' '+sys.argv[2])
 
 skip_src='skip_src'
 if not os.environ.get(skip_src):
