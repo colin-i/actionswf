@@ -24,7 +24,7 @@ if [ -z "${p}" ]; then
 fi
 #ffdec only if going on windows path at whaxe
 haxe --wait 6000 &
-pid=$!
+echo $!
 no_clean=x no_confirm=x no_execv=x server_extern=x sentinel=0 launcher=/bin/bash compiler=/home/bc/a/whaxe platform=win OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p="$p" ./b
 # server_compiler="F:\\home\\bc\\a\\haxe\\haxe.exe" #this to test win32 stop_server
 echo $?
