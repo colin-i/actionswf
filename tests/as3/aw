@@ -23,12 +23,16 @@ if [ -z "${p}" ]; then
 	p='wine6 python.exe'
 fi
 #ffdec only if going on windows path at whaxe
-haxe --wait 6000 &
-echo $!
-no_clean=x no_confirm=x no_execv=x server_extern=x sentinel=0 launcher=/bin/bash compiler=/home/bc/a/whaxe platform=win OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p="$p" ./b
-# server_compiler="F:\\home\\bc\\a\\haxe\\haxe.exe" #this to test win32 stop_server
+#if [ -n "${server_extern}" ]; then # server_extern=x
+#	haxe --wait 6000 &
+#	echo $!
+#fi
+server_compiler="F:\\home\\bc\\a\\haxe\\haxe.exe" no_clean=x no_confirm=x no_execv=x sentinel=0 launcher=/bin/bash compiler=/home/bc/a/whaxe platform=win \
+	OAPATH="F:\\home\\bc\\s\\actionswf-1\\oaas" p="$p" ./b
 echo $?
-./k
+#if [ -n "${server_extern}" ]; then
+#	./k
+#fi
 
 exit
 #!/bin/bash
