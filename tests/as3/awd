@@ -1,2 +1,2 @@
-#p='wine6 python.exe -m pdb'
+p='wine6 python.exe -m pdb' \
 break=x ./aw
