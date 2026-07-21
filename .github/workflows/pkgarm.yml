@@ -37,7 +37,7 @@ jobs:
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
-     make SUBDIRS="dev oad"
+     make SUBDIRS="dev oad oaas"
      cd csrc
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
