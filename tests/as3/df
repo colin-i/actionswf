@@ -8,7 +8,7 @@ diff ${f} dest || {
 	if [ -z "${interact}" ]; then
 		exit 1
 	fi
-	read;
+	read
 	cp dest/Main.hx ${f}
 	cp dest/MyClip.hx ${f}
 }

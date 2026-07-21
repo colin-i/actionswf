@@ -53,6 +53,7 @@ _qty//3z wer ty+s
 useHandCursor=x;//3
 ()//3
 function new//3
+function newq//3
 a= 'q'//3
 onEnterFrame=q;//3
 _alpha=x;//3

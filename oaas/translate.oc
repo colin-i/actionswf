@@ -650,54 +650,60 @@ function translate_function(ss indents)
 		ss pointer
 		set pointer spcfull(cursor)
 		if pointer!=cursor
-			sd ?len
-			set c strncmp(pointer,#globalt.nw,\globalt.nw-1)
-			if c=0
-				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s %s%s",indents,globalt.public,#globalt.func,pointer,globalt.super)
-			else
-				set cursor pointer
-				ss ?a
-				whiletrue
-					set a cursor#
-					if a<(_0)
-						if a=(Dollar)
-							inc cursor
-							continue
-						end
-						break
-					end
-					if a<=(_9)
-						inc cursor
-						continue
-					end
-					if a<(A)
-						break
-					end
-					if a<=(Z)
-						inc cursor
-						continue
-					end
-					if a<(a_low)
-						if a=(_)
-							inc cursor
-							continue
-						end
-						break
-					end
-					if a<=(z_low)
+			set cursor pointer
+			ss ?a
+			whiletrue
+				set a cursor#
+				if a<(_0)
+					if a=(Dollar)
 						inc cursor
 						continue
 					end
 					break
 				end
-				set a cursor#
+				if a<=(_9)
+					inc cursor
+					continue
+				end
+				if a<(A)
+					break
+				end
+				if a<=(Z)
+					inc cursor
+					continue
+				end
+				if a<(a_low)
+					if a=(_)
+						inc cursor
+						continue
+					end
+					break
+				end
+				if a<=(z_low)
+					inc cursor
+					continue
+				end
+				break
+			end
+			sd ?len
+			svu ?sz;set sz cursor
+			sub sz pointer
+			whiletrue
+				if sz=\globalt.nw-1
+					set c memcmp(pointer,#globalt.nw,\globalt.nw-1)
+					if c=0
+						set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s %s%s",indents,globalt.public,#globalt.func,pointer,globalt.super)
+						break
+					end
+				end
 				if a!=(Nullchar)
 					set cursor# (Nullchar)
 					inc cursor
 					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s{%s %s %s%c%s",indents,globalt.class,pointer,globalt.public,#globalt.func,#globalt.nw,a,cursor)
 				else
-					set len 0
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s{%s %s %s",indents,globalt.class,pointer,globalt.public,#globalt.func,#globalt.nw)
 				end
+				break
 			end
 			if len>0
 				if len<(a_page_size)
