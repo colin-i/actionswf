@@ -1,5 +1,5 @@
 
-cd example && make clean && cd ../csrc && make clean && cd .. && make clean && \
+cd example && make clean && cd ../csrc && make clean && cd .. && make clean && platform=win make clean && \
 #if [ -n "${general}" ]; then
 #	cd tests/as3 && ./cf
 #fi &&
