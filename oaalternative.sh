@@ -70,7 +70,7 @@ if [ -z "${skip_alternative}" ]; then
 					echo $a
 				fi
 				if [ -n "${expect_obfuscation}" ]; then
-					touch "${expect_obfuscation}" #same reson like in doaction for not using a variable
+					echo "$a" >> "${expect_obfuscation}" #same reson like in doaction for not using a variable
 				fi
 			fi
 		fi
@@ -248,7 +248,7 @@ if [ -z "${skip_alternative}" ]; then
 		if [ ! -e "${expect_obfuscation}" ]; then
 			exit 1
 		fi
-		rm "${expect_obfuscation}"
+		#rm "${expect_obfuscation}"
 	fi
 fi
 #part 2
