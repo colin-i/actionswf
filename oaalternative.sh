@@ -4,6 +4,7 @@
 #is_debug no_clean
 #skip_ffdec ffdec
 #skip_alternative no_number_check scripts skip_deobfuscation expect_obfuscation deobfuscator_launcher
+#ld_preload
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
 
@@ -256,7 +257,7 @@ if [ -n "${2}" ]; then
 	set -e #at alternative there are return 1 returns
 	mv ${v} "${bname}" "${bname}".orig
 	cd "${at_start}"
-	${2} || {
+	LD_PRELOAD=${ld_preload} ${2} || {
 		cd "${dname}"
 		if [ ! -e "${bname}" ]; then
 			mv ${v} "${bname}".orig "${bname}"

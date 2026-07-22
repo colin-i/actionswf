@@ -3,7 +3,7 @@ Format ElfObj64
 include "../include/prog.h" "../include/prog.oh"
 
 #multithread unsafe
-data file=fd_none;vdata fmem=NULL
+data gfile=fd_none;vdata fmem=NULL
 
 vstr fprintf_er="fprintf error"
 vstr file_write_er="File write error"
@@ -23,8 +23,8 @@ import "printEr" printEr
 
 import "mem_free" mem_free
 function file_get_content__resources_free()
-	if globalf.file!=(fd_none)
-		call file_close(#globalf.file)
+	if globalf.gfile!=(fd_none)
+		call file_close(#globalf.gfile)
 		if globalf.fmem!=(NULL)
 			call mem_free(#globalf.fmem)
 		endif
@@ -126,7 +126,7 @@ endfunction
 function file_get_content(ss filepath,sv p_size)  #size is a stack variable , but here is not like the other cases, here is on full
 	sd ?file
 	setcall file file_open(filepath,(_open_read))
-	set globalf.file file
+	set globalf.gfile file
 	sd mem; ss size ;#will size# char , and inc dec
 	set size filesize(file)
 	if p_size!=(NULL)
