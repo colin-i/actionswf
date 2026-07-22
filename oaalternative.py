@@ -5,7 +5,10 @@ import re
 import sys
 
 def transform_do_while(lines):
+	verbose=os.environ.get("expect_obfuscation") or os.environ.get("is_debug")
+	while_re = re.compile(r'^([\t ]*)while\s*\((.*)\)\s*;\s*$')
 	tabs=3*' '
+
 	i = 0
 	while i < len(lines):
 		m = while_re.match(lines[i])
@@ -79,9 +82,6 @@ def transform_do_while(lines):
 			print(while_line)
 
 	return lines
-
-verbose=os.environ.get("expect_obfuscation") or os.environ.get("is_debug")
-while_re = re.compile(r'^([\t ]*)while\s*\((.*)\)\s*;\s*$')
 
 def main():
 	if len(sys.argv) != 2:
