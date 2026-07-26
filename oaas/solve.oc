@@ -10,6 +10,7 @@ importx "printf" printf
 importx "sprintf" sprintf
 
 einclude "oaas.h" "oaas.oh"
+const A_to_a=a_low-A
 
 ^import "new_string_get" new_string_get 1
 ^import "on_string_get" on_string_get 1
@@ -64,6 +65,12 @@ function solver1(ss value)
 end
 function solver2(ss value)
 	sd ?c
+	char compare_string="Int should be Bool"^
+	set c strncmp(value,#compare_string,\.compare_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(compare_char-A_to_a)) #this is only for !comp side
+		callret solver_end(value,\.compare_string)
+	end
 	char align_string="String should be flash.text.TextFormatAlign"^
 	set c strncmp(value,#align_string,\.align_string)
 	if c=0

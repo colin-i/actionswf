@@ -22,6 +22,7 @@ const func_char=f_low
 #translate solve
 Const Dollar=0x24
 Const e_low=0x65
+Const k_low=0x6B
 Const o_low=0x6F
 Const p_low=0x70
 Const r_low=0x72
@@ -30,6 +31,7 @@ Const v_low=0x76
 const align_char=j_low
 const alpha_char=h_low
 const bitmap_char=m_low
+const compare_char=k_low
 const evfunc_char=e_low
 const fill_char=l_low
 const ignore_pref=Exclamationmark

@@ -20,8 +20,15 @@ a Main
 		shape._y = (Stage.height - 100) / 2;
 		//3d shape @
 
+		//more tests
 		//3n
 		Loader();
+		var a=1;
+		if(a)
+			trace("okkkkkkkkkkkkkkk");
+		var b=0;
+		if(!b)
+			trace("okkkkkkkkkkkkkkk2");
 	}
 //3}
 function Loader(){//3f
@@ -36,30 +43,32 @@ trace('the loader is working');
 //3v shape Shape
 
 useHandCursor=_x;//3 b+s
+useHandCursor=x;//3
 function ()()//3 e+e
+()//3
 function dollar$_isok_at_as2(){//3 f+e
+function new//3
+function newq//3
+var _a;//3 gArray+s
+_alpha=_x;//3 h+s
+_alpha=x;//3
 _leftPart='type';//3 j+s
+='type';//3
+(_)//3k+s
+(a)//3
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
+a= 'q'//3
 onEnterFrame=_fune;//3 o+s
-_alpha=_x;//3 h+s
+onEnterFrame=q;//3
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
 _x()//3 s+e
 _y()//3 s_+e
-create('q',n,_x,_y,_width,_height);//3 t+s
-attach('q','_p',d);//3 v+s
-_qty//3z wer ty+s
-
-useHandCursor=x;//3
-()//3
-function new//3
-function newq//3
-a= 'q'//3
-onEnterFrame=q;//3
-_alpha=x;//3
 _x//3
+create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
+attach('q','_p',d);//3 v+s
 att('name','q',getNextHighest);//3
-='type';//3
+_qty//3z wer ty+s
 */
 main();

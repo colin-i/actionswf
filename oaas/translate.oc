@@ -58,6 +58,7 @@ importx "strdup" strdup
 importx "strlen" strlen
 importx "snprintf" snprintf
 importx "strstr" strstr
+importx "strchr" strchr
 
 ^import "commaafter" commaafter 1
 ^import "commaon" commaon 1
@@ -92,9 +93,9 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#     f      m        v
-#aBcdEFgHiJ LMnO  RST V x Z
-#          k    pq   u wxy
+#a cd fg i   mn       v x
+# B  EFGH JKLM O  RST V   Z
+#               pq   u w y
 #also at the end
 
 #a	s [s]
@@ -349,7 +350,9 @@ end
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
 #f	function newOther
+#g	;
 #h	alpha=;
+#k	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
 #m	all spcback= ''
@@ -386,6 +389,22 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(func_char)
 		set cursor translate_function(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(g_low)
+		set pointer translate_two_switchBefore(#oa)
+		set cursor translate_give(start,oa)
+		set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparation, is inside
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(compare_char)
+		set cursor translate_compare(start)
 		if cursor!=start
 			inc oa
 			set cursor translate_two_switch(oa,cursor)
@@ -476,34 +495,38 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-											set cursor translate_buttonmode(mem,(NULL))
+												set cursor translate_buttonmode(mem,(NULL))
 		if cursor=mem
 			call strcpy(mem,start)
-										set cursor translate_eparam(mem)
+											set cursor translate_eparam(mem)
 			if cursor=mem
 				call strcpy(mem,start)
-									set cursor translate_function(mem)
+										set cursor translate_function(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-								set cursor translate_alpha(mem)
+									set cursor translate_alpha(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-							set cursor translate_textformat(mem)
+								set cursor translate_textformat(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-						set cursor translate_bitmap(mem)
+							set cursor translate_bitmap(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-					set cursor translate_onev(mem)
+						set cursor translate_onev(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-				set cursor translate_srch_all(mem)
+					set cursor translate_srch_all(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-			set cursor translate_textfield(mem)
+				set cursor translate_textfield(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-		set cursor translate_var(mem)
+			set cursor translate_var(mem)
+											if cursor=mem
+												call strcpy(mem,start)
+		set cursor translate_compare(mem)
+											end
 										end
 									end
 								end
@@ -714,6 +737,61 @@ function translate_function(ss indents)
 		end
 	end
 	return indents
+end
+
+function translate_give(ss indents,ss name)
+	if name#!=(Nullchar)
+		ss cursor
+		set cursor semicolon(indents)
+		if cursor!=indents
+			set cursor# (Nullchar)
+			inc cursor
+			sd ?len
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s:%s<Dynamic>%c%s",indents,name,(Semicolon),cursor)
+			if len>0
+				if len<(a_page_size)
+					call translated("Give")
+					return globalt.a_page_switch
+				end
+			end
+		end
+	end
+	return name
+end
+
+function translate_compare(ss start)
+	ss cursor
+	set cursor pareoafter(start)
+	if cursor!=start
+		ss end
+		set end strchr(cursor,(Nullchar))
+		whiletrue
+			dec end
+			if end=cursor
+				break
+			end
+			if end#=(Closeparenthesis)
+				set end# (Nullchar)
+				inc end
+				sd ?len
+				if cursor#=(Exclamationmark)
+					set cursor# (Nullchar)
+					inc cursor
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s==0%c%s",start,cursor,(Closeparenthesis),end)
+				else
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s!=0%c%s",start,(Closeparenthesis),end)
+				end
+				if len>0
+					if len<(a_page_size)
+						call translated("Compare")
+						return globalt.a_page_switch
+					end
+				end
+				break
+			end
+		end
+	end
+	return start
 end
 
 function translate_fill(ss indents,ss name)
@@ -1267,10 +1345,12 @@ ButtonMode
 Class
 closing
 Comment
+Compare
 Event
 Fill
 Function
 FunctionMorph
+Give
 Import
 On
 Rect
