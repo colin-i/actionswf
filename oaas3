@@ -669,10 +669,11 @@ if not os.environ.get('skip_comp'):
 													solved = lib.solve4(value.encode())
 												elif kind==2:
 													solved = lib.solve2(value.encode())
-													if solved.isupper():
-														solved=solved.lower()
-														if firstline: #at compare without exclamations is from if, not this case
-															line=firstline
+													if solved: # it is no having ""
+														if solved.isupper():
+															solved=solved.lower()
+															if firstline: #at compare without exclamations is from if, not this case
+																line=firstline
 												elif kind==1:
 													solved = lib.solve1(value.encode())
 
