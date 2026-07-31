@@ -9,7 +9,7 @@ vstrx concat_point#1
 datax flag_dup#1
 #
 datax flag_splitter#1
-charx markers#max_structures
+#charx markers#max_structures
 charx splitdelim#1+3+1
 
 importx "strrchr" strrchr
@@ -22,6 +22,8 @@ importx "fclose" fclose
 ^import "swf_sprite_frames_pointer" swf_sprite_frames_pointer 1 #full return
 ^import "word_arg_to_stack" word_arg_to_stack 1
 import "mem_free" mem_free
+^import "struct_ids_action" struct_ids_action 2 #full
+import "block_get_size" block_get_size
 
 function alt_join()
 	add globall.concat_point globall.folder
@@ -79,13 +81,13 @@ function alt_init(sd flags,sd path)
 		set globall.concat_point size
 		call alt_join()
 
-		ss p;set p #globall.markers
-		sd end=max_structures
-		add end p
-		while p!=end
-			set p# 0
-			inc p
-		end
+		#ss p;set p #globall.markers
+		#sd end=max_structures
+		#add end p
+		#while p!=end
+		#	set p# 0
+		#	inc p
+		#end
 		if globall.flag_splitter!=0
 			ss s;set s #globall.splitdelim
 			inc s
@@ -98,8 +100,6 @@ function alt_init(sd flags,sd path)
 				set s# (LineFeed)
 			end
 		end
-
-		ret
 	end
 end
 
@@ -111,12 +111,18 @@ end
 function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 	if globall.folder!=(NULL)
 		if orig_action!=(NULL) #this to filter a button with no swf actions for example
-			#setcall block struct_ids_action((ids_get),preid)
-			#setcall size block_get_size(block)
-			#if size=0 #at alt, first action from the frame is with all
-			ss mark;set mark preid
-			add mark #globall.markers
-			if mark#=0
+			#ss mark;set mark preid
+			#add mark #globall.markers
+			#if mark#=0
+			whiletrue
+				if globall.flag_splitter=0
+					sd block;sd ?size
+					setcall block struct_ids_action((ids_get),preid)
+					setcall size block_get_size(block)
+					if size!=0 #at alt, first action from the frame is with all
+						break
+					end
+				end
 				whiletrue
 					if has_frames=(TRUE)
 						ss ?ai;set ai ainit()
@@ -139,24 +145,21 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 				ss mem
 				set mem file_get_content(globall.folder,(NULL))
 				#call unlink(globall.folder) #if there are two action() at one frame, the second one must not see this
-				whiletrue
-					if globall.flag_splitter!=0
-						ss junction;set junction strstr(mem,#globall.splitdelim)
-						if junction!=(NULL)
-							inc junction ##prexx and alt can go together, must keep system line endings
-							set junction# (Nullchar)
-							add junction \globall.splitdelim-2
-							svu ?sz;set sz strlen(junction)
+				if globall.flag_splitter!=0
+					ss junction;set junction strstr(mem,#globall.splitdelim)
+					if junction!=(NULL)
+						inc junction ##prexx and alt can go together, must keep system line endings
+						set junction# (Nullchar)
+						add junction \globall.splitdelim-2
+						svu ?sz;set sz strlen(junction)
 
-							sd file;set file f_open(globall.folder,"wb")
-							call f_write(file,junction,sz)
-							call fclose(file)
-							break
-						end
+						sd file;set file f_open(globall.folder,"wb")
+						call f_write(file,junction,sz)
+						call fclose(file)
 					end
-					set mark# ~0
-					break
 				end
+				#set mark# ~0
+				#break
 
 				return mem
 			end
