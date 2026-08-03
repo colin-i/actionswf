@@ -29,6 +29,7 @@ a Main
 		var b=0;
 		if(!b)
 			trace("okkkkkkkkkkkkkkk2");
+		var arcon=new Array(1,2,3);
 	}
 //3}
 function Loader(){//3f
@@ -42,6 +43,8 @@ trace('the loader is working');
 //3f p
 //3v shape Shape
 
+_q=new Array(q,w,2);//3 a+s
+q=new Array(q,w,2);//3
 useHandCursor=_x;//3 b+s
 useHandCursor=x;//3
 function ()()//3 e+e

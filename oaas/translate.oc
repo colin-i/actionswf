@@ -59,6 +59,7 @@ importx "strlen" strlen
 importx "snprintf" snprintf
 importx "strstr" strstr
 importx "strchr" strchr
+importx "strrchr" strrchr
 
 ^import "commaafter" commaafter 1
 ^import "commaon" commaon 1
@@ -94,7 +95,7 @@ function switch_page()
 end
 
 #a cd fg i   mn       v x
-# B  EFGH JKLM O  RST V   Z
+#AB  EFGH JKLM O  RST V   Z
 #               pq   u w y
 #also at the end
 
@@ -347,6 +348,7 @@ function translate_leftright(ss format,ss indents,ss in,ss oa,ss pointer,ss out)
 	return in
 end
 
+#a	=new Array(...)
 #b	useHandCursor=; same as p but diff at format and continuation
 #e	()
 #f	function newOther
@@ -374,12 +376,21 @@ function translate_two(ss start,ss in)
 		call translated("Ignored")
 		return #globalt.blank
 	end
-	if chr=(b_low)
+	if chr=(arrconstr_char)
+		set cursor translate_arrayconstructor(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(b_low)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
 	elseif chr=(evfunc_char)
-		set cursor translate_eparam(start) #why here? who is using untranslated, anyway
+		set cursor translate_eparam(start)
 		if cursor!=start
 			inc oa
 			set cursor translate_two_switch(oa,cursor)
@@ -495,37 +506,41 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-												set cursor translate_buttonmode(mem,(NULL))
+													set cursor translate_arrayconstructor(mem)
 		if cursor=mem
 			call strcpy(mem,start)
-											set cursor translate_eparam(mem)
+												set cursor translate_buttonmode(mem,(NULL))
 			if cursor=mem
 				call strcpy(mem,start)
-										set cursor translate_function(mem)
+											set cursor translate_eparam(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-									set cursor translate_alpha(mem)
+										set cursor translate_function(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-								set cursor translate_textformat(mem)
+									set cursor translate_alpha(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-							set cursor translate_bitmap(mem)
+								set cursor translate_textformat(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-						set cursor translate_onev(mem)
+							set cursor translate_bitmap(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-					set cursor translate_srch_all(mem)
+						set cursor translate_onev(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-				set cursor translate_textfield(mem)
+					set cursor translate_srch_all(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-			set cursor translate_var(mem)
+				set cursor translate_textfield(mem)
 											if cursor=mem
 												call strcpy(mem,start)
+			set cursor translate_var(mem)
+												if cursor=mem
+													call strcpy(mem,start)
 		set cursor translate_compare(mem)
+												end
 											end
 										end
 									end
@@ -588,6 +603,33 @@ function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 		end
 	end
 	return oa
+end
+
+function translate_arrayconstructor(ss start)
+	char predefined="=new Array(";
+	ss cursor
+	set cursor strstr(start,#predefined)
+	if cursor!=(NULL)
+		ss pointer
+		set pointer cursor
+		add pointer \.predefined-1
+		ss end
+		set end strrchr(pointer,(Closeparenthesis))
+		if end!=(NULL)
+			set cursor# (Nullchar)
+			set end# (Nullchar)
+			inc end
+			sd ?len
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s=[%s]%s",start,pointer,end)
+			if len>0
+				if len<(a_page_size)
+					call translated("ArrayConstructor")
+					return globalt.a_page_switch
+				end
+			end
+		end
+	end
+	return start
 end
 
 function translate_buttonmode(ss indents,ss oa)
@@ -1338,6 +1380,7 @@ s
 
 AddChild
 Alpha
+ArrayConstructor
 Bitmap
 BitmapMorph
 blank

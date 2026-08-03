@@ -77,6 +77,12 @@ function solver2(ss value)
 		call sprintf(#globals.outvalue,"%c",(align_char))
 		callret solver_end(value,\.align_string)
 	end
+	char arrconstr_string="Too many arguments"^
+	set c strncmp(value,#arrconstr_string,\.arrconstr_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(arrconstr_char))
+		callret solver_end(value,\.arrconstr_string)
+	end
 	char evfunc_string="() -> Void should be Dynamic -> Void"^
 	set c strncmp(value,#evfunc_string,\.evfunc_string)
 	if c=0

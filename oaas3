@@ -766,7 +766,11 @@ if not os.environ.get('skip_comp'):
 					if unresolved:
 						print("diagnostics failed")
 						exiting()
-
+					if f_d: #still can be all ok after all diagnostics
+						baser.pop()
+						os.chdir(dest)
+						crun(baser)
+						os.chdir(c_dir)
 				diags()
 			else:
 				os.chdir(c_dir) #back for clean, and maybe ffdec is relative, dest_file is realpath

@@ -30,6 +30,7 @@ Const t_low=0x74
 Const v_low=0x76
 const align_char=j_low
 const alpha_char=h_low
+const arrconstr_char=a_low
 const bitmap_char=m_low
 const compare_char=k_low
 const evfunc_char=e_low
