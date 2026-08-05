@@ -7,7 +7,7 @@ Generic text-manipulation helpers for editing JS-like function bodies embedded
 in a larger text blob. Built to do the following, for any function found by name:
 
 	1. Locate the function's `while( ... ) { ... }` block.
-	2. Inside that block, replace every `break;` with whatever code follows the
+	2. Inside that block, replace first `break;` with whatever code follows the
 		while-block (i.e. "what is outside the while code block").
 	3. Inside that block, find the first `if(!...) { ... }` block and:
 		- replace its body with `continue;`
@@ -77,7 +77,7 @@ def extract_while_block(func_text):
 
 
 def replace_break_with_after_text(func_text, while_info):
-	"""Replace every 'break;' inside the while block with the code that
+	"""Replace first 'break;' inside the while block with the code that
 	follows the while block (i.e. what's 'outside' it, up to the function's
 	closing brace) -- and MOVE that code (remove it from its original spot)
 	rather than just copying it."""
@@ -91,8 +91,10 @@ def replace_break_with_after_text(func_text, while_info):
 	after_while_raw = tail[:last_brace_idx]
 	after_while = after_while_raw.strip()
 
-	# 1) copy the "outside" text into every break;
-	inner_new = inner.replace('break;', after_while)
+	# 1) copy the "outside" text into first break;
+	if not inner.count("break;"):
+		raise ValueError("No break; statement found")
+	inner_new = inner.replace('break;', after_while, 1)
 
 	# 2) move it: remove the original text from after the while block,
 	#    keeping just the function's closing brace on its own line
