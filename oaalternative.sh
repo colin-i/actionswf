@@ -48,6 +48,11 @@ fi
 if [ -z "${skip_alternative}" ]; then
 	if [ -z "${skip_deobfuscation}" ]; then # at readlink -f, all but the last component must exist
 		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternative.py) #.py? to keep the compatibility with windows, else was oaalternativedeobf
+		#case "$deobfuscator" in
+		#	*.*) deobfuscator_t="${deobfuscator%.*}r.${deobfuscator##*.}" ;;
+		#	*)   deobfuscator_t="${deobfuscator}r" ;;
+		#esac
+		deobfuscator_t="${deobfuscator%.py}r.py"
 	fi
 
 	mkdir -p "${out}" || exit 1
@@ -62,8 +67,10 @@ if [ -z "${skip_alternative}" ]; then
 		fi
 		if [ -z "${skip_deobfuscation}" ]; then
 			if [ -z "${deobfuscator_launcher}" ]; then #executable mode will not be represented in diff, but will be install -m0755 for /usr/bin
+				"${deobfuscator_t}" $2 || exit 1
 				a=`"${deobfuscator}" $2` || exit 1
 			else #anyway deb test still need
+				"${deobfuscator_launcher}" "${deobfuscator_t}" $2 || exit 1
 				a=`"${deobfuscator_launcher}" "${deobfuscator}" $2` || exit 1
 			fi
 			if [ -n "$a" ]; then

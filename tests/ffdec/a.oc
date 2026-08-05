@@ -159,7 +159,20 @@ function indents(){
 
 ")
 #call actiond("for(a in b){c=1+c;}") will be ""b"" and here straight "b"
-call action("return 1")
+call action("
+function easy_stop(ops){
+	var a=2;
+	while(true){
+		a++;
+		if(a==3){
+			return true;
+		}
+		if(shuffled.length)continue;
+		return false;
+	}
+}
+return 1
+")
 
 sd id;set id swf_sprite_new()
 call action_init_sprite(id,"var a=a")
