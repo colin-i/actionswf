@@ -97,9 +97,9 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#a cd fg i   mn       v x
+#a cd fg i   mn p     v x
 #AB  EFGH JKLM O  RST V   Z
-#               pq   u w y
+#                q   u w y
 #also at the end
 
 #a	s [s]
@@ -110,7 +110,9 @@ end
 #i	string
 #m      same like v
 #n	a letter and predef format
+#p	public
 #v	s s
+#x	static
 #}	mix indents and in
 
 function translate_one(ss in,ss indents)
@@ -371,7 +373,7 @@ end
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
-#v	''''
+#v	''''   ;=;=; ...
 #z	replacing a to b
 
 function translate_two(ss start,ss in)
@@ -1471,6 +1473,7 @@ FunctionMorph
 Give
 Import
 On
+Public
 Rect
 Replace
 Search
