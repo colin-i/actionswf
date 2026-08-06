@@ -21,9 +21,11 @@ a Main
 		//3d shape @
 
 		//more tests
+		var a=1;
+//		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;
+//		trace("shape2 b is this: "+shape2.b);
 		//3n
 		Loader();
-		var a=1;
 		if(a)
 			trace("okkkkkkkkkkkkkkk");
 		var b=0;

@@ -96,6 +96,19 @@ new();
 sd sprite;set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip")
 
+set presprite swf_sprite_new()
+call action_sprite(presprite,"
+//3a MyClip2 flash.display.Sprite
+//	var b;
+	function new(a){//3 f
+//		b=a;
+	}
+//3}
+new(1);
+")
+set sprite swf_sprite_done(presprite)
+call swf_exports_add(sprite,"MyClip2")
+
 sd img
 set img swf_jpeg("../a.jpg")
 call swf_exports_add(img,"My_BitmapData")
@@ -123,9 +136,11 @@ a Main
 		//3d shape @
 
 		//more tests
+		var a=1;
+//		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;
+//		trace(\"shape2 b is this: \"+shape2.b);
 		//3n
 		Loader();
-		var a=1;
 		if(a)
 			trace(\"okkkkkkkkkkkkkkk\");
 		var b=0;
