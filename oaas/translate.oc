@@ -76,6 +76,7 @@ import "object_make" object_make
 ^import "quotafter" quotafter 1
 ^import "quoton" quoton 1
 ^import "replace" replace 5
+^import "semicolafter" semicolafter 1
 ^import "semicolon" semicolon 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
@@ -1290,16 +1291,32 @@ function translate_var(ss indents)
 				set cursor quoton(name)
 				if cursor!=cls
 					set cursor# (Nullchar)
-					#inc cursor
-					#ss pointer
-					#set pointer semicolafter(cursor)
-					#if pointer!=cursor
-					set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,name,cls,globalt.a_page_switch) #,pointer)
-					if cursor!=#globalt.blank
-						call translated("VarAttach")
-						return cursor
+					sd ?len
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
+					if len>0
+						if len<(a_page_size)
+							inc cursor
+							ss pointer
+							set pointer semicolafter(cursor)
+							if pointer!=cursor
+								set cursor translate_var_arguments(pointer,globalt.a_page_switch,#len)
+								if cursor=pointer
+									return indents
+								end
+							end
+							if len>=3
+								call translated("VarAttach")
+								set cursor globalt.a_page_switch
+								add cursor len
+								set cursor# (Closeparenthesis)
+								inc cursor
+								set cursor# (Semicolon)
+								inc cursor
+								set cursor# (Nullchar)
+								return globalt.a_page_switch
+							end
+						end
 					end
-					#end
 				end
 			else #going on createEmptyMovieClip
 				set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch) #,pointer)
@@ -1311,6 +1328,9 @@ function translate_var(ss indents)
 		end
 	end
 	return indents
+end
+function translate_var_arguments(ss *pointer,ss out,sd *p_len)
+	return out
 end
 
 function translate_textformat(ss start)

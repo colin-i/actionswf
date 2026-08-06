@@ -130,7 +130,8 @@ def splits_data(orig=False,dirs=''):
 	with open(dirs+splits_mix) as splits_mix:
 		splits_mix_data=splits_mix.read()
 		texts = splits_mix_data.split('\x00')
-		texts.pop()
+		if texts[-1]!=texts[-2]: #when last two are \0\0 is not the same like text\0
+			texts.pop()
 	return (files,files_mirror,files_src,texts)
 
 target=os.environ.get('target')
