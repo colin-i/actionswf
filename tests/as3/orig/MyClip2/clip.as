@@ -1,8 +1,10 @@
 
 //3a MyClip2 flash.display.Sprite
-//	var b;
-	function new(a){//3 f
-//		b=a;
+	//3p
+	var b;
+	//3p
+	var c;
+	function new(a,aa){//3 f
+		b=a;c=aa;
 	}
 //3}
-new(1);

@@ -99,12 +99,14 @@ call swf_exports_add(sprite,"MyClip")
 set presprite swf_sprite_new()
 call action_sprite(presprite,"
 //3a MyClip2 flash.display.Sprite
-//	var b;
-	function new(a){//3 f
-//		b=a;
+	//3p
+	var b;
+	//3p
+	var c;
+	function new(a,aa){//3 f
+		b=a;c=aa;
 	}
 //3}
-new(1);
 ")
 set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip2")
@@ -137,8 +139,8 @@ a Main
 
 		//more tests
 		var a=1;
-//		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;
-//		trace(\"shape2 b is this: \"+shape2.b);
+		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;shape2.c=a;
+		trace(\"shape2 b is this: \"+shape2.b);
 		//3n
 		Loader();
 		if(a)

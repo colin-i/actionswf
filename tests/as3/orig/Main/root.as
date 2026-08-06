@@ -22,8 +22,8 @@ a Main
 
 		//more tests
 		var a=1;
-//		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;
-//		trace("shape2 b is this: "+shape2.b);
+		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;shape2.c=a;
+		trace("shape2 b is this: "+shape2.b);
 		//3n
 		Loader();
 		if(a)
