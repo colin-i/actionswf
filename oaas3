@@ -67,6 +67,7 @@ if lib:
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
 		lib.sep.restype = ctypes.c_char
 		lib.postpone_char.restype = ctypes.c_char
+		lib.dualmode.restype = ctypes.c_char
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
 		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
@@ -318,6 +319,7 @@ if not os.environ.get(skip_src):
 	singleline_backjump_start+=len(a2b.encode())
 
 	was_multiline=False
+	dual_mode=False
 
 	files = splits_data()
 	for f in files:
@@ -338,6 +340,9 @@ if not os.environ.get(skip_src):
 						if mode==0:
 							if c==a1:
 								mode=1
+							elif dual_mode:
+								if c==b1b:
+									mode=7
 						elif mode==1:
 							if c==a2a:
 								mode=2
@@ -366,6 +371,9 @@ if not os.environ.get(skip_src):
 								singleline()
 								pos=0
 								was_multiline=True
+								dual_mode=False
+							elif dual_mode:
+								mode=0
 							else:
 								mode=6
 					if mode==4:
@@ -373,6 +381,10 @@ if not os.environ.get(skip_src):
 						singleline()
 					elif mode==6:
 						singleline()
+						if lib:
+							dual_mode=lib.dualmode() #c_char
+							if dual_mode[0]:
+								mode=0
 					else:
 						bf=chars[:pos]
 						if not was_multiline:

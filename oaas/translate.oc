@@ -9,6 +9,7 @@ const a_page_size=0x1000
 #multithread unsafe
 charx a_page#a_page_size;vstr a_page_switch^a_page;charx b_page#a_page_size
 char openfl_bool=FALSE
+char dualmode=FALSE
 #
 char on_string="on"^
 char enterframe_string="EnterFrame"^
@@ -247,19 +248,20 @@ function translate_one(ss in,ss indents)
 	elseif chr=(Nullchar)
 		call translated("blank")
 		return in
-	else
-		if oa#=(Closingbrace)
-			inc oa
-			if oa#=(Nullchar)
-				set len snprintf(#globalt.a_page,(a_page_size),"%s%s",indents,in)
-				if len>0
-					if len<(a_page_size)
-						call translated("closing")
-						return #globalt.a_page
-					end
+	elseif oa#=(Closingbrace)
+		inc oa
+		if oa#=(Nullchar)
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%s",indents,in)
+			if len>0
+				if len<(a_page_size)
+					call translated("closing")
+					return #globalt.a_page
 				end
 			end
 		end
+	elseif oa#=(Caret)
+		set globalt.dualmode (TRUE)
+		return #globalt.blank
 	end
 	call untranslated(in)
 	return in
@@ -1441,6 +1443,9 @@ function openfl()
 end
 function _postpone_char()
 	return (postpone_char)
+end
+function dual_mode()
+	return #globalt.dualmode
 end
 
 entryraw globalt()

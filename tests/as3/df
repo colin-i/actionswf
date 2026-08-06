@@ -11,4 +11,5 @@ diff ${f} dest || {
 	read
 	cp dest/Main.hx ${f}
 	cp dest/MyClip.hx ${f}
+	cp dest/MyClip2.hx ${f}
 }

@@ -9,6 +9,7 @@ import "print_stdout" print_stdout
 import "translated_ratio" translated_ratio
 ^import "openfl" openfl #full
 import "_postpone_char" _postpone_char
+^import "dual_mode" dual_mode
 
 ^import "solver1" solver1 1
 ^import "solver2" solver2 1
@@ -59,6 +60,12 @@ functionx sep()
 end
 functionx postpone_char()
 	callret _postpone_char()
+end
+functionx dualmode()
+	ss a;set a dual_mode()
+	ss ?b;set b a#
+	set a# (FALSE)
+	return b
 end
 
 functionx solve1(ss value)
