@@ -1,4 +1,4 @@
-
+/*3^
 //3a MyClip2 flash.display.Sprite
 	//3p
 	var b;
@@ -8,3 +8,4 @@
 		b=a;c=aa;
 	}
 //3}
+*/

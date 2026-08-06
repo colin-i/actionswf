@@ -97,7 +97,7 @@ sd sprite;set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip")
 
 set presprite swf_sprite_new()
-call action_sprite(presprite,"
+call action_sprite(presprite,"/*3^
 //3a MyClip2 flash.display.Sprite
 	//3p
 	var b;
@@ -107,6 +107,7 @@ call action_sprite(presprite,"
 		b=a;c=aa;
 	}
 //3}
+*/
 ")
 set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip2")
