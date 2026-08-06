@@ -42,6 +42,7 @@ const rect_char=r_low
 const search_char=s_low
 const text_char=t_low
 const var_char=v_low
+const vartype_char=g_low
 
 #util solve
 const usc_pref=_

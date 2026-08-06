@@ -2,9 +2,11 @@
 format elfobj64
 
 #multithread unsafe
-charx outvalue#1+11+1+10+1 ;#zflash.text. TextFormat\0
 char stored_char#1
+charx outvalue#1+11+1+10+1 ;#zflash.text. TextFormat\0
+#                            gDynamic
 
+importx "strcmp" strcmp
 importx "strncmp" strncmp
 importx "printf" printf
 importx "sprintf" sprintf
@@ -55,7 +57,7 @@ function solver1(ss value)
 	if c=0
 		add value \.flashtext_string-1
 		char textformat_string="TextFormat"
-		set c strncmp(value,#textformat_string,\.textformat_string-1)
+		set c strcmp(value,#textformat_string,\.textformat_string-1)
 		if c=0
 			call sprintf(#globals.outvalue,"%c%s %s",(insert_char),#flashtext_string,#textformat_string)
 			callret solver_end(value,\.textformat_string-1)
@@ -82,6 +84,12 @@ function solver2(ss value)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(arrconstr_char))
 		callret solver_end(value,\.arrconstr_string)
+	end
+	char vartype_string="Variable requires type-hint or initialization"^
+	set c strncmp(value,#vartype_string,\.vartype_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%cDynamic",(vartype_char))
+		callret solver_end(value,\.vartype_string)
 	end
 	char evfunc_string="() -> Void should be Dynamic -> Void"^
 	set c strncmp(value,#evfunc_string,\.evfunc_string)
@@ -112,7 +120,7 @@ function solver4(ss value)
 		ss ?z
 		ss cursor
 		set cursor new_string_get(#z)
-		set c strncmp(value,cursor,z)
+		set c strcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
 			callret solver_end(value,z)

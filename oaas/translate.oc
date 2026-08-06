@@ -52,6 +52,7 @@ end
 
 importx "free" free
 importx "memcmp" memcmp
+importx "strcmp" strcmp
 importx "strncmp" strncmp
 importx "strcpy" strcpy
 importx "strdup" strdup
@@ -225,6 +226,11 @@ function translate_one(ss in,ss indents)
 		end
 	elseif chr=(n_low)
 		set cursor translate_one_simple(indents,in,oa,#globalt.nw,"New",(n_low))
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(p_low)
+		set cursor translate_one_simple(indents,in,oa,globalt.public,"Public",(p_low))
 		if cursor!=oa
 			return cursor
 		end
@@ -408,7 +414,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(g_low)
+	elseif chr=(vartype_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_give(start,oa)
 		set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparation, is inside
@@ -789,8 +795,17 @@ function translate_give(ss indents,ss name)
 		if cursor!=indents
 			set cursor# (Nullchar)
 			inc cursor
+			char ar="Array"
+			sd ?c
+			set c strcmp(name,#ar,\.ar)
 			sd ?len
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s:%s<Dynamic>%c%s",indents,name,(Semicolon),cursor)
+			ss type
+			if c=0
+				set type "<Dynamic>"
+			else
+				set type #globalt.blank
+			end
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s:%s%s%c%s",indents,name,type,(Semicolon),cursor)
 			if len>0
 				if len<(a_page_size)
 					call translated("Give")
@@ -1329,7 +1344,42 @@ function translate_var(ss indents)
 	end
 	return indents
 end
-function translate_var_arguments(ss *pointer,ss out,sd *p_len)
+function translate_var_arguments(ss start,ss out,sd p_len)
+	ss cursor
+	ss first;set first out
+	sd ?len
+	sd ?size=a_page_size
+	ss pointer
+	set pointer start
+	whiletrue
+		set cursor equalafter(pointer)
+		if cursor!=pointer
+			set pointer semicolon(cursor)
+			if pointer!=cursor
+				set pointer# (Nullchar)
+				ss c
+				if out=first
+					add out p_len#
+					sub size p_len#
+					set c #globalt.blank
+				else
+					add out len
+					sub size len
+					set c ","
+				end
+				set len snprintf(out,p_len#,"%s%s",c,cursor)
+				if len>0
+					if len<size
+						add p_len# len
+						inc pointer
+						continue
+					end
+				end
+				return start
+			end
+		end
+		break
+	end
 	return out
 end
 
