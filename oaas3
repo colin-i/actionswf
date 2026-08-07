@@ -728,6 +728,7 @@ if not os.environ.get('skip_comp'):
 															linestr = part1 + delim + sep.join(tokens)
 														#elif against == c0:
 														#	break #example at rect, else will be r+r+r
+												rslvd=True
 												if isinstance(solved, bytes):
 													solved = solved.decode()
 													if save_line(module,line):
@@ -738,21 +739,24 @@ if not os.environ.get('skip_comp'):
 														sep=lib.sep().decode()
 														part1, part2 = linestr.split(tr_sep)
 														tokens = part2.split(sep)
-														not_added=True
+														#not_added=True
 														for i,token in enumerate(tokens):
 															if token[0] == s0:
 																if s1: # a case sw then sh, must combine them
 																	if not s1 in token[1:]:
 																		tokens[i] = token + s1
-																not_added=False
+																#not_added=False
+																rslvd=False
 																break
-														if not_added:
+														#if not_added:
+														if rslvd:
 															tokens.append(solved)
 														linestr = part1 + tr_sep + sep.join(tokens)
 												lines[line] = linestr + (os.linesep if has_term else "")
-												touched.add(f)
+												touched.add(f) #these are not rslvd? ok, but make that if s1 case
 
-												resolved=True
+												if rslvd: #can loop infinite without this if is alone
+													resolved=True
 												break
 								if not solved:
 									unresolved=True
