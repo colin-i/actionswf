@@ -6,13 +6,14 @@
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler header main  SERVER_PID server_extern server_compiler sentinel  no_diagnostics only_diagnostics dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler header main  SERVER_PID server_extern server_compiler sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
 
 #import ctypes
 #import difflib
+#import itertools
 #import json
 #import os
 from pathlib import Path
@@ -536,17 +537,59 @@ if not os.environ.get('skip_comp'):
 				r=prun(baser)
 			if o_d or f_d or r.returncode:
 				def diags():
+					import json
+					import itertools
+
+					_id_counter = itertools.count(1)
+					diag_json=os.environ.get('diag_json')
+
+					def diag_request(file,mode,offset=0):
+						if not diag_json:
+							return file+'@'+str(offset)+'@'+mode
+						# Legacy "file@offset[@mode]" suffix -> JSON-RPC "display/..." method.
+						# Modes without an explicit @suffix (plain "file@offset") default to completion.
+						#_MODE_TO_METHOD = {
+						#    "":             "display/completion",     # file@offset          -> completion
+						#    "position":     "display/definition",     # file@offset@position -> goto definition
+						#    "usage":        "display/references",     # file@offset@usage    -> find references
+						#    "type":         "display/hover",          # file@offset@type     -> hover/type info
+						#    "signature":    "display/signatureHelp",
+						#    "diagnostics":  "display/diagnostics",    # usually file-only, offset ignored/0
+						#    "metadata":     "display/metadata",       # project-wide, no offset needed
+						#    "module-symbols": "display/moduleSymbols",
+						#}
+
+						# Diagnostics and metadata are project/file scoped, not offset scoped.
+						if mode == "diagnostics":
+							method="display/diagnostics"
+							params = {"file": file}
+						#elif method == "display/metadata":
+						#	params = {}
+						else:
+							method="display/definition"
+							params = {"file": file, "offset": offset}
+						request = {
+							"jsonrpc": "2.0",
+							"id": next(_id_counter),
+							"method": method,
+							"params": params,
+						}
+						return json.dumps(request)
+
 					baser.append('--display')
-					reuser=list(baser)
 					files=splits_data(dirs='../')
 
-					import json
 					diagnostics=[]
 					for f in files:
-						reuser.append(hx_exte(f)+'@0@diagnostics')
-						p=crun(reuser,capture_output=True)
-						reuser.pop()
-						diagnostics.extend(json.loads(p.stderr)) #append wrong the type, error throw later
+						baser.append(diag_request(hx_exte(f),'diagnostics'))
+						p=crun(baser,capture_output=True)
+						baser.pop()
+						result=json.loads(p.stderr)
+						if isinstance(result, dict):
+							result = result.get("result")
+							result = result["result"]  # dev build: unwrap the timestamp wrapper
+						# stable build: already the bare list
+						diagnostics.extend(result) #append wrong the type, error throw later
 					os.chdir(c_dir)
 
 					file_cache = {}
@@ -622,24 +665,32 @@ if not os.environ.get('skip_comp'):
 									offset_chars = len(before) + character
 									# convert character offset -> UTF-8 byte offset
 									offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
-									offset_bytes=str(offset_bytes)
 
-									pp='('+str(line)+':'+str(character)+' at '+offset_bytes+') to '
+									pp='('+str(line)+':'+str(character)+' at '+str(offset_bytes)+') to '
 
 									os.chdir(dest)
-									reuser.append(filename+'@'+offset_bytes+'@position')
-									xm=prun(reuser,capture_output=True)
-									reuser.pop()
+									baser.append(diag_request(filename,'position',offset_bytes))
+									result=prun(baser,capture_output=True)
+									baser.pop()
 									os.chdir(c_dir)
-									#if not xm.returncode: # must match ok
-									xm = ET.fromstring(xm.stderr).find('pos')
-									if xm is not None: #else,example,TextFormatAlign
-										xm=xm.text
-										#lineparts=xm.split(':') #windows... F:...
-										m = re.match(r'^(.+):(\d+):', xm)
-										if m.group(1)==fullfilename: #is another file line else, also at first case
+									#if not result.returncode: # must match ok
+									result = result.stderr
+									if not diag_json:
+										result = ET.fromstring(result).find('pos')
+										if result is not None: #else,example,TextFormatAlign
+											result=result.text
+											#lineparts=result.split(':') #windows... F:...
+											m = re.match(r'^(.+):(\d+):', result)
+											if m.group(1)==fullfilename: #is another file line else, also at first case
+												firstline=line
+												line=int(m.group(2))-1 # from human
+									else:
+										result = json.loads(result) #here are situations like addChild(label) where label is not going to createTextField yet
+										if not "error" in result:
+											result = result.get("result")  #same as before
+											result = result["result"]
 											firstline=line
-											line=int(m.group(2))-1 # from human
+											line=result[0]["range"]["start"]["line"]
 						return value,line,positions,pp,firstline
 
 					dump=os.environ.get('dump')

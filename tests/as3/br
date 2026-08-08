@@ -1,4 +1,5 @@
 
+hax --version
 LD_PRELOAD=$(gcc -print-file-name=libasan.so):$(gcc -print-file-name=libubsan.so)
 RUN__SHELL=/bin/bash ffdec=~/ffdec/bin/ffdec LD_PRELOAD=${LD_PRELOAD} compiler=hax ./b
 #for 'read'
