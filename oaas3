@@ -6,7 +6,7 @@
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler header main  SERVER_PID server_extern server_compiler sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler header main  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -449,18 +449,27 @@ if not os.environ.get('skip_comp'):
 					server_compiler=compiler
 				server = subprocess.Popen([server_compiler, "--wait", "6000"])
 				server_pid=str(server.pid)
-				wait_some=10  #wine is longer
-				while wait_some:
-					try:
-						with socket.create_connection(("127.0.0.1", 6000),timeout=1): #timeout is at success
-							break
-					except: # OSError:
-						time.sleep(1)
-						wait_some-=1
-						continue
-				if not wait_some:
-					print('server error')
-					exiting()
+				skip_connect_test=os.environ.get('skip_connect_test')
+				if skip_connect_test:
+					wait_some=int(skip_connect_test)
+					time.sleep(wait_some)
+				else:
+					wait_some=10  #wine is longer
+					while wait_some:
+						try:
+							with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+								s.settimeout(1)
+								if s.connect_ex(("127.0.0.1", 6000)) == 0:
+									break
+							#with socket.create_connection(("127.0.0.1", 6000),timeout=1): #timeout is at success
+							#	break
+						except: # OSError:
+							time.sleep(1)
+							wait_some-=1
+							continue
+					if not wait_some:
+						print('server error')
+						exiting()
 
 		main=os.environ.get('main')
 		if not main:
@@ -689,8 +698,10 @@ if not os.environ.get('skip_comp'):
 										if not "error" in result:
 											result = result.get("result")  #same as before
 											result = result["result"]
-											firstline=line
-											line=result[0]["range"]["start"]["line"]
+											if isinstance(result,list): #stage.addChild(text); without createEmptyMovieClip
+												if result: # 'Too many arguments' var arcon=new Array(1,2,3);
+													firstline=line
+													line=result[0]["range"]["start"]["line"]
 						return value,line,positions,pp,firstline
 
 					dump=os.environ.get('dump')
