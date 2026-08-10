@@ -84,4 +84,7 @@ attach('q','_p',d);//3 v+s
 att('name','q',getNextHighest);//3
 _qty//3z wer ty+s
 */
+/*3
+v is_dual_mode_off MyClip
+*/
 main();
