@@ -263,7 +263,8 @@ function translate_one(ss in,ss indents)
 		end
 	elseif oa#=(Caret)
 		set globalt.dualmode (TRUE)
-		return #globalt.blank
+		inc oa
+		return oa
 	end
 	call untranslated(in)
 	return in
