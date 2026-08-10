@@ -150,13 +150,18 @@ a Main
 		if(!b)
 			trace(\"okkkkkkkkkkkkkkk2\");
 		var arcon=new Array(1,2,3);
+
+		/*3^
+		//dual mode
+		trace('dual mode here is visible only on as3');
+		*/
+		//3^trace('dual mode here is visible only on as3');
 	}
 //3}
 function Loader(){//3f
 trace('the loader is working');
 }
 //3}
-
 /*more tests
 //3i a.b.c
 //3f s
