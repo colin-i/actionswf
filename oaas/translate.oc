@@ -9,7 +9,7 @@ const a_page_size=0x1000
 #multithread unsafe
 charx a_page#a_page_size;vstr a_page_switch^a_page;charx b_page#a_page_size
 char openfl_bool=FALSE
-char dualmode=FALSE
+char dualmode=FALSE #oaas3 resets this at start, anyway
 #
 char on_string="on"^
 char enterframe_string="EnterFrame"^
@@ -425,7 +425,7 @@ function translate_two(ss start,ss in)
 	elseif chr=(vartype_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_give(start,oa)
-		set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparation, is inside
+		set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
@@ -441,7 +441,7 @@ function translate_two(ss start,ss in)
 	elseif chr=(fill_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_fill(start,oa)
-		#here is not required the comparation, is inside
+		#here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -484,7 +484,7 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(p_low)
 		set pointer translate_two_switchBefore(#oa)
-		set cursor translate_object(start,oa) #here is not required the comparation, is inside
+		set cursor translate_object(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -492,7 +492,7 @@ function translate_two(ss start,ss in)
 	elseif chr=(rect_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_rect(start,oa)
-		#here is not required the comparation, is inside
+		#here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -511,17 +511,27 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(var_char)
-		set cursor translate_var(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
+		#inc oa
+		#whiletrue
+		#	if oa#!=(Nullchar)
+		#		if oa#!=(switch_char)
+		#			#v class
+		#			break
+		#		end
+		#	end
+			set cursor translate_var(start)
+			if cursor!=start
+				inc oa
+				set cursor translate_two_switch(oa,cursor)
+				if cursor!=oa
+					return cursor
+				end
 			end
-		end
+		#	break
+		#end
 	elseif chr=(insert_char)
 		set pointer translate_two_switchBefore(#oa)
-		set cursor transplate_insert(start,oa) #here is not required the comparation, is inside
+		set cursor transplate_insert(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -1165,7 +1175,7 @@ function translate_srch_all(ss start)
 end
 function translate_search(ss start,ss oa)
 	ss cursor
-	#set cursor spcfull(oa) #at py there is a comparation that is not spcfull there
+	#set cursor spcfull(oa) #at py there is a comparison that is not spcfull there
 	set cursor oa
 	ss ?types=0
 	while cursor#!=(Nullchar)

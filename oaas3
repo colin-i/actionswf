@@ -69,6 +69,7 @@ if lib:
 		lib.sep.restype = ctypes.c_char
 		lib.postpone_char.restype = ctypes.c_char
 		lib.dualmode.restype = ctypes.c_char
+		#lib.dualmode_reset
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
 		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
@@ -357,6 +358,8 @@ if not os.environ.get(skip_src):
 									xpos=singleline_backjump_start
 								else:
 									xpos=multiline_backjump_start
+									if lib:
+										lib.dualmode_reset() #here is the less intensive place to reset a one line dual mode, can also signal at startline if is mode 4 or 6 but is intensive
 								stored=chars[:pos-xpos]
 								mode*=2
 								pos=0    #notice: both //3 and /*3 will reset the line

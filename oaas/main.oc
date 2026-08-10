@@ -67,6 +67,10 @@ functionx dualmode()
 	set a# (FALSE)
 	return b
 end
+functionx dualmode_reset()
+	ss a;set a dual_mode()
+	set a# (FALSE)
+end
 
 functionx solve1(ss value)
 	ss s
