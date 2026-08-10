@@ -52,15 +52,26 @@ function solver(ss value,ss s)
 end
 function solver1(ss value)
 	sd ?c
-	char flashtext_string="flash.text."
-	set c strncmp(value,#flashtext_string,\.flashtext_string-1)
+	char flash_string="flash."
+	set c strncmp(value,#flash_string,\.flash_string-1)
 	if c=0
-		add value \.flashtext_string-1
-		char textformat_string="TextFormat"
-		set c strcmp(value,#textformat_string,\.textformat_string-1)
+		add value \.flash_string-1
+		char flashtext_string="text."
+		set c strncmp(value,#flashtext_string,\.flashtext_string-1)
 		if c=0
-			call sprintf(#globals.outvalue,"%c%s %s",(insert_char),#flashtext_string,#textformat_string)
-			callret solver_end(value,\.textformat_string-1)
+			add value \.flashtext_string-1
+			char textformat_string="TextFormat"
+			set c strcmp(value,#textformat_string) #,\.textformat_string-1)
+			if c=0
+				call sprintf(#globals.outvalue,"%c%s%s %s",(insert_char),#flash_string,#flashtext_string,#textformat_string)
+				return #globals.outvalue ##after a strcmp. solver_end is not required
+			end
+		end
+		char object_string="utils.Object"^
+		set c strncmp(value,#object_string,\.object_string)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(ignore_pref))
+			callret solver_end(value,\.object_string)
 		end
 	end
 	return (NULL)
@@ -123,7 +134,7 @@ function solver4(ss value)
 		set c strcmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
-			callret solver_end(value,z)
+			return #globals.outvalue
 		end
 	end
 	return (NULL)
