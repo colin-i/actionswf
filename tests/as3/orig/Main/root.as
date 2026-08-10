@@ -38,6 +38,8 @@ a Main
 		trace('dual mode here is visible only on as3');
 		*/
 		//3^trace('dual mode here is visible only on as3');
+		var c=new Object();
+		var d=new Object();//3p MyClip
 	}
 //3}
 function Loader(){//3f
@@ -71,6 +73,7 @@ var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
 a= 'q'//3
 onEnterFrame=_fune;//3 o+s
 onEnterFrame=q;//3
+var _z=new Object(//3 pq+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
 _x()//3 s+e
 _y()//3 s_+e
