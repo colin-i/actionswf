@@ -351,15 +351,21 @@ function translate_one_add(ss indents,ss in,ss oa)
 	return o_a
 end
 
-function translate_leftright(ss format,ss indents,ss in,ss oa,ss pointer,ss out) #,ss two)
+function translate_leftright_full(ss format,ss indents,ss in,ss oa,ss pointer,ss out,sd p_len)
 	sd ?len
 	set len snprintf(out,(a_page_size),format,indents,in,oa,pointer) #,two)
 	if len>0
 		if len<(a_page_size)
+			if p_len!=(NULL)
+				set p_len# len
+			end
 			return out
 		end
 	end
 	return in
+end
+function translate_leftright(ss format,ss indents,ss in,ss oa,ss pointer,ss out)
+	callret translate_leftright_full(format,indents,in,oa,pointer,out,(NULL))
 end
 
 #a	=new Array(...)
@@ -510,7 +516,14 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(var_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
-		set cursor translate_var_full(start,oa)
+		set cursor translate_var_full(start,oa,(var_char))
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(nvar_char)
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_var_full(start,oa,(nvar_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
@@ -1350,17 +1363,34 @@ function translate_label(ss indents)
 	return indents
 end
 
-function translate_var_full(ss start,ss oa)
+function translate_var_full(ss start,ss oa,ss ?type)
 	whiletrue
 		if oa#!=(Nullchar)
 			if oa#!=(switch_char)
 				#v class
-				ss cursor
-				set cursor translate_var_helper(start,(NULL))
+				ss cursor;ss pointer
+				set cursor translate_var_helper(start,#pointer)
 				if cursor!=start
-					set cursor translate_leftright(#globalt.var_translate,start,#globalt.blank,cursor,oa,globalt.a_page_switch)
+					sd ?len
+					set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cursor,oa,globalt.a_page_switch,#len)
 					if cursor!=#globalt.blank
-						call translated("VarCreateClass")
+						if type=(var_char)
+							call translated("VarCreateClass")
+						else # nvar_char
+							ss end
+							set end commaon(pointer)
+							set end# (Nullchar)
+							ss extra;set extra cursor
+							add extra len
+							sd ?size=a_page_size
+							sub size len
+							set len snprintf(extra,size,"%s.name='%s'%s;",oa,oa,pointer)
+							if len>0
+								if len<size
+									call translated("VarCreateClassNamed")
+								end
+							end
+						end
 						return cursor
 					end
 				end
@@ -1427,10 +1457,8 @@ function translate_var_helper(ss indents,sv p_cursor)
 		set cursor quoton(cls)
 		if cursor!=cls
 			set cursor# (Nullchar)
-			if p_cursor!=(NULL)
-				inc cursor
-				set p_cursor# cursor
-			end
+			inc cursor
+			set p_cursor# cursor
 			return cls
 		end
 	end
@@ -1575,3 +1603,4 @@ Var
 VarAttach
 VarCreate
 VarCreateClass
+VarCreateClassNamed
