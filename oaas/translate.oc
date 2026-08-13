@@ -1376,41 +1376,30 @@ function translate_var_full(ss start,ss oa,ss ?type)
 					if cursor!=#globalt.blank
 						if type=(var_char)
 							call translated("VarCreateClass")
-						else # nvar_char
-							ss end
-							set end commaon(pointer)
-							set end# (Nullchar)
-							ss extra;set extra cursor
-							add extra len
-							sd ?size=a_page_size
-							sub size len
-							set len snprintf(extra,size,"%s.name='%s'%s;",oa,oa,pointer)
-							if len>0
-								if len<size
-									call translated("VarCreateClassNamed")
-								end
-							end
+							return cursor
 						end
-						return cursor
+						# nvar_char
+						callret translate_var_named(cursor,len,oa,pointer,"VarCreateClassNamed",start)
 					end
 				end
 				return start
 			end
 		end
-		callret translate_var(start)
+		callret translate_var_simple(start,type)
 	end
 end
-function translate_var(ss indents)
-	ss cursor;ss cls
-	set cls translate_var_helper(indents,#cursor)
+function translate_var_simple(ss indents,ss ?type)
+	ss delim;ss cls
+	set cls translate_var_helper(indents,#delim)
 	if cls!=indents
+		ss cursor
+		sd ?len
 		ss name
-		set name quotafter(cursor)
-		if name!=cursor ##going on attachMovie
+		set name quotafter(delim)
+		if name!=delim ##going on attachMovie
 			set cursor quoton(name)
 			if cursor!=cls
 				set cursor# (Nullchar)
-				sd ?len
 				set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
 				if len>0
 					if len<(a_page_size)
@@ -1438,14 +1427,20 @@ function translate_var(ss indents)
 				end
 			end
 		else #going on createEmptyMovieClip
-			set cursor translate_leftright(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch) #,pointer)
+			set cursor translate_leftright_full(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
-				call translated("VarCreate")
-				return cursor
+				if type=(var_char)
+					call translated("VarCreate")
+					return cursor
+				end
+				callret translate_var_named(cursor,len,cls,delim,"VarCreateNamed",indents)
 			end
 		end
 	end
 	return indents
+end
+function translate_var(ss indents)
+	callret translate_var_simple(indents,(var_char))
 end
 function translate_var_helper(ss indents,sv p_cursor)
 	ss cursor;set cursor spcfull(indents)
@@ -1501,6 +1496,23 @@ function translate_var_arguments(ss start,ss out,sd p_len)
 		break
 	end
 	return out
+end
+function translate_var_named(ss cursor,sd ?len,ss oa,ss pointer,ss ok,ss bad_return)
+	ss end
+	set end commaon(pointer)
+	set end# (Nullchar)
+	ss extra;set extra cursor
+	add extra len
+	sd ?size=a_page_size
+	sub size len
+	set len snprintf(extra,size,"%s.name='%s'%s;",oa,oa,pointer)
+	if len>0
+		if len<size
+			call translated(ok)
+			return cursor
+		end
+	end
+	return bad_return
 end
 
 function translate_textformat(ss start)
@@ -1604,3 +1616,4 @@ VarAttach
 VarCreate
 VarCreateClass
 VarCreateClassNamed
+VarCreateNamed
