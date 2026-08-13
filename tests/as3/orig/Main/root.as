@@ -82,6 +82,7 @@ create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
 attach('q','_p',d);//3 v+s
 att('name','q',getNextHighest);//3
+create('q',d);//3 v flash.display.DisplayObjectContainer
 _qty//3z wer ty+s
 */
 /*3
