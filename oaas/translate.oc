@@ -1412,18 +1412,39 @@ function translate_var_full(ss start,ss oa,ss ?type)
 		if oa#!=(Nullchar)
 			if oa#!=(switch_char)
 				#v class
-				ss cursor;ss pointer
-				set cursor translate_var_helper(start,#pointer)
-				if cursor!=start
+				ss afterindents;ss atarguments;ss cls;ss pointer
+				set cls translate_var_helper(start,#afterindents,#atarguments,#pointer)
+				if cls!=start
+					ss ?store;set store afterindents#;set afterindents# (Nullchar)
 					sd ?len
-					set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cursor,oa,globalt.a_page_switch,#len)
+					ss cursor
+					set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
 					if cursor!=#globalt.blank
 						if type=(var_char)
 							call translated("VarCreateClass")
 							return cursor
 						end
 						# nvar_char
-						callret translate_var_named(cursor,len,oa,pointer,"VarCreateClassNamed",start)
+						callret translate_var_named(cursor,len,cls,pointer,"VarCreateClassNamed",start)
+#!
+else
+	ss has_dot
+	set has_dot strrchr(atarguments,(Period))
+	if has_dot
+		set afterindents# store
+		set has_dot# (Nullchar)
+	else
+		sd ?c
+		strcmp("Main.hx",module)
+		=0
+			set afterindents globalt.stage
+		else
+			set afterindents #globalt.blank
+		end
+	end
+	%s.addChild(%s) afterindents,cls
+end
+!
 					end
 				end
 				return start
@@ -1433,16 +1454,18 @@ function translate_var_full(ss start,ss oa,ss ?type)
 	end
 end
 function translate_var_simple(ss indents,ss ?type)
-	ss delim;ss cls
-	set cls translate_var_helper(indents,#delim)
+	ss cls;ss afterindents;ss atarguments;ss delim
+	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim)
 	if cls!=indents
 		ss cursor
+		ss ?store
 		sd ?len
 		ss name
 		set name quotafter(delim)
 		if name!=delim ##going on attachMovie
 			set cursor quoton(name)
 			if cursor!=cls
+				set store afterindents#;set afterindents# (Nullchar)
 				set cursor# (Nullchar)
 				set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
 				if len>0
@@ -1478,6 +1501,7 @@ function translate_var_simple(ss indents,ss ?type)
 				end
 			end
 		else #going on createEmptyMovieClip
+			set store afterindents#;set afterindents# (Nullchar)
 			set cursor translate_leftright_full(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
 				if type=(var_char)
@@ -1493,13 +1517,15 @@ end
 function translate_var(ss indents)
 	callret translate_var_simple(indents,(var_char))
 end
-function translate_var_helper(ss indents,sv p_cursor)
+function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor)
 	ss cursor;set cursor spcfull(indents)
-	set cursor# (Nullchar) #on attach... , create
+	set p_afterindents# cursor
 	ss cls
 	inc cursor
-	set cls quotafter(cursor)
+	set cls quoton(cursor)
 	if cls!=cursor
+		set p_atarguments# cls
+		inc cls
 		set cursor quoton(cls)
 		if cursor!=cls
 			set cursor# (Nullchar)
