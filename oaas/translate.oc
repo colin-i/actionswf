@@ -99,9 +99,9 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#a cd fg i   mn p     v x
-#AB  EFGH JKLM OP RST V   Z
-#                q   u w y
+#a cd fg i   mn p     vwx
+#AB  EFGH JKLM OP RST VW  Z
+#                q   u   y
 #also at the end
 
 #a	s [s]
@@ -113,7 +113,7 @@ end
 #m      same like v
 #n	a letter and predef format
 #p	public
-#v	s s
+#vw	s s
 #x	static
 #}	mix indents and in
 
@@ -244,6 +244,11 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
+	elseif chr=(nvar_char)
+		set cursor translate_one_nvar(indents,in,oa)
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(x_low)
 		set cursor translate_one_simple(indents,in,oa,globalt.sttic,"Static",(x_low))
 		if cursor!=oa
@@ -350,6 +355,34 @@ function translate_one_add(ss indents,ss in,ss oa)
 	set cursor# reminder
 	return o_a
 end
+function translate_one_nvar(ss indents,ss in,ss oa)
+	ss o_a
+	set o_a oa
+	inc oa
+	set oa spcfull(oa)
+	ss cursor
+	set cursor spcfullafters(oa)
+	if cursor!=oa
+		ss pointer
+		set pointer spcfull(cursor)
+		if pointer!=cursor
+			ss ?reminder
+			set reminder cursor#;set cursor# (Nullchar)
+			set o_a# (Nullchar)
+			sd ?len
+			set len snprintf(#globalt.a_page,(a_page_size),"%s%svar %s=new %s();%s.name='%s';",indents,in,oa,pointer,oa,oa)
+			if len>0
+				if len<(a_page_size)
+					call translated("VarNamed")
+					return #globalt.a_page
+				end
+			end
+			set o_a# (nvar_char)
+			set cursor# reminder
+		end
+	end
+	return o_a
+end
 
 function translate_leftright_full(ss format,ss indents,ss in,ss oa,ss pointer,ss out,sd p_len)
 	sd ?len
@@ -383,7 +416,7 @@ end
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
-#v	''''   ;=;=; ...
+#vw	''''   ;=;=; ...
 #z	replacing a to b
 
 function translate_two(ss start,ss in)
@@ -1407,21 +1440,28 @@ function translate_var_simple(ss indents,ss ?type)
 						ss pointer
 						set pointer semicolafter(cursor)
 						if pointer!=cursor
-							set cursor translate_var_arguments(pointer,globalt.a_page_switch,#len)
-							if cursor=pointer
+							ss args
+							set args translate_var_arguments(pointer,globalt.a_page_switch,#len)
+							if args=pointer
 								return indents
 							end
 						end
-						if len>=3
-							call translated("VarAttach")
-							set cursor globalt.a_page_switch
-							add cursor len
-							set cursor# (Closeparenthesis)
-							inc cursor
-							set cursor# (Semicolon)
-							inc cursor
-							set cursor# (Nullchar)
-							return globalt.a_page_switch
+						sd ?size=a_page_size
+						sub size len
+						if size>=3
+							set pointer globalt.a_page_switch
+							add pointer len
+							set pointer# (Closeparenthesis)
+							inc pointer
+							set pointer# (Semicolon)
+							inc pointer
+							if type=(var_char)
+								call translated("VarAttach")
+								set pointer# (Nullchar)
+								return globalt.a_page_switch
+							end
+							add len 2
+							callret translate_var_named(globalt.a_page_switch,len,name,cursor,"VarAttachNamed",indents)
 						end
 					end
 				end
@@ -1613,7 +1653,9 @@ Text
 TextFormat
 Var
 VarAttach
+VarAttachNamed
 VarCreate
 VarCreateClass
 VarCreateClassNamed
 VarCreateNamed
+VarNamed
