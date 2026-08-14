@@ -150,7 +150,6 @@ a Main
 		if(!b)
 			trace(\"okkkkkkkkkkkkkkk2\");
 		var arcon=new Array(1,2,3);
-
 		/*3^
 		//dual mode
 		trace('dual mode here is visible only on as3');
@@ -158,6 +157,7 @@ a Main
 		//3^trace('dual mode here is visible only on as3');
 		var c=new Object();
 		var d=new Object();//3p MyClip
+		createEmptyMovieClip('solved_w'+1,getNextHighestDepth());
 	}
 //3}
 function Loader(){//3f
@@ -169,6 +169,7 @@ trace('the loader is working');
 //3f s
 //3f p
 //3v shape Shape
+//3w shape Shape
 
 _q=new Array(q,w,2);//3 a+s
 q=new Array(q,w,2);//3
@@ -201,6 +202,7 @@ createTextField('label',1,0,16, 120, 48);//3
 attach('q','_p',d);//3 v+s
 att('name','q',getNextHighest);//3
 create('q',d);//3 v flash.display.DisplayObjectContainer
+att('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
 _qty//3z wer ty+s
