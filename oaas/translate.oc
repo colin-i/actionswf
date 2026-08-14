@@ -260,20 +260,31 @@ function translate_one(ss in,ss indents)
 	elseif oa#=(Closingbrace)
 		inc oa
 		if oa#=(Nullchar)
-			set len snprintf(#globalt.a_page,(a_page_size),globalt.double_s,indents,in)
-			if len>0
-				if len<(a_page_size)
-					call translated("closing")
-					return #globalt.a_page
-				end
+			set cursor translate_one_easy(indents,in,"closing")
+			if cursor!=in
+				return cursor
 			end
 		end
 	elseif oa#=(Caret)
 		set globalt.dualmode (TRUE)
 		inc oa
-		return oa
+		set cursor translate_one_easy(indents,oa,"dual mode")
+		if cursor!=in
+			return cursor
+		end
 	end
 	call untranslated(in)
+	return in
+end
+function translate_one_easy(ss indents,ss in,ss onOk)
+	sd ?len
+	set len snprintf(#globalt.a_page,(a_page_size),globalt.double_s,indents,in)
+	if len>0
+		if len<(a_page_size)
+			call translated(onOk)
+			return #globalt.a_page
+		end
+	end
 	return in
 end
 function translate_one_simple(ss indents,ss in,ss oa,ss specific,ss onOk,ss ?chr)

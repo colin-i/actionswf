@@ -18,7 +18,6 @@ Const m_low=0x6D
 Const n_low=0x6E
 Const w_low=0x77
 const func_char=f_low
-const nvar_char=w_low
 
 #translate solve
 Const Dollar=0x24
@@ -38,6 +37,7 @@ const evfunc_char=e_low
 const fill_char=l_low
 const ignore_pref=Exclamationmark
 const insert_char=z_low
+const nvar_char=w_low
 const onev_char=o_low
 const rect_char=r_low
 const search_char=s_low

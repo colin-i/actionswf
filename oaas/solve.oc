@@ -10,6 +10,7 @@ importx "strcmp" strcmp
 importx "strncmp" strncmp
 importx "printf" printf
 importx "sprintf" sprintf
+importx "strstr" strstr
 
 einclude "oaas.h" "oaas.oh"
 const A_to_a=a_low-A
@@ -167,10 +168,12 @@ function solver7(ss value,ss after)
 		end
 		return (NULL)
 	end
+	ss ?chr
 	char var_string="attachMovie"^
 	set c strncmp(value,#var_string,\.var_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(var_char))
+		set chr solver7_var(after)
+		call sprintf(#globals.outvalue,"%c",chr)
 		callret solver_end(value,\.var_string)
 	end
 	char bfil_string="begin"^
@@ -197,7 +200,8 @@ function solver7(ss value,ss after)
 		char emclip_string="EmptyMovieClip"^
 		set c strncmp(value,#emclip_string,\.emclip_string)
 		if c=0
-			call sprintf(#globals.outvalue,"%c",(var_char))
+			set chr solver7_var(after)
+			call sprintf(#globals.outvalue,"%c",chr)
 			callret solver_end(value,\.emclip_string)
 		end
 		char text_string="TextField"^
@@ -280,6 +284,14 @@ function solver7(ss value,ss after)
 		end
 	end
 	return (NULL)
+end
+function solver7_var(ss after)
+	ss a
+	set a strstr(after,", ")
+	if a=(NULL)
+		return (var_char)
+	end
+	return (nvar_char)
 end
 
 entryraw globals()

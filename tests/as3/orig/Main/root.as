@@ -22,7 +22,7 @@ a Main
 
 		//more tests
 		var a=1;
-		attachMovie('MyClip2','shape2',getNextHighestDepth());shape2.b=a;shape2.c=a;
+		attachMovie('MyClip2','shape2', getNextHighestDepth());shape2.b=a;shape2.c=a;
 		trace("shape2 b is this: "+shape2.b);
 		//3n
 		Loader();
@@ -39,7 +39,7 @@ a Main
 		//3^trace('dual mode here is visible only on as3');
 		var c=new Object();
 		var d=new Object();//3p MyClip
-		createEmptyMovieClip('solved_w'+1,getNextHighestDepth());
+		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
 	}
 //3}
 function Loader(){//3f
