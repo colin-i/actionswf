@@ -2,11 +2,11 @@
 
 # break OAPATH target src_name
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
-# OACACHE from_diagnostics verbose
+# OACACHE from_diagnostics verbose main
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler header main  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # / / 3
 #   *   * /
@@ -67,6 +67,7 @@ if lib:
 		#lib.dualmode_reset
 
 		lib.flash_to_openfl.argtypes = [ctypes.c_char]
+		lib.mainmodule_boolset.argtypes = [ctypes.c_char]
 		lib.verbose.argtypes = [ctypes.c_char]
 
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
@@ -276,6 +277,9 @@ def exiting():
 verbose=os.environ.get('verbose')
 if verbose:
 	print(sys.argv[1]+' '+sys.argv[2])
+main=os.environ.get('main')
+if not main:
+	main='Main'
 
 skip_src='skip_src'
 if not os.environ.get(skip_src):
@@ -329,6 +333,8 @@ if not os.environ.get(skip_src):
 
 	files = splits_data()
 	for f in files:
+		if lib:
+			lib.mainmodule_boolset(get_module_insens(f)==main)
 		with open(f) as sfile:
 			text=sfile.readlines()
 		if not f_d:
@@ -478,9 +484,6 @@ if not os.environ.get('skip_comp'):
 						print('server error')
 						exiting()
 
-		main=os.environ.get('main')
-		if not main:
-			main='Main'
 		baser=[compiler,'--connect','6000','-swf',dest_file,'-main',main,'-D','flash_strict']
 		#                                                                   this flag for _x to be error
 		launcher=os.environ.get('launcher')

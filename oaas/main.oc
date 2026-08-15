@@ -7,7 +7,10 @@ import "print_stdout" print_stdout
 ^import "translate_one" translate_one 2
 ^import "translate_two" translate_two 2
 import "translated_ratio" translated_ratio
+
+import "mainmod_boolset" mainmod_boolset
 ^import "openfl" openfl #full
+
 import "_postpone_char" _postpone_char
 ^import "dual_mode" dual_mode
 
@@ -48,14 +51,18 @@ functionx ratio(ss ?print)
 	end
 end
 
-functionx verbose(ss ?bol)
-	ss p;set p verbosep()
-	set p# bol
-end
 functionx flash_to_openfl(ss ?bol)
 	ss p;set p openfl()
 	set p# bol
 end
+functionx mainmodule_boolset(ss ?b)
+	call mainmod_boolset(b)
+end
+functionx verbose(ss ?bol)
+	ss p;set p verbosep()
+	set p# bol
+end
+
 functionx sep()
 	return (switch_char)
 end

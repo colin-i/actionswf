@@ -10,6 +10,7 @@ const a_page_size=0x1000
 charx a_page#a_page_size;vstr a_page_switch^a_page;charx b_page#a_page_size
 char openfl_bool=FALSE
 char dualmode=FALSE #oaas3 resets this at start, anyway
+charx mainmod_bool#1
 #
 char on_string="on"^
 char enterframe_string="EnterFrame"^
@@ -1515,14 +1516,12 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 		set afterindents# store
 		set has_dot# (Nullchar)
 	else
-		#sd ?c
-		#strcmp("Main.hx",module)
-		#=0
+		if globalt.mainmod_bool=(TRUE)
 			set afterindents globalt.stage
-		#else
-		#	set afterindents #globalt.blank
-		#	set d #globalt.blank
-		#end
+		else
+			set afterindents #globalt.blank
+			set d #globalt.blank
+		end
 	end
 	ss extra;set extra cursor
 	add extra len
@@ -1676,6 +1675,9 @@ end
 
 function openfl()
 	return #globalt.openfl_bool
+end
+function mainmod_boolset(ss ?b)
+	set globalt.mainmod_bool b
 end
 function _postpone_char()
 	return (postpone_char)
