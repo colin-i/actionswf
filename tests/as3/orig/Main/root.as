@@ -82,11 +82,16 @@ _x//3
 create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
 attach('q','_p',d);//3 v+s
+attach('q','_p',d);//3 V+s
+attach('q','_p'+1,d);//3 W+s
 att('name','q',getNextHighest);//3
 create('q',d);//3 v flash.display.DisplayObjectContainer
+create('q',d);//3 V flash
+w.attach('q','_p',d);//3 V
 att('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
+w.attach('q','_p'+1,d);//3 W flash
 _qty//3z wer ty+s
 */
 /*3

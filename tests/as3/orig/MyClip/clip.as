@@ -78,3 +78,7 @@
 	var a=false;var b=false;
 //3}
 new();
+/* more tests
+attach('q','_p',d);//3 V
+attach('q','_p'+1,d);//3 W
+*/
