@@ -13,12 +13,10 @@ a Main
 		text.beginBitmapFill(texture,matrix,true);
 		text.lineTo(120, 0);text.lineTo(120, 80);text.lineTo(0, 80);
 		text.endFill();
-		//3d text stage
 
 		attachMovie('MyClip','shape',getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
-		//3d shape @
 
 		//more tests
 		var a=1;
@@ -47,6 +45,8 @@ trace('the loader is working');
 }
 //3}
 /*more tests
+//3d text stage
+//3d shape @
 //3i a.b.c
 //3f s
 //3f p
@@ -82,8 +82,8 @@ _x//3
 create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
 attach('q','_p',d);//3 v+s
-attach('q','_p',d);//3 V+s
-attach('q','_p'+1,d);//3 W+s
+create('_p',d);//3 V+s
+create('_p'+1,d);//3 W+s
 att('name','q',getNextHighest);//3
 create('q',d);//3 v flash.display.DisplayObjectContainer
 create('q',d);//3 V flash

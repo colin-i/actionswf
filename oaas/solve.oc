@@ -293,9 +293,9 @@ function solver7_var(ss after)
 	ss a
 	set a strstr(after,", ")
 	if a=(NULL)
-		return (var_char)
+		return (Var_char)
 	end
-	return (nvar_char)
+	return (nVar_char)
 end
 
 entryraw globals()

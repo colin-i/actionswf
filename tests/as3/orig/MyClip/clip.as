@@ -56,6 +56,8 @@
 		label.text = 'Click';
 		label.selectable = false;
 
+		//3d label
+
 		// a 2/3 size format
 		var tf = new TextFormat();
 		tf.size = 32;
@@ -68,8 +70,6 @@
 		onRollOver = onOver;
 		onRollOut = onOut;
 		onPress = onClick;
-
-		//3d label
 
 		onEnterFrame = on_Enter_Frame;
 	}

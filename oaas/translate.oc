@@ -1436,41 +1436,7 @@ function translate_var_full(ss start,ss oa,ss ?type)
 					ss cursor
 					set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
 					if cursor!=#globalt.blank
-						if type=(var_char)
-							call translated("VarCreateClass")
-							return cursor
-						end
-						if type=(nvar_char)
-							callret translate_var_named(cursor,len,cls,pointer,"VarCreateClassNamed",start)
-						end
-						#Var_char nVar_char
-						ss has_dot
-						set has_dot strchr_reverse(atarguments,(Period))
-						ss d="."
-						if has_dot!=(NULL)
-							set afterindents# store
-							set has_dot# (Nullchar)
-						else
-							#sd ?c
-							#strcmp("Main.hx",module)
-							#=0
-								set afterindents globalt.stage
-							#else
-							#	set afterindents #globalt.blank
-							#	set d #globalt.blank
-							#end
-						end
-						ss extra;set extra cursor
-						add extra len
-						sd ?size=a_page_size
-						sub size len
-						set len snprintf(extra,size,"%s%saddChild(%s);",afterindents,d,cls)
-						if len>0
-							if len<size
-								call translated("VarCreateClassAdded")
-								return cursor
-							end
-						end
+						callret translate_var_by_type(type,cursor,len,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
 					end
 				end
 				return start
@@ -1514,14 +1480,12 @@ function translate_var_simple(ss indents,ss ?type)
 							set pointer# (Closeparenthesis)
 							inc pointer
 							set pointer# (Semicolon)
+
 							inc pointer
-							if type=(var_char)
-								call translated("VarAttach")
-								set pointer# (Nullchar)
-								return globalt.a_page_switch
-							end
+							set pointer# (Nullchar)
 							add len 2
-							callret translate_var_named(globalt.a_page_switch,len,name,cursor,"VarAttachNamed",indents)
+
+							callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
 						end
 					end
 				end
@@ -1530,15 +1494,54 @@ function translate_var_simple(ss indents,ss ?type)
 			set store afterindents#;set afterindents# (Nullchar)
 			set cursor translate_leftright_full(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
-				if type=(var_char)
-					call translated("VarCreate")
-					return cursor
-				end
-				callret translate_var_named(cursor,len,cls,delim,"VarCreateNamed",indents)
+				callret translate_var_by_type(type,cursor,len,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
 			end
 		end
 	end
 	return indents
+end
+function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss afterindents,ss ?store,ss atarguments,ss ok1,ss ok2,ss ok3,ss ok4,ss start)
+	if type=(var_char)
+		call translated(ok1)
+		return cursor
+	end
+	if type=(nvar_char)
+		callret translate_var_named(cursor,len,name,pointer,ok2,start)
+	end
+	ss has_dot
+	set has_dot strchr_reverse(atarguments,(Period))
+	ss d="."
+	if has_dot!=(NULL)
+		set afterindents# store
+		set has_dot# (Nullchar)
+	else
+		#sd ?c
+		#strcmp("Main.hx",module)
+		#=0
+			set afterindents globalt.stage
+		#else
+		#	set afterindents #globalt.blank
+		#	set d #globalt.blank
+		#end
+	end
+	ss extra;set extra cursor
+	add extra len
+	sd ?size=a_page_size
+	sub size len
+	sd ?ln
+	set ln snprintf(extra,size,"%s%saddChild(%s);",afterindents,d,name)
+	if ln>0
+		if ln<size
+			if type=(Var_char)
+				call translated(ok3)
+				return cursor
+			end
+			# nVar_char
+			add len ln
+			callret translate_var_named(cursor,len,name,pointer,ok4,start)
+		end
+	end
+	return start
 end
 function translate_var(ss indents)
 	callret translate_var_simple(indents,(var_char))
