@@ -27,6 +27,7 @@ vstr class="class"
 vstr sttic="static"
 vstr double_s="%s%s"
 vstr triple_s="%s%s%s"
+vstr stage="stage"
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -85,6 +86,7 @@ import "object_make" object_make
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfull" spcfull 1
 ^import "spcfullback" spcfullback 2
+^import "strchr_reverse" strchr_reverse 2
 ^import "strip" strip 3
 import "to_upper" to_upper
 import "translated" translated
@@ -344,7 +346,7 @@ function translate_one_add(ss indents,ss in,ss oa)
 			if pointer#!=(Nullchar)
 				return o_a
 			end
-			set pointer "stage"
+			set pointer globalt.stage
 		end
 		set reminder cursor#;set cursor# (Nullchar)
 		set ext "."
@@ -565,9 +567,23 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
+	elseif chr=(Var_char)
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_var_full(start,oa,(Var_char))
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(nvar_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_var_full(start,oa,(nvar_char))
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(nVar_char)
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_var_full(start,oa,(nVar_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
@@ -1424,27 +1440,37 @@ function translate_var_full(ss start,ss oa,ss ?type)
 							call translated("VarCreateClass")
 							return cursor
 						end
-						# nvar_char
-						callret translate_var_named(cursor,len,cls,pointer,"VarCreateClassNamed",start)
-#!
-else
-	ss has_dot
-	set has_dot strrchr(atarguments,(Period))
-	if has_dot
-		set afterindents# store
-		set has_dot# (Nullchar)
-	else
-		sd ?c
-		strcmp("Main.hx",module)
-		=0
-			set afterindents globalt.stage
-		else
-			set afterindents #globalt.blank
-		end
-	end
-	%s.addChild(%s) afterindents,cls
-end
-!
+						if type=(nvar_char)
+							callret translate_var_named(cursor,len,cls,pointer,"VarCreateClassNamed",start)
+						end
+						#Var_char nVar_char
+						ss has_dot
+						set has_dot strchr_reverse(atarguments,(Period))
+						ss d="."
+						if has_dot!=(NULL)
+							set afterindents# store
+							set has_dot# (Nullchar)
+						else
+							#sd ?c
+							#strcmp("Main.hx",module)
+							#=0
+								set afterindents globalt.stage
+							#else
+							#	set afterindents #globalt.blank
+							#	set d #globalt.blank
+							#end
+						end
+						ss extra;set extra cursor
+						add extra len
+						sd ?size=a_page_size
+						sub size len
+						set len snprintf(extra,size,"%s%saddChild(%s);",afterindents,d,cls)
+						if len>0
+							if len<size
+								call translated("VarCreateClassAdded")
+								return cursor
+							end
+						end
 					end
 				end
 				return start

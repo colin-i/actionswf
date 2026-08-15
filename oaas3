@@ -64,17 +64,21 @@ if lib:
 		lib.line.argtypes = [ctypes.c_char_p]; lib.line.restype = ctypes.c_char_p
 		lib.startline.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.startline.restype = ctypes.c_char_p
 		lib.ratio.argtypes = [ctypes.c_char]; lib.ratio.restype = ctypes.c_char
-		lib.verbose.argtypes = [ctypes.c_char]
-		lib.flash_to_openfl.argtypes = [ctypes.c_char]
-		lib.sep.restype = ctypes.c_char
-		lib.postpone_char.restype = ctypes.c_char
-		lib.dualmode.restype = ctypes.c_char
 		#lib.dualmode_reset
+
+		lib.flash_to_openfl.argtypes = [ctypes.c_char]
+		lib.verbose.argtypes = [ctypes.c_char]
+
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
 		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
 		lib.solve7.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve7.restype = ctypes.c_char_p
+
+		lib.dualmode.restype = ctypes.c_char
+		lib.firstline.restype = ctypes.c_char
+		lib.postpone_char.restype = ctypes.c_char
 		lib.resolve.restype = ctypes.c_char
+		lib.sep.restype = ctypes.c_char
 	except Exception:
 		print('lib oaas error')
 		exit(1)
@@ -748,8 +752,7 @@ if not os.environ.get('skip_comp'):
 												elif kind==2:
 													solved = lib.solve2(value.encode())
 													if solved: # it is no having ""
-														if solved.isupper():
-															solved=solved.lower()
+														if lib.firstline()[0]:
 															if firstline: #at compare without exclamations is from if, not this case
 																line=firstline
 												elif kind==1:

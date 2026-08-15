@@ -45,6 +45,10 @@ const text_char=t_low
 const var_char=v_low
 const vartype_char=g_low
 
+#to do
+const nVar_char=nvar_char-a_low+A
+const Var_char=var_char-a_low+A
+
 #util solve
 const usc_pref=_
 

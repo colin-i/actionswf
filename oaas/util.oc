@@ -284,4 +284,16 @@ function object_com(ss name,ss prop,ss value,ss end,sv pbuffer,sd ?size)
 	return 0
 end
 
+function strchr_reverse(ss s,ss ?c)
+	whiletrue
+		dec s
+		if s#=(Nullchar)
+			return (NULL)
+		end
+		if s#=c
+			return s
+		end
+	end
+end
+
 entryraw globalu()

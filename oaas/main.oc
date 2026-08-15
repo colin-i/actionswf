@@ -17,6 +17,7 @@ import "_postpone_char" _postpone_char
 ^import "solver7" solver7 2
 ^import "solver" solver 2
 import "_resolve" _resolve
+^import "_firstline" _firstline
 
 einclude "oaas.h" "oaas.oh"
 
@@ -94,4 +95,10 @@ functionx solve7(ss value,ss after)
 end
 functionx resolve()
 	callret _resolve()
+end
+functionx firstline()
+	ss a;set a _firstline()
+	ss ?b;set b a#
+	set a# (FALSE)
+	return b
 end
