@@ -103,7 +103,8 @@ function switch_page()
 end
 
 #a cd fg i   mn p     vwx
-#AB  EFGH JKLM OP RST VW  Z
+#ab  efgh jklm op rst vw  z
+#                     VW
 #                q   u   y
 #also at the end
 
@@ -1720,10 +1721,16 @@ Static
 Text
 TextFormat
 Var
+VarNamed
 VarAttach
+VarAttachAdded
+VarAttachAddedNamed
 VarAttachNamed
 VarCreate
-VarCreateClass
-VarCreateClassNamed
+VarCreateAdded
+VarCreateAddedNamed
 VarCreateNamed
-VarNamed
+VarCreateClass
+VarCreateClassAdded
+VarCreateClassAddedNamed
+VarCreateClassNamed
