@@ -29,6 +29,7 @@ vstr sttic="static"
 vstr double_s="%s%s"
 vstr triple_s="%s%s%s"
 vstr stage="stage"
+vstr dot="."
 
 function on_string_get(ss z)
 	set z# \globalt.on_string
@@ -351,7 +352,7 @@ function translate_one_add(ss indents,ss in,ss oa)
 			set pointer globalt.stage
 		end
 		set reminder cursor#;set cursor# (Nullchar)
-		set ext "."
+		set ext globalt.dot
 	else
 		set pointer #globalt.blank
 		set ext pointer
@@ -1075,28 +1076,37 @@ function translate_onev(ss start)
 	set cursor equalon(start)
 	if cursor!=start
 		ss pointer;set pointer cursor
+		ss ?stage_required=FALSE
 		while start!=pointer
 			dec pointer
 			sd ?c
 			set c memcmp(pointer,#globalt.on_string,\globalt.on_string) #on is to short for strncmp
 			if c=0
+				if globalt.mainmod_bool=(TRUE)# test if stage is required
+					ss test
+					set test spcfull(start)
+					if test=pointer
+						set stage_required (TRUE)
+					end
+				end
+
 				add pointer \globalt.on_string
-				vstr mous="Mouse"
 				set c strncmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #strncmp is defined to compare the first 10 bytes
 				if c=0
-					set cursor translate_on(start,#globalt.blank,"ENTER_FRAME",cursor)
+					set cursor translate_on(start,#globalt.blank,"ENTER_FRAME",cursor,stage_required)
 				else
+					vstr mous="Mouse"
 					set c strncmp(pointer,#globalt.press_string,\globalt.press_string)
 					if c=0
-						set cursor translate_on(start,mous,"CLICK",cursor)
+						set cursor translate_on(start,mous,"CLICK",cursor,stage_required)
 					else
 						set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 						if c=0
-							set cursor translate_on(start,mous,"MOUSE_OVER",cursor)
+							set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required)
 						else
 							set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OUT",cursor)
+								set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required)
 							end
 						end
 					end
@@ -1113,7 +1123,7 @@ function translate_onev(ss start)
 	end
 	return start
 end
-function translate_on(ss start,ss type,ss ev,ss value)
+function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
 	inc value
 	ss cursor
 	set cursor semicolon(value)
@@ -1123,7 +1133,15 @@ function translate_on(ss start,ss type,ss ev,ss value)
 		set pointer# (Nullchar)
 		set cursor# (Nullchar)
 		inc cursor
-		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%saddEventListener(flash.events.%sEvent.%s,%s);%s",start,type,ev,value,cursor)
+		ss s1;ss s2
+		if stage_required=(TRUE)
+			set s1 globalt.stage
+			set s2 globalt.dot
+		else
+			set s1 #globalt.blank
+			set s2 #globalt.blank
+		end
+		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s);%s",start,s1,s2,type,ev,value,cursor)
 		if len>0
 			if len<(a_page_size)
 				return globalt.a_page_switch
@@ -1520,13 +1538,15 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 	end
 	ss has_dot
 	set has_dot strchr_reverse(atarguments,(Period))
-	ss d="."
+	ss d
 	if has_dot!=(NULL)
 		set afterindents# store
 		set has_dot# (Nullchar)
+		set d globalt.dot
 	else
 		if globalt.mainmod_bool=(TRUE)
 			set afterindents globalt.stage
+			set d globalt.dot
 		else
 			set afterindents #globalt.blank
 			set d #globalt.blank
