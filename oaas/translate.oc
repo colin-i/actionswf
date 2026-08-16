@@ -229,7 +229,7 @@ function translate_one(ss in,ss indents)
 		end
 		set o_a# (i_low)
 	elseif chr=(bitmap_char)
-		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends flash.display.BitmapData { }",indents,in,oa,"Bitmap")
+		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends flash.display.BitmapData { }",indents,in,oa,"Bitmap",(bitmap_char))
 		if cursor!=oa
 			return cursor
 		end
@@ -244,7 +244,7 @@ function translate_one(ss in,ss indents)
 			return cursor
 		end
 	elseif chr=(var_char)
-		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var")
+		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var",(var_char))
 		if cursor!=oa
 			return cursor
 		end
@@ -309,7 +309,7 @@ function translate_one_simple(ss indents,ss in,ss oa,ss specific,ss onOk,ss ?chr
 	end
 	return o_a
 end
-function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
+function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk,ss ?t)
 	ss o_a
 	set o_a oa
 	inc oa
@@ -328,7 +328,7 @@ function translate_one_double(ss format,ss indents,ss in,ss oa,ss onOk)
 				call translated(onOk)
 				return pointer
 			end
-			set o_a# (var_char)
+			set o_a# t
 			set cursor# reminder
 		end
 	end
@@ -1427,24 +1427,32 @@ end
 
 function translate_var_full(ss start,ss oa,ss ?type)
 	whiletrue
+		ss pointer
 		if oa#!=(Nullchar)
 			if oa#!=(switch_char)
-				#v class
-				ss afterindents;ss atarguments;ss cls;ss pointer
-				set cls translate_var_helper(start,#afterindents,#atarguments,#pointer)
-				if cls!=start
-					ss ?store;set store afterindents#;set afterindents# (Nullchar)
-					sd ?len
-					ss cursor
-					set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
-					if cursor!=#globalt.blank
-						callret translate_var_by_type(type,cursor,len,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
+				set pointer spcfullafters(oa)
+				if pointer=oa ##else is translate_one
+					#v class
+					ss afterindents;ss atarguments;ss cls
+					set cls translate_var_helper(start,#afterindents,#atarguments,#pointer)
+					if cls!=start
+						ss ?store;set store afterindents#;set afterindents# (Nullchar)
+						sd ?len
+						ss cursor
+						set cursor translate_leftright_full(#globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
+						if cursor!=#globalt.blank
+							callret translate_var_by_type(type,cursor,len,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
+						end
 					end
 				end
-				return start
+				return oa
 			end
 		end
-		callret translate_var_simple(start,type)
+		set pointer translate_var_simple(start,type)
+		if pointer=start
+			return oa
+		end
+		return pointer
 	end
 end
 function translate_var_simple(ss indents,ss ?type)

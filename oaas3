@@ -643,12 +643,12 @@ if not os.environ.get('skip_comp'):
 								fp.write(line + os.linesep)
 
 						if line in cache:
-							return False
+							return #False
 
 						cache.add(line)
 						with open(file, "a", newline="") as fp:
 							fp.write(line + os.linesep)
-						return True
+						return #True
 
 					import re
 					def diag():
@@ -776,9 +776,9 @@ if not os.environ.get('skip_comp'):
 														break
 													#this case is with the postpone_char. or normal
 													solved = lib.resolve()
-													comparator = solved.decode()
 													part1, delim, part2 = linestr.partition(tr_sep)
 													if delim:
+														comparator = solved.decode()
 														sep=lib.sep().decode()
 														tokens = part2.split(sep)
 														n = lib.postpone_char().decode()
@@ -802,13 +802,12 @@ if not os.environ.get('skip_comp'):
 												rslvd=True
 												if isinstance(solved, bytes):
 													solved = solved.decode()
-													if save_line(module,line):
-														linestr = linestr + tr_sep + solved
-													else:
+													save_line(module,line)
+													try:#still can be a line with markers from orig
+														part1, part2 = linestr.split(tr_sep) #will throw here
 														s1 = solved[1:]
 														s0 = solved[0]
 														sep=lib.sep().decode()
-														part1, part2 = linestr.split(tr_sep)
 														tokens = part2.split(sep)
 														#not_added=True
 														for i,token in enumerate(tokens):
@@ -823,6 +822,8 @@ if not os.environ.get('skip_comp'):
 														if rslvd:
 															tokens.append(solved)
 														linestr = part1 + tr_sep + sep.join(tokens)
+													except:
+														linestr = linestr + tr_sep + solved
 												lines[line] = linestr + (os.linesep if has_term else "")
 												touched.add(f) #these are not rslvd? ok, but make that if s1 case
 
