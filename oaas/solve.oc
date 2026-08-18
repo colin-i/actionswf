@@ -74,8 +74,8 @@ function solver1(ss value)
 		char object_string="utils.Object"^
 		set c strncmp(value,#object_string,\.object_string)
 		if c=0
-			call sprintf(#globals.outvalue,"%c",(ignore_pref))
-			callret solver_end(value,\.object_string)
+			set globals.stored_char (oreplace_char)
+			callret solver_endb(value,\.object_string)
 		end
 	end
 	return (NULL)

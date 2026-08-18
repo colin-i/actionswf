@@ -41,6 +41,7 @@ const ignore_pref=Exclamationmark
 const insert_char=z_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low
+const oreplace_char=p_low
 const rect_char=r_low
 const search_char=s_low
 const text_char=t_low

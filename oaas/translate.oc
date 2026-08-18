@@ -536,7 +536,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(p_low)
+	elseif chr=(oreplace_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_object(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
@@ -1132,7 +1132,7 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
 		set pointer spcfull(start)
 		set pointer# (Nullchar)
 		set cursor# (Nullchar)
-		inc cursor
+		#inc cursor
 		ss s1;ss s2
 		if stage_required=(TRUE)
 			set s1 globalt.stage
@@ -1141,7 +1141,7 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
 			set s1 #globalt.blank
 			set s2 #globalt.blank
 		end
-		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s);%s",start,s1,s2,type,ev,value,cursor)
+		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s);",start,s1,s2,type,ev,value) #,cursor)
 		if len>0
 			if len<(a_page_size)
 				return globalt.a_page_switch
