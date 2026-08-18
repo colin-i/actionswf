@@ -103,8 +103,8 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#a cd fg i   mn p     vwx
-#ab  efgh jklm op rst vw  z
+#a cd fg i   m  p     vwx
+#ab  efgh jklmnop rst vw  z
 #                     VW
 #                q   u   y
 #also at the end
@@ -116,7 +116,6 @@ end
 #g	like n
 #i	string
 #m      same like v
-#n	a letter and predef format
 #p	public
 #vw	s s
 #x	static
@@ -231,11 +230,6 @@ function translate_one(ss in,ss indents)
 		set o_a# (i_low)
 	elseif chr=(bitmap_char)
 		set cursor translate_one_double("%s%s@:bitmap('%s') class %s extends flash.display.BitmapData { }",indents,in,oa,"Bitmap",(bitmap_char))
-		if cursor!=oa
-			return cursor
-		end
-	elseif chr=(n_low)
-		set cursor translate_one_simple(indents,in,oa,#globalt.nw,"New",(n_low))
 		if cursor!=oa
 			return cursor
 		end
@@ -427,6 +421,7 @@ end
 #l	.( b or e
 #j	=''
 #m	all spcback= ''
+#n	after indents
 #o	onPATTERN=;
 #p	Object(
 #r	.( (,),)(,
@@ -520,6 +515,15 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(bitmap_char)
 		set cursor translate_bitmap(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(n_low)
+		set cursor translate_new(start)
 		if cursor!=start
 			inc oa
 			set cursor translate_two_switch(oa,cursor)
@@ -1671,6 +1675,29 @@ function translate_textformat(ss start)
 					end
 				end
 			end
+		end
+	end
+	return start
+end
+
+function translate_new(ss start)
+	ss cursor
+	set cursor spcfull(start)
+	ss ?reminder
+	set reminder cursor#
+	char a#2;ss b^a
+	if reminder!=(Nullchar)
+		set cursor# (Nullchar)
+		inc cursor
+		set b# reminder
+		inc b
+	end
+	set b# (Nullchar)
+	sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s%s",start,#globalt.nw,#a,cursor)
+	if len>0
+		if len<(a_page_size)
+			call translated("New")
+			return globalt.a_page_switch
 		end
 	end
 	return start

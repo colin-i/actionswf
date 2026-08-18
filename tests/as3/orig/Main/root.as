@@ -24,6 +24,7 @@ a Main
 		trace("shape2 b is this: "+shape2.b);
 		//3n
 		Loader();
+		Loader();//3n
 		if(a)
 			trace("okkkkkkkkkkkkkkk");
 		var b=0;
@@ -39,7 +40,6 @@ a Main
 		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
 	}
 //3}
-
 function Loader(){//3f
 trace('the loader is working');
 }
