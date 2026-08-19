@@ -237,7 +237,7 @@ import time
 def stop_server(s):
 	try:
 		pid = int(s)
-	except TypeError,ValueError:  #TypeError at exiting without a sever , ValueError at server_extern
+	except (TypeError,ValueError):  #TypeError at exiting without a server , ValueError at server_extern
 		return
 	if sys.platform == "win32":
 		_stop_windows(pid)
@@ -676,7 +676,10 @@ if not os.environ.get('skip_comp'):
 								if kind==2:
 									character=positions["character"]
 
-									src = Path(fullfilename).read_text(newline='') #encoding="utf-8" #newline for \r\n wine
+									# 3.13+ #src = Path(fullfilename).read_text(newline='') #encoding="utf-8" #newline for \r\n wine
+									with open(fullfilename, 'r', newline='') as f:  # encoding="utf-8" #newline for \r\n wine
+										src = f.read()
+
 									lines = src.splitlines(keepends=True)
 									# get text before the target line
 									before = "".join(lines[:line])
@@ -695,14 +698,18 @@ if not os.environ.get('skip_comp'):
 									#if not result.returncode: # must match ok
 									result = result.stderr
 									if not diag_json:
-										result = ET.fromstring(result).find('pos')
-										if result is not None: #else,example,TextFormatAlign
-											result=result.text
-											#lineparts=result.split(':') #windows... F:...
-											m = re.match(r'^(.+):(\d+):', result)
-											if m.group(1)==fullfilename: #is another file line else, also at first case
-												firstline=line
-												line=int(m.group(2))-1 # from human
+										try:
+											result = ET.fromstring(result).find('pos') #here is the except
+											if result is not None: #else,example,TextFormatAlign
+												result=result.text
+												if result!='(unknown)': #jammy case
+													#lineparts=result.split(':') #windows... F:...
+													m = re.match(r'^(.+):(\d+):', result)
+													if m.group(1)==fullfilename: #is another file line else, also at first case
+														firstline=line
+														line=int(m.group(2))-1 # from human
+										except ET.ParseError: #jammy case
+											pass
 									else:
 										result = json.loads(result) #here are situations like addChild(label) where label is not going to createTextField yet
 										if not "error" in result:
