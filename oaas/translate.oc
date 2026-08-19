@@ -93,6 +93,7 @@ import "object_make" object_make
 import "to_upper" to_upper
 import "translated" translated
 import "untranslated" untranslated
+import "var_advance" var_advance
 
 function switch_page()
 	if globalt.a_page_switch=#globalt.a_page
@@ -522,7 +523,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(n_low)
+	elseif chr=(new_char)
 		set cursor translate_new(start)
 		if cursor!=start
 			inc oa
@@ -604,40 +605,44 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-													set cursor translate_arrayconstructor(mem)
+														set cursor translate_arrayconstructor(mem)
 		if cursor=mem
 			call strcpy(mem,start)
-												set cursor translate_buttonmode(mem,(NULL))
+													set cursor translate_buttonmode(mem,(NULL))
 			if cursor=mem
 				call strcpy(mem,start)
-											set cursor translate_eparam(mem)
+												set cursor translate_eparam(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-										set cursor translate_function(mem)
+											set cursor translate_function(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-									set cursor translate_alpha(mem)
+										set cursor translate_alpha(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-								set cursor translate_textformat(mem)
+									set cursor translate_textformat(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-							set cursor translate_bitmap(mem)
+								set cursor translate_bitmap(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-						set cursor translate_onev(mem)
+							set cursor translate_onev(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-					set cursor translate_srch_all(mem)
+						set cursor translate_srch_all(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-				set cursor translate_textfield(mem)
+					set cursor translate_textfield(mem)
 											if cursor=mem
 												call strcpy(mem,start)
-			set cursor translate_var(mem)
+				set cursor translate_var(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-		set cursor translate_compare(mem)
+			set cursor translate_compare(mem)
+													if cursor=mem
+														call strcpy(mem,start)
+		set cursor translate_new(mem)
+													end
 												end
 											end
 										end
@@ -842,41 +847,8 @@ function translate_function(ss indents)
 		ss pointer
 		set pointer spcfull(cursor)
 		if pointer!=cursor
-			set cursor pointer
 			ss ?a
-			whiletrue
-				set a cursor#
-				if a<(_0)
-					if a=(Dollar)
-						inc cursor
-						continue
-					end
-					break
-				end
-				if a<=(_9)
-					inc cursor
-					continue
-				end
-				if a<(A)
-					break
-				end
-				if a<=(Z)
-					inc cursor
-					continue
-				end
-				if a<(a_low)
-					if a=(_)
-						inc cursor
-						continue
-					end
-					break
-				end
-				if a<=(z_low)
-					inc cursor
-					continue
-				end
-				break
-			end
+			set a var_advance(pointer,#cursor)
 			sd ?len
 			svu ?sz;set sz cursor
 			sub sz pointer
@@ -1764,6 +1736,7 @@ Function
 FunctionMorph
 Give
 Import
+New
 Object
 On
 Public

@@ -296,4 +296,43 @@ function strchr_reverse(ss s,ss ?c)
 	end
 end
 
+function var_advance(ss cursor,sv out)
+	ss ?a
+	whiletrue
+		set a cursor#
+		if a<(_0)
+			if a=(Dollar)
+				inc cursor
+				continue
+			end
+			break
+		end
+		if a<=(_9)
+			inc cursor
+			continue
+		end
+		if a<(A)
+			break
+		end
+		if a<=(Z)
+			inc cursor
+			continue
+		end
+		if a<(a_low)
+			if a=(_)
+				inc cursor
+				continue
+			end
+			break
+		end
+		if a<=(z_low)
+			inc cursor
+			continue
+		end
+		break
+	end
+	set out# cursor
+	return a
+end
+
 entryraw globalu()

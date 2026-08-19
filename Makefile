@@ -38,10 +38,12 @@ clean:
 install:
 	install -D oaalternative.sh $(DESTDIR)$(prefix)/bin/oaalternative.sh
 	install -D oaalternative.py $(DESTDIR)$(prefix)/bin/oaalternative.py
+	install -D oaalternativer.py $(DESTDIR)$(prefix)/bin/oaalternativer.py
 	install -D oaas3 $(DESTDIR)$(prefix)/bin/oaas3
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative.sh
 	-rm -f $(DESTDIR)$(prefix)/bin/oaalternative.py
+	-rm -f $(DESTDIR)$(prefix)/bin/oaalternativer.py
 	-rm -f $(DESTDIR)$(prefix)/bin/oaas3
 
 .PHONY: $(TOPTARGETS) $(MEDTARGETS) $(ALLDIRS)
