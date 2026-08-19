@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.178
+Version: 1.179
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,6 +58,63 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Aug 19 2026 costin <costin.botescu@gmail.com> 1.179-0
+- new at solver (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- new (costin.botescu@gmail.com)
+- Object decisions (costin.botescu@gmail.com)
+- stage at events (costin.botescu@gmail.com)
+- fixes (costin.botescu@gmail.com)
+- info (costin.botescu@gmail.com)
+- mainmod_bool (costin.botescu@gmail.com)
+- VW forks (costin.botescu@gmail.com)
+- at VW (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- V W plan (costin.botescu@gmail.com)
+- fix dual mode indents. named vars solver. (costin.botescu@gmail.com)
+- named vars: at attach, _one (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- named vars: w for createEmpty... (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- named vars: w start (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- v name (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- must reset one line dual mode (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- translate two: p (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- dual mode t1 (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- haxe preview (costin.botescu@gmail.com)
+- diag json (costin.botescu@gmail.com)
+- inf loop case (costin.botescu@gmail.com)
+- docs (costin.botescu@gmail.com)
+- dual mode (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- p (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- first stage at var arguments (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- "up" (costin.botescu@gmail.com)
+- oaalternativer (costin.botescu@gmail.com)
+- a at translate two (costin.botescu@gmail.com)
+- fix multiple frames alt (costin.botescu@gmail.com)
+- deprecated (costin.botescu@gmail.com)
+- not always is !=None (costin.botescu@gmail.com)
+- translate two: g and k (costin.botescu@gmail.com)
+- csrc fix (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- do while deobfuscator (costin.botescu@gmail.com)
+- t*oc function new and \0 (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- authentic win oaas test (costin.botescu@gmail.com)
+- fix win oaas3 (costin.botescu@gmail.com)
+- fix tests (costin.botescu@gmail.com)
+- win fixes (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- fix a part of the problems at wine (costin.botescu@gmail.com)
+
 * Sun Jul 19 2026 costin <costin.botescu@gmail.com> 1.178-0
 - debhelper 13 fix (mail@flashixy.com)
 - fix deb (mail@flashixy.com)

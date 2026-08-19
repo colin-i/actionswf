@@ -1,3 +1,9 @@
+actionswf (1-179) jammy; urgency=medium
+
+  * at solver
+
+ -- bc <bc@ubuntu>  Wed, 19 Aug 2026 09:38:46 +0300
+
 actionswf (1-178) jammy; urgency=medium
 
   * new fix
