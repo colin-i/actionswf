@@ -146,7 +146,7 @@ a Main
 		trace(\"shape2 b is this: \"+shape2.b);
 		//3n
 		Loader();
-		Loader();//3n
+		Loader();
 		if(a)
 			trace(\"okkkkkkkkkkkkkkk\");
 		var b=0;
@@ -194,6 +194,8 @@ _leftPart='type';//3 j+s
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
 a= 'q'//3
+L_oader();//3 n+s
+Loader;//3
 onEnterFrame=_fune;//3 o+s
 onEnterFrame=q;//3
 var _z=new Object(//3 pq+s
@@ -225,3 +227,20 @@ main();
 call swf_done()
 
 call exit(0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
