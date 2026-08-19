@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.179
+Version: 1.180
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,7 +58,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Wed Aug 19 2026 costin <costin.botescu@gmail.com> 1.179-0
+* Wed Aug 19 2026 costin <costin.botescu@gmail.com> 1.180-0
+- jammy fallbacks (costin.botescu@gmail.com)
+- at solver (mail@flashixy.com)
 - new at solver (costin.botescu@gmail.com)
 - "tests" (mail@flashixy.com)
 - new (costin.botescu@gmail.com)

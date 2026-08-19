@@ -4,6 +4,7 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/changelog | head -
 ~/test/debinit2 "${1}" && \
 ~/test/deb && \
 ~/test/publp && \
+exc=aarch64 ~/test/rpm/copr && \
 ./makewin64 && \
 ~/test/rel && \
 ~/test/pub rel && \
@@ -12,7 +13,6 @@ type=arm ~/test/pkg/onb && \
 ~/test/upgen actionswf.zip && \
 ~/test/pub pkg pkgarm && \
 ~/test/pkg/aur && \
-exc=aarch64 ~/test/rpm/copr && \
 ~/test/rpm/suse && \
 ./python/pi && \
 ~/test/pub2 && \
