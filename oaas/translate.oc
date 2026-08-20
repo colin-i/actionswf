@@ -15,6 +15,7 @@ charx mainmod_bool#1
 char on_string="on"^
 char enterframe_string="EnterFrame"^
 char press_string="Press"^
+char mousedown_string="MouseDown"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
 char var_translate="%s%svar %s=new %s();"
@@ -43,6 +44,10 @@ function press_string_get(ss z)
 	set z# \globalt.press_string
 	return #globalt.press_string
 end
+function mousedown_string_get(ss z)
+	set z# \globalt.mousedown_string
+	return #globalt.mousedown_string
+end
 function rollover_string_get(ss z)
 	set z# \globalt.rollover_string
 	return #globalt.rollover_string
@@ -64,6 +69,7 @@ importx "strcpy" strcpy
 importx "strdup" strdup
 importx "strlen" strlen
 importx "snprintf" snprintf
+importx "strspn" strspn
 importx "strstr" strstr
 importx "strchr" strchr
 importx "strrchr" strrchr
@@ -656,6 +662,19 @@ function translate_two(ss start,ss in)
 		end
 		call free(mem)
 		if cursor!=mem;return cursor;end
+	else
+		set cursor strspn(oa,");")
+		add cursor oa
+		if cursor#=(Nullchar)
+			sd ?len
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s",start,oa)
+			if len>0
+				if len<(a_page_size)
+					call translated("others")
+					return globalt.a_page_switch
+				end
+			end
+		end
 	end
 	return in
 end
@@ -1076,13 +1095,18 @@ function translate_onev(ss start)
 					if c=0
 						set cursor translate_on(start,mous,"CLICK",cursor,stage_required)
 					else
-						set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
+						set c strncmp(pointer,#globalt.mousedown_string,\globalt.mousedown_string)
 						if c=0
-							set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required)
+							set cursor translate_on(start,mous,"MOUSE_DOWN",cursor,stage_required)
 						else
-							set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
+							set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required)
+								set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required)
+							else
+								set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
+								if c=0
+									set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required)
+								end
 							end
 						end
 					end
@@ -1100,28 +1124,33 @@ function translate_onev(ss start)
 	return start
 end
 function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
+	ss pointer
+	set pointer spcfull(start)
+	set pointer# (Nullchar)
+	ss s1;ss s2
+	if stage_required=(TRUE)
+		set s1 globalt.stage
+		set s2 globalt.dot
+	else
+		set s1 #globalt.blank
+		set s2 #globalt.blank
+	end
 	inc value
+
+	sd ?len
 	ss cursor
 	set cursor semicolon(value)
+	ss ending
 	if cursor!=value
-		ss pointer
-		set pointer spcfull(start)
-		set pointer# (Nullchar)
 		set cursor# (Nullchar)
-		#inc cursor
-		ss s1;ss s2
-		if stage_required=(TRUE)
-			set s1 globalt.stage
-			set s2 globalt.dot
-		else
-			set s1 #globalt.blank
-			set s2 #globalt.blank
-		end
-		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s);",start,s1,s2,type,ev,value) #,cursor)
-		if len>0
-			if len<(a_page_size)
-				return globalt.a_page_switch
-			end
+		set ending ");"
+	else #going at inner functions
+		set ending #globalt.blank
+	end
+	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s%s",start,s1,s2,type,ev,value,ending)
+	if len>0
+		if len<(a_page_size)
+			return globalt.a_page_switch
 		end
 	end
 	return start

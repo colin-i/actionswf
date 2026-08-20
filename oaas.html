@@ -65,10 +65,11 @@
 	<tr><td>m</td>                       <td class="red"><table><tr><td>path</td><td>class</td></tr></table></td><td class="com">@:bitmap('<span class="red">path</span>') class <span class="red">class</span> extends flash.display.BitmapData { }</td></tr>
 	<tr><td class="blue" colspan=2>m</td><td class="com">var <span class="blue">name</span>=new <span class="blue">class</span>(0,0);</td><td class="com"><span class="blue">var name</span><span class="yellow">=</span>flash.display.BitmapData.loadBitmap(<span class="yellow">'</span><span class="blue">class</span><span class="yellow">'</span>);</td></tr>
 	<tr><td class="blue" colspan=2>n</td><td class="com">new <span class="blue">...</span></td></tr>
-	<tr><td class="blue" colspan=2 rowspan=4>o</td><td class="com"><span class="green">[</span><span class="blue">parent/stage.</span><span class="green">]</span>addEventListener(flash.events.Event.ENTER_FRAME,<span class="blue">functionName</span>);</td><td class="com"><span class="green">[</span><span class="blue">parent.</span><span class="green">]</span><span class="yellow">onEnterFrame=</span><span class="blue">functionName</span><span class="yellow">;</span></td></tr>
-	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_CLICK,<span class="blue">functionName</span>);</td><td class="com">...<span class="yellow">onPress=</span><span class="blue">functionName</span><span class="yellow">;</span></td></tr>
-	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OVER,<span class="blue">functionName</span>);</td><td class="com">...<span class="yellow">onRollOver=</span><span class="blue">functionName</span><span class="yellow">;</span></td></tr>
-	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OUT,<span class="blue">functionName</span>);</td><td class="com">...<span class="yellow">onRollOut=</span><span class="blue">functionName</span><span class="yellow">;</span></td></tr>
+	<tr><td class="blue" colspan=2 rowspan=5>o</td><td class="com"><span class="green">[</span><span class="blue">parent/stage.</span><span class="green">]</span>addEventListener(flash.events.Event.ENTER_FRAME,<span class="blue">functionName_or_function</span><span class="green">[</span>);<span class="green">]</span></td><td class="com"><span class="green">[</span><span class="blue">parent.</span><span class="green">]</span><span class="yellow">onEnterFrame=</span><span class="blue">functionName_or_function</span><span class="green">[</span><span class="yellow">;</span><span class="green">]</span></td></tr>
+	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_CLICK,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onPress=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
+	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_DOWN,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onMouseDown=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
+	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OVER,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onRollOver=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
+	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OUT,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onRollOut=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
 	<tr><td colspan=2>p</td>             <td class="com">public</td></tr>
 	<tr><td class="blue">p</td>          <td class="red">name</td><td class="com"><span class="blue">var a=new <span class="red">name</span>();</span></td><td class="com"><span class="blue">var a=new <span class="yellow">Object(</span>);</span></td></tr>
 	<tr><td class="blue" colspan=2>r</td><td class="com"><span class="green">[</span><span class="blue">name.</span><span class="green">]</span>...</td><td class="com">...</td></tr>
@@ -91,6 +92,7 @@
 Other recognized notations:
 <table>
 	<tr><td>}</td></tr>
+	<tr><td class="blue">);</td><td class="com">at least one. they will be appended.</td></tr>
 </table>
 <p>At solver. 'V' or 'W' decision is based on ', '.</p>
 </body>

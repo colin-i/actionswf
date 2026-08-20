@@ -38,6 +38,10 @@ a Main
 		//3^trace('dual mode here is visible only on as3');
 		var c=new Object();//3_ MyClip
 		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
+
+		onMouseDown=function(){
+			trace('this is from on mouse down');
+		}//3 );
 	}
 //3}
 function Loader(){//3f
