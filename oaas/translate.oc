@@ -110,8 +110,8 @@ function switch_page()
 	return #globalt.b_page
 end
 
-#a cd fg i   m  p     vwx
-#ab  efgh jklmnop rst vw  z
+#a cd fg i   m        vw
+#ab  efgh jklmnop rst vwx z
 #                     VW
 #                q   u   y
 #also at the end
@@ -123,10 +123,8 @@ end
 #g	like n
 #i	string
 #m      same like v
-#p	public
 #vw	s s
-#x	static
-#}	mix indents and in
+#});	mix indents and in
 
 function translate_one(ss in,ss indents)
 	ss oa;set oa spcfull(in)
@@ -206,7 +204,7 @@ function translate_one(ss in,ss indents)
 			break
 		end
 	elseif chr=(g_low)
-		set cursor translate_one_simple(indents,in,oa,"var stage=flash.Lib.current.stage;","Stage",(g_low))
+		set cursor translate_one_stage(indents,in,oa)
 		if cursor!=oa
 			return cursor
 		end
@@ -240,11 +238,6 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(p_low)
-		set cursor translate_one_simple(indents,in,oa,globalt.public,"Public",(p_low))
-		if cursor!=oa
-			return cursor
-		end
 	elseif chr=(var_char)
 		set cursor translate_one_double(#globalt.var_translate,indents,in,oa,"Var",(var_char))
 		if cursor!=oa
@@ -255,59 +248,50 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(x_low)
-		set cursor translate_one_simple(indents,in,oa,globalt.sttic,"Static",(x_low))
-		if cursor!=oa
-			return cursor
-		end
 	elseif chr=(Nullchar)
 		call translated("blank")
 		return in
-	elseif oa#=(Closingbrace)
-		inc oa
-		if oa#=(Nullchar)
-			set cursor translate_one_easy(indents,in,"closing")
-			if cursor!=in
-				return cursor
-			end
-		end
 	elseif oa#=(Caret)
 		set globalt.dualmode (TRUE)
 		inc oa
-		set cursor translate_one_easy(indents,oa,"dual mode")
-		if cursor!=in
-			return cursor
+		set len snprintf(#globalt.a_page,(a_page_size),globalt.double_s,indents,oa)
+		if len>=0
+			if len<(a_page_size)
+				call translated("dual mode")
+				return #globalt.a_page
+			end
+		end
+	else
+		set cursor strspn(oa,"});")
+		add cursor oa
+		if cursor#=(Nullchar)
+			set len snprintf(#globalt.a_page,(a_page_size),globalt.double_s,indents,in)
+			if len>0
+				if len<(a_page_size)
+					call translated("others")
+					return #globalt.a_page
+				end
+			end
 		end
 	end
 	call untranslated(in)
 	return in
 end
-function translate_one_easy(ss indents,ss in,ss onOk)
-	sd ?len
-	set len snprintf(#globalt.a_page,(a_page_size),globalt.double_s,indents,in)
-	if len>0
-		if len<(a_page_size)
-			call translated(onOk)
-			return #globalt.a_page
-		end
-	end
-	return in
-end
-function translate_one_simple(ss indents,ss in,ss oa,ss specific,ss onOk,ss ?chr)
+function translate_one_stage(ss indents,ss in,ss oa)
 	ss o_a
 	set o_a oa
 	inc oa
 	if oa#=(Nullchar)
 		set o_a# (Nullchar)
 		sd ?len
-		set len snprintf(#globalt.a_page,(a_page_size),globalt.triple_s,indents,in,specific)
+		set len snprintf(#globalt.a_page,(a_page_size),globalt.triple_s,indents,in,"var stage=flash.Lib.current.stage;")
 		if len>0
 			if len<(a_page_size)
-				call translated(onOk)
+				call translated("Stage")
 				return #globalt.a_page
 			end
 		end
-		set o_a# chr
+		set o_a# (g_low)
 	end
 	return o_a
 end
@@ -428,13 +412,14 @@ end
 #l	.( b or e
 #j	=''
 #m	all spcback= ''
-#n	after indents
+#n	new. after indents
 #o	onPATTERN=;
-#p	Object(
+#p	public     Object(
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
 #vw	''''   ;=;=; ...
+#x	static. like new
 #z	replacing a to b
 
 function translate_two(ss start,ss in)
@@ -548,9 +533,9 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(oreplace_char)
-		set pointer translate_two_switchBefore(#oa)
+		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_object(start,oa) #here is not required the comparison, is inside
-		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
@@ -601,6 +586,15 @@ function translate_two(ss start,ss in)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
+		end
+	elseif chr=(x_low)
+		set cursor translate_unshift(start,globalt.sttic,"Static")
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
 		end
 	elseif chr=(insert_char)
 		set pointer translate_two_switchBefore(#oa)
@@ -662,19 +656,6 @@ function translate_two(ss start,ss in)
 		end
 		call free(mem)
 		if cursor!=mem;return cursor;end
-	else
-		set cursor strspn(oa,");")
-		add cursor oa
-		if cursor#=(Nullchar)
-			sd ?len
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s",start,oa)
-			if len>0
-				if len<(a_page_size)
-					call translated("others")
-					return globalt.a_page_switch
-				end
-			end
-		end
 	end
 	return in
 end
@@ -754,6 +735,28 @@ function translate_two_switchAfter_orZero(ss cursor,ss oa,ss pointer)
 		end
 	end
 	return oa
+end
+function translate_unshift(ss start,ss value,ss onOk)
+	ss cursor
+	set cursor spcfull(start)
+	ss ?reminder
+	set reminder cursor#
+	char a#2;ss b^a
+	if reminder!=(Nullchar)
+		set cursor# (Nullchar)
+		inc cursor
+		set b# reminder
+		inc b
+	end
+	set b# (Nullchar)
+	sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s%s",start,value,#a,cursor)
+	if len>0
+		if len<(a_page_size)
+			call translated(onOk)
+			return globalt.a_page_switch
+		end
+	end
+	return start
 end
 
 function translate_arrayconstructor(ss start)
@@ -1157,8 +1160,16 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
 end
 
 function translate_object(ss start,ss oa)
-	char a="Object"
 	ss cursor
+	if oa#=(Nullchar)
+		set cursor translate_unshift(start,globalt.public,"Public")
+		if cursor!=start
+			return cursor
+		end
+		return oa
+	end
+
+	char a="Object"
 	set cursor strstr(start,a)
 	if cursor!=(NULL)
 		ss pointer
@@ -1682,26 +1693,7 @@ function translate_textformat(ss start)
 end
 
 function translate_new(ss start)
-	ss cursor
-	set cursor spcfull(start)
-	ss ?reminder
-	set reminder cursor#
-	char a#2;ss b^a
-	if reminder!=(Nullchar)
-		set cursor# (Nullchar)
-		inc cursor
-		set b# reminder
-		inc b
-	end
-	set b# (Nullchar)
-	sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s %s%s",start,#globalt.nw,#a,cursor)
-	if len>0
-		if len<(a_page_size)
-			call translated("New")
-			return globalt.a_page_switch
-		end
-	end
-	return start
+	callret translate_unshift(start,#globalt.nw,"New")
 end
 
 function transplate_insert(ss start,ss oa)

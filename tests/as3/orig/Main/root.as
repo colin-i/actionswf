@@ -2,9 +2,8 @@
 m ../a.jpg My_BitmapData
 c no dbl at haxe but still can do @:bitmap('a.jpg', 'mask.png') for jpeg+alphaChannel, more at tmp
 
-a Main
-	x*/
-	function main(){
+a Main*/
+	function main(){//3 x
 		//3g
 
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
@@ -80,6 +79,7 @@ L_oader();//3 n+s
 Loader;//3
 onEnterFrame=_fune;//3 o+s
 onEnterFrame=q;//3
+_//3 p+s
 var _z=new Object(//3 pq+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
 _x()//3 s+e
@@ -98,6 +98,7 @@ att('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
 w.attach('q','_p'+1,d);//3 W flash
+_//3 x+s
 _qty//3z wer ty+s
 */
 /*3

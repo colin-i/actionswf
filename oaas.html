@@ -70,7 +70,7 @@
 	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_DOWN,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onMouseDown=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
 	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OVER,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onRollOver=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
 	<tr>                                           <td class="com">...addEventListener(flash.events.MouseEvent.MOUSE_OUT,<span class="blue">function...</span>);</td><td class="com">...<span class="yellow">onRollOut=</span><span class="blue">function...</span><span class="yellow">;</span></td></tr>
-	<tr><td colspan=2>p</td>             <td class="com">public</td></tr>
+	<tr><td class="blue" colspan=2>p</td><td class="com">public <span class="blue">...</span></td></tr>
 	<tr><td class="blue">p</td>          <td class="red">name</td><td class="com"><span class="blue">var a=new <span class="red">name</span>();</span></td><td class="com"><span class="blue">var a=new <span class="yellow">Object(</span>);</span></td></tr>
 	<tr><td class="blue" colspan=2>r</td><td class="com"><span class="green">[</span><span class="blue">name.</span><span class="green">]</span>...</td><td class="com">...</td></tr>
 	<tr><td class="blue">r</td>          <td class="red">name</td><td class="com"><span class="red">name</span>.graphics.drawRect<span class="blue">(x,y</span>,<span class="blue">width,height)</span>;</td><td class="com">lineTo<span class="yellow">(</span><span class="blue">width</span><span class="yellow">,</span><span class="blue">y</span><span class="yellow">)</span>;lineTo(width<span class="blue">,height)</span>;lineTo<span class="blue">(x,</span>height)<span class="blue">;</span></td></tr>
@@ -86,13 +86,12 @@
 	<tr><td class="blue">v<span class="green">or</span>V</td><td class="red">name</td>    <td class="com">var <span class="blue">name</span>=new <span class="red">name</span>();...</td><td class="com">...</td></tr>
 	<tr><td class="blue" colspan=2>w <span class="green">or</span> W</td>                 <td class="com">...</td><td class="com">...</td></tr>
 	<tr><td class="blue">w<span class="green">or</span>W</td><td class="red">name</td>    <td class="com">...<span class="red">name</span>.name=<span class="red">name</span><span class="blue">+extra+1</span>;</td><td class="com">...<span class="blue">+extra+1</span><span class="yellow">,</span>...</td></tr>
-	<tr><td colspan=2>x</td>             <td class="com">static</td></tr>
+	<tr><td class="blue" colspan=2>x</td><td class="com">static <span class="blue">...</span></td></tr>
 	<tr><td class="blue">z</td>          <td class="red"><table><tr><td>p1</td><td>p2</td></tr></table></td><td class="com"><span class="blue">var a=new <span class="red">p1</span><span class="red">p2</span>();</span></td><td class="com"><span class="blue">var a=new <span class="red">p2</span>();</span></td></tr>
 </table>
 Other recognized notations:
 <table>
-	<tr><td>}</td></tr>
-	<tr><td class="blue">);</td><td class="com">at least one. they will be appended.</td></tr>
+	<tr><td class="blue">});</td><td class="com">at least one. they will be appended.</td></tr>
 </table>
 <p>At solver. 'V' or 'W' decision is based on ', '.</p>
 </body>
