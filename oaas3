@@ -568,6 +568,9 @@ if not os.environ.get('skip_comp'):
 			if not o_d and not f_d:
 				r=prun(baser)
 			if o_d or f_d or r.returncode:
+				if not lib:
+					print('missing oaas lib')
+					exiting()
 				def diags():
 					import json
 					import itertools
@@ -624,7 +627,11 @@ if not os.environ.get('skip_comp'):
 						baser.append(diag_request(hx_exte(f),'diagnostics'))
 						p=crun(baser,capture_output=True)
 						baser.pop()
-						result=json.loads(p.stderr)
+						try:
+							result=json.loads(p.stderr)
+						except json.decoder.JSONDecodeError:
+							print('malformed json')
+							exiting()
 						if isinstance(result, dict):
 							result = result.get("result")
 							result = result["result"]  # dev build: unwrap the timestamp wrapper
@@ -768,10 +775,6 @@ if not os.environ.get('skip_comp'):
 											print(str(kind)+' '+pp+str(line)+' '+value+('' if not firstline else (' '+str(firstline))))
 										#now is like: fix one error will fix another 4
 										if module in module_files:
-											if not lib:
-												print('missing oaas lib')
-												exiting()
-
 											if module not in file_cache:
 												merged = []
 												spans = []
