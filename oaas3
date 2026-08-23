@@ -332,6 +332,18 @@ if not os.environ.get(skip_src):
 	dual_mode=False
 
 	files = splits_data()
+	module_files = {}
+	for f in files:
+		module_files.setdefault(get_module_insens(f), []).append(f)
+	module_text_cache = {}  # lazy: module -> concatenated raw lines of all its .as files, in Main.hx line order
+	def get_module_text(mod):
+		if mod not in module_text_cache:
+			merged = []
+			for cf in module_files[mod]:
+				with open(cf) as sf:
+					merged.extend(sf.readlines())
+			module_text_cache[mod] = merged
+		return module_text_cache[mod]
 	for f in files:
 		if lib:
 			lib.mainmodule_boolset(get_module_insens(f)==main)
@@ -416,10 +428,11 @@ if not os.environ.get(skip_src):
 				lines = file.read_text().splitlines()
 				with open(hx_ext(f),'rb') as dfile:
 					out_text = dfile.readlines()
+				module_text = get_module_text(mod)
 				for line in lines:
 					#lib is because from_diagnostics tested that
 					line=int(line)
-					in_text=text[line]
+					in_text=module_text[line] #line is a Main.hx-global index, so pull from the merged module text, not this single file's text
 					parts=in_text.split((a1+a2a+a3))
 					if len(parts)!=2:
 						print('error at rerun')
@@ -597,9 +610,17 @@ if not os.environ.get('skip_comp'):
 
 					baser.append('--display')
 					files=splits_data(dirs='../')
+					module_files = {}
+					for f in files:
+						module_files.setdefault(get_module_insens(f), []).append(f)
 
 					diagnostics=[]
+					requested_modules=set()
 					for f in files:
+						mod = get_module_insens(f)
+						if mod in requested_modules: #several .as files can share one Main.hx, ask haxe about it once
+							continue
+						requested_modules.add(mod)
 						baser.append(diag_request(hx_exte(f),'diagnostics'))
 						p=crun(baser,capture_output=True)
 						baser.pop()
@@ -611,8 +632,9 @@ if not os.environ.get('skip_comp'):
 						diagnostics.extend(result) #append wrong the type, error throw later
 					os.chdir(c_dir)
 
-					file_cache = {}
-					touched = set()
+					file_cache = {} #keyed by module: merged lines of ALL of that module's .as files, in Main.hx line order
+					file_spans = {} #keyed by module: [(as_file, line_count), ...] to split file_cache[module] back apart on write-back
+					touched = set() #modules, not files
 					line_cache = {}
 					line_cache_last = {}
 
@@ -745,67 +767,71 @@ if not os.environ.get('skip_comp'):
 										if verbose:
 											print(str(kind)+' '+pp+str(line)+' '+value+('' if not firstline else (' '+str(firstline))))
 										#now is like: fix one error will fix another 4
-										for f in files:
-											mod = get_module_insens(f)
-											if mod == module:
-												if not lib:
-													print('missing oaas lib')
-													exiting()
+										if module in module_files:
+											if not lib:
+												print('missing oaas lib')
+												exiting()
 
-												if f not in file_cache:
-													with open(f) as fp:
-														file_cache[f] = fp.readlines()
-												lines = file_cache[f]
+											if module not in file_cache:
+												merged = []
+												spans = []
+												for cf in module_files[module]:
+													with open(cf) as fp:
+														flines = fp.readlines()
+													spans.append((cf, len(flines)))
+													merged.extend(flines)
+												file_cache[module] = merged
+												file_spans[module] = spans
+											lines = file_cache[module] #Main.hx-global line numbers index straight into this merged list
 
-												if kind==4:
-													solved = lib.solve4(value.encode())
-												elif kind==2:
-													solved = lib.solve2(value.encode())
-													if solved: # it is no having ""
-														if lib.firstline()[0]:
-															if firstline: #at compare without exclamations is from if, not this case
-																line=firstline
-												elif kind==1:
-													solved = lib.solve1(value.encode())
+											if kind==4:
+												solved = lib.solve4(value.encode())
+											elif kind==2:
+												solved = lib.solve2(value.encode())
+												if solved: # it is no having ""
+													if lib.firstline()[0]:
+														if firstline: #at compare without exclamations is from if, not this case
+															line=firstline
+											elif kind==1:
+												solved = lib.solve1(value.encode())
 
-												linestr = lines[line]
-												if linestr[-1] in terminations:
-													linestr = linestr.rstrip(terminations)
-													has_term=True
-												else:
-													has_term=False
+											linestr = lines[line]
+											if linestr[-1] in terminations:
+												linestr = linestr.rstrip(terminations)
+												has_term=True
+											else:
+												has_term=False
 
-												if kind==7:
-													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
+											if kind==7:
+												solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
 
-												if not solved:
-													if solved==None:
-														break
-													#this case is with the postpone_char. or normal
-													solved = lib.resolve()
-													part1, delim, part2 = linestr.partition(tr_sep)
-													if delim:
-														comparator = solved.decode()
-														sep=lib.sep().decode()
-														tokens = part2.split(sep)
-														n = lib.postpone_char().decode()
-														nn = len(n)
-														#c0 = comparator[0] # to compare less, like sw , sh
-														for i,token in enumerate(tokens):
-															token = token.lstrip()          # remove leading whitespace
-															if isinstance(solved, bytes):
-																against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
-																if against == n:
-																	solved = comparator
-																	token = solved + token[nn:]
-																#elif against == c0: #this comparation was going with another case at next code
-																#	break #example at rect, else will be r x+r+r
-															tokens[i]=token
-														if not isinstance(solved, bytes):
-															save_line(module,line)
-															linestr = part1 + delim + sep.join(tokens)
-														#elif against == c0:
-														#	break #example at rect, else will be r+r+r
+											if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
+												#this case is with the postpone_char. or normal
+												solved = lib.resolve()
+												part1, delim, part2 = linestr.partition(tr_sep)
+												if delim:
+													comparator = solved.decode()
+													sep=lib.sep().decode()
+													tokens = part2.split(sep)
+													n = lib.postpone_char().decode()
+													nn = len(n)
+													#c0 = comparator[0] # to compare less, like sw , sh
+													for i,token in enumerate(tokens):
+														token = token.lstrip()          # remove leading whitespace
+														if isinstance(solved, bytes):
+															against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
+															if against == n:
+																solved = comparator
+																token = solved + token[nn:]
+															#elif against == c0: #this comparation was going with another case at next code
+															#	break #example at rect, else will be r x+r+r
+														tokens[i]=token
+													if not isinstance(solved, bytes):
+														save_line(module,line)
+														linestr = part1 + delim + sep.join(tokens)
+													#elif against == c0:
+													#	break #example at rect, else will be r+r+r
+											if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
 												rslvd=True
 												if isinstance(solved, bytes):
 													solved = solved.decode()
@@ -832,17 +858,21 @@ if not os.environ.get('skip_comp'):
 													except:
 														linestr = linestr + tr_sep + solved
 												lines[line] = linestr + (os.linesep if has_term else "")
-												touched.add(f) #these are not rslvd? ok, but make that if s1 case
+												touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
 
 												if rslvd: #can loop infinite without this if is alone
 													resolved=True
-												break
+											#no more 'break' here: previously ended the per-file search loop, which no longer exists
 								if not solved:
 									unresolved=True
 					if resolved:
-						for f in touched:
-							with open(f, "w", newline="") as fp: # , newline="" was already explained
-								fp.writelines(file_cache[f])
+						for module in touched:
+							merged = file_cache[module]
+							offset = 0
+							for cf, cnt in file_spans[module]: #split the merged module lines back to each of its .as files
+								with open(cf, "w", newline="") as fp: # , newline="" was already explained
+									fp.writelines(merged[offset:offset+cnt])
+								offset += cnt
 						if o_d:
 							return
 						if unresolved:
@@ -914,8 +944,13 @@ if not os.environ.get('skip_comp'):
 
 		if not os.environ.get('no_clean'):
 			files=splits_data() #if not files , are also at: orig src diagnostics
+			removed=set()
 			for f in files:
-				os.remove(hx_ext(f))
+				target=hx_ext(f)
+				if target in removed: #several .as files can share one Main.hx
+					continue
+				removed.add(target)
+				os.remove(target)
 			os.rmdir(dest)
 			shutil.rmtree(OACACHE, ignore_errors=True)
 
