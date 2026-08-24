@@ -41,6 +41,9 @@ a Main*/
 		onMouseDown=function(){
 			trace('this is from on mouse down');
 		}//3 );
+		onMouseUp=function(){
+			trace('this is from on mouse up');
+		}//3 );
 	}
 //3}
 function Loader(){//3f

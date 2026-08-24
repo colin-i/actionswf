@@ -20,6 +20,7 @@ importx "strstr" strstr
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "press_string_get" press_string_get 1
 ^import "mousedown_string_get" mousedown_string_get 1
+^import "mouseup_string_get" mouseup_string_get 1
 ^import "rollover_string_get" rollover_string_get 1
 ^import "rollout_string_get" rollout_string_get 1
 import "var_advance" var_advance
@@ -290,6 +291,12 @@ function solver7(ss value,ss after)
 			callret solver_end(value,z)
 		end
 		set cursor mousedown_string_get(#z)
+		set c strncmp(value,cursor,z)
+		if c=0
+			call sprintf(#globals.outvalue,"%c",(onev_char))
+			callret solver_end(value,z)
+		end
+		set cursor mouseup_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(onev_char))

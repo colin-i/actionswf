@@ -16,6 +16,7 @@ char on_string="on"^
 char enterframe_string="EnterFrame"^
 char press_string="Press"^
 char mousedown_string="MouseDown"^
+char mouseup_string="MouseUp"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
 char var_translate="%s%svar %s=new %s();"
@@ -47,6 +48,10 @@ end
 function mousedown_string_get(ss z)
 	set z# \globalt.mousedown_string
 	return #globalt.mousedown_string
+end
+function mouseup_string_get(ss z)
+	set z# \globalt.mouseup_string
+	return #globalt.mouseup_string
 end
 function rollover_string_get(ss z)
 	set z# \globalt.rollover_string
@@ -1109,6 +1114,11 @@ function translate_onev(ss start)
 								set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 								if c=0
 									set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required)
+								else
+									set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
+									if c=0
+										set cursor translate_on(start,mous,"MOUSE_UP",cursor,stage_required)
+									end
 								end
 							end
 						end
