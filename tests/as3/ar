@@ -3,4 +3,8 @@ go_to_another_launcher=r ./a
 #hax like:
 ##!/bin/bash
 #unset LD_PRELOAD
-#exec /usr/bin/haxe "$@"
+#if [ ! -e ~/Desktop/haxe/x ]; then
+#	exec /usr/bin/haxe "$@"
+#else
+#	exec /home/bc/Desktop/haxe/haxe-linux-arm64/haxe "$@"
+#fi
