@@ -1,0 +1,7 @@
+#!/bin/bash
+unset LD_PRELOAD
+if [ ! -e ~/Desktop/haxe/x ]; then
+	exec /usr/bin/haxe "$@"
+else
+	exec /home/bc/Desktop/haxe/haxe-linux-arm64/haxe "$@"
+fi
