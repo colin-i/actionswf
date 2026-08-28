@@ -37,7 +37,7 @@ int main(int argc,char**argv){
 	char*s="a.swf";
 	if(argc==1)f=prexx_flags|flagpre_x_pad|flagpre_write_no;
 	else if(argc==2){
-		f=xxu_flags|flag_titles;
+		f=xxu_flags|flag_titles|flag_no_metadata_version;
 	}else{
 		sscanf(argv[2],"%x",&f);
 		if(argc==4){

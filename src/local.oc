@@ -95,7 +95,10 @@ const file_sz_off=4
 
 	call swf_frames_reg() #is a rect with nbits above, ..., faster here
 
-	call swf_tag_long(#globalz.version,(Metadata),\globalz.version-long_header)
+	and flags (flag_no_metadata_version)
+	if flags=0
+		call swf_tag_long(#globalz.version,(Metadata),\globalz.version-long_header)
+	end
 
 #	char setbackgroundtag#2
 #	char red#1

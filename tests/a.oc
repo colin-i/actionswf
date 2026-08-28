@@ -33,7 +33,7 @@ sd f
 if argc=1
 	set f (prexx_flags|flagpre_x_pad|flagpre_write_no)
 else
-	set f (xxu_flags|flag_titles)
+	set f (xxu_flags|flag_titles|flag_no_metadata_version)
 end
 importx "printf" printf
 call printf("%x\n",f)

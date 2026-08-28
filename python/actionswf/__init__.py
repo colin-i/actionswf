@@ -2,29 +2,30 @@
 from enum import IntEnum
 
 class flag(IntEnum):
-	none=            0
-	pre_log=         0x1
-	alt=             0x2
-	titles=          0x4
-	pre_x=           0x8
-	pre_x_pad=       0x10
-	forin1=          0x20
-	framesAsShows=   0x40
-	x=               0x80
-	pre_pool_write=  0x100
-	pool_read=       0x200
-	pre_mix=         0x400
-	pool_read_unlink=0x800
-	pre_write_no=    0x1000
-	compress=        0x2000
-	deprecation_no=  0x4000
-	deprecation_yes= 0x8000
-	noDuplicate=     0x10000
-	verbose=         0x20000
-	xx=              0x40000
-	format=          0x80000
-	splitter_n=      0x100000
-	splitter_r=      0x200000
+	none=               0
+	pre_log=            0x1
+	alt=                0x2
+	titles=             0x4
+	pre_x=              0x8
+	pre_x_pad=          0x10
+	forin1=             0x20
+	framesAsShows=      0x40
+	x=                  0x80
+	pre_pool_write=     0x100
+	pool_read=          0x200
+	pre_mix=            0x400
+	pool_read_unlink=   0x800
+	pre_write_no=       0x1000
+	compress=           0x2000
+	deprecation_no=     0x4000
+	deprecation_yes=    0x8000
+	noDuplicate=        0x10000
+	verbose=            0x20000
+	xx=                 0x40000
+	format=             0x80000
+	splitter_n=         0x100000
+	splitter_r=         0x200000
+	no_metadata_version=0x400000
 
 class flags(IntEnum):
 	pool=        flag.pre_pool_write|flag.pool_read
