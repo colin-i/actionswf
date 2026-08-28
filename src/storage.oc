@@ -305,7 +305,6 @@ function swf_tag_recordheader_long_entry(sd ?tag,sd ?size)
     call swf_tag_recordheader(#tag_plus_size,tag,(recordheader_long_mark))
     callg swf_mem_add(#size,(DWORD))
 endfunction
-const short_header=2
 function swf_tag_recordheader(ss dest,sd ?tag,sd ?size)
     call bits_packs(dest,2,tag,10,size,6)
     call word_swap_arg(dest)
@@ -315,6 +314,11 @@ function swf_tag(ss dest,sd ?tag,sd ?size)
     call swf_tag_recordheader(dest,tag,size)
     add dest (short_header)
     callg swf_mem_add(dest,size)
+endfunction
+function swf_tag_long(ss dest,sd ?tag,sd ?size)
+	call swf_tag_recordheader_long_entry(tag,size)
+	add dest (long_header)
+	callg swf_mem_add(dest,size)
 endfunction
 
 function swf_frames_inc(sd ?frames,sw pointer)

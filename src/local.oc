@@ -3,6 +3,7 @@ format elfobj64
 
 include "../include/prog.h" "../include/prog.oh"
 include "../include/throw.h" "../include/throw.oh"
+include "../version.h" "../version.oh"
 
 import "identifiers_set" identifiers_set
 import "stack_to_word_arg" stack_to_word_arg
@@ -43,6 +44,7 @@ import "swf_mem_add" swf_mem_add
 import "rect_add" rect_add
 import "swf_frames_reg" swf_frames_reg
 import "swf_tag" swf_tag
+import "swf_tag_long" swf_tag_long
 import "identifiers_get" identifiers_get
 import "swf_tag_recordheader_entry" swf_tag_recordheader_entry
 import "error" error
@@ -92,6 +94,8 @@ const file_sz_off=4
 	call swf_mem_add(#hd2,4)
 
 	call swf_frames_reg() #is a rect with nbits above, ..., faster here
+
+	call swf_tag_long(#globalz.version,(Metadata),\globalz.version-long_header)
 
 #	char setbackgroundtag#2
 #	char red#1

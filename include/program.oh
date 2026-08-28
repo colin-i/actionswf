@@ -58,6 +58,7 @@ const DefineSprite=39
 const DefineFont2=48
 const ExportAssets=56
 const DoInitAction=59
+const Metadata=77
 
 include "action.h" "action.oh"
 
@@ -118,3 +119,6 @@ const dblsize16=2
 const dblformat=1
 
 const re=0
+
+const short_header=2
+const long_header=short_header+4
