@@ -173,22 +173,6 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(compare_char)
-		set cursor translate_compare(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
-		end
-	elseif chr=(fill_char)
-		set pointer translate_two_switchBefore_orZero(#oa)
-		set cursor translate_fill(start,oa)
-		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
-		if cursor!=oa
-			return cursor
-		end
 	elseif chr=(alpha_char)
 		set cursor translate_alpha(start)
 		if cursor!=start
@@ -206,6 +190,22 @@ function translate_two(ss start,ss in)
 			if cursor!=oa
 				return cursor
 			end
+		end
+	elseif chr=(compare_char)
+		set cursor translate_compare(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(fill_char)
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_fill(start,oa)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(bitmap_char)
 		set cursor translate_bitmap(start)
@@ -340,7 +340,7 @@ function translate_two(ss start,ss in)
 				set cursor translate_var(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-			set cursor translate_compare(mem)
+			set cursor translate_compare(mem) #is obvious why is here
 													if cursor=mem
 														call strcpy(mem,start)
 		set cursor translate_new(mem)
@@ -996,7 +996,7 @@ function translate_srch(ss start,ss oa)
 	return oa
 end
 function translate_srch_all(ss start)
-	ss ?t=7
+	ss ?t=0xf
 	ss cursor
 	set cursor translate_search_base(start,#t)
 	if t=0
@@ -1025,6 +1025,11 @@ function translate_search(ss start,ss oa)
 			inc cursor
 			continue
 		end
+		if cursor#=(t_low)
+			or types 8
+			inc cursor
+			continue
+		end
 		if cursor#=(switch_char)
 			break
 		end
@@ -1045,6 +1050,28 @@ function translate_search(ss start,ss oa)
 	end
 	return oa
 end
+function search_replace(ss ?t,svu p_start,ss cursor,ss ptypes,ss from,ss to)
+	and t ptypes#
+	if t!=0
+		ss start
+		set start p_start#
+		ss pointer
+		set pointer start
+		if cursor!=start
+			set pointer strdup(start) #else will be a collision
+		end
+		ss str
+		set str replace(pointer,from,to,globalt.a_page_switch,(a_page_size))
+		if cursor!=start
+			call free(pointer)
+		end
+		if str!=pointer ##is ok to compare even if is free
+			set p_start# str
+		else
+			xor ptypes# 2
+		end
+	end
+end
 function translate_search_base(ss start,ss ptypes)
 	ss cursor;set cursor start
 	ss str
@@ -1058,41 +1085,9 @@ function translate_search_base(ss start,ss ptypes)
 			xor ptypes# 1
 		end
 	end
-	ss pointer
-	set t 2
-	and t ptypes#
-	if t!=0
-		set pointer start
-		if cursor!=start
-			set pointer strdup(start) #else will be a collision
-		end
-		set str replace(pointer,"Stage.w","stage.stageW",globalt.a_page_switch,(a_page_size))
-		if cursor!=start
-			call free(pointer)
-		end
-		if str!=pointer
-			set start str
-		else
-			xor ptypes# 2
-		end
-	end
-	set t 4
-	and t ptypes#
-	if t!=0
-		set pointer start
-		if cursor!=start
-			set pointer strdup(start)
-		end
-		set str replace(pointer,"Stage.h","stage.stageH",globalt.a_page_switch,(a_page_size))
-		if cursor!=start
-			call free(pointer)
-		end
-		if str!=pointer
-			set start str
-		else
-			xor ptypes# 4
-		end
-	end
+	call search_replace(2,#start,cursor,ptypes,"Stage.w","stage.stageW")
+	call search_replace(4,#start,cursor,ptypes,"Stage.h","stage.stageH")
+	call search_replace(8,#start,cursor,ptypes,"this",globalt.stage)
 	return start
 end
 

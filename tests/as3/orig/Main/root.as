@@ -86,8 +86,8 @@ _//3 p+s
 var _z=new Object(//3 pq+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
 _x()//3 s+e
-_y()//3 s_+e
-_x//3
+this._y()//3 s_t+e
+this._x//3
 create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
 attach('q','_p',d);//3 v+s

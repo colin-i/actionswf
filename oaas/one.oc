@@ -19,7 +19,8 @@ import "translated" translated
 ^import "translate_buffer" translate_buffer
 import "untranslated" untranslated
 
-#a cd fg i   m        vw
+#                     --
+#a-cd fg i  -m  - --  vw
 #ab- efgh jklmnop rst vwx z
 #                     VW
 #                q   u   y
@@ -46,26 +47,28 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		set oa spcfull(oa)
-		set cursor spcfullafters(oa)
-		if cursor!=oa
-			set ext " extends "
-			set pointer spcfull(cursor)
-			set reminder cursor#;set cursor# (Nullchar)
-		else
-			set ext #globalr.blank
-			set pointer ext
-			set reminder (Nullchar)
-		end
-		set o_a# (Nullchar)
-		set len snprintf(buffer,(a_page_size),"%s%s%s %s%s%s{",indents,in,globalr.class,oa,ext,pointer)
-		if len>0
-			if len<(a_page_size)
-				call translated("Class")
-				return buffer
+		if oa#!=(Nullchar)
+			set cursor spcfullafters(oa)
+			if cursor!=oa
+				set ext " extends "
+				set pointer spcfull(cursor)
+				set reminder cursor#;set cursor# (Nullchar)
+			else
+				set ext #globalr.blank
+				set pointer ext
+				set reminder (Nullchar)
 			end
+			set o_a# (Nullchar)
+			set len snprintf(buffer,(a_page_size),"%s%s%s %s%s%s{",indents,in,globalr.class,oa,ext,pointer)
+			if len>0
+				if len<(a_page_size)
+					call translated("Class")
+					return buffer
+				end
+			end
+			set o_a# (a_low)
+			set cursor# reminder
 		end
-		set o_a# (a_low)
-		set cursor# reminder
 	elseif chr=(c_low)
 		set oa# (Slash)
 		set len snprintf(buffer,(a_page_size),"%s%c%s",indents,(Slash),in)
@@ -122,27 +125,28 @@ function translate_one(ss in,ss indents)
 		set o_a oa
 		inc oa
 		set oa spcfull(oa)
-
-		set pointer #globalr.blank
-		if globalr.openfl_bool=(TRUE)
-			sd ?c
-			char fl="flash."^
-			set c strncmp(oa,#fl,\.fl)
-			if c=0
-				set pointer "openfl."
-				add oa \.fl
+		if oa#!=(Nullchar)
+			set pointer #globalr.blank
+			if globalr.openfl_bool=(TRUE)
+				sd ?c
+				char fl="flash."^
+				set c strncmp(oa,#fl,\.fl)
+				if c=0
+					set pointer "openfl."
+					add oa \.fl
+				end
 			end
-		end
 
-		set o_a# (Nullchar)
-		set len snprintf(buffer,(a_page_size),"%s%simport %s%s;",indents,in,pointer,oa)
-		if len>0
-			if len<(a_page_size)
-				call translated("Import")
-				return buffer
+			set o_a# (Nullchar)
+			set len snprintf(buffer,(a_page_size),"%s%simport %s%s;",indents,in,pointer,oa)
+			if len>0
+				if len<(a_page_size)
+					call translated("Import")
+					return buffer
+				end
 			end
+			set o_a# (i_low)
 		end
-		set o_a# (i_low)
 	elseif chr=(bitmap_char)
 		set cursor translate_one_double(buffer,"%s%s@:bitmap('%s') class %s extends flash.display.BitmapData { }",indents,in,oa,"Bitmap",(bitmap_char))
 		if cursor!=oa
@@ -235,35 +239,37 @@ function translate_one_add(ss buffer,ss indents,ss in,ss oa)
 	set o_a oa
 	inc oa
 	set oa spcfull(oa)
-	ss cursor;ss ext;ss pointer;ss ?reminder
-	set cursor spcfullafters(oa)
-	if cursor!=oa
-		set pointer spcfull(cursor)
-		if pointer#=(Atsymbol)
-			inc pointer
-			if pointer#!=(Nullchar)
-				return o_a
+	if oa#!=(Nullchar)
+		ss cursor;ss ext;ss pointer;ss ?reminder
+		set cursor spcfullafters(oa)
+		if cursor!=oa
+			set pointer spcfull(cursor)
+			if pointer#=(Atsymbol)
+				inc pointer
+				if pointer#!=(Nullchar)
+					return o_a
+				end
+				set pointer globalr.stage
 			end
-			set pointer globalr.stage
+			set reminder cursor#;set cursor# (Nullchar)
+			set ext globalr.dot
+		else
+			set pointer #globalr.blank
+			set ext pointer
+			set reminder (Nullchar)
 		end
-		set reminder cursor#;set cursor# (Nullchar)
-		set ext globalr.dot
-	else
-		set pointer #globalr.blank
-		set ext pointer
-		set reminder (Nullchar)
-	end
-	set o_a# (Nullchar)
-	sd ?len
-	set len snprintf(buffer,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
-	if len>0
-		if len<(a_page_size)
-			call translated("AddChild")
-			return buffer
+		set o_a# (Nullchar)
+		sd ?len
+		set len snprintf(buffer,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
+		if len>0
+			if len<(a_page_size)
+				call translated("AddChild")
+				return buffer
+			end
 		end
+		set o_a# (d_low)
+		set cursor# reminder
 	end
-	set o_a# (d_low)
-	set cursor# reminder
 	return o_a
 end
 function translate_one_nvar(ss buffer,ss indents,ss in,ss oa)
