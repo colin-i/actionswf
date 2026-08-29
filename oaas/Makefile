@@ -47,7 +47,7 @@ firstname=liboaas
 libname=${firstname}.so
 libnamedll=${firstname}.dll
 
-objs_needing_headers=translate util solve
+objs_needing_headers=translate one util solve
 objs_not_needing_headers=${platform}
 objs=${objs_needing_headers} ${objs_not_needing_headers}
 
@@ -81,7 +81,7 @@ ${libname}: ${objects} ${exte}
 ../include/common.h:
 	$(MAKE) -C ../include common.h
 oaas.h: ../include/common.h
-${obs_needing_headers} main.o: oaas.h
+${obs_needing_headers} main.o: oaas.h translate.h
 
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
@@ -102,6 +102,7 @@ ${exte}: ${obs}
 clean:
 	$(MAKE) -C ../include clean
 	-rm -f oaas.h oaas.ohi.x
+	-rm -f translate.h translate.ohi.x
 	-rm -f main.oc.log main.oc.x main.c
 	-rm -f ${objects} ${exte} ${libname} ${libnamedll}
 	-rm -f ${obs} ${logs} ${xfiles} ${cfiles}
