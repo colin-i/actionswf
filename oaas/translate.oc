@@ -31,6 +31,8 @@ importx "strstr" strstr
 importx "strchr" strchr
 importx "strrchr" strrchr
 
+^import "bracketoon" bracketoon 1
+^import "bracketcon" bracketcon 1
 ^import "commaafter" commaafter 1
 ^import "commaon" commaon 1
 ^import "dotbackafter" dotbackafter 2
@@ -86,8 +88,7 @@ function rollout_string_get(ss z)
 	set z# \globalt.rollout_string
 	return #globalt.rollout_string
 end
-function new_string_get(ss z)
-	set z# \globalt.nw-1
+function new_string_p()
 	return #globalt.nw
 end
 
@@ -106,6 +107,7 @@ end
 
 #a	=new Array(...)
 #b	useHandCursor=; same as p but diff at format and continuation
+#d	[]
 #e	()
 #f	function newOther
 #g	;
@@ -120,7 +122,7 @@ end
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
-#vw	''''   ;=;=; ...
+#vwVW	''''   ;=;=; ...
 #x	static. like new
 #z	replacing a to b
 
@@ -148,6 +150,15 @@ function translate_two(ss start,ss in)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
+	elseif chr=(arracc_char)
+		set cursor translate_childbyname(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
 	elseif chr=(evfunc_char)
 		set cursor translate_eparam(start)
 		if cursor!=start
@@ -307,43 +318,47 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-														set cursor translate_arrayconstructor(mem)
+															set cursor translate_arrayconstructor(mem)
 		if cursor=mem
 			call strcpy(mem,start)
-													set cursor translate_buttonmode(mem,(NULL))
+														set cursor translate_buttonmode(mem,(NULL))
 			if cursor=mem
 				call strcpy(mem,start)
-												set cursor translate_eparam(mem)
+													set cursor translate_childbyname(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-											set cursor translate_function(mem)
+												set cursor translate_eparam(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-										set cursor translate_alpha(mem)
+											set cursor translate_function(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-									set cursor translate_textformat(mem)
+										set cursor translate_alpha(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-								set cursor translate_bitmap(mem)
+									set cursor translate_textformat(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-							set cursor translate_onev(mem)
+								set cursor translate_bitmap(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-						set cursor translate_srch_all(mem)
+							set cursor translate_onev(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-					set cursor translate_textfield(mem)
+						set cursor translate_srch_all(mem)
 											if cursor=mem
 												call strcpy(mem,start)
-				set cursor translate_var(mem)
+					set cursor translate_textfield(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-			set cursor translate_compare(mem) #is obvious why is here
+				set cursor translate_var(mem)
 													if cursor=mem
 														call strcpy(mem,start)
+			set cursor translate_compare(mem) #is obvious why is here
+														if cursor=mem
+															call strcpy(mem,start)
 		set cursor translate_new(mem)
+														end
 													end
 												end
 											end
@@ -540,6 +555,30 @@ function translate_buttonmode(ss indents,ss oa)
 		end
 	end
 	return indents
+end
+
+function translate_childbyname(ss start)
+	ss cursor
+	set cursor bracketoon(start)
+	if cursor!=start
+		ss pointer
+		set pointer bracketcon(cursor)
+		if pointer!=cursor
+			set cursor# (Nullchar)
+			set pointer# (Nullchar)
+			inc cursor
+			inc pointer
+			sd ?len
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s.getChildByName(%s)%s",start,cursor,pointer)
+			if len>0
+				if len<(a_page_size)
+					call translated("ChildByName")
+					return globalt.a_page_switch
+				end
+			end
+		end
+	end
+	return start
 end
 
 function translate_eparam(ss start)
@@ -1025,7 +1064,7 @@ function translate_search(ss start,ss oa)
 			inc cursor
 			continue
 		end
-		if cursor#=(t_low)
+		if cursor#=(this_char)
 			or types 8
 			inc cursor
 			continue

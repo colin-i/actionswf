@@ -44,6 +44,7 @@ a Main*/
 		onMouseUp=function(){
 			trace('this is from on mouse up');
 		}//3 );
+		trace(this['shape']);
 	}
 //3}
 function Loader(){//3f
@@ -63,6 +64,8 @@ _q=new Array(q,w,2);//3 a+s
 q=new Array(q,w,2);//3
 useHandCursor=_x;//3 b+s
 useHandCursor=x;//3
+this['a']=_x;//3 d+s
+this['a']=_x;//3
 function ()()//3 e+e
 ()//3
 function dollar$_isok_at_as2(){//3 f+e

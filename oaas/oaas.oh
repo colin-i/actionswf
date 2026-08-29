@@ -10,7 +10,7 @@ Const r_low=0x72
 Const t_low=0x74
 Const v_low=0x76
 
-#translate
+#one
 Const Atsymbol=0x40
 Const c_low=0x63
 Const d_low=0x64
@@ -18,7 +18,7 @@ Const g_low=0x67
 Const i_low=0x69
 Const p_low=0x70
 
-#t2
+#translate
 Const b_low=0x62
 Const e_low=0x65
 Const h_low=0x68
@@ -27,22 +27,23 @@ Const w_low=0x77
 #util
 Const Dollar=0x24
 
-#main t2 util
+#main translate util
 const switch_char=Plus
 
-#translate t2
+#translate translate
 const a_page_size=0x1000
 const func_char=f_low
 const nvar_char=w_low
 const var_char=v_low
 
-#translate t2 solve
+#one translate solve
 const arrconstr_char=a_low
 
-#t2 solve
+#translate solve
 Const m_low=0x6D
 const alpha_char=h_low
 const align_char=j_low
+const arracc_char=d_low
 const bitmap_char=m_low
 const compare_char=k_low
 const evfunc_char=e_low
@@ -56,6 +57,7 @@ const oreplace_char=p_low
 const rect_char=r_low
 const search_char=s_low
 const text_char=t_low
+const this_char=t_low
 const Var_char=var_char-a_low+A
 const vartype_char=g_low
 

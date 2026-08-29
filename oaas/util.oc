@@ -92,6 +92,12 @@ function spcfullback(ss start,ss right)
 	end
 end
 
+function bracketcon(ss a)
+	callret anyon(a,(Closingbracket))
+end
+function bracketoon(ss a)
+	callret anyon(a,(Openingbracket))
+end
 function commaafter(ss a)
 	callret anyafter(a,(Comma))
 end

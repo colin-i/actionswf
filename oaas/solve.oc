@@ -15,7 +15,7 @@ importx "printf" printf
 importx "sprintf" sprintf
 importx "strstr" strstr
 
-^import "new_string_get" new_string_get 1
+^import "new_string_p" new_string_p
 ^import "on_string_get" on_string_get 1
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "press_string_get" press_string_get 1
@@ -85,21 +85,35 @@ function solver1(ss value)
 end
 function solver2(ss value)
 	sd ?c
+	char arracc_string="Array access is not allowed on flash.display.Stage"
+	set c strcmp(value,#arracc_string) #with null to setFlag/return
+	if c=0
+		set globals.firstline (TRUE)
+		call sprintf(#globals.outvalue,"%c",(arracc_char)) #this is only for !comp side
+		return #globals.outvalue
+	end
 	char class_string="Class<"^
 	set c strncmp(value,#class_string,\.class_string)
 	if c=0
 		add value \.class_string
 		call var_advance(value,#value)
 		char cannotcall_string="> cannot be called"
-		set c strcmp(value,#cannotcall_string,\.cannotcall_string)
+		set c strcmp(value,#cannotcall_string)
 		if c=0
 			set globals.firstline (TRUE)
 			call sprintf(#globals.outvalue,"%c",(new_char))
 			return #globals.outvalue
 		end
 	end
+	char this_string="Cannot access this from a static function"
+	set c strcmp(value,#this_string) #with null to setFlag/return
+	if c=0
+		set globals.firstline (TRUE)
+		call sprintf(#globals.outvalue,"%c%c",(search_char),(this_char))
+		return #globals.outvalue
+	end
 	char compare_string="Int should be Bool" #with null to setFlag/return
-	set c strcmp(value,#compare_string,\.compare_string)
+	set c strcmp(value,#compare_string)
 	if c=0
 		set globals.firstline (TRUE)
 		call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
@@ -149,10 +163,9 @@ function solver4(ss value)
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
 			callret solver_end(value,\.new_string)
 		end
-		ss ?z
 		ss cursor
-		set cursor new_string_get(#z)
-		set c strcmp(value,cursor,z)
+		set cursor new_string_p()
+		set c strcmp(value,cursor)
 		if c=0
 			call sprintf(#globals.outvalue,"%c",(ignore_pref))
 			return #globals.outvalue

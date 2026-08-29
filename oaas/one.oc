@@ -21,7 +21,7 @@ import "untranslated" untranslated
 
 #                     --
 #a-cd fg i  -m  - --  vw
-#ab- efgh jklmnop rst vwx z
+#ab-defgh jklmnop rst vwx z
 #                     VW
 #                q   u   y
 #also at the end
@@ -42,7 +42,7 @@ function translate_one(ss in,ss indents)
 	ss ?chr;set chr oa#
 	ss cursor;ss o_a;ss pointer;ss ext
 	ss buffer;set buffer translate_buffer()
-	if chr=(a_low)
+	if chr=(a_low) #class
 		ss ?reminder
 		set o_a oa
 		inc oa
@@ -121,7 +121,7 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(i_low)
+	elseif chr=(i_low) #import
 		set o_a oa
 		inc oa
 		set oa spcfull(oa)
@@ -338,6 +338,7 @@ Bitmap
 BitmapMorph
 blank
 ButtonMode
+ChildByName
 Class
 closing
 Comment
