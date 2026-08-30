@@ -330,50 +330,50 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-															set cursor translate_arrayconstructor(mem)
+																set cursor translate_arrayconstructor(mem)
 		if cursor=mem
 			call strcpy(mem,start)
-														set cursor translate_buttonmode(mem,(NULL))
+															set cursor translate_buttonmode(mem,(NULL))
 			if cursor=mem
 				call strcpy(mem,start)
-													set cursor translate_childbyname(mem)
+														set cursor translate_childbyname(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-												set cursor translate_eparam(mem)
+													set cursor translate_eparam(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-											set cursor translate_function(mem)
+												set cursor translate_function(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-										set cursor translate_alpha(mem)
+											set cursor translate_alpha(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-									set cursor translate_childcast(mem)
-								if cursor=mem
-								call strcpy(mem,start)
-									set cursor translate_textformat(mem)
+										set cursor translate_childcast(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-								set cursor translate_bitmap(mem)
+									set cursor translate_textformat(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-							set cursor translate_onev(mem)
+								set cursor translate_bitmap(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-						set cursor translate_srch_all(mem)
+							set cursor translate_onev(mem)
 											if cursor=mem
 												call strcpy(mem,start)
-					set cursor translate_textfield(mem)
+						set cursor translate_srch_all(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-				set cursor translate_var_simple(mem,(var_char))
+					set cursor translate_textfield(mem)
 													if cursor=mem
 														call strcpy(mem,start)
-			set cursor translate_compare(mem) #is obvious why is here
+				set cursor translate_var_simple(mem,(var_char))
 														if cursor=mem
 															call strcpy(mem,start)
+			set cursor translate_compare(mem) #is obvious why is here
+															if cursor=mem
+																call strcpy(mem,start)
 		set cursor translate_new(mem)
-		end
+															end
 														end
 													end
 												end
