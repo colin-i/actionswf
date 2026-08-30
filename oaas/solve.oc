@@ -223,13 +223,11 @@ function solver7(ss value,ss after)
 		end
 		return (NULL)
 	end
-	ss ?chr
 	char var_string="attachMovie"^
 	set c strncmp(value,#var_string,\.var_string)
 	if c=0
-		set chr solver7_var(after)
-		call sprintf(#globals.outvalue,"%c",chr)
-		callret solver_end(value,\.var_string)
+		set globals.stored_char solver7_var(after)
+		callret solver_endb(value,\.var_string)
 	end
 	char bfil_string="begin"^
 	set c strncmp(value,#bfil_string,\.bfil_string)
@@ -255,9 +253,8 @@ function solver7(ss value,ss after)
 		char emclip_string="EmptyMovieClip"^
 		set c strncmp(value,#emclip_string,\.emclip_string)
 		if c=0
-			set chr solver7_var(after)
-			call sprintf(#globals.outvalue,"%c",chr)
-			callret solver_end(value,\.emclip_string)
+			set globals.stored_char solver7_var(after)
+			callret solver_endb(value,\.emclip_string)
 		end
 		char text_string="TextField"^
 		set c strncmp(value,#text_string,\.text_string)
@@ -272,6 +269,12 @@ function solver7(ss value,ss after)
 	if c=0
 		set globals.stored_char (fill_char)
 		callret solver_endb(value,\.efil_string)
+	end
+	char getchildname_string="getChildByName"^
+	set c strncmp(value,#getchildname_string,\.getchildname_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(childcast_char))
+		callret solver_end(value,\.getchildname_string)
 	end
 	if value#=(l_low)
 		inc value

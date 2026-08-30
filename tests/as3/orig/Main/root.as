@@ -35,7 +35,6 @@ a Main*/
 		trace('dual mode here is visible only on as3');
 		*/
 		//3^trace('dual mode here is visible only on as3');
-		var c=new Object();//3_ MyClip
 		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
 
 		onMouseDown=function(){
@@ -45,6 +44,13 @@ a Main*/
 			trace('this is from on mouse up');
 		}//3 );
 		trace(this['shape']);
+		var col;//3gflash.display.DisplayObject
+		col=this;
+		col['shape']._x=0;
+		//postpone tests
+		var c=new Object();//3_ MyClip
+		createEmptyMovieClip('qwer', getNextHighestDepth());//3_flash.display.DisplayObject
+		attachMovie('strangetest','shape3', getNextHighestDepth());//3_flash.display.DisplayObject
 	}
 //3}
 function Loader(){//3f
@@ -75,6 +81,7 @@ var _a;//3 gArray+s
 _alpha=_x;//3 h+s
 _alpha=x;//3
 	z.getChildByName('a')._x//3 i+s
+	z.getChildByName('a')._x//3
 _leftPart='type';//3 j+s
 ='type';//3
 (_)//3k+s

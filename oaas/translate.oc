@@ -114,6 +114,7 @@ end
 #f	function newOther
 #g	;
 #h	alpha=;
+#i	getChildByName
 #k	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
@@ -195,7 +196,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(i_low)
+	elseif chr=(childcast_char)
 		set cursor translate_childcast(start)
 		if cursor!=start
 			inc oa
@@ -347,6 +348,9 @@ function translate_two(ss start,ss in)
 										set cursor translate_alpha(mem)
 							if cursor=mem
 								call strcpy(mem,start)
+									set cursor translate_childcast(mem)
+								if cursor=mem
+								call strcpy(mem,start)
 									set cursor translate_textformat(mem)
 								if cursor=mem
 									call strcpy(mem,start)
@@ -369,6 +373,7 @@ function translate_two(ss start,ss in)
 														if cursor=mem
 															call strcpy(mem,start)
 		set cursor translate_new(mem)
+		end
 														end
 													end
 												end
@@ -514,7 +519,7 @@ function translate_arrayconstructor(ss start)
 	return start
 end
 
-function translate_buttonmode(ss indents,ss oa)
+function translate_buttonmode(ss indents,ss oa) #cannot postpone when no error
 	ss cursor;set cursor spcfull(indents)
 	sd ?c
 	char against="useHandCursor="
@@ -654,7 +659,7 @@ function translate_function(ss indents)
 	return indents
 end
 
-function translate_give(ss indents,ss name)
+function translate_give(ss indents,ss name) #cannot postpone when no error
 	if name#!=(Nullchar)
 		ss cursor
 		set cursor semicolon(indents)
@@ -714,7 +719,7 @@ end
 function translate_childcast(ss indents)
 	ss cursor;set cursor spcfull(indents)
 	ss pointer;set pointer strstr(cursor,globalt.getChildByName)
-	if pointer!=cursor
+	if pointer!=(NULL)
 		dec pointer
 		if pointer#=(Period)
 			ss ?rem
@@ -724,7 +729,7 @@ function translate_childcast(ss indents)
 			set pointer# (Nullchar)
 			inc pointer
 			sd ?len
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%scast(%c%s:flash.display.DisplayObjectContainer).%s",indents,rem,cursor,pointer)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%scast(%c%s,flash.display.DisplayObjectContainer).%s",indents,rem,cursor,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("ChildCast")

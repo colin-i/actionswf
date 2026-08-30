@@ -21,7 +21,7 @@ import "untranslated" untranslated
 
 #                     --
 #a-cd fg i  -m  - --  vw
-#ab-defgh jklmnop rst vwx z
+#ab-defghijklmnop rst vwx z
 #                     VW
 #                q   u   y
 #also at the end
@@ -339,6 +339,7 @@ BitmapMorph
 blank
 ButtonMode
 ChildByName
+ChildCast
 Class
 closing
 Comment
