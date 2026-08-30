@@ -831,7 +831,6 @@ if not os.environ.get('skip_comp'):
 														tokens[i]=token
 													if not isinstance(solved, bytes):
 														linestr = part1 + delim + sep.join(tokens)
-														save_line(module,line)
 													#elif against == c0:
 													#	break #example at rect, else will be r+r+r
 											if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
@@ -858,11 +857,10 @@ if not os.environ.get('skip_comp'):
 															if not token_level_solved:
 																tokens.append(solved)
 															linestr = part1 + tr_sep + sep.join(tokens)
-															save_line(module,line)
 													except:
 														linestr = linestr + tr_sep + solved
-														save_line(module,line)
 												if rslvd:
+													save_line(module,line)
 													lines[line] = linestr + (os.linesep if has_term else "")
 													touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
 													resolved=True
