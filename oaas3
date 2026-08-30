@@ -838,32 +838,33 @@ if not os.environ.get('skip_comp'):
 												rslvd=True
 												if isinstance(solved, bytes):
 													solved = solved.decode()
-													save_line(module,line)
 													try:#still can be a line with markers from orig
 														part1, part2 = linestr.split(tr_sep) #will throw here
 														s1 = solved[1:]
 														s0 = solved[0]
 														sep=lib.sep().decode()
 														tokens = part2.split(sep)
-														#not_added=True
+														token_level_solved=False
 														for i,token in enumerate(tokens):
 															if token[0] == s0:
 																if s1: # a case sw then sh, must combine them
 																	if not s1 in token[1:]:
 																		tokens[i] = token + s1
-																#not_added=False
+																		token_level_solved=True
+																		break
 																rslvd=False
 																break
-														#if not_added:
 														if rslvd:
-															tokens.append(solved)
-														linestr = part1 + tr_sep + sep.join(tokens)
+															if not token_level_solved:
+																tokens.append(solved)
+															linestr = part1 + tr_sep + sep.join(tokens)
+															save_line(module,line)
 													except:
 														linestr = linestr + tr_sep + solved
-												lines[line] = linestr + (os.linesep if has_term else "")
-												touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
-
-												if rslvd: #can loop infinite without this if is alone
+														save_line(module,line)
+												if rslvd:
+													lines[line] = linestr + (os.linesep if has_term else "")
+													touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
 													resolved=True
 											#no more 'break' here: previously ended the per-file search loop, which no longer exists
 								if not solved:
