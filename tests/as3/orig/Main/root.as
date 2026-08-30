@@ -7,7 +7,7 @@ a Main*/
 		//3g
 
 		var texture=flash.display.BitmapData.loadBitmap('My_BitmapData');
-		createEmptyMovieClip('text',getNextHighestDepth());
+		createEmptyMovieClip('text',getNextHighestDepth());//3  V flash.display.Shape
 		var matrix=new flash.geom.Matrix();
 		text.beginBitmapFill(texture,matrix,true);
 		text.lineTo(120, 0);text.lineTo(120, 80);text.lineTo(0, 80);
@@ -74,6 +74,7 @@ function newq//3
 var _a;//3 gArray+s
 _alpha=_x;//3 h+s
 _alpha=x;//3
+	z.getChildByName('a')._x//3 i+s
 _leftPart='type';//3 j+s
 ='type';//3
 (_)//3k+s

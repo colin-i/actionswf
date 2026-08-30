@@ -8,6 +8,8 @@ char stored_char#1
 charx outvalue#1+11+1+10+1 ;#zflash.text. TextFormat\0
 #                            gDynamic
 char firstline=FALSE
+#
+char stage_string="Stage"^
 
 importx "strcmp" strcmp
 importx "strncmp" strncmp
@@ -85,11 +87,31 @@ function solver1(ss value)
 end
 function solver2(ss value)
 	sd ?c
-	char arracc_string="Array access is not allowed on flash.display.Stage"
-	set c strcmp(value,#arracc_string) #with null to setFlag/return
+	char arracc_string="Array access is not allowed on flash.display."^
+	set c strncmp(value,#arracc_string,\.arracc_string) #with null to setFlag/return
 	if c=0
+		add value \.arracc_string
+		whiletrue
+			set c strncmp(value,#globals.stage_string,\globals.stage_string)
+			if c=0
+				add value \globals.stage_string
+				if value#=(Nullchar)
+					break
+				end
+				return (NULL)
+			end
+			char do_string="DisplayObject"^
+			set c strncmp(value,#.do_string,\.do_string)
+			if c=0
+				add value \.do_string
+				if value#=(Nullchar)
+					break
+				end
+			end
+			return (NULL)
+		end
 		set globals.firstline (TRUE)
-		call sprintf(#globals.outvalue,"%c",(arracc_char)) #this is only for !comp side
+		call sprintf(#globals.outvalue,"%c",(arracc_char))
 		return #globals.outvalue
 	end
 	char class_string="Class<"^
@@ -267,20 +289,19 @@ function solver7(ss value,ss after)
 		end
 		return (NULL)
 	end
-	char stage_string="Stage"^
-	set c strncmp(value,#stage_string,\.stage_string)
+	set c strncmp(value,#globals.stage_string,\globals.stage_string)
 	if c=0
 		char w=".w"^
 		set c strncmp(after,#w,\.w)
 		if c=0
 			call sprintf(#globals.outvalue,"%cw",(search_char))
-			callret solver_end(value,\.stage_string)
+			callret solver_end(value,\globals.stage_string)
 		end
 		char h=".h"^
 		set c strncmp(after,#h,\.h)
 		if c=0
 			call sprintf(#globals.outvalue,"%ch",(search_char))
-			callret solver_end(value,\.stage_string)
+			callret solver_end(value,\globals.stage_string)
 		end
 		return (NULL)
 	end

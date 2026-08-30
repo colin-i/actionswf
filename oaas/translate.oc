@@ -17,6 +17,8 @@ char mousedown_string="MouseDown"^
 char mouseup_string="MouseUp"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
+#
+vstr getChildByName="getChildByName"
 vstr graphics="graphics."
 
 importx "free" free
@@ -193,6 +195,15 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
+	elseif chr=(i_low)
+		set cursor translate_childcast(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
 	elseif chr=(align_char)
 		set cursor translate_textformat(start)
 		if cursor!=start
@@ -351,7 +362,7 @@ function translate_two(ss start,ss in)
 					set cursor translate_textfield(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-				set cursor translate_var(mem)
+				set cursor translate_var_simple(mem,(var_char))
 													if cursor=mem
 														call strcpy(mem,start)
 			set cursor translate_compare(mem) #is obvious why is here
@@ -569,7 +580,7 @@ function translate_childbyname(ss start)
 			inc cursor
 			inc pointer
 			sd ?len
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s.getChildByName(%s)%s",start,cursor,pointer)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s.%s(%s)%s",start,globalt.getChildByName,cursor,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("ChildByName")
@@ -692,6 +703,31 @@ function translate_alpha(ss indents)
 			if len>0
 				if len<(a_page_size)
 					call translated("Alpha")
+					return globalt.a_page_switch
+				end
+			end
+		end
+	end
+	return indents
+end
+
+function translate_childcast(ss indents)
+	ss cursor;set cursor spcfull(indents)
+	ss pointer;set pointer strstr(cursor,globalt.getChildByName)
+	if pointer!=cursor
+		dec pointer
+		if pointer#=(Period)
+			ss ?rem
+			set rem cursor#
+			set cursor# (Nullchar)
+			inc cursor
+			set pointer# (Nullchar)
+			inc pointer
+			sd ?len
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%scast(%c%s:flash.display.DisplayObjectContainer).%s",indents,rem,cursor,pointer)
+			if len>0
+				if len<(a_page_size)
+					call translated("ChildCast")
 					return globalt.a_page_switch
 				end
 			end
@@ -1224,10 +1260,10 @@ function translate_var_full(ss start,ss oa,ss ?type)
 			end
 		end
 		set pointer translate_var_simple(start,type)
-		if pointer=start
-			return oa
+		if pointer!=start
+			return pointer
 		end
-		return pointer
+		return oa
 	end
 end
 function translate_var_simple(ss indents,ss ?type)
@@ -1277,7 +1313,7 @@ function translate_var_simple(ss indents,ss ?type)
 			end
 		else #going on createEmptyMovieClip
 			set store afterindents#;set afterindents# (Nullchar)
-			set cursor translate_leftright_full(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Shape",globalt.a_page_switch,#len)
+			set cursor translate_leftright_full(#globalt.var_translate,indents,#globalt.blank,cls,"flash.display.DisplayObjectContainer",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
 				callret translate_var_by_type(type,cursor,len,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
 			end
@@ -1327,9 +1363,6 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 		end
 	end
 	return start
-end
-function translate_var(ss indents)
-	callret translate_var_simple(indents,(var_char))
 end
 function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor)
 	ss cursor;set cursor spcfull(indents)
