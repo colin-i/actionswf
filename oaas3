@@ -830,8 +830,8 @@ if not os.environ.get('skip_comp'):
 															#	break #example at rect, else will be r x+r+r
 														tokens[i]=token
 													if not isinstance(solved, bytes):
-														save_line(module,line)
 														linestr = part1 + delim + sep.join(tokens)
+														save_line(module,line)
 													#elif against == c0:
 													#	break #example at rect, else will be r+r+r
 											if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
