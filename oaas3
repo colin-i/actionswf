@@ -760,113 +760,114 @@ if not os.environ.get('skip_comp'):
 						if dump:
 							print(json.dumps(file,indent=10))
 						fullfilename=file["file"]
-						filename=os.path.basename(fullfilename)
-						module=os.path.splitext(filename)[0]
-						print(module)
-						for d in file["diagnostics"]:
-							if d["severity"] == 1:
-								solved = None
-								kind=d["kind"]
-								if kind in [1,2,4,7]:
-									values=diag()
-									if values:
-										value,line,positions,pp,firstline=values
-										if verbose:
-											print(str(kind)+' '+pp+str(line)+' '+value+('' if not firstline else (' '+str(firstline))))
-										#now is like: fix one error will fix another 4
-										if module in module_files:
-											if module not in file_cache:
-												merged = []
-												spans = []
-												for cf in module_files[module]:
-													with open(cf) as fp:
-														flines = fp.readlines()
-													spans.append((cf, len(flines)))
-													merged.extend(flines)
-												file_cache[module] = merged
-												file_spans[module] = spans
-											lines = file_cache[module] #Main.hx-global line numbers index straight into this merged list
+						if fullfilename: #at very bad code can: {'file': None,
+							filename=os.path.basename(fullfilename)
+							module=os.path.splitext(filename)[0]
+							print(module)
+							for d in file["diagnostics"]:
+								if d["severity"] == 1:
+									solved = None
+									kind=d["kind"]
+									if kind in [1,2,4,7]:
+										values=diag()
+										if values:
+											value,line,positions,pp,firstline=values
+											if verbose:
+												print(str(kind)+' '+pp+str(line)+' '+value+('' if not firstline else (' '+str(firstline))))
+											#now is like: fix one error will fix another 4
+											if module in module_files:
+												if module not in file_cache:
+													merged = []
+													spans = []
+													for cf in module_files[module]:
+														with open(cf) as fp:
+															flines = fp.readlines()
+														spans.append((cf, len(flines)))
+														merged.extend(flines)
+													file_cache[module] = merged
+													file_spans[module] = spans
+												lines = file_cache[module] #Main.hx-global line numbers index straight into this merged list
 
-											if kind==4:
-												solved = lib.solve4(value.encode())
-											elif kind==2:
-												solved = lib.solve2(value.encode())
-												if solved: # it is no having ""
-													if lib.firstline()[0]:
-														if firstline: #at compare without exclamations is from if, not this case
-															line=firstline
-											elif kind==1:
-												solved = lib.solve1(value.encode())
+												if kind==4:
+													solved = lib.solve4(value.encode())
+												elif kind==2:
+													solved = lib.solve2(value.encode())
+													if solved: # it is no having ""
+														if lib.firstline()[0]:
+															if firstline: #at compare without exclamations is from if, not this case
+																line=firstline
+												elif kind==1:
+													solved = lib.solve1(value.encode())
 
-											linestr = lines[line]
-											if linestr[-1] in terminations:
-												linestr = linestr.rstrip(terminations)
-												has_term=True
-											else:
-												has_term=False
+												linestr = lines[line]
+												if linestr[-1] in terminations:
+													linestr = linestr.rstrip(terminations)
+													has_term=True
+												else:
+													has_term=False
 
-											if kind==7:
-												solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
+												if kind==7:
+													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
 
-											if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
-												#this case is with the postpone_char. or normal
-												solved = lib.resolve()
-												part1, delim, part2 = linestr.partition(tr_sep)
-												if delim:
-													comparator = solved.decode()
-													sep=lib.sep().decode()
-													tokens = part2.split(sep)
-													n = lib.postpone_char().decode()
-													nn = len(n)
-													#c0 = comparator[0] # to compare less, like sw , sh
-													for i,token in enumerate(tokens):
-														token = token.lstrip()          # remove leading whitespace
-														if isinstance(solved, bytes):
-															against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
-															if against == n:
-																solved = comparator
-																token = solved + token[nn:]
-															#elif against == c0: #this comparation was going with another case at next code
-															#	break #example at rect, else will be r x+r+r
-														tokens[i]=token
-													if not isinstance(solved, bytes):
-														linestr = part1 + delim + sep.join(tokens)
-													#elif against == c0:
-													#	break #example at rect, else will be r+r+r
-											if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
-												rslvd=True
-												if isinstance(solved, bytes):
-													solved = solved.decode()
-													try:#still can be a line with markers from orig
-														part1, part2 = linestr.split(tr_sep) #will throw here
-														s1 = solved[1:]
-														s0 = solved[0]
+												if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
+													#this case is with the postpone_char. or normal
+													solved = lib.resolve()
+													part1, delim, part2 = linestr.partition(tr_sep)
+													if delim:
+														comparator = solved.decode()
 														sep=lib.sep().decode()
 														tokens = part2.split(sep)
-														token_level_solved=False
+														n = lib.postpone_char().decode()
+														nn = len(n)
+														#c0 = comparator[0] # to compare less, like sw , sh
 														for i,token in enumerate(tokens):
-															if token[0] == s0:
-																if s1: # a case sw then sh, must combine them
-																	if not s1 in token[1:]:
-																		tokens[i] = token + s1
-																		token_level_solved=True
-																		break
-																rslvd=False
-																break
-														if rslvd:
-															if not token_level_solved:
-																tokens.append(solved)
-															linestr = part1 + tr_sep + sep.join(tokens)
-													except:
-														linestr = linestr + tr_sep + solved
-												if rslvd:
-													save_line(module,line)
-													lines[line] = linestr + (os.linesep if has_term else "")
-													touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
-													resolved=True
-											#no more 'break' here: previously ended the per-file search loop, which no longer exists
-								if not solved:
-									unresolved=True
+															token = token.lstrip()          # remove leading whitespace
+															if isinstance(solved, bytes):
+																against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
+																if against == n:
+																	solved = comparator
+																	token = solved + token[nn:]
+																#elif against == c0: #this comparation was going with another case at next code
+																#	break #example at rect, else will be r x+r+r
+															tokens[i]=token
+														if not isinstance(solved, bytes):
+															linestr = part1 + delim + sep.join(tokens)
+														#elif against == c0:
+														#	break #example at rect, else will be r+r+r
+												if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
+													rslvd=True
+													if isinstance(solved, bytes):
+														solved = solved.decode()
+														try:#still can be a line with markers from orig
+															part1, part2 = linestr.split(tr_sep) #will throw here
+															s1 = solved[1:]
+															s0 = solved[0]
+															sep=lib.sep().decode()
+															tokens = part2.split(sep)
+															token_level_solved=False
+															for i,token in enumerate(tokens):
+																if token[0] == s0:
+																	if s1: # a case sw then sh, must combine them
+																		if not s1 in token[1:]:
+																			tokens[i] = token + s1
+																			token_level_solved=True
+																			break
+																	rslvd=False
+																	break
+															if rslvd:
+																if not token_level_solved:
+																	tokens.append(solved)
+																linestr = part1 + tr_sep + sep.join(tokens)
+														except:
+															linestr = linestr + tr_sep + solved
+													if rslvd:
+														save_line(module,line)
+														lines[line] = linestr + (os.linesep if has_term else "")
+														touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
+														resolved=True
+												#no more 'break' here: previously ended the per-file search loop, which no longer exists
+									if not solved:
+										unresolved=True
 					if resolved:
 						for module in touched:
 							merged = file_cache[module]

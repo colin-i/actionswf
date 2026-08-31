@@ -323,7 +323,7 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(insert_char)
 		set pointer translate_two_switchBefore(#oa)
-		set cursor transplate_insert(start,oa) #here is not required the comparison, is inside
+		set cursor translate_insert(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -1475,28 +1475,51 @@ function translate_new(ss start)
 	callret translate_unshift(start,#globalt.nw,"New")
 end
 
-function transplate_insert(ss start,ss oa)
+function translate_insert(ss start,ss oa)
 	ss cursor
 	set cursor spcfullafters(oa)
 	if cursor!=oa
 		ss pointer
 		set pointer spcfull(cursor)
-		ss pos
-		set pos strstr(start,pointer)
-		if pos!=(NULL)
-			ss ?reminder
-			set reminder cursor#;set cursor# (Nullchar)
-			set pos# (Nullchar)
-			add pos strlen(pointer)
-			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s",start,oa,pointer,pos)
-			if len>0
-				if len<(a_page_size)
+		ss ?reminder
+		set reminder cursor#;set cursor# (Nullchar)
+
+		ss walker;set walker start
+		ss mover;set mover globalt.a_page_switch
+		sd ?len
+		sd ?sz=a_page_size
+		svu ?p2sz;set p2sz strlen(pointer)
+		whiletrue
+			ss pos
+			set pos strstr(walker,pointer)
+			if pos!=(NULL)
+				set pos# (Nullchar)
+				set len snprintf(mover,sz,globalt.triple_s,walker,oa,pointer)
+				if len>0
+					if len<sz
+						add pos p2sz
+						set walker pos
+						add mover len
+						sub sz len
+						continue
+					end
+				end
+				set walker start
+				break
+			end
+			break
+		end
+		if walker!=start
+			set len snprintf(mover,sz,"%s",walker)
+			if len>=0
+				if len<sz
 					call translated("Replace")
 					return globalt.a_page_switch
 				end
 			end
-			set cursor# reminder
 		end
+
+		set cursor# reminder
 	end
 	return oa
 end
