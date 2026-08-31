@@ -17,7 +17,6 @@ importx "printf" printf
 importx "sprintf" sprintf
 importx "strstr" strstr
 
-^import "new_string_p" new_string_p
 ^import "on_string_get" on_string_get 1
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "press_string_get" press_string_get 1
@@ -25,6 +24,10 @@ importx "strstr" strstr
 ^import "mouseup_string_get" mouseup_string_get 1
 ^import "rollover_string_get" rollover_string_get 1
 ^import "rollout_string_get" rollout_string_get 1
+^import "addChild_string_p" addChild_string_p
+^import "getChildByName_string_p" getChildByName_string_p
+^import "new_string_p" new_string_p
+
 import "var_advance" var_advance
 import "verbosev" verbosev
 
@@ -223,6 +226,13 @@ function solver7(ss value,ss after)
 		end
 		return (NULL)
 	end
+	ss cursor
+	set cursor addChild_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(childcast_char))
+		return #globals.outvalue
+	end
 	char var_string="attachMovie"^
 	set c strncmp(value,#var_string,\.var_string)
 	if c=0
@@ -270,11 +280,11 @@ function solver7(ss value,ss after)
 		set globals.stored_char (fill_char)
 		callret solver_endb(value,\.efil_string)
 	end
-	char getchildname_string="getChildByName"^
-	set c strncmp(value,#getchildname_string,\.getchildname_string)
+	set cursor getChildByName_string_p()
+	set c strcmp(value,cursor)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(childcast_char))
-		callret solver_end(value,\.getchildname_string)
+		return #globals.outvalue
 	end
 	if value#=(l_low)
 		inc value
@@ -309,7 +319,6 @@ function solver7(ss value,ss after)
 		return (NULL)
 	end
 	ss ?z
-	ss cursor
 	set cursor on_string_get(#z)
 	set c strncmp(value,cursor,z)
 	if c=0

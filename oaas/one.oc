@@ -54,12 +54,12 @@ function translate_one(ss in,ss indents)
 				set pointer spcfull(cursor)
 				set reminder cursor#;set cursor# (Nullchar)
 			else
-				set ext #globalr.blank
+				set ext #globalo.blank
 				set pointer ext
 				set reminder (Nullchar)
 			end
 			set o_a# (Nullchar)
-			set len snprintf(buffer,(a_page_size),"%s%s%s %s%s%s{",indents,in,globalr.class,oa,ext,pointer)
+			set len snprintf(buffer,(a_page_size),"%s%s%s %s%s%s{",indents,in,globalo.class,oa,ext,pointer)
 			if len>0
 				if len<(a_page_size)
 					call translated("Class")
@@ -92,20 +92,20 @@ function translate_one(ss in,ss indents)
 		whiletrue
 			ss type;ss name
 			if oa#=(p_low)
-				set type globalr.public
-				set name globalr.nw
-				set ext globalr.super
+				set type globalo.public
+				set name globalo.nw
+				set ext globalo.super
 			elseif oa#=(s_low)
-				set type globalr.sttic
+				set type globalo.sttic
 				set name "main"
-				set ext #globalr.blank
+				set ext #globalo.blank
 			else
 				break
 			end
 			inc oa
 			if oa#=(Nullchar)
 				set cursor# (Nullchar)
-				set len snprintf(buffer,(a_page_size),"%s%s%s %s %s(){%s",indents,in,type,#globalr.func,name,ext)
+				set len snprintf(buffer,(a_page_size),"%s%s%s %s %s(){%s",indents,in,type,#globalo.func,name,ext)
 				if len>0
 					if len<(a_page_size)
 						call translated("Function")
@@ -126,8 +126,8 @@ function translate_one(ss in,ss indents)
 		inc oa
 		set oa spcfull(oa)
 		if oa#!=(Nullchar)
-			set pointer #globalr.blank
-			if globalr.openfl_bool=(TRUE)
+			set pointer #globalo.blank
+			if globalo.openfl_bool=(TRUE)
 				sd ?c
 				char fl="flash."^
 				set c strncmp(oa,#fl,\.fl)
@@ -153,7 +153,7 @@ function translate_one(ss in,ss indents)
 			return cursor
 		end
 	elseif chr=(var_char)
-		set cursor translate_one_double(buffer,#globalr.var_translate,indents,in,oa,"Var",(var_char))
+		set cursor translate_one_double(buffer,#globalo.var_translate,indents,in,oa,"Var",(var_char))
 		if cursor!=oa
 			return cursor
 		end
@@ -166,9 +166,9 @@ function translate_one(ss in,ss indents)
 		call translated("blank")
 		return in
 	elseif oa#=(Caret)
-		set globalr.dualmode (TRUE)
+		set globalo.dualmode (TRUE)
 		inc oa
-		set len snprintf(buffer,(a_page_size),globalr.double_s,indents,oa)
+		set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
 		if len>=0
 			if len<(a_page_size)
 				call translated("dual mode")
@@ -179,7 +179,7 @@ function translate_one(ss in,ss indents)
 		set cursor strspn(oa,"});")
 		add cursor oa
 		if cursor#=(Nullchar)
-			set len snprintf(buffer,(a_page_size),globalr.double_s,indents,in)
+			set len snprintf(buffer,(a_page_size),globalo.double_s,indents,in)
 			if len>0
 				if len<(a_page_size)
 					call translated("others")
@@ -198,7 +198,7 @@ function translate_one_stage(ss buffer,ss indents,ss in,ss oa)
 	if oa#=(Nullchar)
 		set o_a# (Nullchar)
 		sd ?len
-		set len snprintf(buffer,(a_page_size),globalr.triple_s,indents,in,"var stage=flash.Lib.current.stage;")
+		set len snprintf(buffer,(a_page_size),globalo.triple_s,indents,in,"var stage=flash.Lib.current.stage;")
 		if len>0
 			if len<(a_page_size)
 				call translated("Stage")
@@ -223,7 +223,7 @@ function translate_one_double(ss buffer,ss format,ss indents,ss in,ss oa,ss onOk
 			ss ?reminder
 			set reminder cursor#;set cursor# (Nullchar)
 			set o_a# (Nullchar)
-			set pointer translate_leftright(format,indents,in,oa,pointer,buffer) #,#globalr.blank)
+			set pointer translate_leftright(format,indents,in,oa,pointer,buffer) #,#globalo.blank)
 			if pointer!=in
 				call translated(onOk)
 				return pointer
@@ -249,18 +249,18 @@ function translate_one_add(ss buffer,ss indents,ss in,ss oa)
 				if pointer#!=(Nullchar)
 					return o_a
 				end
-				set pointer globalr.stage
+				set pointer globalo.stage
 			end
 			set reminder cursor#;set cursor# (Nullchar)
-			set ext globalr.dot
+			set ext globalo.dot
 		else
-			set pointer #globalr.blank
+			set pointer #globalo.blank
 			set ext pointer
 			set reminder (Nullchar)
 		end
 		set o_a# (Nullchar)
 		sd ?len
-		set len snprintf(buffer,(a_page_size),"%s%s%s%saddChild(%s);",indents,in,pointer,ext,oa)
+		set len snprintf(buffer,(a_page_size),"%s%s%s%s%s(%s);",indents,in,pointer,ext,globalo.addChild,oa)
 		if len>0
 			if len<(a_page_size)
 				call translated("AddChild")
@@ -319,13 +319,13 @@ function translate_leftright(ss format,ss indents,ss in,ss oa,ss pointer,ss out)
 end
 
 function openfl()
-	return #globalr.openfl_bool
+	return #globalo.openfl_bool
 end
 function dual_mode()
-	return #globalr.dualmode
+	return #globalo.dualmode
 end
 
-entryraw globalr()
+entryraw globalo()
 
 #!
 rtu

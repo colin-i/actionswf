@@ -90,6 +90,13 @@ function rollout_string_get(ss z)
 	set z# \globalt.rollout_string
 	return #globalt.rollout_string
 end
+
+function addChild_string_p()
+	return globalt.addChild
+end
+function getChildByName_string_p()
+	return globalt.getChildByName
+end
 function new_string_p()
 	return #globalt.nw
 end
@@ -718,8 +725,15 @@ end
 
 function translate_childcast(ss indents)
 	ss cursor;set cursor spcfull(indents)
-	ss pointer;set pointer strstr(cursor,globalt.getChildByName)
-	if pointer!=(NULL)
+	whiletrue
+		ss pointer
+		set pointer strstr(cursor,globalt.getChildByName)
+		if pointer=(NULL)
+			set pointer strstr(cursor,globalt.addChild)
+			if pointer=(NULL)
+				break
+			end
+		end
 		dec pointer
 		if pointer#=(Period)
 			ss ?rem
@@ -737,6 +751,7 @@ function translate_childcast(ss indents)
 				end
 			end
 		end
+		break
 	end
 	return indents
 end
@@ -1355,7 +1370,7 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 	sd ?size=a_page_size
 	sub size len
 	sd ?ln
-	set ln snprintf(extra,size,"%s%saddChild(%s);",afterindents,d,name)
+	set ln snprintf(extra,size,"%s%s%s(%s);",afterindents,d,globalt.addChild,name)
 	if ln>0
 		if ln<size
 			if type=(Var_char)
