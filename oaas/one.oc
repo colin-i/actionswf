@@ -93,7 +93,7 @@ function translate_one(ss in,ss indents)
 			ss type;ss name
 			if oa#=(p_low)
 				set type globalo.public
-				set name globalo.nw
+				set name #globalo.nw
 				set ext globalo.super
 			elseif oa#=(s_low)
 				set type globalo.sttic
@@ -153,7 +153,7 @@ function translate_one(ss in,ss indents)
 			return cursor
 		end
 	elseif chr=(var_char)
-		set cursor translate_one_double(buffer,#globalo.var_translate,indents,in,oa,"Var",(var_char))
+		set cursor translate_one_double(buffer,globalo.var_translate,indents,in,oa,"Var",(var_char))
 		if cursor!=oa
 			return cursor
 		end
