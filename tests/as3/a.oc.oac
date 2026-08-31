@@ -28,3 +28,7 @@ call action("|||orig/Main/root.as|||")
 
 call swf_done()
 call exit(0)
+
+
+
+

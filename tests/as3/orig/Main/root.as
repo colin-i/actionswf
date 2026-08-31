@@ -37,20 +37,26 @@ a Main*/
 		//3^trace('dual mode here is visible only on as3');
 		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
 
+		//on
 		onMouseDown=function(){
 			trace('this is from on mouse down');
 		}//3 );
 		onMouseUp=function(){
 			trace('this is from on mouse up');
 		}//3 );
-		trace(this['shape']);
-		var col;//3gflash.display.DisplayObject
-		col=this;
-		col['shape']._x=0;
+
 		//postpone tests
 		var c=new Object();//3_ MyClip
 		createEmptyMovieClip('qwer', getNextHighestDepth());//3_flash.display.DisplayObject
 		attachMovie('strangetest','shape3', getNextHighestDepth());//3_flash.display.DisplayObject
+
+		//[]
+		trace(this['shape']);
+		var col;//3gflash.display.DisplayObject
+		col=this;
+		col['shape']._x=0;
+		var esd=this['shape2'];
+		//3dqwer esd
 	}
 //3}
 function Loader(){//3f
