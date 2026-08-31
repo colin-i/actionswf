@@ -121,7 +121,7 @@ end
 #f	function newOther
 #g	;
 #h	alpha=;
-#i	getChildByName
+#i	getChildByName/addChild
 #k	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
