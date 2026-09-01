@@ -1,2 +1,3 @@
 #!/bin/sh
 rm -f a.o a.out a.swf a.swf.format #.oac
+rm -f Main.oacf MyClip.oacf MyClip2.oacf a.oacd
