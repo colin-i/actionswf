@@ -83,9 +83,7 @@ common.h: oadbgdatas.h ${xlog}h
 ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 ${libname}: main.o ${exte}
-	if [ -e main.oc.x ]; then \
-		${OLINK} main.oc.log ${sublogs};\
-	fi
+	${OLINK} main.oc.log ${sublogs}
 	if [ "${platform}" = "lin" ]; then \
 		if [ -z "${ldprefer}" ]; then \
 			$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
@@ -95,12 +93,11 @@ ${libname}: main.o ${exte}
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
 	fi
-#if [ -e main.oc.x is not existing then i have some different rules at no x_file builds that are not enough to demonstrate that the code is not called, at x they are transformed to structures
 # -l:intern.o ? is ok but exclude-libs intern.o/libintern.a will not exclude
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGSEXTRA}
-	if [ -e $<.x ]; then \
+	if [ -z "${ldprefer}" ]; then \
 		${OCONV} ${OCONVFLAGS} $<.x import;\
 		$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c;\
 	fi
