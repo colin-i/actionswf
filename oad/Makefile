@@ -42,6 +42,9 @@ else
 endif
 
 OFLAGS=x_file 2
+ifndef OFLAGSEXTRA
+OFLAGSEXTRA=${OFLAGS}
+endif
 
 libfirstname=liboadbgdata
 libname=${libfirstname}.so
@@ -67,24 +70,40 @@ $(foreach var,$(items),$(eval subx += ${var}.oc.x))
 #$(eval subc = )
 $(foreach var,$(items),$(eval subc += ${var}.c))
 
+# When an item name (e.g. "intern") is passed directly as a make target,
+# make has no rule for it and falls back to its built-in implicit linking
+# rule (%: %.o -> cc %.o -o %), producing an unwanted standalone executable.
+# This explicit no-op rule makes sure only the .o gets built, not linked.
+main ${items}: %: %.o
+	@:
+
 objects=main.o ${subobjects}
 ${objects}: common.h
 common.h: oadbgdatas.h ${xlog}h
 ${exte}: ${subobjects}
 	$(AR) cr ${exte} $^
 ${libname}: main.o ${exte}
-	${OLINK} main.oc.log ${sublogs}
+	if [ -e main.oc.x ]; then \
+		${OLINK} main.oc.log ${sublogs};\
+	fi
 	if [ "${platform}" = "lin" ]; then \
-		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		if [ -z "${ldprefer}" ]; then \
+			$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		else \
+			$(LD) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} --exclude-libs=${exte}; \
+		fi;\
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${subobjects} | cut -c2-`; \
 	fi
+#if [ -e main.oc.x is not existing then i have some different rules at no x_file builds that are not enough to demonstrate that the code is not called, at x they are transformed to structures
 # -l:intern.o ? is ok but exclude-libs intern.o/libintern.a will not exclude
 
 %.o: %.oc
-	${OCOMP} $< ${OFLAGS}
-	${OCONV} ${OCONVFLAGS} $<.x import
-	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+	${OCOMP} $< ${OFLAGSEXTRA}
+	if [ -e $<.x ]; then \
+		${OCONV} ${OCONVFLAGS} $<.x import;\
+		$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c;\
+	fi
 #-Wno are a must at pkgbuild
 #-fPIC since launchpad bionic build
 #-Wimplicit-function-declaration is good but anyway when making .x, ocompiler is also checking for this error

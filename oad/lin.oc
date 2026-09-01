@@ -14,4 +14,4 @@ function platform_stderr()
 	return s#    #no return s? unfortunately here at C &stderr is the same as stderr, else use !set s s#
 end
 
-entryraw global()
+entryraw globalx()

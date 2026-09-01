@@ -47,7 +47,7 @@ import "compare" compare
 import "save" save
 
 function global_blog()
-	return global.blog
+	return globali.blog
 end
 
 function fcontent(sd path,sv psize) #2
@@ -172,10 +172,10 @@ end
 function newbranch(sv px,sv pxx,valueu prefr)
 	sd xx;set xx pxx#
 	dataxu branchoffset#1;set branchoffset xx#
-	charx ok#1;set ok branch_add(prefr,branchoffset,global.xoffset,px#)
-	sub branchoffset global.xoffset
+	charx ok#1;set ok branch_add(prefr,branchoffset,globali.xoffset,px#)
+	sub branchoffset globali.xoffset
 	add px# branchoffset
-	add global.xoffset branchoffset
+	add globali.xoffset branchoffset
 	add pxx# (xlog_code_size)
 	return ok
 end
@@ -203,7 +203,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 		datax recalculation#1 #int? 16 to 8 can be almost on full ui32. a push inside an action is limited by maxuint16 totalvalues
 			#not outside actionrow? 'a','a' on multiple rows is still on same row
 		sd _recalculation
-		if global.blog=(TRUE)
+		if globali.blog=(TRUE)
 			set recalculation 0
 			set _recalculation #recalculation
 		else
@@ -221,7 +221,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				else
 					add prefr#:preframe.size (actionrecordheader_size)
 					add prefr#:preframe.size number
-					if global.blog=(TRUE)
+					if globali.blog=(TRUE)
 						if recalculation!=0
 							add prefr#:preframe.log_recalculation recalculation
 							set recalculation 0
@@ -238,7 +238,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if branch_item#:branch.action_top=(NULL)
 					set branch_item#:branch.action_top actions ##this is better than _pointer_to_action# because is working between action calls
 					if _expecting_function_start#=(TRUE)
-						if global.blog=(TRUE)
+						if globali.blog=(TRUE)
 							call function_resolved(data,actions,prefr)
 						else
 							call function_resolved(data,actions,(NULL))
@@ -263,7 +263,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 						set begin prefr#:preframe.actions_jump
 						set pointer begin
 						add pointer prefr#:preframe.actions_jump_size
-						if global.blog=(TRUE)
+						if globali.blog=(TRUE)
 							while begin!=pointer
 								sub pointer :
 								set act pointer#
@@ -335,7 +335,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set branch_item#:branch.subbranch branch_value
 				set branch_value#:branch.action_if prefr#:preframe.action_last ##can also be NULL if there are whiletrue break tricks
 				#										is not always required, example at simple if end
-				if global.blog=(TRUE)
+				if globali.blog=(TRUE)
 					call tree_entry_ex(prefr,(xlog_branch))
 				end
 				inc inlog
@@ -354,7 +354,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
-				if global.blog=(TRUE)
+				if globali.blog=(TRUE)
 					call tree_entry_start(prefr)
 				end
 				inc inlog
@@ -369,7 +369,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set act#:action.next (action_next_default)  #in a normal case when the inner branch is not 0, was jump/definefunction linked to next
 				set prefr#:preframe.action_last act
 				#set _pointer_to_action# (NULL) #in case was 0 size with no actions, this branch already has this, last action was DefineFunction/ActionJump/ActionIf
-				if global.blog=(TRUE)
+				if globali.blog=(TRUE)
 					call tree_entry_end(prefr)
 				end
 				set _expecting_function_start# (FALSE) #in case was a 0 size function
@@ -379,12 +379,12 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				or act#:action.flags (return_flag)
 				inc inlog
 			elseif inlog#=(xlog_function)
-				set ok re_calloc_add(#data#:oadata.functions,#data#:oadata.functions_size,global.blog) #some functions have no size
+				set ok re_calloc_add(#data#:oadata.functions,#data#:oadata.functions_size,globali.blog) #some functions have no size
 				if ok!=(EXIT_SUCCESS)
 					return (EXIT_FAILURE)
 				end
 				set inlog memhex_parse_withinc(inlog,#number) #codeSize UI16
-				if global.blog=(TRUE)
+				if globali.blog=(TRUE)
 					add prefr#:preframe.log_recalculation (actionrecordheader_size+actionpush_type+actionpush_integer+actionrecordheader_tag_size) #adding func dtitles
 					#what if there are no func dtitles? the debugger will not work without that at this moment. maybe a to do
 
@@ -394,7 +394,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set _expecting_function_start# (TRUE)
 			elseif inlog#=(xlog_jumpback) # at loop end , continue. is goot to set next action to be somewhere inside a suprabranch
 				set inlog memhex_parse_withinc(inlog,#number)  #ActionJump BranchOffset SI16(here 15 bits)
-				call jumpbackward_resolve(prefr,number,global.blog)
+				call jumpbackward_resolve(prefr,number,globali.blog)
 			elseif inlog#=(xlog_loop) # is for branch loop start mark and then will leave the branch for a subbranch
 				set branch_item prefr#:preframe.branchpointer
 				set branch_item#:branch.offset_loop prefr#:preframe.size
@@ -414,7 +414,7 @@ function actionrow(ss inlog,sd end,sv px,sv pxx,valueu prefr,valueu fr,valueu st
 				set act actions
 				sub act 4*\action\
 				if inlog#=(xlog_forin_break) #back jump,if,eq,push
-					call jumpbackward_resolved(act,prefr#:preframe.action_last,global.blog,prefr#:preframe.branchpointer)
+					call jumpbackward_resolved(act,prefr#:preframe.action_last,globali.blog,prefr#:preframe.branchpointer)
 				else # xlog_forin_return     #backif jump,not,eq,push
 					set act#:action.nextif prefr#:preframe.action_last
 				end
@@ -442,7 +442,7 @@ end
 function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,charx log)
 	add logsize inlog
 	if inlog!=logsize  ##else no action sprites/shows
-		set global.blog log
+		set globali.blog log
 		sd next
 		ss p;set p memnl(inlog,#next)
 		whiletrue
@@ -509,7 +509,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				add x (xlog_xcode_size)
 				valueu xcode#1;set xcode x
 				add x xcode_size
-				set global.xoffset 0
+				set globali.xoffset 0
 				svu pointer_to_action_loop=NULL
 				charx expecting_function_start#1
 				set expecting_function_start (FALSE)
@@ -517,7 +517,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 				#[actions]
 				whiletrue
 					if inlog=logsize
-						set ok branch_add(pf,xcode_size,global.xoffset,xcode)
+						set ok branch_add(pf,xcode_size,globali.xoffset,xcode)
 						if ok=(EXIT_SUCCESS)
 							return (EXIT_SUCCESS) #no [more] actions and nothing else. exit 3
 						end
@@ -531,7 +531,7 @@ function loop(ss inlog,sv x,sd xx,sd logsize,sv ppresprites,sv psprites,sv data,
 							return (EXIT_FAILURE)
 						end
 					else
-						set ok branch_add(pf,xcode_size,global.xoffset,xcode)
+						set ok branch_add(pf,xcode_size,globali.xoffset,xcode)
 						if ok!=(EXIT_SUCCESS)
 							return (EXIT_FAILURE)
 						end
@@ -547,19 +547,19 @@ end
 
 char inter_last_extension_data=".last.data";vstr p_inter_last_extension_data^inter_last_extension_data
 function inter_last_extension(sv psize) #1
-	set psize# (\global.inter_last_extension_data)
-	return global.p_inter_last_extension_data
+	set psize# (\globali.inter_last_extension_data)
+	return globali.p_inter_last_extension_data
 end
 function inter(valueu presprites,ss swf_fullpath,valueu data)
 	sd size;set size strlen(swf_fullpath)
-	sd size1=\global.inter_last_extension_data
+	sd size1=\globali.inter_last_extension_data
 	add size1 size
 	sd from;set from malloc(size1)
 	if from!=(NULL)
 		call memcpy(from,swf_fullpath,size)
 		sub size1 size
 		add size from
-		call memcpy(size,global.p_inter_last_extension_data,size1)
+		call memcpy(size,globali.p_inter_last_extension_data,size1)
 		sd file
 		set file fopen(from,"wb")
 		call free(from)
@@ -599,4 +599,4 @@ function oadata_init(sv poadata)
 	return (EXIT_FAILURE)
 end
 
-entryraw global() #this blank (an empty struct). is here only for global variables
+entryraw globali() #this blank (an empty struct). is here only for globali variables

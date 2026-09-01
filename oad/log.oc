@@ -18,10 +18,10 @@ import "indent" indent
 import "print_inline_done" print_inline_done
 
 function tree_init()
-	set global.error (EXIT_SUCCESS)
+	set globall.error (EXIT_SUCCESS)
 end
 function tree_exit()
-	return global.error
+	return globall.error
 end
 
 const tree_pad=pad_default
@@ -34,7 +34,7 @@ function tree_resize(valueu pf,valueu sz)
 		and sz (_tree_pad_)
 		valueu m#1;set m realloc(pf#:preframe.log_mem,sz)
 		if m=(NULL)
-			set global.error (EXIT_FAILURE)
+			set globall.error (EXIT_FAILURE)
 			return (EXIT_FAILURE)
 		end
 		set pf#:preframe.log_allsize sz
@@ -96,4 +96,4 @@ function tree_entrylive(dataxu indents,charx type)
 	call print_inline_done()
 end
 
-entryraw global()
+entryraw globall()

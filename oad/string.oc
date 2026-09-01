@@ -98,7 +98,7 @@ end
 
 function indent()
 	charx i#1
-	set i global.indents
+	set i globals.indents
 	while i>0
 		call putchar((Tab))
 		dec i
@@ -117,10 +117,10 @@ function printt(ss str)
 	call fputs(str,so)
 end
 function print_indent()
-	inc global.indents
+	inc globals.indents
 end
 function print_unindent()
-	dec global.indents
+	dec globals.indents
 end
 function print(ss format,valueu value)
 	call indent()
@@ -224,4 +224,4 @@ function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
 	return ok
 end
 
-entryraw global()
+entryraw globals()

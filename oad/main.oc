@@ -207,3 +207,4 @@ functionx oadata_logpad_set(charx a)
 end
 
 entryraw global()
+#! cilsx

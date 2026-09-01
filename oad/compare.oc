@@ -36,24 +36,24 @@ import "frame_expand" frame_expand
 import "jumpforwards_done" jumpforwards_done
 
 function global_presprites_size()
-	return global.presprites_size
+	return globalc.presprites_size
 end
 
 char inter_extension_data=".data";vstr p_inter_extension_data^inter_extension_data
 function inter_extension(sv psize) #1
-	set psize# (\global.inter_extension_data)
-	return global.p_inter_extension_data
+	set psize# (\globalc.inter_extension_data)
+	return globalc.p_inter_extension_data
 end
 function compare(ss swf_fullpath,valueu presprites,valueu data)
 	sd size;set size strlen(swf_fullpath)
-	sd size1=\global.inter_extension_data
+	sd size1=\globalc.inter_extension_data
 	add size1 size
 	sd prev;set prev malloc(size1)
 	if prev!=(NULL)
 		call memcpy(prev,swf_fullpath,size)
 		sub size1 size
 		add size prev
-		call memcpy(size,global.p_inter_extension_data,size1)
+		call memcpy(size,globalc.p_inter_extension_data,size1)
 		sd file
 		set file fopen(prev,"rb")
 		call free(prev)
@@ -62,13 +62,13 @@ function compare(ss swf_fullpath,valueu presprites,valueu data)
 			valueu oldpreoadata#1;set oldpreoadata restore(file)
 			call fclose(file)
 			if oldpreoadata!=(NULL)
-				set ok mark_compare(oldpreoadata,presprites,global.presprites_size,data)
+				set ok mark_compare(oldpreoadata,presprites,globalc.presprites_size,data)
 				call restore_free(oldpreoadata)
 				return ok
 			end
 			return (EXIT_FAILURE)
 		end
-		set ok mark_all(presprites,global.presprites_size,data)
+		set ok mark_all(presprites,globalc.presprites_size,data)
 		return ok
 	end
 	return (EXIT_FAILURE)
@@ -120,7 +120,7 @@ function preoadata_init(sv ppresprites,sv psprites)
 	if ppresprites#!=(NULL)
 		set psprites# malloc((sprites_realloc_onepart))
 		if psprites#!=(NULL)
-			set global.presprites_size 0
+			set globalc.presprites_size 0
 			return (EXIT_SUCCESS)
 		end
 	end
@@ -137,7 +137,7 @@ function preoadata_free(sv presprites,sv sprites,charx log,valueu xstart)
 			end
 			sv ps;set ps presprites
 			valueu pend#1;set pend presprites
-			add pend global.presprites_size
+			add pend globalc.presprites_size
 			sv s;set s sprites
 			while ps!=pend
 				sv pres;set pres ps#
@@ -200,16 +200,16 @@ function presprite_init(svu newpointer,sv ppresprites,sv psprites,charx type,cha
 	dataxu newsize#1;set newsize newpointer
 	add newsize :
 	charx ok#1
-	if global.presprites_size<^newsize   ##else example: preid 0 after a sprite preid 2
-		set ok re_calloc(ppresprites,global.presprites_size,newsize)
+	if globalc.presprites_size<^newsize   ##else example: preid 0 after a sprite preid 2
+		set ok re_calloc(ppresprites,globalc.presprites_size,newsize)
 		if ok!=(EXIT_SUCCESS)
 			return (EXIT_FAILURE)
 		end
-		set ok re_calloc(psprites,global.presprites_size,newsize) #and for sprites, but before sprite_done, with a preid
+		set ok re_calloc(psprites,globalc.presprites_size,newsize) #and for sprites, but before sprite_done, with a preid
 		if ok!=(EXIT_SUCCESS)
 			return (EXIT_FAILURE)
 		end
-		set global.presprites_size newsize
+		set globalc.presprites_size newsize
 	end
 	sv ps;sv pf
 	sv s;sv f
@@ -315,7 +315,7 @@ end
 function presprite_done(sv sprites,wordxu preid,wordxu id,sv data,sv presprites)
 	sv pointer=:
 	mult pointer preid
-	if pointer<^global.presprites_size  ##can be a done with no action/show
+	if pointer<^globalc.presprites_size  ##can be a done with no action/show
 		add pointer sprites
 		if pointer#!=(NULL)     #same
 			call jumpforwards_done(presprites,preid)
@@ -338,4 +338,4 @@ function presprite_done(sv sprites,wordxu preid,wordxu id,sv data,sv presprites)
 	return (EXIT_SUCCESS)
 end
 
-entryraw global()
+entryraw globalc()
