@@ -971,8 +971,8 @@ function translate_object(ss start,ss oa)
 		return oa
 	end
 
-	char a="Object"
-	set cursor strstr(start,#a)
+	vstr a="Object"
+	set cursor strstr(start,a)
 	if cursor!=(NULL)
 		ss pointer
 		set pointer pareoon(cursor)
@@ -981,7 +981,7 @@ function translate_object(ss start,ss oa)
 			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),globalt.triple_s,start,oa,pointer)
 			if len>0
 				if len<(a_page_size)
-					call translated("Object") #RePlace
+					call translated(a) #RePlace
 					return globalt.a_page_switch
 				end
 			end
