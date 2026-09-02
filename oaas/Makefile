@@ -75,7 +75,7 @@ ${libname}: ${objects} ${exte}
 		if [ -z "${ldprefer}" ]; then \
 			$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
 		else \
-			$(LD) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} --exclude-libs=${exte}; \
+			$(LD) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} --exclude-libs=${exte} -z noexecstack; \
 		fi;\
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} ${obs} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \

@@ -538,7 +538,7 @@ function translate_buttonmode(ss indents,ss oa) #cannot postpone when no error
 		sd ?len
 		set pointer globalt.a_page_switch
 		sd ?size;set size (a_page_size)
-		set len snprintf(pointer,size,"%sbuttonMode=%s%s%s",indents,cursor,against,cursor)
+		set len snprintf(pointer,size,"%sbuttonMode=%s%s%s",indents,cursor,#against,cursor)
 		if len>0
 			if len<(a_page_size)
 				ss ok="ButtonMode"
@@ -972,7 +972,7 @@ function translate_object(ss start,ss oa)
 	end
 
 	char a="Object"
-	set cursor strstr(start,a)
+	set cursor strstr(start,#a)
 	if cursor!=(NULL)
 		ss pointer
 		set pointer pareoon(cursor)
@@ -1269,6 +1269,7 @@ function translate_var_full(ss start,ss oa,ss ?type)
 					if cls!=start
 						ss ?store;set store afterindents#;set afterindents# (Nullchar)
 						sd ?len
+						!xor len len ## o problem
 						ss cursor
 						set cursor translate_leftright_full(globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
 						if cursor!=#globalt.blank
@@ -1333,6 +1334,7 @@ function translate_var_simple(ss indents,ss ?type)
 			end
 		else #going on createEmptyMovieClip
 			set store afterindents#;set afterindents# (Nullchar)
+			!xor len len ## o problem
 			set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,"flash.display.DisplayObjectContainer",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
 				callret translate_var_by_type(type,cursor,len,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
