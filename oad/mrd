@@ -1,5 +1,3 @@
 
-ldprefer=1 OFLAGSEXTRA='nul_res_pref 1 inplace_reloc 0 x_file 1' ./md main intern compare frame string branch ibranch log save mark lin
+ldprefer=1 OFLAGSEXTRA='nul_res_pref 1 inplace_reloc 0 x_file 1' ./md
 #with x_file because OCOMP to test if some fns are structures to let OLINK treat them right
-./md libexte.a
-ldprefer=1 LD=/usr/x86_64-linux-gnu/bin/ld ./md liboadbgdata.so

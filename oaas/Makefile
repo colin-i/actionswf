@@ -30,6 +30,9 @@ endif
 ifndef platform
 platform=lin
 endif
+ifndef OFLAGS
+OFLAGS='x_file 2'
+endif
 
 ifeq (${conv_64},1) #to cross compile
 	ifneq ($(CC),arm-linux-gnueabihf-gcc)
@@ -40,8 +43,6 @@ else
 		OCONVFLAGS=-
 	endif
 endif
-
-OFLAGS=x_file 2
 
 firstname=liboaas
 libname=${firstname}.so
@@ -71,7 +72,11 @@ all: ${libname}
 ${libname}: ${objects} ${exte}
 	${OLINK} main.oc.log ${logs}
 	if [ "${platform}" = "lin" ]; then \
-		$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		if [ -z "${ldprefer}" ]; then \
+			$(CC) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} -Wl,--exclude-libs=${exte}; \
+		else \
+			$(LD) ${model} ${linkerflags} -shared $< -o ${libname} -L. -l:${exte} --exclude-libs=${exte}; \
+		fi;\
 	else \
 		x86_64-w64-mingw32-gcc --no-leading-underscore ${linkerflags} ${objects} ${obs} -shared -lmsvcrt -o ${libnamedll} -Wl,--exclude-modules-for-implib `printf ',%s' ${obs} | cut -c2-`; \
 	fi
@@ -89,8 +94,10 @@ ${exte}: ${obs}
 
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
-	${OCONV} ${OCONVFLAGS} $<.x import
-	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+	if [ -z "${ldprefer}" ]; then \
+		${OCONV} ${OCONVFLAGS} $<.x import;\
+		$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c;\
+	fi
 %.h: %.ohi
 	${OCOMP} $< x_file 2 logfile 0 include_sec 1
 	${OCONV} $<.x
