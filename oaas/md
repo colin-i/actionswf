@@ -2,4 +2,4 @@
 if [ -z "${compilerflags}" ]; then
 	compilerflags='-g -fsanitize=address,undefined'
 fi
-compilerflags="${compilerflags}" linkerflags=' ' make $@
+compilerflags="${compilerflags}" linkerflags=' ' make -j4 $@
