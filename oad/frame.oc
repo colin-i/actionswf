@@ -448,7 +448,8 @@ function frame_actions(valueu fr,valueu lines,ss log,valueu end,svu _text,svu _a
 	if ok=(EXIT_SUCCESS)
 		valueu current#1;set current fr#:frame.total
 
-		valueu p_lines=\line\
+		valueu p_lines#1
+		set p_lines \line\
 		mult p_lines current
 		valueu lines_start#1;set lines_start fr#:frame.lines
 		add p_lines lines_start ##space for lines was reserved at start knowing log total lines
