@@ -1,3 +1,3 @@
 
-ldprefer=1 OFLAGSEXTRA='nul_res_pref 1 inplace_reloc 0 x_file 1' ./md
+ldprefer=1 LD=/usr/x86_64-linux-gnu/bin/ld linkerflags= OFLAGSEXTRA='nul_res_pref 1 inplace_reloc 0 x_file 1' ./md
 #with x_file because OCOMP to test if some fns are structures to let OLINK treat them right

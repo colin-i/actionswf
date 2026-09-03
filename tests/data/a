@@ -8,7 +8,8 @@ if [ -n "${1}" ]; then
 	else
 		gdb=gdb
 	fi
-	g="${gdb} -ex start --args"
+	g="${gdb} -ex start"
+	args=--args
 fi
 if [ -z "${OCOMP}" ]; then OCOMP=o; fi
 if [ -z "${OCONV}" ]; then OCONV=otoc; fi
@@ -25,7 +26,7 @@ if [ "${platform}" = "win" ]; then
 	OCONVFLAGS=-
 else
 	ext=out
-	export LD_LIBRARY_PATH=../../oad
+	export LD_LIBRARY_PATH=../../oad${ldextra}
 fi
 if [ -z "${f}" ]; then
 	f=../../example/example.swf
@@ -34,6 +35,7 @@ if [ -n "${asan}" ]; then ldpreload=$(gcc -print-file-name=libasan.so); fi
 if [ -n "${ubsan}" ]; then ldpreload=${ldpreload}:$(gcc -print-file-name=libubsan.so); fi
 ${launcher} ${OCOMP} a.oc x_file 2 logfile 0 && \
 ${launcher64} ${OCONV} ${OCONVFLAGS} a.oc.x && \
-${CC} ${model} ${CFLAGS} -g a.c -L../../oad -loadbgdata `if [ -n "${asan}" ]; then echo -n '-lasan'; fi` `if [ -n "${ubsan}" ]; then echo -n '-lubsan'; fi` && \
-LD_PRELOAD="${ldpreload}" ${exelauncher} ${g} ./a.${ext} ${f} || { echo a.out error; exit 1; }
+${CC} ${model} ${CFLAGS} -g a.c -L../../oad${ldextra} -loadbgdata `if [ -n "${asan}" ]; then echo -n '-lasan'; fi` `if [ -n "${ubsan}" ]; then echo -n '-lubsan'; fi` && \
+eval LD_PRELOAD="${ldpreload}" ${exelauncher} ${g} ${1} ${args} ./a.${ext} ${f} || { echo a.out error; exit 1; }
+#eval from $1 with gef
 #if [ -z "${d}" ]; then rm ${f}.data; else cp ${f}.data .; fi

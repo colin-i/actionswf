@@ -60,7 +60,7 @@ re:
 
 xlog=../include/xlog.
 
-items=intern compare frame string branch ibranch log save mark ${platform}
+include ./items
 #$(eval subobjects = )
 $(foreach var,$(items),$(eval subobjects += ${var}.o))
 #$(eval sublogs = )

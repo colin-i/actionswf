@@ -100,9 +100,9 @@ clean:
 	-rm -f ${sfile}.log
 	-rm -f ${sfile}.x ${sfile}.xx
 	-rm -f ${sfile}
-	-rm -f ${sfile}.data
 	-rm -f expected.swf
 	-rm -f expected.c.swf
+#-rm -f ${sfile}.data   #at data ./c
 
 distclean: clean
 
