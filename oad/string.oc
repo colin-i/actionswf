@@ -26,6 +26,8 @@ importx "fwrite" fwrite
 #
 import "re_alloc_add" re_alloc_add
 
+import "get_word" get_word
+
 const ui8max_=256
 
 #                            # is xlog_new_size
@@ -197,7 +199,8 @@ function string_log(valueu base,valueu off)
 end
 
 function string_id(valueu prefr,swu xxcontent,sd _recalculation,charx inlogtype)
-	wordxu id#1;set id xxcontent#
+	wordxu id#1
+	set id get_word(xxcontent) ## o problem
 	if _recalculation!=(NULL)
 		if inlogtype=(xlog_const16_log) #same
 			if id<^(ui8max_)

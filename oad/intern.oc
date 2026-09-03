@@ -599,4 +599,13 @@ function oadata_init(sv poadata)
 	return (EXIT_FAILURE)
 end
 
+function get_word(ss word)
+	data out=0;ss w^out
+	set w# word#
+	inc w
+	inc word
+	set w# word#
+	return out
+end
+
 entryraw globali() #this blank (an empty struct). is here only for globali variables
