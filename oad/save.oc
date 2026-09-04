@@ -320,7 +320,7 @@ function restore(valueu file) #1
 		if presprites!=(NULL)
 			set data#:preoadata.presprites presprites
 			set data#:preoadata.size 0
-			wordxu size#1
+			wordu size=0 #o problem
 			call sread(file,#size)
 			charx log#1;set log global_blog()
 			if log=(TRUE)
@@ -347,7 +347,8 @@ function restore(valueu file) #1
 							else
 								set ps#:presprite.apreframe (NULL)
 							end
-							wordxu frames#1;call sread(file,#frames)
+							wordu frames=0 #o problem
+							call sread(file,#frames)
 							while frames!=0
 								call cread(file,#bl)
 								if bl=(TRUE)
@@ -431,7 +432,7 @@ end
 
 function restore_strings(valueu file,svu _constpool,svu _strs,sd _size)
 	set _size# 0
-	wordxu cpsize#1
+	wordu cpsize=0 #o problem
 	call sread(file,#cpsize)
 	if cpsize!=0
 		set _constpool# mediumread(file,cpsize)

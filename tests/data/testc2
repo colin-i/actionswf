@@ -1,4 +1,4 @@
-ldextra=/csrc ./testf
+ldextra=/csrc ./testc
 
-# ./c && g=' ' rd=x ./testcf
+# ./c && g=' ' rd=x ./testc2
 # ./c && g='-ex "source /home/bc/a/Desktop/gef/gef.py"' rd=x ./test

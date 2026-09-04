@@ -31,11 +31,16 @@ fi
 if [ -z "${f}" ]; then
 	f=../../example/example.swf
 fi
+if [ -z "${x_file}" ]; then x_file=2; fi
 if [ -n "${asan}" ]; then ldpreload=$(gcc -print-file-name=libasan.so); fi
 if [ -n "${ubsan}" ]; then ldpreload=${ldpreload}:$(gcc -print-file-name=libubsan.so); fi
-${launcher} ${OCOMP} a.oc x_file 2 logfile 0 && \
-${launcher64} ${OCONV} ${OCONVFLAGS} a.oc.x && \
-${CC} ${model} ${CFLAGS} -g a.c -L../../oad${ldextra} -loadbgdata `if [ -n "${asan}" ]; then echo -n '-lasan'; fi` `if [ -n "${ubsan}" ]; then echo -n '-lubsan'; fi` && \
+${launcher} ${OCOMP} a.oc x_file ${x_file} logfile 0 && \
+if [ -z "${ldprefer}" ]; then
+	${launcher64} ${OCONV} ${OCONVFLAGS} a.oc.x && \
+	${CC} ${model} ${CFLAGS} -g a.c -L../../oad${ldextra} -loadbgdata `if [ -n "${asan}" ]; then echo -n '-lasan'; fi` `if [ -n "${ubsan}" ]; then echo -n '-lubsan'; fi`
+else
+	${LD} --dynamic-linker=/lib64/ld-linux-x86-64.so.2 a.o -entry main -L../../oad${ldextra} -loadbgdata -lc
+fi && \
 eval LD_PRELOAD="${ldpreload}" ${exelauncher} ${g} ${1} ${args} ./a.${ext} ${f} || { echo a.out error; exit 1; }
 #eval from $1 with gef
 #if [ -z "${d}" ]; then rm ${f}.data; else cp ${f}.data .; fi

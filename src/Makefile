@@ -122,6 +122,7 @@ endif
 
 include ./rules
 
+${obs} ${eobs}: ${ohreqs}
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS}
 #%.o: %.e.oc #is already
@@ -158,8 +159,6 @@ uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 
 .PHONY: all install install-lib clean distclean uninstall test
-
-.NOTPARALLEL:
 
 #make compile && make link linkerflags= items_prefix=/home/bc/s/actionswf-1/src/ LD=/home/bc/Desktop/out/LD-.glibc2.27-x86_64.AppImage
 #make linkerflags= conv_64=0
