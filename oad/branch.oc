@@ -202,14 +202,14 @@ function branch_log(sv br,valueu start)
 	call print_unindent()
 end
 
-function branch_free(valueu br,valueu logstart,dataxu indents)
+function branch_free(svu ?br,svu ?logstart,sdu ?indents)
 	if logstart!=(NULL)
 		call branch_log(br,logstart)
 	end
 	call free(br#:branch.cuts)
 
 	svu pointer#1;set pointer br#:branch.innerbranches
-	valueu end#1;set end pointer
+	svu ?end#1;set end pointer
 	add end br#:branch.isize
 	while pointer!=end
 		if logstart!=(NULL)

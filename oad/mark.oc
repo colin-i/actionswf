@@ -49,11 +49,11 @@ function mark_presprite(valueu ps,valueu data)
 	end
 	return (EXIT_SUCCESS)
 end
-function mark_branch(valueu br,valueu data)
-	charx ok#1;set ok mark_action_if(br#:branch.action_top,data)
+function mark_branch(svu ?br,svu ?data)
+	ss ?ok#1;set ok mark_action_if(br#:branch.action_top,data)
 	if ok=(EXIT_SUCCESS)
 		svu ibrs;set ibrs br#:branch.innerbranches
-		valueu end#1;set end ibrs
+		svu ?end#1;set end ibrs
 		add end br#:branch.isize
 		while ibrs!=end
 			set ok mark_branch(ibrs#,data)
@@ -251,18 +251,18 @@ function mark_compare_frame(valueu prevpf,valueu pf,valueu data)
 	end
 	return ok
 end
-function mark_compare_branch(valueu prevbr,valueu br,valueu data)
-	charx ok#1
+function mark_compare_branch(svu ?prevbr,svu ?br,svu ?data)
+	ss ?ok#1
 
 	#compare cuts
 	if prevbr#:branch.size=br#:branch.size
-		svu prevcursor;svu cursor;valueu cutsend#1
+		svu prevcursor;svu cursor;svu ?cutsend#1
 		set prevcursor prevbr#:branch.cuts
 		set cursor br#:branch.cuts
 		set cutsend cursor;add cutsend br#:branch.size
 		while cursor!=cutsend
 			if prevcursor#:branchcut.size=cursor#:branchcut.size
-				datax cmp#1;set cmp memcmp(prevcursor#:branchcut.x,cursor#:branchcut.x,cursor#:branchcut.size)
+				sd ?cmp#1;set cmp memcmp(prevcursor#:branchcut.x,cursor#:branchcut.x,cursor#:branchcut.size)
 				if cmp=0
 					add cursor \branchcut\
 					add prevcursor \branchcut\
@@ -284,9 +284,9 @@ function mark_compare_branch(valueu prevbr,valueu br,valueu data)
 
 	#inners
 	svu previns#1;set previns prevbr#:branch.innerbranches
-	valueu prevend#1;set prevend previns;add prevend prevbr#:branch.isize
+	svu ?prevend#1;set prevend previns;add prevend prevbr#:branch.isize
 	svu ins#1;set ins br#:branch.innerbranches
-	valueu end#1;set end ins;add end br#:branch.isize
+	svu ?end#1;set end ins;add end br#:branch.isize
 	while ins!=end
 		if previns!=prevend
 			set ok mark_compare_branch(previns#,ins#,data)

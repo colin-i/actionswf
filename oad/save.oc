@@ -158,21 +158,21 @@ function save_strings(valuexu pointer,valueu end,valueu file)
 	return out
 end
 
-function save_branch(valueu br,valueu file) #at least a mathend/function_marker/whileblock_end/if_marker here
+function save_branch(svu ?br,svu ?file) #at least a mathend/function_marker/whileblock_end/if_marker here
 	# branch_log. here we are gipsying because on 32 we are not agreeing with qword size. we are writing cuts sized parts
 	#with this occasion: it is good that multiple action calls are not merged into a branch
 	#anyway on 32src there are ftell calls .x at xcode start, at expands, overall at reread, that will enforce a small file
-	valueu cuts#1;set cuts br#:branch.cuts
-	valueu end#1;set end cuts
+	svu ?cuts#1;set cuts br#:branch.cuts
+	svu ?end#1;set end cuts
 	add end br#:branch.size
-	charx out#1;dataxu sz#1
+	ss ?out;sdu ?sz#1
 	while cuts!=end
 		set sz cuts#:branchcut.size
 		set out iwrite(sz,file)
 		if out=0
 			return 0
 		end
-		valueu code#1;set code cuts#:branchcut.x
+		svu ?code#1;set code cuts#:branchcut.x
 		set out highwrite(code,sz,file)
 		if out=0
 			return 0
@@ -271,10 +271,10 @@ function restore_branch_cuts_free(valueu br)
 	end
 	call free(br#:branch.cuts)
 end
-function restore_branch_free(valueu br)
+function restore_branch_free(svu ?br)
 	call restore_branch_cuts_free(br)
 	call restore_branch_inners_free(br)
-	valueu sbr#1;set sbr br#:branch.subbranch
+	svu ?sbr#1;set sbr br#:branch.subbranch
 	if sbr!=(NULL)
 		call restore_branch_free(sbr)
 	end
@@ -470,15 +470,15 @@ function restore_strings(valueu file,svu _constpool,svu _strs,sd _size)
 	return cpsize
 end
 
-function restore_branch(valueu file) #1
-	valueu br#1;set br malloc(\branch\)
+function restore_branch(svu ?file) #1
+	svu ?br#1;set br malloc(\branch\)
 	if br!=(NULL)
-		valueu mem#1
-		dataxu size#1
+		svu ?mem#1
+		sdu ?size#1
 		set br#:branch.cuts malloc(1) #same as original. is still a mem take, will need it later
 		if br#:branch.cuts!=(NULL)
 			set br#:branch.size 0
-			value sz#1;set sz 0
+			svu ?sz#1;set sz 0
 			whiletrue
 				call iread(file,#size)
 				if size=0
@@ -487,7 +487,7 @@ function restore_branch(valueu file) #1
 				set mem highread(file,size)
 				if mem!=(NULL)
 					add sz \branchcut\
-					valueu remem#1;set remem realloc(br#:branch.cuts,sz)
+					svu ?remem#1;set remem realloc(br#:branch.cuts,sz)
 					if remem!=(NULL)
 						set br#:branch.cuts remem
 						add remem br#:branch.size
@@ -509,7 +509,7 @@ function restore_branch(valueu file) #1
 				while size!=0 #inners
 					set mem restore_branch(file)
 					if mem!=(NULL)
-						charx ok#1;set ok re_alloc_add(#br#:branch.innerbranches,#br#:branch.isize,mem)
+						ss ?ok#1;set ok re_alloc_add(#br#:branch.innerbranches,#br#:branch.isize,mem)
 						if ok=(EXIT_SUCCESS)
 							dec size
 							continue
@@ -521,7 +521,7 @@ function restore_branch(valueu file) #1
 					call free(br)
 					return (NULL)
 				end
-				charx bl#1
+				ss ?bl#1
 				call cread(file,#bl)
 				if bl=(TRUE) #subbranch
 					set br#:branch.subbranch restore_branch(file)
