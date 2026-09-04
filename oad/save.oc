@@ -477,6 +477,7 @@ function restore_branch(svu ?file) #1
 		sdu ?size#1
 		set br#:branch.cuts malloc(1) #same as original. is still a mem take, will need it later
 		if br#:branch.cuts!=(NULL)
+			!xor size size ##o problem
 			set br#:branch.size 0
 			svu ?sz#1;set sz 0
 			whiletrue
