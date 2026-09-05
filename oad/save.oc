@@ -476,16 +476,15 @@ function restore_branch(svu ?file) #1
 		set br#:branch.cuts malloc(1) #same as original. is still a mem take, will need it later
 		if br#:branch.cuts!=(NULL)
 			svu ?mem#1
-			sdu ?size#1
-			!xor size size ##o problem
+			dataxu siz#1
 			set br#:branch.size 0
 			svu ?sz#1;set sz 0
 			whiletrue
-				call iread(file,#size)
-				if size=0
+				call iread(file,#siz)
+				if siz=0
 					break
 				end
-				set mem highread(file,size)
+				set mem highread(file,siz)
 				if mem!=(NULL)
 					add sz \branchcut\
 					svu ?remem#1;set remem realloc(br#:branch.cuts,sz)
@@ -493,7 +492,7 @@ function restore_branch(svu ?file) #1
 						set br#:branch.cuts remem
 						add remem br#:branch.size
 						set remem#:branchcut.x mem
-						set remem#:branchcut.size size
+						set remem#:branchcut.size siz
 						set br#:branch.size sz
 						continue
 					end
@@ -506,6 +505,8 @@ function restore_branch(svu ?file) #1
 			set br#:branch.innerbranches malloc((sprites_realloc_onepart))
 			if br#:branch.innerbranches!=(NULL)
 				set br#:branch.isize 0
+				sdu ?size#1
+				!xor size size ##o problem
 				call iread(file,#size)
 				while size!=0 #inners
 					set mem restore_branch(file)
@@ -522,8 +523,8 @@ function restore_branch(svu ?file) #1
 					call free(br)
 					return (NULL)
 				end
-				ss ?bl#1
-				!xor bl bl ##o problem
+				charx bl#1
+				# !xor bl bl ##o problem
 				call cread(file,#bl)
 				if bl=(TRUE) #subbranch
 					set br#:branch.subbranch restore_branch(file)
