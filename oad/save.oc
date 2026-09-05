@@ -251,9 +251,9 @@ function restore_strings_free(valueu constpool,svu strs,dataxu size)
 		call free(constpool)
 	end
 end
-function restore_branch_inners_free(valueu br)
+function restore_branch_inners_free(svu ?br)
 	sv cursor;set cursor br#:branch.innerbranches
-	valueu end#1;set end cursor
+	svu ?end#1;set end cursor
 	add end br#:branch.isize
 	while cursor!=end
 		call restore_branch_free(cursor#)
@@ -261,9 +261,9 @@ function restore_branch_inners_free(valueu br)
 	end
 	call free(br#:branch.innerbranches)
 end
-function restore_branch_cuts_free(valueu br)
-	valueu cursor#1;set cursor br#:branch.cuts
-	valueu end#1;set end cursor
+function restore_branch_cuts_free(svu ?br)
+	svu ?cursor#1;set cursor br#:branch.cuts
+	svu ?end#1;set end cursor
 	add end br#:branch.size
 	while cursor!=end
 		call free(cursor#:branchcut.x)
@@ -523,6 +523,7 @@ function restore_branch(svu ?file) #1
 					return (NULL)
 				end
 				ss ?bl#1
+				!xor bl bl ##o problem
 				call cread(file,#bl)
 				if bl=(TRUE) #subbranch
 					set br#:branch.subbranch restore_branch(file)

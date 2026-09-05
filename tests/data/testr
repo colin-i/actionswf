@@ -1,2 +1,3 @@
-LD=/usr/x86_64-linux-gnu/bin/ld ldprefer=1 x_file=0 exelauncher=q64 ./test
+if [ -z "${exelauncher}" ]; then exelauncher=qq; fi
+LD=/usr/x86_64-linux-gnu/bin/ld ldprefer=1 x_file=0 exelauncher=${exelauncher} ./test
 # ./c && rd=x ./testr
