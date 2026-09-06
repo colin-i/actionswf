@@ -178,7 +178,7 @@ function translate_one(ss in,ss indents)
 			return oa
 		end
 		call translated("Ignored")
-		return #globalt.blank
+		return oa
 	elseif oa#=(Caret)
 		inc oa
 		set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
