@@ -127,4 +127,7 @@ install: all install-lib
 uninstall:
 	-rm -f $(DESTDIR)$(prefix)/lib${install_number}/${libname}
 
-.PHONY: all install install-lib clean distclean uninstall test
+info:
+	@printf '%s' '$(foreach var,$(objs), $(var))'
+
+.PHONY: all install install-lib clean distclean uninstall test info

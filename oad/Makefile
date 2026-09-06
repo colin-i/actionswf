@@ -149,6 +149,9 @@ uninstall:
 		rm -f $(DESTDIR)$(prefix)/include/actionswf/oadbgdatas.oh; \
 	fi
 
+info:
+	@printf '%s' '$(foreach var,$(items), $(var))'
+
 #.PHONY targets are not default files, then, make will not try to test if a rule has an updated file on the disk (if has will skip that rule)
-.PHONY: all install install-lib clean distclean uninstall test re
+.PHONY: all install install-lib clean distclean uninstall test re info
 #tested: .NOTPARALLEL: in parent is not preserved here
