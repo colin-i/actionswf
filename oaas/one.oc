@@ -168,33 +168,21 @@ function translate_one(ss in,ss indents)
 		if oa#=(Caret)
 			ss p_smod;set p_smod singlemode_reset()
 			if p_smod#=(FALSE)
-				set len snprintf(buffer,(a_page_size),globalo.single_s,indents)
-				if len>=0
-					if len<(a_page_size)
-						set p_smod# (TRUE)
-						call translated("single mode on")
-						return buffer
-					end
-				end
-			else
-				inc oa
-				set len snprintf(buffer,(a_page_size),globalo.single_s,oa)
-				if len>=0
-					if len<(a_page_size)
-						set p_smod# (FALSE)
-						call translated("single mode off")
-						return buffer
-					end
-				end
+				set p_smod# (TRUE)
+				call translated("single mode on")
+				return indents
 			end
-		else
-			set globalo.dualmode (TRUE)
-			set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
-			if len>=0
-				if len<(a_page_size)
-					call translated("dual mode")
-					return buffer
-				end
+			inc oa
+			set p_smod# (FALSE)
+			call translated("single mode off")
+			return oa
+		end
+		set globalo.dualmode (TRUE)
+		set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
+		if len>=0
+			if len<(a_page_size)
+				call translated("dual mode")
+				return buffer
 			end
 		end
 	elseif chr=(Nullchar)
