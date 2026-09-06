@@ -31,7 +31,7 @@ ifndef platform
 platform=lin
 endif
 ifndef OFLAGS
-OFLAGS='x_file 2'
+OFLAGS=x_file 2
 endif
 
 ifeq (${conv_64},1) #to cross compile

@@ -1527,7 +1527,7 @@ function translate_insert(ss start,ss oa)
 			break
 		end
 		if walker!=start
-			set len snprintf(mover,sz,"%s",walker)
+			set len snprintf(mover,sz,globalt.single_s,walker)
 			if len>=0
 				if len<sz
 					call translated("Replace")

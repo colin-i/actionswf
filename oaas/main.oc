@@ -24,6 +24,9 @@ import "_resolve" _resolve
 
 einclude "oaas.h" "oaas.oh"
 
+#multithread unsafe
+char single_mode=FALSE
+
 functionx line(ss oa)
 	callret translate_one(oa,"")
 end
@@ -79,6 +82,12 @@ functionx dualmode_reset()
 	ss a;set a dual_mode()
 	set a# (FALSE)
 end
+functionx singlemode()
+	return globalm.single_mode
+end
+functionx singlemode_reset() #it is not a good name, but i use this internally at the moment
+	return #globalm.single_mode
+end
 
 functionx solve1(ss value)
 	ss s
@@ -109,3 +118,5 @@ functionx firstline()
 	set a# (FALSE)
 	return b
 end
+
+entryraw globalm()

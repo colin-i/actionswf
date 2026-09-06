@@ -57,6 +57,9 @@ a Main*/
 		onMouseUp=function(){
 			trace('this is from on mouse up');
 		}//3);
+
+		//3^^as2 only
+		trace('only in as2');//3^^
 	}
 //3}
 function Loader(){//3f
