@@ -143,10 +143,6 @@ function translate_two(ss start,ss in)
 	if chr=(postpone_char)
 		return start
 	end
-	if chr=(ignore_pref)
-		call translated("Ignored")
-		return #globalt.blank
-	end
 	if chr=(arrconstr_char)
 		set cursor translate_arrayconstructor(start)
 		if cursor!=start

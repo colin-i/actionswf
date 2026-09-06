@@ -163,9 +163,9 @@ function translate_one(ss in,ss indents)
 		if cursor!=oa
 			return cursor
 		end
-	elseif oa#=(Caret)
+	elseif chr=(ignore_pref)
 		inc oa
-		if oa#=(Caret)
+		if oa#=(ignore_pref)
 			ss p_smod;set p_smod singlemode_reset()
 			if p_smod#=(FALSE)
 				set p_smod# (TRUE)
@@ -177,10 +177,14 @@ function translate_one(ss in,ss indents)
 			call translated("single mode off")
 			return oa
 		end
-		set globalo.dualmode (TRUE)
+		call translated("Ignored")
+		return #globalt.blank
+	elseif oa#=(Caret)
+		inc oa
 		set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
 		if len>=0
 			if len<(a_page_size)
+				set globalo.dualmode (TRUE)
 				call translated("dual mode")
 				return buffer
 			end
