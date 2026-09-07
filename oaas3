@@ -8,8 +8,10 @@
 # skip_src allow_untranslated
 # skip_comp  launcher compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
-# / / 3
-#   *   * /
+# a1 a2a a3 b1b b2b
+# /  /   3
+#    *      *   /
+#    a2b
 
 #import ctypes
 #import difflib
@@ -414,7 +416,8 @@ if not os.environ.get(skip_src):
 						singleline()
 						if lib:
 							dual_mode=lib.dualmode() #c_char
-							if dual_mode[0]:
+							dual_mode=dual_mode[0] #good at mode 7 to 6, else can be None/pointer
+							if dual_mode:
 								mode=0
 					else:
 						if single_mode:
