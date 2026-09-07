@@ -3,7 +3,7 @@ cd example && make clean && cd ../csrc && make clean && cd .. && make clean && p
 #if [ -n "${general}" ]; then
 #	cd tests/as3 && ./cf
 #fi &&
-git status
+~/test/git/sts
 
 #trace(1,2) is error, use this.trace only
 #breakpoint at web? add opcode (trace opcode, change .x or change .as file), rebuild, restart. or find a solution to change avm1.output_json_code at runtime
