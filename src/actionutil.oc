@@ -474,6 +474,8 @@ function action_sprite_base(sd sprite,ss actions,ss ?has_frames)
 		end
 		if alt_ac!=actions
 			call file_get_content__resources_free()
+		else #same as non-sprite
+			call format_store("")
 		end
 		call swf_actionblock_change_back()
 	end
