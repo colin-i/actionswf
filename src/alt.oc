@@ -147,16 +147,17 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 				#call unlink(globall.folder) #if there are two action() at one frame, the second one must not see this
 				if globall.flag_splitter!=0
 					ss junction;set junction strstr(mem,#globall.splitdelim)
+					svu ?sz
+					sd file;set file f_open(globall.folder,"wb")
 					if junction!=(NULL)
 						inc junction ##prexx and alt can go together, must keep system line endings
 						set junction# (Nullchar)
 						add junction \globall.splitdelim-2
-						svu ?sz;set sz strlen(junction)
-
-						sd file;set file f_open(globall.folder,"wb")
+						set sz strlen(junction)
 						call f_write(file,junction,sz)
-						call fclose(file)
+					#else still need to clear it in case there is a ffdec/actionswf missmatch, and will come at next block with the old block
 					end
+					call fclose(file)
 				end
 				#set mark# ~0
 				#break
