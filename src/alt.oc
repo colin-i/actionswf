@@ -18,6 +18,7 @@ importx "memcpy" memcpy
 importx "sprintf" sprintf
 importx "strstr" strstr
 importx "fclose" fclose
+importx "fwrite" fwrite
 
 ^import "swf_sprite_frames_pointer" swf_sprite_frames_pointer 1 #full return
 ^import "word_arg_to_stack" word_arg_to_stack 1
@@ -53,7 +54,6 @@ importx "strlen" strlen
 import "error" error
 ^import "len_of" len_of 2
 ^import "f_open" f_open 2
-import "f_write" f_write
 
 function alt_init(sd flags,sd path)
 	if globall.folder!=(NULL)
@@ -154,8 +154,13 @@ function alt_action_base(ss orig_action,sd ?preid,ss ?has_frames)
 						add junction \globall.splitdelim-2
 						svu ?sz
 						set sz strlen(junction)
-						call f_write(file,junction,sz)
-					#else still need to clear it in case there is a ffdec/actionswf missmatch, and will come at next block with the old block
+						ss ?outwrite ;#it is a new open and the question is valid
+						set outwrite fwrite(junction,sz,1,file) # 1 or 0
+						if outwrite!=1
+							call fclose(file)
+							call error("bad fwrite")
+						end
+					#else still need to clear it in case there is a ffdec/actionswf mismatch, and will come at next block with the old block
 					end
 					call fclose(file)
 				end
