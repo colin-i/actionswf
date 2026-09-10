@@ -372,10 +372,10 @@ function translate_two(ss start,ss in)
 				set cursor translate_var_simple(mem,(var_char))
 														if cursor=mem
 															call strcpy(mem,start)
-			set cursor translate_compare(mem) #is obvious why is here
+			set cursor translate_compare(mem) #conflicts at test: t(translate_textfield), w(translate_var_simple)
 															if cursor=mem
 																call strcpy(mem,start)
-		set cursor translate_new(mem)
+		set cursor translate_new(mem) #conflicts: k(translate_compare), o(translate_onev), t(translate_textfield), w(translate_var_simple)
 															end
 														end
 													end
