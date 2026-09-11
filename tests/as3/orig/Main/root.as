@@ -97,7 +97,7 @@ _leftPart='type';//3 j+s
 (a)//3
 begin(a);_x//3 l q+s
 var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
-a= 'q'//3
+a= (q)//3
 L_oader();//3 n+s
 Loader;//3
 onEnterFrame=_fune;//3 o+s

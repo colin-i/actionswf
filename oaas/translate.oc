@@ -125,7 +125,7 @@ end
 #k	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
-#m	all spcback= ''
+#m	all spcback= ()
 #n	new. after indents
 #o	onPATTERN=;
 #p	public     Object(
@@ -834,10 +834,10 @@ function translate_bitmap(ss start)
 	set cursor equalon(start)
 	if cursor!=start
 		ss name
-		set name quotafter(cursor)
+		set name pareoafter(cursor)
 		if name!=cursor
 			ss pointer
-			set pointer quoton(name)
+			set pointer parecon(name)
 			if pointer!=name
 				ss texture
 				set texture spcfullback(start,cursor)
@@ -848,7 +848,8 @@ function translate_bitmap(ss start)
 					inc texture
 					set cursor# (Nullchar)
 					set pointer# (Nullchar)
-					sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%s%c%s=%s %s(0,0);",start,reminder,texture,#globalt.nw,name)
+					sd ?len
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%c%s=Type.createInstance(Type.resolveClass(%s),[0,0]);",start,reminder,texture,name)
 					if len>0
 						if len<(a_page_size)
 							call translated("BitmapMorph")
@@ -1331,7 +1332,8 @@ function translate_var_simple(ss indents,ss ?type)
 		else #going on createEmptyMovieClip
 			set store afterindents#;set afterindents# (Nullchar)
 			!xor len len ## o problem
-			set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,"flash.display.DisplayObjectContainer",globalt.a_page_switch,#len)
+			# DisplayObjectContainer will be with problems at html5, it's constructor is private, and claude says maybe will also break at flash runtime
+			set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Sprite",globalt.a_page_switch,#len)
 			if cursor!=#globalt.blank
 				callret translate_var_by_type(type,cursor,len,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
 			end
