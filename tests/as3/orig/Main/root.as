@@ -13,16 +13,24 @@ a Main*/
 		text.lineTo(120, 0);text.lineTo(120, 80);text.lineTo(0, 80);
 		text.endFill();
 
-		attachMovie('MyClip','shape',getNextHighestDepth());
+		attachMovie('MyClip','shape' ,getNextHighestDepth());
 		shape._x = (Stage.width - 100) / 2;
 		shape._y = (Stage.height - 100) / 2;
 
 		//more tests
 		var a=1;
-		attachMovie('MyClip2','shape2', getNextHighestDepth());shape2.b=a;shape2.c=a;
+		attachMovie('MyClip2','shape2' ,getNextHighestDepth());shape2.b=a;shape2.c=a;
 		trace("shape2 b is this: "+shape2.b);
 		//3n
 		Loader();
+		//oTEXT, haxe will not recognize f inside it's own body if also var f=function..., and sometimes compiles ok, moving on another place is not, add gDynamic or add e
+		var f;// gDynamic
+		f=function(){//3e
+			trace('mouse move ok');
+			onMouseDown=undefined;//3_f
+		}
+		onMouseDown=f;
+
 		Loader();
 		if(a)
 			trace("okkkkkkkkkkkkkkk");
@@ -35,12 +43,12 @@ a Main*/
 		trace('dual mode here is visible only on as3');
 		*/
 		//3^trace('dual mode here is visible only on as3');
-		createEmptyMovieClip('solved_w'+1, getNextHighestDepth());
+		createEmptyMovieClip('solved_w'+1 ,getNextHighestDepth());
 
 		//postpone tests
 		var c=new Object();//3_ MyClip
-		createEmptyMovieClip('qwer', getNextHighestDepth());//3_flash.display.DisplayObject
-		attachMovie('strangetest','shape3', getNextHighestDepth());//3_flash.display.DisplayObject
+		createEmptyMovieClip('qwer' ,getNextHighestDepth());//3_flash.display.Sprite
+		attachMovie('strangetest','shape3' ,getNextHighestDepth());//3_flash.display.Sprite
 
 		//[]
 		trace(this['shape']);
@@ -125,6 +133,6 @@ _//3 x+s
 _qtyty//3z wer ty+s
 */
 /*3
-v is_dual_mode_off MyClip
+c is_dual_mode_off
 */
 main();
