@@ -148,9 +148,9 @@ a Main*/
 		var f;// gDynamic
 		f=function(){//3e
 			trace('mouse move ok');
-			onMouseDown=undefined;//3_f
+			onMouseMove=undefined;//3_f
 		}
-		onMouseDown=f;
+		onMouseMove=f;
 
 		Loader();
 		if(a)

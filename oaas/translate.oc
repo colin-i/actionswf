@@ -14,6 +14,7 @@ char on_string="on"^
 char enterframe_string="EnterFrame"^
 char press_string="Press"^
 char mousedown_string="MouseDown"^
+char mousemove_string="MouseMove"^
 char mouseup_string="MouseUp"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
@@ -77,6 +78,10 @@ end
 function mousedown_string_get(ss z)
 	set z# \globalt.mousedown_string
 	return #globalt.mousedown_string
+end
+function mousemove_string_get(ss z)
+	set z# \globalt.mousemove_string
+	return #globalt.mousemove_string
 end
 function mouseup_string_get(ss z)
 	set z# \globalt.mouseup_string
@@ -897,17 +902,22 @@ function translate_oneve(ss start,ss name)
 						if c=0
 							set cursor translate_on(start,mous,"MOUSE_DOWN",cursor,stage_required,name)
 						else
-							set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
+							set c strncmp(pointer,#globalt.mousemove_string,\globalt.mousemove_string)
 							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required,name)
+								set cursor translate_on(start,mous,"MOUSE_MOVE",cursor,stage_required,name)
 							else
-								set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
+								set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 								if c=0
-									set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required,name)
+									set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required,name)
 								else
-									set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
+									set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 									if c=0
-										set cursor translate_on(start,mous,"MOUSE_UP",cursor,stage_required,name)
+										set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required,name)
+									else
+										set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
+										if c=0
+											set cursor translate_on(start,mous,"MOUSE_UP",cursor,stage_required,name)
+										end
 									end
 								end
 							end
