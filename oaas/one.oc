@@ -21,7 +21,7 @@ import "translated" translated
 import "untranslated" untranslated
 
 #                     --
-#a-cd fg i  -m  - --  vw
+#a-cd fg i  -m -- --  vw
 #ab-defghijklmnop rst vwx z
 #                     VW
 #                q   u   y
