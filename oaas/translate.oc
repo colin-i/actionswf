@@ -252,13 +252,11 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(onev_char)
-		set cursor translate_onev(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_oneve(start,oa) #here is not required the comparison, is inside
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(oreplace_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
@@ -375,7 +373,7 @@ function translate_two(ss start,ss in)
 			set cursor translate_compare(mem) #conflicts at test: t(translate_textfield), w(translate_var_simple)
 															if cursor=mem
 																call strcpy(mem,start)
-		set cursor translate_new(mem) #conflicts: k(translate_compare), o(translate_onev), t(translate_textfield), w(translate_var_simple)
+		set cursor translate_new(mem) #conflicts: all
 															end
 														end
 													end
@@ -864,6 +862,9 @@ function translate_bitmap(ss start)
 end
 
 function translate_onev(ss start)
+	callret translate_oneve(start,#globalt.blank)
+end
+function translate_oneve(ss start,ss name)
 	ss cursor
 	set cursor equalon(start)
 	if cursor!=start
@@ -885,28 +886,28 @@ function translate_onev(ss start)
 				add pointer \globalt.on_string
 				set c strncmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #strncmp is defined to compare the first 10 bytes
 				if c=0
-					set cursor translate_on(start,#globalt.blank,"ENTER_FRAME",cursor,stage_required)
+					set cursor translate_on(start,#globalt.blank,"ENTER_FRAME",cursor,stage_required,name)
 				else
 					vstr mous="Mouse"
 					set c strncmp(pointer,#globalt.press_string,\globalt.press_string)
 					if c=0
-						set cursor translate_on(start,mous,"CLICK",cursor,stage_required)
+						set cursor translate_on(start,mous,"CLICK",cursor,stage_required,name)
 					else
 						set c strncmp(pointer,#globalt.mousedown_string,\globalt.mousedown_string)
 						if c=0
-							set cursor translate_on(start,mous,"MOUSE_DOWN",cursor,stage_required)
+							set cursor translate_on(start,mous,"MOUSE_DOWN",cursor,stage_required,name)
 						else
 							set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 							if c=0
-								set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required)
+								set cursor translate_on(start,mous,"MOUSE_OVER",cursor,stage_required,name)
 							else
 								set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 								if c=0
-									set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required)
+									set cursor translate_on(start,mous,"MOUSE_OUT",cursor,stage_required,name)
 								else
 									set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
 									if c=0
-										set cursor translate_on(start,mous,"MOUSE_UP",cursor,stage_required)
+										set cursor translate_on(start,mous,"MOUSE_UP",cursor,stage_required,name)
 									end
 								end
 							end
@@ -925,7 +926,7 @@ function translate_onev(ss start)
 	end
 	return start
 end
-function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
+function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required,ss name)
 	ss pointer
 	set pointer spcfull(start)
 	set pointer# (Nullchar)
@@ -949,7 +950,14 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required)
 	else #going at inner functions
 		set ending #globalt.blank
 	end
-	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%saddEventListener(flash.events.%sEvent.%s,%s%s",start,s1,s2,type,ev,value,ending)
+	ss kind
+	if name#!=(Nullchar)
+		set value name ## cursor# null is extra
+		set kind "remove"
+	else
+		set kind "add"
+	end
+	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%sEventListener(flash.events.%sEvent.%s,%s%s",start,s1,s2,kind,type,ev,value,ending)
 	if len>0
 		if len<(a_page_size)
 			return globalt.a_page_switch

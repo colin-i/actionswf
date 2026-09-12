@@ -875,6 +875,15 @@ if not os.environ.get('skip_comp'):
 																		break
 																if rslvd:
 																	if not token_level_solved:
+																		#insert after postpone ?
+																		#n = lib.postpone_char().decode()
+																		#nn = len(n)
+																		#insert_at = len(tokens)
+																		#for i,token in enumerate(tokens):
+																		#	if token[0:nn] == n: #postpone_char token must stay last: insert the new one before it
+																		#		insert_at = i
+																		#		break
+																		#tokens.insert(insert_at,solved)
 																		tokens.append(solved)
 																	linestr = part1 + tr_sep + sep.join(tokens)
 														except:
