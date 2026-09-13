@@ -60,15 +60,17 @@ all: headers ${proj}
 ${proj}: ${exte} ${eobs}
 	${OLINK} ${logs}
 	$(CC) ${model} ${linkerflags} -shared ${eobs} -o $@ `pkg-config --libs zlib` -L. -l:${exte} -Wl,--exclude-libs=${exte}
+# | headers
 ${exte}: ${obs}
 	$(AR) cr ${exte} $^
+# | headers
 # -e DllMain
 
 headers:
 	$(MAKE) -C ../include
 	$(MAKE) -C ../dev flags.h action_swf.h
 
-%.o: ${backsrc}%.oc
+%.o: ${backsrc}%.oc | headers
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} ${backsrc}$*.c -o $@

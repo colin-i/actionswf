@@ -16,6 +16,7 @@ const SEEK_END=2
 
 const maxuint16=0xffFF
 const uint16_str_len=5
+const maxuint32=0xffFFffFF
 
 const block_size=0x1000
 

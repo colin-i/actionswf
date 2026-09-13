@@ -282,6 +282,9 @@ function debug_x(sd mem,sd ?nr)
 		sv current
 		set current f_tell(globalx.xfile)
 		sub current globalx.xmark
+		if current>^(maxuint32) #the xcode block size is stored on a dword(xlog_xcode_size) action_caller can now grow values_container past this since the recent realloc change
+			call error("error: x xcode block size overflow at dword")
+		end
 		sub globalx.xmark (xlog_xcode_size)
 
 		call fseek(globalx.xfile,globalx.mark,(SEEK_SET))
