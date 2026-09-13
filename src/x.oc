@@ -19,7 +19,7 @@ valuexu xlogbase#1
 vdataxu xpointer#1
 valuexu xend#1
 #
-wordxu verb#1
+dataxu verb#1
 datax xflag#1
 #
 valuexu dbxstart#1
@@ -272,7 +272,7 @@ function debug_x(sd mem,sd ?nr)
 	if vb!=(flag_none)
 		if nr>^globalx.verb
 			set globalx.verb nr
-			call printf("action .x peak: %hu\n",globalx.verb) # totalvalues = 0xffFF
+			call printf("action .x peak: %u\n",globalx.verb)
 		end
 	end
 	if globalx.xfile!=(NULL)

@@ -36,7 +36,6 @@ function action_base(ss ac)
 	call action_base_main(ac)
 	callg alt_splitter()
 end
-
 function action_base_main(ss ac)
 #ss ac       actionscript string to be parsed
 	sd p_values
@@ -75,16 +74,15 @@ function action_base_main(ss ac)
 		#reset to stop adding row nr at errors
 		set _orig# (NULL)
 		call brace_blocks_end()
-
 		call debug_action_phase()
 
-		sv stored;set stored p_values
-		#                 code_values are not reallocated
+		setcall p_values action_code_values()
 		while p_values#!=(math_end)
 			setcall p_values action__code_row(p_values)  #also at actionx
 		endwhile
 		call debug_phase_code_flush_end()
-		call debug_x(stored,nr#) #need to be after, to modify pointers inside
+		setcall p_values action_code_values()
+		call debug_x(p_values,nr#) #need to be after, to modify pointers inside
 
 		#free mem ok,another free is at errors
 		call action_debug_free_macro()

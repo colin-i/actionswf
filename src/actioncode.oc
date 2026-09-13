@@ -7,6 +7,8 @@ dataxu nr#1
 charx rcb#1
 valuexu is_else_next_mark#1
 valueu values_container=NULL
+datau values_capacity=totalvalues
+dataxu keep_low_flag#1
 
 #win32 with _
 importx "strcmp" strcmp
@@ -19,23 +21,28 @@ endfunction
 
 import "mem_free" mem_free
 
+function actioncode_init(sd ?flags)
+	set global.keep_low_flag flags
+	and global.keep_low_flag (flag_compat_x_maxuint16)
+end
 function action_code_values_free()
-    if global.values_container!=(NULL);call mem_free(#global.values_container);endif
+	if global.values_container!=(NULL)
+		call mem_free(#global.values_container)
+		set global.values_capacity (totalvalues)
+	endif
 endfunction
 function action_code_values_index()
 	return #global.nr
 endfunction
 #pointer
 function action_code_get()
-    sd nr
-    setcall nr action_code_values_index()
-    sd x
-    set x nr#
-    sv pointer
-    setcall pointer action_code_values()
-    mult x (DWORD)
-    add pointer x
-    return pointer
+	sdu ?x
+	set x global.nr
+	mult x (DWORD)
+	sd pointer
+	set pointer global.values_container
+	add pointer x
+	return pointer
 endfunction
 
 function action_code_values_action()
@@ -288,6 +295,7 @@ import "debug_concludefunction" debug_concludefunction
 import "error" error
 
 ^import "memalloc" memalloc 1
+^import "memrealloc" memrealloc 2
 function action_code_values_init()
 	setcall global.values_container memalloc((totalvalues*action_code_values_unit))
 endfunction
@@ -298,25 +306,35 @@ function action_code_set_pointer(sd value)
 	callg action_code_set_ex(value,(:/DWORD))  #pointers are referencing static mem, not reallocable actionpool
 endfunction
 function action_code_set_ex(sd value,sd size)
-	sd nr
-	setcall nr action_code_values_index()
-	sd x
-	set x nr#
-	sd to=DWORD
+	sdu ?x
+	set x global.nr
+	sd to=action_code_values_unit
 	mult to x
 	add x size
-	if x>=(totalvalues)
-		call error("size error at values")
+	if x>^global.values_capacity
+		whiletrue
+			if global.keep_low_flag=0
+				add global.values_capacity (totalvalues)
+				if global.values_capacity<^(0xffFFffFF//action_code_values_unit) ;#cannot be equal 0x3f.../0xffFF else is good at <=
+					svu ?len=action_code_values_unit #or with xor for memrealloc
+					mult len global.values_capacity
+					set global.values_container memrealloc(global.values_container,len)
+					break
+				end
+			end
+			call error("size error at values")
+			break
+		end
 	endif
 	sd pointer
-	setcall pointer action_code_values()
+	set pointer global.values_container
 	add pointer to
 	if size=1
 		set pointer# value
 	else
 		set pointer#v^ value
 	endelse
-	set nr# x
+	set global.nr x
 endfunction
 
 
@@ -351,13 +369,19 @@ import "brace_blocks_remove_write_jump" brace_blocks_remove_write_jump
 #position
 function action__code_row_ex(sdu codepointer)
 	sd pointer
-	set pointer codepointer
+	sd keeper
+	set keeper codepointer
+	sub keeper global.values_container
 	setcall pointer action_code_write_conditions(codepointer)
-	if pointer!=codepointer
+	sub pointer global.values_container
+	if pointer!=keeper
+		add pointer global.values_container
 		return pointer
 	endif
 	setcall pointer action_code_write_function(codepointer)
-	if pointer!=codepointer
+	sub pointer global.values_container
+	if pointer!=keeper
+		add pointer global.values_container
 		return pointer
 	endif
 	dataxu attrib#1
@@ -806,9 +830,14 @@ endfunction
 
 #codepointer
 function action_code_write_function(sd codepointer)
+	sd keeper
+	set keeper codepointer
+	sub keeper global.values_container
 	sd pointer
 	setcall pointer action_definefunction(codepointer)
-	if pointer!=codepointer
+	sub pointer global.values_container
+	if pointer!=keeper
+		add pointer global.values_container
 		return pointer
 	endif
 	if codepointer#!=(call_action_left)
@@ -826,9 +855,14 @@ import "debug_xlog_call" debug_xlog_call
 #codepointer
 function action_code_write_function_call(sv codepointer,ss pwant_return)
 	add codepointer (DWORD)
+	sd keeper
+	set keeper codepointer
+	sub keeper global.values_container
 	sd pointer
 	setcall pointer action_code_write_builtin_function(codepointer,pwant_return)
-	if pointer!=codepointer
+	sub pointer global.values_container
+	if pointer!=keeper
+		add pointer global.values_container
 		return pointer
 	endif
 	sd member
@@ -853,12 +887,17 @@ function action_code_write_builtin_function(sv codepointer,ss pwant_return)
 	#
 	sd cursor
 	sd was;set was pointer# ;#cannot set later, trace('b') is ok but trace(eval('b')) will write to .x and at next x run will wrong the pointer
+	sd keeper
+	set keeper pointer
+	sub keeper global.values_container
 	setcall cursor action_code_write_builtin_set(pointer,pwant_return)
-	if cursor=pointer
+	sub cursor global.values_container
+	if cursor=keeper
 		set pointer# was
 		return codepointer
 	endif
 	#moved above: call x_pointer_x(pointer) #in case is to .x, must trim pointer
+	add cursor global.values_container
 	return cursor
 endfunction
 import "debug_xlog_unimplemented" debug_xlog_unimplemented
@@ -984,11 +1023,16 @@ function action_code_new_or_call(sv codepointer,sv pmember)
 endfunction
 #codepointer
 function action_code_right(sd codepointer)
-    sd pointer
-    setcall pointer action_definefunction(codepointer)
-    if pointer!=codepointer
-        return pointer
-    endif
+	sd pointer
+	sd keeper
+	set keeper codepointer
+	sub keeper global.values_container
+	setcall pointer action_definefunction(codepointer)
+	sub pointer global.values_container
+	if pointer!=keeper
+		add pointer global.values_container
+		return pointer
+	endif
 	callret action_code_right_util(codepointer)
 endfunction
 #codepointer

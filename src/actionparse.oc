@@ -118,6 +118,7 @@ function free_all_swaps()
 end
 
 ^import "action_code_get" action_code_get
+^import "action_code_values" action_code_values
 ^import "action_code_values_index" action_code_values_index #full
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
@@ -1398,10 +1399,13 @@ function action_code_parse_function_arguments(ss pointer)
 	sd ?nr
 	set nr all_nr
 	add cursor nr
+
 	sd start_data
 	sd data
 	setcall start_data action_code_get()
+	sub start_data action_code_values()
 	set data start_data
+
 	sd sizemark
 	setcall sizemark action_code_values_index()
 	sd ?sizepointer
@@ -1425,15 +1429,18 @@ function action_code_parse_function_arguments(ss pointer)
             call error("too many function arguments")
         endif
         sub cursor dif
-        call memcpy(cursor,data,dif) #copy at end arguments
-        add data dif
-        #
+
+		add data action_code_values()
+		call memcpy(cursor,data,dif) #copy at end arguments
+		sub data action_code_values()
+		add data dif
 	endwhile
-	#
+	add start_data action_code_values()
+
 	sub all_nr nr
 	call memcpy(start_data,cursor,all_nr) #copy swaped arguments
 	call free_a_swap()
-	#
+
 	return pointer
 endfunction
 

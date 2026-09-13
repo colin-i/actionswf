@@ -26,6 +26,7 @@ class flag(IntEnum):
 	splitter_n=         0x100000
 	splitter_r=         0x200000
 	no_metadata_version=0x400000
+	compat_x_maxuint16= 0x800000
 
 class flags(IntEnum):
 	pool=        flag.pre_pool_write|flag.pool_read

@@ -71,7 +71,8 @@ function debug_phase_init(ss pointer)
 	endif
 endfunction
 
-^import "action_code_get" action_code_get   #the pointer is not reallocated, can use offset but will be slower
+^import "action_code_get" action_code_get
+^import "action_code_values" action_code_values
 
 function debug_phase_parse(ss pointer)
 	if globald.offsets!=(NULL)
@@ -92,6 +93,7 @@ function debug_phase_parse(ss pointer)
 			ret
 		endif
 		sd x;setcall x action_code_get()
+		sub x action_code_values()
 		while start#<^pointer   #or a
 			set start# x
 			call debug_mark_add()
@@ -105,6 +107,7 @@ endfunction
 function debug_phase_parse_end() #for the case when last rows are blank
 	if globald.offsets!=(NULL)
 		sd x;setcall x action_code_get()
+		sub x action_code_values()
 		sv start
 		set start debug_mark_get()
 		while start<^globald.dend
@@ -197,6 +200,7 @@ import "frames_as_shows" frames_as_shows
 import "ainit" ainit
 import "pool_init" pool_init
 import "verbose" verbose
+import "actioncode_init" actioncode_init
 
 importx "fseek" fseek
 ^importx "fread" fread 4
@@ -226,6 +230,7 @@ function flags_init(sd ?flags,ss path) #this order is copied in a comment at fla
 	call for_in(flags)
 	call deprecation_init(flags)
 	call verbose(flags)
+	call actioncode_init(flags)
 endfunction
 
 function log_init(sd flags,ss path)
@@ -308,6 +313,7 @@ endfunction
 function debug_phase_code(sd codepointer)
 	if globald.prexx=(prexx_flags)
 		sv a;setcall a debug_mark_get()
+		sub codepointer action_code_values()
 		if a<=^globald.dend ##else can't point  ("function a(){}") , flush_end will catch }
 			if codepointer>=^a#   #can also be smaller, or larger tested at function/condition blocks
 				if globald.dsize!=0  # example  function(){\n}\n and no actions for here, for function was already a line with actions

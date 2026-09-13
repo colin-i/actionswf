@@ -230,6 +230,7 @@ import "file_get_content__resources_free" file_get_content__resources_free
 ^import "action_code_get_pointer" action_code_get_pointer 1 #full
 ^import "action_code_values_index" action_code_values_index
 ^import "action_code_get" action_code_get #full
+^import "action_code_values" action_code_values
 
 import "ebase" ebase
 ^import "erbool" erbool
@@ -263,15 +264,25 @@ function action_caller(ss member,sv pfname,sd codepointer)
 		sd p_currentnr
 		setcall p_currentnr action_code_values_index()
 		set currentnr p_currentnr#
+
+		sd codepointer_base
+		set codepointer_base action_code_values()
 		sv values
 		setcall values action_code_get()
+		sub values codepointer_base
+		sub codepointer codepointer_base
 
 		call action_code_member(member,0)
-		call action_member_loop_right(values)
 
+		set codepointer_base action_code_values()
+		add codepointer_base values
+		call action_member_loop_right(codepointer_base)
+
+		add values action_code_values()
 		call debug_x_expand(values)
 
 		set p_currentnr# currentnr
+		add codepointer action_code_values()
 	else
 		call debug_x_expand((NULL))
 	end
