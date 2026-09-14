@@ -283,7 +283,7 @@ function debug_x(sd mem,sd ?nr)
 		set current f_tell(globalx.xfile)
 		sub current globalx.xmark
 		if current>^(maxuint32) #the xcode block size is stored on a dword(xlog_xcode_size) action_caller can now grow values_container past this since the recent realloc change
-			call error("error: x xcode block size overflow at dword")
+			call error("error: x xcode block size overflow at dword") # a('a','a',...) will do .x block almost 8 times bigger than doaction tag
 		end
 		sub globalx.xmark (xlog_xcode_size)
 
