@@ -37,8 +37,10 @@ a Main*/
 		var b=0;
 		if(!b)
 			trace("okkkkkkkkkkkkkkk2");
-		var arcon=new Array(1,2,3);
+		var arcon=new Array(1,2);
 		var arcon=new Array(1,2,true);//3_Dynamic
+		//m
+		flash.display.BitmapData.loadBitmap('My_BitmapData');//3 _arcon
 		/*3^
 		//dual mode
 		trace('dual mode here is visible only on as3');
@@ -103,8 +105,9 @@ _leftPart='type';//3 j+s
 (_)//3k+s
 (a)//3
 begin(a);_x//3 l q+s
-var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
-a= (q)//3
+name.endFill();//3
+	var texture=flash.display.BitmapData._loadBitmap('My_BitmapData');//3 m+s
+	loadBitmap(q)//3
 L_oader();//3 n+s
 Loader;//3
 onEnterFrame=_fune;//3 o+s
@@ -112,6 +115,7 @@ onEnterFrame=q;//3
 _//3 p+s
 var _z=new Object(//3 pq+s
 line(_width,_y);line(_width,_height);line(_x,_height);//3 r q+s
+lineTo(width,y);lineTo(width,height);lineTo(x,height);//3
 _x()//3 s+e
 this._y()//3 s_t+e
 this._x//3
