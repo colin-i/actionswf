@@ -129,7 +129,7 @@ end
 #k	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
-#m	all spcback= ()
+#m	all spcback= loadBitmap()
 #n	new. after indents
 #o	onPATTERN=;
 #p	public     Object(
@@ -148,14 +148,7 @@ function translate_two(ss start,ss in)
 	if chr=(postpone_char)
 		return start
 	end
-	if chr=(arrconstr_char)
-		set pointer translate_two_switchBefore_orZero(#oa)
-		set cursor translate_arrayconstructor_full(start,oa)
-		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
-		if cursor!=oa
-			return cursor
-		end
-	elseif chr=(b_low)
+	if chr=(b_low)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
@@ -237,13 +230,11 @@ function translate_two(ss start,ss in)
 			return cursor
 		end
 	elseif chr=(bitmap_char)
-		set cursor translate_bitmap(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_bitmap(start,oa)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(new_char)
 		set cursor translate_new(start)
@@ -287,6 +278,13 @@ function translate_two(ss start,ss in)
 			if cursor!=oa
 				return cursor
 			end
+		end
+	elseif chr=(arrconstr_char)
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_arrayconstructor_full(start,oa)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(var_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
@@ -334,63 +332,75 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-																set cursor translate_buttonmode(mem,(NULL))
-		if cursor=mem
-			call strcpy(mem,start)
-															set cursor translate_childbyname(mem)
-			if cursor=mem
-				call strcpy(mem,start)
-														set cursor translate_eparam(mem)
-				if cursor=mem
-					call strcpy(mem,start)
-													set cursor translate_function(mem)
-					if cursor=mem
-						call strcpy(mem,start)
-												set cursor translate_alpha(mem)
-						if cursor=mem
-							call strcpy(mem,start)
-											set cursor translate_childcast(mem)
-							if cursor=mem
-								call strcpy(mem,start)
-										set cursor translate_textformat(mem)
-								if cursor=mem
-									call strcpy(mem,start)
-									set cursor translate_onev(mem)
-									if cursor=mem
-										call strcpy(mem,start)
-								set cursor translate_srch_all(mem)
-										if cursor=mem
-											call strcpy(mem,start)
-							set cursor translate_textfield(mem)
-											if cursor=mem
-												call strcpy(mem,start)
-						set cursor translate_arrayconstructor(mem)
-												if cursor=mem
-													call strcpy(mem,start)
-					set cursor translate_bitmap(mem) #conflicts: u(translate_arrayconstructor)
-													if cursor=mem
-														call strcpy(mem,start)
-				set cursor translate_var_simple(mem,(var_char))
-														if cursor=mem
-															call strcpy(mem,start)
-			set cursor translate_compare(mem) #conflicts at test: t(translate_textfield), w(translate_var_simple)
-															if cursor=mem
-																call strcpy(mem,start)
-		set cursor translate_new(mem) #conflicts: all
-															end
-														end
-													end
-												end
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
+
+set cursor translate_buttonmode(mem,(NULL))
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_childbyname(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_function(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_alpha(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_childcast(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_fill(mem,#globalt.blank)
+if cursor=#globalt.blank
+
+call strcpy(mem,start)
+set cursor translate_eparam(mem) #conflict: translate_fill
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_textformat(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_oneve(mem,#globalt.blank)
+if cursor=#globalt.blank
+
+call strcpy(mem,start)
+set cursor translate_rect(mem,#globalt.blank)
+if cursor=#globalt.blank
+
+call strcpy(mem,start)
+set cursor translate_srch_all(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_textfield(mem)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_arrayconstructor_full(mem,#globalt.blank)
+if cursor=#globalt.blank
+
+call strcpy(mem,start)
+set cursor translate_bitmap(mem,#globalt.blank) #conflicts: u(translate_arrayconstructor)
+if cursor=#globalt.blank
+
+call strcpy(mem,start)
+set cursor translate_var_simple(mem,(var_char))
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_compare(mem) #conflicts at test: t(translate_textfield), w(translate_var_simple)
+if cursor=mem
+
+call strcpy(mem,start)
+set cursor translate_new(mem) #conflicts: all
+
+end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
+
 		call free(mem)
 		if cursor!=mem;return cursor;end
 	end
@@ -529,10 +539,7 @@ function translate_arrayconstructor_full(ss start,ss oa)
 			end
 		end
 	end
-	return start
-end
-function translate_arrayconstructor(ss start)
-	callret translate_arrayconstructor_full(start,#globalt.blank)
+	return oa
 end
 
 function translate_buttonmode(ss indents,ss oa) #cannot postpone when no error
@@ -842,43 +849,60 @@ function translate_fill(ss indents,ss name)
 	return name
 end
 
-function translate_bitmap(ss start)
+function translate_bitmap(ss start,ss value)
 	ss cursor
+	ss name
+	char loa="loadBitmap";vstr lo^loa
 	set cursor equalon(start)
 	if cursor!=start
-		ss name
-		set name pareoafter(cursor)
-		if name!=cursor
+		set name strstr(cursor,lo)
+	else
+		set name strstr(start,lo)
+	end
+	if name!=(NULL)
+		add name \.loa-1
+		if name#=(Openparenthesis)
+			inc name
 			ss pointer
 			set pointer parecon(name)
 			if pointer!=name
 				ss texture
-				set texture spcfullback(start,cursor)
-				if texture!=cursor
-					ss ?reminder
-					set reminder texture#
-					set texture# (Nullchar)
-					inc texture
+				char remind={0,0};vstr reminder^remind
+				if cursor!=start
+					set texture spcfullback(start,cursor)
+					if texture=cursor
+						return value
+					end
+					set reminder# texture#
+					set texture# (Nullchar);inc texture
 					set cursor# (Nullchar)
-					set pointer# (Nullchar)
-					sd ?len
-					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%c%s=Type.createInstance(Type.resolveClass(%s),[0,0]);",start,reminder,texture,name)
-					if len>0
-						if len<(a_page_size)
-							call translated("BitmapMorph")
-							return globalt.a_page_switch
-						end
+					set cursor "="
+				else
+					set texture spcfull(start)
+					set reminder# (Nullchar)
+					set texture# (Nullchar);set texture #globalt.blank
+					set cursor #globalt.blank
+				end
+				set pointer# (Nullchar)
+				if value#=(Nullchar)
+					set pointer "[0,0]"
+				else
+					set pointer value
+				end
+				sd ?len
+				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%sType.createInstance(Type.resolveClass(%s),%s);",start,reminder,texture,cursor,name,pointer)
+				if len>0
+					if len<(a_page_size)
+						call translated("BitmapMorph")
+						return globalt.a_page_switch
 					end
 				end
 			end
 		end
 	end
-	return start
+	return value
 end
 
-function translate_onev(ss start)
-	callret translate_oneve(start,#globalt.blank)
-end
 function translate_oneve(ss start,ss name)
 	ss cursor
 	set cursor equalon(start)
@@ -944,7 +968,7 @@ function translate_oneve(ss start,ss name)
 			end
 		end
 	end
-	return start
+	return name
 end
 function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required,ss name)
 	ss pointer

@@ -298,8 +298,8 @@ function solver7(ss value,ss after)
 		char bitmap_string="oadBitmap"^
 		set c strncmp(value,#bitmap_string,\.bitmap_string)
 		if c=0
-			call sprintf(#globals.outvalue,"%c",(bitmap_char))
-			callret solver_end(value,\.bitmap_string)
+			set globals.stored_char (bitmap_char)
+			callret solver_endb(value,\.bitmap_string)
 		end
 		return (NULL)
 	end
