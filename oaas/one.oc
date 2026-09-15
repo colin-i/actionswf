@@ -21,10 +21,10 @@ import "translated" translated
 import "untranslated" untranslated
 
 #                     --
-#a-cd fg i  -m -- --  vw
-#ab-defghijklmnop rst vwx z
+#a-cd fg i  -m -- -- -vw
+# b-defghijklmnop rstuvwx z
 #                     VW
-#                q   u   y
+#                q       y
 #also at the end
 
 #a	s [s]

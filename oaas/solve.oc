@@ -154,8 +154,8 @@ function solver2(ss value)
 	char arrconstr_string="Too many arguments"^
 	set c strncmp(value,#arrconstr_string,\.arrconstr_string)
 	if c=0
-		call sprintf(#globals.outvalue,"%c",(arrconstr_char))
-		callret solver_end(value,\.arrconstr_string)
+		set globals.stored_char (arrconstr_char)
+		callret solver_endb(value,\.arrconstr_string)
 	end
 	char vartype_string="Variable requires type-hint or initialization"^
 	set c strncmp(value,#vartype_string,\.vartype_string)

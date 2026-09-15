@@ -38,6 +38,7 @@ a Main*/
 		if(!b)
 			trace("okkkkkkkkkkkkkkk2");
 		var arcon=new Array(1,2,3);
+		var arcon=new Array(1,2,true);//3_Dynamic
 		/*3^
 		//dual mode
 		trace('dual mode here is visible only on as3');
@@ -83,8 +84,6 @@ trace('the loader is working');
 //3v shape Shape
 //3w shape Shape
 
-_q=new Array(q,w,2);//3 a+s
-q=new Array(q,w,2);//3
 useHandCursor=_x;//3 b+s
 useHandCursor=x;//3
 this['a']=_x;//3 d+s
@@ -118,6 +117,8 @@ this._y()//3 s_t+e
 this._x//3
 create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
+_q=new Array(q,w,2);//3 u+s
+q=new Array(q,w,2);//3
 attach('q','_p',d);//3 v+s
 create('_p',d);//3 V+s
 create('_p'+1,d);//3 W+s

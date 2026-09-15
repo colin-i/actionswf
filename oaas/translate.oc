@@ -119,7 +119,6 @@ function translate_buffer()
 	return #globalt.a_page
 end
 
-#a	=new Array(...)
 #b	useHandCursor=; same as p but diff at format and continuation
 #d	[]
 #e	()
@@ -137,6 +136,7 @@ end
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
+#u	=new Array(...)
 #vwVW	''''   ;=;=; ...
 #x	static. like new
 #z	replacing a to b
@@ -149,13 +149,11 @@ function translate_two(ss start,ss in)
 		return start
 	end
 	if chr=(arrconstr_char)
-		set cursor translate_arrayconstructor(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
+		set pointer translate_two_switchBefore_orZero(#oa)
+		set cursor translate_arrayconstructor_full(start,oa)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
 		end
 	elseif chr=(b_low)
 		inc oa
@@ -336,40 +334,40 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(Nullchar)
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
-																set cursor translate_arrayconstructor(mem)
+																set cursor translate_buttonmode(mem,(NULL))
 		if cursor=mem
 			call strcpy(mem,start)
-															set cursor translate_buttonmode(mem,(NULL))
+															set cursor translate_childbyname(mem)
 			if cursor=mem
 				call strcpy(mem,start)
-														set cursor translate_childbyname(mem)
+														set cursor translate_eparam(mem)
 				if cursor=mem
 					call strcpy(mem,start)
-													set cursor translate_eparam(mem)
+													set cursor translate_function(mem)
 					if cursor=mem
 						call strcpy(mem,start)
-												set cursor translate_function(mem)
+												set cursor translate_alpha(mem)
 						if cursor=mem
 							call strcpy(mem,start)
-											set cursor translate_alpha(mem)
+											set cursor translate_childcast(mem)
 							if cursor=mem
 								call strcpy(mem,start)
-										set cursor translate_childcast(mem)
+										set cursor translate_textformat(mem)
 								if cursor=mem
 									call strcpy(mem,start)
-									set cursor translate_textformat(mem)
+									set cursor translate_onev(mem)
 									if cursor=mem
 										call strcpy(mem,start)
-								set cursor translate_bitmap(mem)
+								set cursor translate_srch_all(mem)
 										if cursor=mem
 											call strcpy(mem,start)
-							set cursor translate_onev(mem)
+							set cursor translate_textfield(mem)
 											if cursor=mem
 												call strcpy(mem,start)
-						set cursor translate_srch_all(mem)
+						set cursor translate_arrayconstructor(mem)
 												if cursor=mem
 													call strcpy(mem,start)
-					set cursor translate_textfield(mem)
+					set cursor translate_bitmap(mem) #conflicts: u(translate_arrayconstructor)
 													if cursor=mem
 														call strcpy(mem,start)
 				set cursor translate_var_simple(mem,(var_char))
@@ -498,7 +496,7 @@ function translate_unshift(ss start,ss value,ss onOk)
 	return start
 end
 
-function translate_arrayconstructor(ss start)
+function translate_arrayconstructor_full(ss start,ss oa)
 	char predefined="=new Array(";
 	ss cursor
 	set cursor strstr(start,#predefined)
@@ -512,8 +510,17 @@ function translate_arrayconstructor(ss start)
 			set cursor# (Nullchar)
 			set end# (Nullchar)
 			inc end
+			ss more1;ss more2
+			if oa#!=(Nullchar)
+			#:Array<Dynamic>? only when: 2: Arrays of mixed types are only allowed if the type is forced to Array<Dynamic>
+				set more1 ":Array<"
+				set more2 ">"
+			else
+				set more1 #globalt.blank
+				set more2 #globalt.blank
+			end
 			sd ?len
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s=[%s]%s",start,pointer,end)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s=[%s]%s",start,more1,oa,more2,pointer,end)
 			if len>0
 				if len<(a_page_size)
 					call translated("ArrayConstructor")
@@ -523,6 +530,9 @@ function translate_arrayconstructor(ss start)
 		end
 	end
 	return start
+end
+function translate_arrayconstructor(ss start)
+	callret translate_arrayconstructor_full(start,#globalt.blank)
 end
 
 function translate_buttonmode(ss indents,ss oa) #cannot postpone when no error

@@ -37,7 +37,7 @@ const nvar_char=w_low
 const var_char=v_low
 
 #translate one solve
-const arrconstr_char=a_low
+const arrconstr_char=u_low
 
 #translate solve
 Const m_low=0x6D
