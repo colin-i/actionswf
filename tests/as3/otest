@@ -5,7 +5,8 @@ cd ../..
 
 mkdir tmp
 
-items=$(make --no-print-directory -C oaas info)
+items=$(env -u MAKEFLAGS make --no-print-directory -C oaas info)
+#       env............S same like ../data
 
 for it in $items; do
 	ln oaas/$it.oc tmp
