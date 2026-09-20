@@ -1,3 +1,9 @@
+actionswf (1-182) jammy; urgency=medium
+
+  * fix deb
+
+ -- bc <bc@ubuntu>  Sun, 20 Sep 2026 09:58:53 +0300
+
 actionswf (1-181) jammy; urgency=medium
 
   * sync last month oaas progress. src action peak increase
