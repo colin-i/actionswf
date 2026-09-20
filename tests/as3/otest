@@ -19,5 +19,5 @@ ln oaas/translate.oh tmp
 cd tmp
 ldprefer=1 linkerflags=' ' OFLAGS='nul_res_pref 1 x_file 1' make -j4
 cd $a
-OAPATH=../../tmp ./as
+OAPATH=../../tmp ${RUN__SHELL} ./as
 rm -r ../../tmp

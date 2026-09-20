@@ -26,5 +26,5 @@ ln oad/safe.oh tmp
 cd tmp
 ldprefer=1 linkerflags=' ' OFLAGSEXTRA='nul_res_pref 1 x_file 1' make -j4
 cd $a
-ldextra=/../tmp ./test
+ldextra=/../tmp ${RUN__SHELL} ./test
 rm -r ../../tmp
