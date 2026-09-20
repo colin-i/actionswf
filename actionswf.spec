@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.182
+Version: 1.183
 Release: 0
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,7 +58,9 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Sun Sep 20 2026 costin <costin.botescu@gmail.com> 1.182-0
+* Sun Sep 20 2026 costin <costin.botescu@gmail.com> 1.183-0
+- fix deb test (costin.botescu@gmail.com)
+- fix deb (mail@flashixy.com)
 - "up" (costin.botescu@gmail.com)
 - otest deb build fix (costin.botescu@gmail.com)
 - "tests" (mail@flashixy.com)
