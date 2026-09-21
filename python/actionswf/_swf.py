@@ -3,45 +3,43 @@ import ctypes
 
 
 class ButtonData(ctypes.Structure):
-	pass
-ButtonData._fields_ = [("def_fill", ctypes.c_uint)
-				,("def_line_sz", ctypes.c_int)
-				,("def_line", ctypes.c_uint)
+	_pack_ = 4
+	_fields_ = [("def_fill", ctypes.c_uint)
+			,("def_line_sz", ctypes.c_int)
+			,("def_line", ctypes.c_uint)
 
-				,("ov_fill", ctypes.c_uint)
-				,("ov_line_sz", ctypes.c_int)
-				,("ov_line", ctypes.c_uint)
+			,("ov_fill", ctypes.c_uint)
+			,("ov_line_sz", ctypes.c_int)
+			,("ov_line", ctypes.c_uint)
 
-				,("dn_fill", ctypes.c_uint)
-				,("dn_line_sz", ctypes.c_int)
-				,("dn_line", ctypes.c_uint)
+			,("dn_fill", ctypes.c_uint)
+			,("dn_line_sz", ctypes.c_int)
+			,("dn_line", ctypes.c_uint)
 
-				,("xcurve", ctypes.c_int)
-				,("ycurve", ctypes.c_int)
+			,("xcurve", ctypes.c_int)
+			,("ycurve", ctypes.c_int)
 
-				,("text", ctypes.c_char_p)
-				,("font_id", ctypes.c_int)
-				,("font_height", ctypes.c_int)
-				,("font_vertical_offset", ctypes.c_int)
-				,("font_color", ctypes.c_int)
+			,("text", ctypes.c_char_p)
+			,("font_id", ctypes.c_int)
+			,("font_height", ctypes.c_int)
+			,("font_vertical_offset", ctypes.c_int)
+			,("font_color", ctypes.c_int)
 
-				,("actions", ctypes.c_char_p)]
-ButtonData._pack_ = 4
+			,("actions", ctypes.c_char_p)]
 
 class EditText(ctypes.Structure):
-	pass
-EditText._fields_ = [("fontid", ctypes.c_int)
-				,("font_height", ctypes.c_int)
-				,("fontclassname", ctypes.c_char_p)
-				,("rgba", ctypes.c_int)
-				,("maxlength", ctypes.c_int)
-				,("initialtext", ctypes.c_char_p)
-				,("layout_align", ctypes.c_char)
-				,("layout_leftmargin", ctypes.c_int)
-				,("layout_rightmargin", ctypes.c_int)
-				,("layout_indent", ctypes.c_int)
-				,("layout_leading", ctypes.c_int)]
-EditText._pack_ = 4
+	_pack_ = 4
+	_fields_ = [("fontid", ctypes.c_int)
+			,("font_height", ctypes.c_int)
+			,("fontclassname", ctypes.c_char_p)
+			,("rgba", ctypes.c_int)
+			,("maxlength", ctypes.c_int)
+			,("initialtext", ctypes.c_char_p)
+			,("layout_align", ctypes.c_char)
+			,("layout_leftmargin", ctypes.c_int)
+			,("layout_rightmargin", ctypes.c_int)
+			,("layout_indent", ctypes.c_int)
+			,("layout_leading", ctypes.c_int)]
 
 def init(lib):
 	lib.swf_button.argtypes = [ctypes.c_int,ctypes.c_int,ctypes.POINTER(ButtonData)] #lib.swf_button.restype = c_int #https://docs.python.org/3/library/ctypes.html: By default functions are assumed to return the C int type.
