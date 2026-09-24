@@ -18,6 +18,7 @@ char operations_base="+-*/%&|^<>?"
 #                     + - * / % & | ^ < > ? ( ! = e1e2
 char operations_full={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} #here can go another way but for the sack of zero safe init, even is zero init also at c, and at our language with null res pref
 char parse_pack_chars={Equals,0,0,0} #but parse_pack_chars[0] is hardcoded this way, a tradeoff with c
+char member_delims=".["
 
 const swapdata_max=0x400
 
@@ -55,8 +56,7 @@ import "is_numeric" is_numeric
 
 #strpbrk
 function action_code_membersplit(ss ac)
-	char delims=".["
-	callret strpbrk(ac,#delims) #pointer
+	callret strpbrk(ac,#globalp.member_delims) #pointer
 endfunction
 
 function brace_blocks_counter()
@@ -771,6 +771,15 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 	ss cursor;set cursor pointer
 	setcall pointer action_code_parse_new_or_call(cursor,(call_action_right),ac)
 	if pointer!=cursor
+		whiletrue
+			if pointer#!=(Period)
+				if pointer#!=(Openingbracket)
+					break
+				end
+			end
+			set pointer action_code_call_member_tail(pointer,delims)
+			break
+		end
 		if excla=(TRUE)
 			call action_code_set((ActionNot))
 		end
@@ -946,13 +955,18 @@ function numeric_code_orConstruction(ss ac)
 	return (TRUE)
 endfunction
 function action_code_member(ss pointer,sd full)
-	vstr delims=".["
-	char sqbrace_start=Openingbracket
-	char sqbrace_end=Closingbracket
 	call action_code_set_pointer(pointer) #owner?
 	sd pos
-	setcall pos strcspn(pointer,delims)
+	setcall pos strcspn(pointer,#globalp.member_delims)
 	add pointer pos
+	callg action_code_member_body(pointer,full)
+end
+#same as action_code_member, minus the owner segment: used right after a call, whose
+#return value is already the object sitting on the stack (a().b, a().b=x, a()[i], a()[i]=x, ...)
+function action_code_member_body(ss pointer,sd full)
+	char sqbrace_start=Openingbracket
+	char sqbrace_end=Closingbracket
+	sd pos
 	sd p_currentnr
 	if full!=0
 		setcall p_currentnr action_code_values_index()
@@ -969,7 +983,7 @@ function action_code_member(ss pointer,sd full)
 			set pointer# 0
 			inc pointer
 		end
-		setcall pos strcspn(pointer,delims)
+		setcall pos strcspn(pointer,#globalp.member_delims)
 		if pos!=0
 		#0 is at second+ multi-dimensional arrays levels ]. or when simply want to end
 			call action_code_set_pointer(pointer)
@@ -984,6 +998,30 @@ function action_code_member(ss pointer,sd full)
 	call action_code_set_pointer((no_pointer))
 	callg action_code_set((member_end)) #to compare square brackets on same field with pointers
 endfunction
+#pointer - pointer is right after a call's closing ')' and is a '.' or '[' : continue reading
+#the member/bracket chain applied to the call's own return value (already the object on the stack)
+#and emit it as a GetMember chain; used from expression context, e.g. b=c().d;
+function action_code_call_member_tail(ss pointer,ss delims)
+	ss tail;set tail pointer
+	sd pos
+	set pos strcspn(tail,delims)
+	add pointer pos
+	while pointer#=(Openingbracket)
+		setcall pointer brackets_test(pointer)
+		setcall pos strcspn(pointer,delims)
+		add pointer pos
+	endwhile
+	call memtrailstrict(pointer)
+
+	#sentinel: args_end can never legitimately follow a call's own args_end, so this is
+	#unambiguous, unlike reusing ActionGetMember (which is also the legitimate first token of the *next* statement)
+	call action_code_set((args_end))
+	ss ?save;set save pointer#
+	set pointer# (Nullchar)
+	call action_code_member_body(tail,0)
+	set pointer# save
+	return pointer
+end
 
 
 #condition
@@ -1325,13 +1363,42 @@ function action_code_parse_leftfunction(ss ac)
         return pointer
     endif
     #a call
+	ss start;set start ac
 	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac)
+	if ac=start
+		return ac
+	end
+	if ac#=(Period)
+		callret action_code_parse_call_assign(ac)
+	end
+	if ac#=(Openingbracket)
+		callret action_code_parse_call_assign(ac)
+	end
+
 	char end=Semicolon
     if ac#=end
         inc ac
     endif
     return ac
 endfunction
+#pointer - pointer is right after a call's closing ')' and is a '.' or '[' : the call's own
+#return value is the assignment target's object, e.g. a().e=1; or a()[i]=x;
+function action_code_parse_call_assign(ss pointer)
+	ss tail;set tail pointer
+	char delims="="
+	sd pos
+	set pos strcspn(tail,#delims)
+	add pointer pos
+	if pointer#!=(Equals)
+		call error("expecting = after a call member target")
+	end
+	set pointer# (Nullchar)
+	inc pointer
+	call action_code_set((args_end)) #sentinel: see action_code_call_member_tail for why this, not ActionSetMember
+	call action_code_member_body(tail,0)
+	set pointer spaces(pointer)
+	callret action_parse_right(pointer,(Semicolon))
+end
 import "part_of_variable" part_of_variable
 #pointer
 function action_code_parse_new_or_call(ss ac,sd ?type,ss cursor)
@@ -1361,7 +1428,7 @@ function action_code_parse_new_or_call(ss ac,sd ?type,ss cursor)
 	return ac
 endfunction
 #pointer
-function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd type)
+function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd ?type)
     #function mark
     call action_code_set(type)
     set pointer# 0

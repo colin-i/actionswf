@@ -306,11 +306,16 @@ end
 import "action_get_one" action_get_one
 #the position where the mathpointer reachs
 function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, let the string
+	#at first is something
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
-
-	#at first is something
+	callret action_member_loop_left_onstack(mathpointer)
+end
+#same as action_member_loop_left, but the object is already on the stack (right after a call)
+#instead of coming from a named variable. Leaves [object,lastMemberNameOrKey] on the stack.
+function action_member_loop_left_onstack(sv mathpointer)
+	sd name
 	if mathpointer#!=(no_pointer)
 		set name action_code_get_pointer(#mathpointer)
 		call action_push((ap_Constant8),name)
@@ -318,7 +323,6 @@ function action_member_loop_left(sv mathpointer)  #set, ex get_member_pointer, l
 		add mathpointer :+DWORD  #to pass the pointer   + square_bracket_start
 		setcall mathpointer action_code_right_util(mathpointer)
 	end
-
 	whiletrue
 		if mathpointer#=(no_pointer)
 			add mathpointer :  #to pass the pointer
@@ -343,6 +347,10 @@ function action_member_loop_right(sv mathpointer) #get, ex get_member, get the o
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
+	callret action_member_loop_right_base(mathpointer)
+end
+function action_member_loop_right_base(sv mathpointer)
+	sd name
 	whiletrue # member_end can be right from the start at CallMethod
 		if mathpointer#!=(no_pointer)
 			set name action_code_get_pointer(#mathpointer)
@@ -359,6 +367,15 @@ function action_member_loop_right(sv mathpointer) #get, ex get_member, get the o
 		end
 		call action_one((ActionGetMember))
 	end
+end
+#same as action_member_loop_right, but the object is already on the stack (right after a call)
+#instead of coming from a named variable
+function action_member_loop_right_onstack(sv mathpointer)
+	sd name
+	set name action_code_get_pointer(#mathpointer)
+	call action_push((ap_Constant8),name)
+	call action_one((ActionGetMember))
+	callret action_member_loop_right_base(mathpointer)
 end
 
 import "action_code_member" action_code_member

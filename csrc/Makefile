@@ -70,10 +70,15 @@ headers:
 	$(MAKE) -C ../include
 	$(MAKE) -C ../dev flags.h action_swf.h
 
+ifeq ($(testCfile),1)
+%.o: ${backsrc}%.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} ${backsrc}$*.c -o $@
+else
 %.o: ${backsrc}%.oc | headers
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	${OCONV} ${OCONVFLAGS} $<.x import
 	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} ${backsrc}$*.c -o $@
+endif
 
 clean-obj:
 	-rm -f ${obs} ${eobs}

@@ -112,3 +112,9 @@ function gotos()
 	}
 	§§goto(addr0002);
 }
+
+//after call members
+a().b=1;
+a.b().c=1;
+a=b().c;
+a=b.c().d;

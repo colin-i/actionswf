@@ -52,7 +52,7 @@
 <table>
 	<tr><td class="green">2</td></tr>
 	<tr><td class="green">F</td></tr>
-	<tr><td>call_action_left</td><td class="green">C</td></tr>
+	<tr><td>call_action_left</td><td class="green">C</td><td class="red">{</td><td class="blue">args_end</td><td class="green">ML</td><td class="red">}</td></tr>
 	<tr><td class="green" rowspan=2>If</td><td class="red" rowspan=2>{</td><td rowspan=2>else_marker</td><td class="green">If</td>  <td class="red">}</td></tr>
 	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_elses</td></tr>
 	<tr><td>while_marker</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>whileblock_end</td></tr>
@@ -102,8 +102,12 @@
 
 <br>Table M: <!-- action_code_member<>action_member_loop -->
 <table>
-	<tr><td class="blue" rowspan=2>owner</td><td class="green" rowspan=2>MS</td><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
-	<tr>                                                                                                        <td class="blue">no_pointer</td><td>member_end</td></tr>
+	<tr><td class="blue">owner</td><td class="green">ML</td>
+</table>
+<br>Table ML:
+<table>
+	<tr><td class="green" rowspan=2>MS</td><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
+	<tr>                                                                   <td class="blue">no_pointer</td><td>member_end</td></tr>
 </table>
 <br>Table MS: <!-- same -->
 <table>
@@ -112,8 +116,12 @@
 </table>
 <br>Table MC: <!-- same -->
 <table>
-	<tr><td class="blue" rowspan=2>owner</td><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
-	<tr>                                                                     <td class="blue">no_pointer</td><td>member_end</td></tr>
+	<tr><td class="blue">owner</td><td class="green">MR</td>
+</table>
+<br>Table MR:
+<table>
+	<tr><td class="red" rowspan=2>{</td><td class="green">MS</td>       <td class="red">}</td></tr>
+	<tr>                           <td class="blue">no_pointer</td><td>member_end</td></tr>
 </table>
 
 <br>Table O: <!-- get_operations<>in RG loop -->
@@ -170,7 +178,7 @@
 	<tr><td>ap_Integer</td><td>number</td></tr>
 	<tr><td>ap_Double</td><td>scanf1</td><td>scanf2</td></tr>
 	<tr><td>ap_Constant8</td><td class="blue">string</td></tr>
-	<tr><td>call_action_right</td><td class="green">C</td></tr>
+	<tr><td>call_action_right</td><td class="green">C</td><td class="red">{</td><td class="blue">args_end</td><td class="green">MR</td><td class="red">}</td></tr>
 	<tr><td>parenthesis_start</td><td class="green">RG</td><td>math_end</td></tr>
 </table>
 

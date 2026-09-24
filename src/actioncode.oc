@@ -828,6 +828,7 @@ function action_code_conditions_end(sd codepointer)
 	return codepointer
 endfunction
 
+^import "action_member_loop_left_onstack" action_member_loop_left_onstack 1
 #codepointer
 function action_code_write_function(sd codepointer)
 	sd keeper
@@ -845,6 +846,13 @@ function action_code_write_function(sd codepointer)
 	endif
 	ss ?want_return=FALSE
 	setcall codepointer action_code_write_function_call(codepointer,#want_return)
+	if codepointer#=(args_end)
+		add codepointer (DWORD)
+		set codepointer action_member_loop_left_onstack(codepointer)
+		set codepointer action_code_right(codepointer)
+		call action_one((ActionSetMember))
+		return codepointer
+	end
 	if want_return=(FALSE)  #can be modified inside
 		call action_one((ActionPop))
 	endif
@@ -1106,6 +1114,7 @@ function action_code_right_util_ex(sd codepointer,sd outside_compare2)
 	return codepointer
 endfunction
 
+^import "action_member_loop_right_onstack" action_member_loop_right_onstack 1
 #codepointer
 function action_code_right_number(sd codepointer)
 	if codepointer#=(parenthesis_start)
@@ -1113,7 +1122,12 @@ function action_code_right_number(sd codepointer)
 		callret action_code_right_util(codepointer)
 	endif
 	if codepointer#=(call_action_right)
-		callret action_code_write_function_call(codepointer,(TRUE))
+		set codepointer action_code_write_function_call(codepointer,(TRUE))
+		if codepointer#=(args_end)
+			add codepointer (DWORD)
+			set codepointer action_member_loop_right_onstack(codepointer)
+		end
+		return codepointer
 	endif
 	sd ?attrib;sd var
 	set attrib codepointer#
