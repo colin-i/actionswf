@@ -42,6 +42,7 @@ call swf_new_ex("a.swf",0x80,0x80,0x050607,2,f)
 ss buf;set buf text("./aoc/a")
 sd sz;sd bf=0
 call actionsf(#bf,#sz,buf,1,"a")
+call actionsf(#bf,#sz,"var a=%u+%u",1,2)
 call free(bf)
 
 sd presprite;set presprite swf_sprite_new()

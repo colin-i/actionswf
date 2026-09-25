@@ -50,6 +50,7 @@ int main(int argc,char**argv){
 	char*a=text("./aoc/a");
 	size_t sz;char*b=0;
 	actionsf(&b,&sz,a,1,"a");
+	actionsf(&b,&sz,"var a=%u+%u",1,2);
 	free(b);free(a);
 	int presprite=swf_sprite_new();
 	action_sprite(presprite,"trace('b'+this.value)");
