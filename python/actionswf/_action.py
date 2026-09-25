@@ -21,6 +21,7 @@ def init(lib):
 	_lib=lib
 
 def _flatten(args):
+	#this is like python min/max
 	return args[0] if (len(args) == 1 and isinstance(args[0], (list, tuple))) else args
 
 def action(ac):
