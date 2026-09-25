@@ -21,19 +21,14 @@ def init(lib):
 	_lib=lib
 
 def _flatten(args):
-	"""Allow trailing args as either loose values or a single list/tuple."""
-	if len(args) == 1 and isinstance(args[0], (list, tuple)):
-		return args[0]
-	return args
+	return args[0] if (len(args) == 1 and isinstance(args[0], (list, tuple))) else args
 
 def action(ac):
 	_lib.action(ac.encode('utf-8'))
 def actionf(buffer, format, *args): # ... ,b'a',1 or ,*[b'a',1] or ,[b'a',1]
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	return _lib.actionf(buffer, format.encode('utf-8'), *args) #buffer example: (ctypes.c_char * 10)()
+	return _lib.actionf(buffer, format.encode('utf-8'), *_flatten(args)) #buffer example: (ctypes.c_char * 10)()
 def actionsf(pbuffer, psize, format, *args):
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	_lib.actionsf(pbuffer, psize, format.encode('utf-8'), *args)
+	_lib.actionsf(pbuffer, psize, format.encode('utf-8'), *_flatten(args))
 def actiond(ac):
 	_lib.actiond(ac.encode('utf-8'))
 
@@ -42,17 +37,13 @@ def action_sprite(sprite, ac):
 def action_init_sprite(sprite, ac):
 	_lib.action_init_sprite(sprite, ac.encode('utf-8'))
 def actionf_sprite(sprite, buffer, format, *args):
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	_lib.actionf_sprite(sprite, buffer, format.encode('utf-8'), *args)
+	_lib.actionf_sprite(sprite, buffer, format.encode('utf-8'), *_flatten(args))
 def actionf_init_sprite(sprite, buffer, format, *args):
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	_lib.actionf_init_sprite(sprite, buffer, format.encode('utf-8'), *args)
+	_lib.actionf_init_sprite(sprite, buffer, format.encode('utf-8'), *_flatten(args))
 def actionsf_sprite(sprite, pbuffer, psize, format, *args):
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	_lib.actionsf_sprite(sprite, pbuffer, psize, format.encode('utf-8'), *args)
+	_lib.actionsf_sprite(sprite, pbuffer, psize, format.encode('utf-8'), *_flatten(args))
 def actionsf_init_sprite(sprite, pbuffer, psize, format, *args):
-	if len(args) == 1 and isinstance(args[0], (list, tuple)): args = args[0]
-	_lib.actionsf_init_sprite(sprite, pbuffer, psize, format.encode('utf-8'), *args)
+	_lib.actionsf_init_sprite(sprite, pbuffer, psize, format.encode('utf-8'), *_flatten(args))
 
 def actions_free(buffer):
 	_lib.actions_free(buffer)
