@@ -37,11 +37,11 @@ functionXv actionf(ss buffer) # ,ss format chatgpt: "it ignores your incorrect h
 	%>
 	return ret
 endfunction
-functionXv actionsf(svu psize,sv pbuffer)
-	%<pbuffer
+functionXv actionsf(sv pbuffer,svu psize)
+	%<psize
 	!sv the_va_list=:
-	!add the_va_list #pbuffer
-	callg actionsf_va(psize,pbuffer,the_va_list)
+	!add the_va_list #psize
+	callg actionsf_va(pbuffer,psize,the_va_list)
 	%>
 endfunction
 #see at part_done functionXv actionf_init(ss buffer,ss *format)
@@ -79,28 +79,28 @@ functionXv actionf_sprite(sd ?sprite,ss buffer) #,ss format
 	%<buffer
 	!sv the_va_list=:
 	!add the_va_list #buffer
-	callg actionsf_sprite_va(sprite,(xlog_ainit_false),(NULL),#buffer,the_va_list)
+	callg actionsf_sprite_va(sprite,(xlog_ainit_false),#buffer,(NULL),the_va_list)
 	%>
 endfunction
 functionXv actionf_init_sprite(sd ?sprite,ss buffer)
 	%<buffer
 	!sv the_va_list=:
 	!add the_va_list #buffer
-	callg actionsf_sprite_va(sprite,(xlog_ainit_true),(NULL),#buffer,the_va_list)
+	callg actionsf_sprite_va(sprite,(xlog_ainit_true),#buffer,(NULL),the_va_list)
 	%>
 end
-functionXv actionsf_sprite(sd ?sprite,svu psize,sv pbuffer)
-	%<pbuffer
+functionXv actionsf_sprite(sd ?sprite,sv pbuffer,svu psize)
+	%<psize
 	!sv the_va_list=:
-	!add the_va_list #pbuffer
-	callg actionsf_sprite_va(sprite,(xlog_ainit_false),psize,pbuffer,the_va_list)
+	!add the_va_list #psize
+	callg actionsf_sprite_va(sprite,(xlog_ainit_false),pbuffer,psize,the_va_list)
 	%>
 endfunction
-functionXv actionsf_init_sprite(sd ?sprite,svu psize,sv pbuffer)
-	%<pbuffer
+functionXv actionsf_init_sprite(sd ?sprite,sv pbuffer,svu psize)
+	%<psize
 	!sv the_va_list=:
-	!add the_va_list #pbuffer
-	callg actionsf_sprite_va(sprite,(xlog_ainit_true),psize,pbuffer,the_va_list)
+	!add the_va_list #psize
+	callg actionsf_sprite_va(sprite,(xlog_ainit_true),pbuffer,psize,the_va_list)
 	%>
 end
 

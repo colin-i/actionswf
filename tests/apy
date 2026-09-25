@@ -1,6 +1,7 @@
 
 if [ -n "$1" ]; then break=x; fi
 export PYTHONPATH=../python
+ld_preload=$(gcc -print-file-name=libasan.so)
 if [ -n "${arm}" ]; then
 #using: minimal lib stdlib libffi , problems with actionswf map? going to qemu
 #	using: zlib1g libexpat1
@@ -15,5 +16,5 @@ else
 		export LD_LIBRARY_PATH=../src
 	fi
 fi
-break=${break} $p || exit 1
-break=${break} $p x
+LD_PRELOAD=${ld_preload} break=${break} $p || exit 1
+LD_PRELOAD=${ld_preload} break=${break} $p x

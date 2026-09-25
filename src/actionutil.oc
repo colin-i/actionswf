@@ -456,7 +456,7 @@ function action_format_wrap(sv %the_va_list)
 	base globalu.jmp_data;call ebase(globalu.jmp_data)
 	callret action_format((NULL),the_va_list)
 end
-function actions_format(svu psize,sv pbuf,sv %the_va_list)
+function actions_format(sv pbuf,svu psize,sv %the_va_list)
 	ss buf
 	set buf pbuf#
 	if psize=(NULL)

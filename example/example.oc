@@ -47,7 +47,7 @@ call swf_sprite_showframe(movie_preid)
 
 sdu size
 ss a_c=0
-call actionsf_sprite(movie_preid,#size,#a_c,"var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move",(width),(height),(shape_lat))
+call actionsf_sprite(movie_preid,#a_c,#size,"var move=20;var width=%u;var height=%u;var lat=%u;var left=move;var top=move;var right=width-lat-move;var bottom=height-lat-move",(width),(height),(shape_lat))
 
 call action_sprite(movie_preid,"
 if(this._x>=right)_root.x_coef=_root.x_coef*-1;
@@ -83,7 +83,7 @@ if(_root.tog==1){
 sd b;set b swf_button(150,50,#ButtonData)
 call swf_placeobject(b,0)
 
-call actionsf(#size,#a_c,"
+call actionsf(#a_c,#size,"
 var x_coef=%u;
 var y_coef=%u;
 function test(){

@@ -700,26 +700,26 @@ function action_local(ss ac)
 	end
 end
 import "actions_format" actions_format
-function actionsf_local(svu psize,sv pbuffer,sv %the_va_list)
+function actionsf_local(sv pbuffer,svu psize,sv %the_va_list)
 	call is_ainit((xlog_ainit_false))
 	sd alt_ac;set alt_ac alt_action(pbuffer,0)
 	if alt_ac!=(NULL)
 		call debug_base(0)
 		if pbuffer=alt_ac
-			call actions_format(psize,pbuffer,the_va_list)
+			call actions_format(pbuffer,psize,the_va_list)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
 		end
 	end
 end
-function actionsf_sprite_local(sd sprite,svu psize,sv pbuffer,sv %the_va_list)
+function actionsf_sprite_local(sd sprite,sv pbuffer,svu psize,sv %the_va_list)
 	sd alt_ac;set alt_ac alt_action(pbuffer,sprite) #this to trick alt action that if will return the same thing, will return a not null thing
 	if alt_ac!=(NULL)
 		call debug_base(sprite)
 		call swf_actionblock_change(sprite)
 		if pbuffer=alt_ac
-			call actions_format(psize,pbuffer,the_va_list)
+			call actions_format(pbuffer,psize,the_va_list)
 		else
 			call action_base(alt_ac)
 			call file_get_content__resources_free()
@@ -732,20 +732,20 @@ import "action_format" action_format
 function actionf_va(ss buffer,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
 	if buffer!=(NULL)
-		callg actionsf_local((NULL),#buffer,the_va_list)
+		callg actionsf_local(#buffer,(NULL),the_va_list)
 		#return is not important
 	else #here to find the size
 		callret action_format((NULL),the_va_list) #this at actionf_sprite is same, sprite will be extra argument, let NULL there be guardian
 	end
 end
-function actionsf_va(svu psize,sv pbuffer,sv %the_va_list)
+function actionsf_va(sv pbuffer,svu psize,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
-	callg actionsf_local(psize,pbuffer,the_va_list)
+	callg actionsf_local(pbuffer,psize,the_va_list)
 end
-function actionsf_sprite_va(sd ?sprite,ss ?ainit,svu psize,sv pbuffer,sv %the_va_list)
+function actionsf_sprite_va(sd ?sprite,ss ?ainit,sv pbuffer,svu psize,sv %the_va_list)
 	base globalz.jmp_data;call ebase(globalz.jmp_data)
 	call is_ainit(ainit)
-	callg actionsf_sprite_local(sprite,psize,pbuffer,the_va_list)
+	callg actionsf_sprite_local(sprite,pbuffer,psize,the_va_list)
 end
 
 entryraw globalz()
