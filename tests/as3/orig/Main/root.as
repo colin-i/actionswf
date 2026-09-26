@@ -130,7 +130,7 @@ att('name','q',getNextHighest);//3
 create('q',d);//3 v flash.display.DisplayObjectContainer
 create('q',d);//3 V flash
 w.attach('q','_p',d);//3 V
-att('name','q'+2,getNext);//3w
+var q=att('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
 w.attach('q','_p'+1,d);//3 W flash
