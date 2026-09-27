@@ -347,9 +347,12 @@ function action_member_loop_right(sv mathpointer) #get, ex get_member, get the o
 	sd name
 	set name action_code_get_pointer(#mathpointer)
 	call action_get_one(name)
-	callret action_member_loop_right_base(mathpointer)
+	callret action_member_loop_right_onstack(mathpointer)
 end
-function action_member_loop_right_base(sv mathpointer)
+#same as action_member_loop_right, but the object is already on the stack (right after a call)
+#instead of coming from a named variable. The first segment can be a bracket too (eval("")[0]),
+#so this is not special at all vs. later segments - just hand the whole chain to the shared loop.
+function action_member_loop_right_onstack(sv mathpointer)
 	sd name
 	whiletrue # member_end can be right from the start at CallMethod
 		if mathpointer#!=(no_pointer)
@@ -367,15 +370,6 @@ function action_member_loop_right_base(sv mathpointer)
 		end
 		call action_one((ActionGetMember))
 	end
-end
-#same as action_member_loop_right, but the object is already on the stack (right after a call)
-#instead of coming from a named variable
-function action_member_loop_right_onstack(sv mathpointer)
-	sd name
-	set name action_code_get_pointer(#mathpointer)
-	call action_push((ap_Constant8),name)
-	call action_one((ActionGetMember))
-	callret action_member_loop_right_base(mathpointer)
 end
 
 import "action_code_member" action_code_member
