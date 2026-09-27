@@ -268,8 +268,8 @@ function swf_shape_simple(sd ?width,sd ?height,sd ?fillcolor,sd ?lineheight,sd ?
 	sv ?test
 	set test lineheight;mult test 2;if test>^width;call error("lineheight value against width is too high for shape");endif
 	set test lineheight;mult test 2;if test>^height;call error("lineheight value against height is too high for shape");endif
-	set test wd;divu test 2;if xcurve>^wd;call error("xcurve value is too high for shape");endif #even if will -1 curves in this function, cannot let signed, the comp will have no logic
-	set test hg;divu test 2;if ycurve>^hg;call error("ycurve value is too high for shape");endif
+	set test wd;divu test 2;if xcurve>^test;call error("xcurve value is too high for shape");endif #even if will -1 curves in this function, cannot let signed, the comp will have no logic
+	set test hg;divu test 2;if ycurve>^test;call error("ycurve value is too high for shape");endif
 	sd ?lineheight_hf;set lineheight_hf lineheight;div lineheight_hf 2
 
 	sd ?width_variable
