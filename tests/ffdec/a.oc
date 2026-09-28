@@ -30,7 +30,7 @@ call swf_new_ex("a.swf",0x80,0x80,0x001100,2,f)
 
 sd fo;set fo swf_font_basic("_sans")
 char ButtonData_a="Submit"
-data ButtonData={0x11FF11ff,10,0x11FF1188, 0xaa1122ff,10,0xaa112288, 0x1122FFff,10,0x1122FF88, 24,24}
+data ButtonData={0x11FF11ff,10,0x11FF1188, 0xaa1122ff,10,0xaa112288, 0x1122FFff,10,0x1122FF88, 20,20}
 vstr *^ButtonData_a
 data ButtonData_c#1;set ButtonData_c fo;data *=20
 data vert_off=-5
