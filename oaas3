@@ -6,7 +6,7 @@
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler html5_compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler web_compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # a1 a2a a3 b1b b2b
 # /  /   3
@@ -148,8 +148,9 @@ def splits_data(orig=False,dirs=''):
 target=os.environ.get('target')
 if target:
 	if target!="html5":
-		print('target not available')
-		exit(1)
+		if target!="webassembly":
+			print('target not available')
+			exit(1)
 
 src_name=os.environ.get('src_name')
 if not src_name:
@@ -570,14 +571,14 @@ if not os.environ.get('skip_comp'):
 
 	def build():
 		#the real, output-producing build. diagnostics themselves (the '--display' queries below) always stay on haxe/baser regardless of target
-		if target=='html5':
-			html5_compiler=os.environ.get('html5_compiler')
-			if not html5_compiler:
-				html5_compiler='openfl'
+		if target:
+			web_compiler=os.environ.get('web_compiler')
+			if not web_compiler:
+				web_compiler='openfl'
 			cur=os.getcwd()
 			os.chdir(c_dir) #openfl expects project.xml at the original invocation dir, not dest
 			try:
-				return prun([html5_compiler,'build','html5'])
+				return prun([web_compiler,'build',target])
 			finally:
 				os.chdir(cur)
 		return prun(baser)
@@ -954,7 +955,7 @@ if not os.environ.get('skip_comp'):
 
 	stop_server(server_pid)
 
-	if not os.environ.get('no_confirm') and not o_d and target!='html5': #only diagnostics is a dry run at haxe; ffdec/swf check doesn't apply to html5 output
+	if not os.environ.get('no_confirm') and not o_d and not target: #only diagnostics is a dry run at haxe; ffdec/swf check doesn't apply to html5 output
 		#confirm is as3
 
 		dest_file_tmp=dest_file+'.tmp'
@@ -997,10 +998,10 @@ if not os.environ.get('skip_comp'):
 		files=splits_data() #if not files , are also at: orig src diagnostics
 		removed=set()
 		for f in files:
-			target=hx_ext(f)
-			if target in removed: #several .as files can share one Main.hx
+			mdl=hx_ext(f)
+			if mdl in removed: #several .as files can share one Main.hx
 				continue
-			removed.add(target)
-			os.remove(target)
+			removed.add(mdl)
+			os.remove(mdl)
 		os.rmdir(dest)
 		shutil.rmtree(OACACHE, ignore_errors=True)
