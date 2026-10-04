@@ -19,4 +19,7 @@ type=arm ~/test/pkg/onb && \
 ~/test/publp2 && \
 ~/test/lp && \
 ~/test/lp x && \
-~/test/arh2 ${last} 1
+~/test/arh2 ${last} 1 && \
+cd ~/f/flashalizer && \
+~/test/del x && \
+./ai
