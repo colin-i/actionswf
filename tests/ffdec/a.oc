@@ -171,6 +171,20 @@ function easy_stop(ops){
 		return false;
 	}
 }
+function stop(){
+	b=1;
+	while(true){
+		c=2;
+		while(true){
+			if(a())return true;
+			p=3;
+			if(q)continue;
+			break;
+		}
+		if(w)continue;
+		return false;
+	}
+}
 return 1
 ")
 

@@ -7,12 +7,12 @@ Generic text-manipulation helpers for editing JS-like function bodies embedded
 in a larger text blob. Built to do the following, for any function found by name:
 
 	1. Locate the function's `while( ... ) { ... }` block.
-	2. Inside that block, replace first `break;` with whatever code follows the
+	2. Inside that block, replace first `break[ loop];` with whatever code follows the
 		while-block (i.e. "what is outside the while code block").
 	3. Inside that block, find the first `if(!...) { ... }` block and:
 		- replace its body with `continue;`
 		- move the original body to right after the if-block's closing brace
-		 (so `if(!x){ return false; }` becomes `if(!x){ continue; } return false;`)
+		 (so `if(!x){ return false; }` becomes `if(x){ continue; } return false;`)
 
 Works via brace/paren matching rather than fixed-format regex, so it isn't
 tied to the exact spacing/indentation of the example.
@@ -35,7 +35,6 @@ def find_matching_brace(text, open_index):
 				return i
 	raise ValueError("No matching '}' found")
 
-
 def find_matching_paren(text, open_index):
 	"""Given the index of a '(' return the index of its matching ')'."""
 	depth = 0
@@ -48,7 +47,6 @@ def find_matching_paren(text, open_index):
 				return i
 	raise ValueError("No matching ')' found")
 
-
 def extract_function(text, func_name):
 	"""Return (start, end) span of `function func_name(...) { ... }` including braces."""
 	pattern = re.compile(r'function\s+' + re.escape(func_name) + r'\s*\([^)]*\)\s*\{')
@@ -58,7 +56,6 @@ def extract_function(text, func_name):
 	brace_open = m.end() - 1
 	brace_close = find_matching_brace(text, brace_open)
 	return m.start(), brace_close + 1
-
 
 def extract_while_block(func_text):
 	"""Locate the first while(...) { ... } inside func_text."""
@@ -75,12 +72,14 @@ def extract_while_block(func_text):
 		'brace_close': brace_close,
 	}
 
+BREAK_RE = re.compile(r'\bbreak(?:\s+([A-Za-z_$][\w$]*))?\s*;')
 
 def replace_break_with_after_text(func_text, while_info):
-	"""Replace first 'break;' inside the while block with the code that
-	follows the while block (i.e. what's 'outside' it, up to the function's
-	closing brace) -- and MOVE that code (remove it from its original spot)
-	rather than just copying it."""
+	"""Replace first 'break;' or 'break <label>;' inside the while block with
+	the code that follows the while block, and MOVE that code (remove it from
+	its original spot). If the break was labeled, also remove the '<label>:'
+	that precedes the while."""
+	while_start = while_info['while_start']
 	block_start = while_info['brace_open']
 	block_end = while_info['brace_close']
 	inner = func_text[block_start + 1:block_end]
@@ -88,24 +87,35 @@ def replace_break_with_after_text(func_text, while_info):
 	tail_start = block_end + 1
 	tail = func_text[tail_start:]
 	last_brace_idx = tail.rindex('}')  # function's own closing brace
-	after_while_raw = tail[:last_brace_idx]
-	after_while = after_while_raw.strip()
+	after_while = tail[:last_brace_idx].strip()
 
-	# 1) copy the "outside" text into first break;
-	if not inner.count("break;"):
-		raise ValueError("No break; statement found")
-	inner_new = inner.replace('break;', after_while, 1)
+	# 1) copy the "outside" text into the first break (labeled or not)
+	m = BREAK_RE.search(inner)
+	if not m:
+		raise ValueError("No break; or break <label>; statement found")
+	label = m.group(1)
+	inner_new = inner[:m.start()] + after_while + inner[m.end():]
 
-	# 2) move it: remove the original text from after the while block,
+	# 2) if labeled, drop the 'label:' sitting right above the while
+	before_while = func_text[:while_start]
+	if label:
+		before_while, n = re.subn(
+			r'\b' + re.escape(label) + r'\s*:\s*$', '', before_while
+		)
+		if n == 0:
+			raise ValueError(f"Label '{label}:' not found right above the while")
+
+	# 3) move it: remove the original text from after the while block,
 	#    keeping just the function's closing brace on its own line
 	new_tail = '\n' + tail[last_brace_idx:]
 
-	new_func_text = (
-		func_text[:block_start + 1] + inner_new + func_text[block_end:tail_start]
+	return (
+		before_while
+		+ func_text[while_start:block_start + 1]
+		+ inner_new
+		+ func_text[block_end:tail_start]
 		+ new_tail
 	)
-	return new_func_text
-
 
 def find_if_not_block(text):
 	"""Find the first `if(!...) { ... }` block. Returns the exclamation
@@ -123,7 +133,6 @@ def find_if_not_block(text):
 		'brace_open': brace_open,
 		'brace_close': brace_close,
 	}
-
 
 def convert_if_block_to_continue(text, indent='      '):
 	"""
@@ -149,12 +158,11 @@ def convert_if_block_to_continue(text, indent='      '):
 	)
 	return new_text
 
-
 def transform_function(source, func_name, do_break=True, do_not=True):
 	"""Apply the requested transformation(s) to `func_name` inside `source`
 	text and return the new full source text.
 
-	do_break -- apply the 'b' transform: break; -> moved outside-the-while code
+	do_break -- apply the 'b' transform: break[ loop]; -> moved outside-the-while code
 	do_not   -- apply the '!' transform: if(!x){body} -> if(x){continue;} body
 	"""
 	start, end = extract_function(source, func_name)
@@ -175,7 +183,6 @@ def transform_function(source, func_name, do_break=True, do_not=True):
 		)
 
 	return source[:start] + func_text + source[end:]
-
 
 def resolve_control_file(target_path, dbg_marker='.dbg'):
 	"""
@@ -201,7 +208,6 @@ def resolve_control_file(target_path, dbg_marker='.dbg'):
 	control_file = f"{base}.{suffix}"
 	return base, suffix, control_file
 
-
 def parse_control_line(line):
 	"""
 	Parse a control-file line like:
@@ -216,7 +222,6 @@ def parse_control_line(line):
 	do_break = 'b' in flags
 	do_not = '!' in flags
 	return func_name, do_break, do_not
-
 
 def run(target_path):
 	"""Full CLI flow: target_path (sys.argv[1], e.g. '../a.dbg/0_1') is the

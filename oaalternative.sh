@@ -264,6 +264,7 @@ if [ -n "${2}" ]; then
 	set -e #at alternative there are return 1 returns
 	mv ${v} "${bname}" "${bname}".orig
 	cd "${at_start}"
+	if [ -n "${is_debug}" ]; then echo LD_PRELOAD=${ld_preload} ${2}; fi
 	LD_PRELOAD=${ld_preload} ${2} || {
 		cd "${dname}"
 		if [ ! -e "${bname}" ]; then
