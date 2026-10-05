@@ -232,6 +232,14 @@ function action_parse_conditions(ss ac,sd p_flags,sd p_for_detected)
         set p_flags# (while_marker)
         return pointer
 	endif
+	#do
+	set pointer str_expression_at_start(ac,"do")
+	if pointer!=ac
+		call action_code_set((do_start))
+		set p_flags# (do_marker)
+		set p_for_detected# 1 #no parenthesis expression after do
+		return pointer
+	end
     #for
         setcall pointer str_expression_at_start(ac,"for")
         if pointer=ac;return pointer;endif
@@ -338,7 +346,7 @@ endfunction
 function else_verify(ss ac,sd ?else_index)
 	#this condition for: else >expression< placing in else{} block will demonstrate, and don't compare unsigned, else index can go -1
 	if globalp.counter>else_index
-		call brace_blocks_remove_parse()
+		set ac brace_blocks_remove_parse(ac)
 	endif
 	#opened else index same with current index: return at else
 	if else_index=globalp.counter
@@ -626,6 +634,11 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 	add end2 \globalp.operations_full-2
 	sss end=-1
 	add end end2
+	ss ?saved_end;set saved_end end#
+	ss ?saved_end2;set saved_end2 end2#
+	#is set here at start
+	set end# endtype1
+	set end2# endtype2
     #
     whiletrue
 		set ac spaces(ac) #ffdec
@@ -635,16 +648,19 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 			call action_code_set((parenthesis_start))
 			inc ac
 			setcall ac action_code_row_parse_tool(ac,(Closeparenthesis))
+			#set end# endtype1
+			#set end2# endtype2
 			#0 is the marker after op set; used at strings; and logicalAnd logicalOr shr and sar are not needing 0 but it's faster for strings
 			set ac spaces(ac) #ffdec
 			set op ac#;set ac# 0
 			set was_parenthesis 1
 		endif
 		#set end: is static variable and can be mod again inside previous function
-		set end# endtype1
-		set end2# endtype2
-		#
+		#set end# endtype1
+		#set end2# endtype2
 		if was_parenthesis=0
+			set end# endtype1
+			set end2# endtype2
 			!xor op op  ##or go with sv p_op to clean inside the function but then will pe problems at .c
 			setcall ac action_code_take_main(ac,#op,#globalp.operations_full)
 			if op=(ifElse_sign)
@@ -652,7 +668,10 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 				call action_code_set((ifElse_start))
 				set p_ifElse_bool# (TRUE)
 				setcall ac action_code_row_parse_tool(ac,(Colon))
-				callret action_code_row_parse_tool_util(ac,p_op,endtype1,endtype2)
+				set ac action_code_row_parse_tool_util(ac,p_op,endtype1,endtype2)
+				set end# saved_end
+				set end2# saved_end2
+				return ac
 			endif
 		endif
 		#
@@ -664,10 +683,16 @@ function action_parse_loop(ss ac,ss p_op,sd endtype1,sd endtype2,sd p_ifElse_boo
 				if p_op!=0
 					set p_op# op
 				endif
+				set end# saved_end
+				set end2# saved_end2
 				return ac
 			endif
 			setcall bl action_parse_utilEndTypes(op,p_op,endtype1,endtype2)
-			if bl=(TRUE);return ac;endif
+			if bl=(TRUE)
+				set end# saved_end
+				set end2# saved_end2
+				return ac
+			endif
 			sd ?x;setcall x action_parse_take_action(op,ac)
 			call action_code_set(x)
 		endelse
@@ -1150,7 +1175,7 @@ function brace_blocks_remove_parse_else()
 		callg action_code_set(else_number)
 	endif
 endfunction
-function brace_blocks_remove_parse() #else is at brace_blocks_remove_parse_else
+function brace_blocks_remove_parse(ss ac) #else is at brace_blocks_remove_parse_else
 	sd p_type
 	sd ?type
 	sd consecutive=consecutive_flag
@@ -1162,12 +1187,37 @@ function brace_blocks_remove_parse() #else is at brace_blocks_remove_parse_else
 		if type!=(normal_marker)
 			if type=(while_marker) #including fors
 				call action_code_set((whileblock_end))
+			elseif type=(do_marker) #braced or not, the tail follows the body
+				set ac do_while_tail(ac)
 			else #if_marker function_marker
 				call action_code_set(type) #block_end
 			endelse
 		endif
 	endwhile
+	return ac
 endfunction
+#pointer, ac is right after the do body: while ( condition ) ;
+function do_while_tail(ss ac)
+	ss p
+	set ac spaces(ac)
+	set p str_expression_at_start(ac,"while")
+	if p=ac
+		call error("expecting 'while' after do block")
+	end
+	set p spaces(p)
+	if p#!=(Openparenthesis)
+		call error("open parenthesis sign expected at do-while")
+	end
+	inc p
+	call action_code_set((doblock_end))
+	set p action_code_row_parse_tool(p,(Closeparenthesis))
+	set p spaces(p)
+	if p#!=(Semicolon)
+		call error("expecting ';' after do while")
+	end
+	inc p
+	return p
+end
 #type
 function type_consecutive(sd ?type,sd p_consecutive)
 	and p_consecutive# type
