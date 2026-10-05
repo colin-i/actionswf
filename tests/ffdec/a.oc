@@ -148,12 +148,10 @@ while(true){
 function indents(){
 	var p=new Array();
 	var i=0;
-	while(true){
+	do{
 		p[i]=new Array();
 		i++;
-		if(i!=number_of_pillars)continue;
-		break;
-	}
+	}while(i!=number_of_pillars);
 	return p;
 }
 
@@ -175,12 +173,10 @@ function stop(){
 	b=1;
 	while(true){
 		c=2;
-		while(true){
+		do{
 			if(a())return true;
 			p=3;
-			if(q)continue;
-			break;
-		}
+		}while(q);
 		if(w)continue;
 		return false;
 	}

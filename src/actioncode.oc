@@ -433,6 +433,12 @@ function action__code_row_ex(sdu codepointer)
 		end
 		return codepointer
 	endif
+	if attrib=(doblock_end)
+		add codepointer (DWORD)
+		set codepointer action_code_do_end(codepointer)
+		call debug_xlog(codepointer)
+		return codepointer
+	end
 	if attrib=(whileblock_end)
 		call brace_blocks_remove_write_jump()
 		add codepointer (DWORD)
@@ -669,6 +675,11 @@ function action_code_write_conditions(sd codepointer)
 			call add_while_top_off((forwhiletrue_marker))
 		end
 		#here must set marker for xlog to know if is & or +
+	elseif cond=(do_start)
+		add codepointer (DWORD)
+		call add_while_top_off((do_marker)) #start offset = back-jump target
+		call debug_xlog(codepointer)
+		return codepointer
 	elseif cond=(ActionIf)
 		add codepointer (DWORD)
 		set infinite_guard codepointer
@@ -792,7 +803,19 @@ function action_code_continue()
 		sub c_blocks (DWORD)
 		if c_blocks#=(top_marker)
 			#the loop type and to the offset to jump from here
-			sub c_blocks (2*DWORD)
+			sub c_blocks (DWORD)
+
+			if c_blocks#=(do_marker) #continue lands on the do condition, forward jump
+				sd c_block;set c_block prepare_space_for_break()
+				call add_dummy_jump()
+				set c_block# swf_actionblock_get_size()
+				sub c_block# (WORD)
+				or c_block# (do_continue_bit)
+				call brace_blocks_counter_inc()
+				ret
+			end
+
+			sub c_blocks (DWORD)
 			sd off_to_jump;set off_to_jump c_blocks#
 			#
 			call add_dummy_jump()
@@ -802,6 +825,50 @@ function action_code_continue()
 	endwhile
 	call error("Continue without a loop error")
 endfunction
+
+import "write_forward_offset_jump" write_forward_offset_jump
+#codepointer is right after doblock_end: condition tokens follow
+function action_code_do_end(sd codepointer)
+	sd base;set base cond_blocks_at_index(0)
+	sd b;set b cond_blocks_noerror()
+	#continues land here, at the condition
+	sd ?c
+	whiletrue
+		if b=base
+			call error("do block is broken")
+		end
+		sub b (DWORD)
+		set c b#
+		if c=(top_marker);break;end
+		and c (do_continue_bit)
+		if c!=0
+			set c b#
+			xor c (do_continue_bit)
+			call write_forward_offset_jump(c)
+		end
+	end
+	sd pointer;set pointer b
+	sub b (2*DWORD)
+	sd ?start;set start b#
+	#condition true: jump back
+	set codepointer action_code_right_util(codepointer)
+	call write_ifjump()
+	call resolve_back_jump(start)
+	#breaks land after the ActionIf
+	whiletrue
+		call brace_blocks_counter_dec()
+		set b cond_blocks_noerror()
+		if b=pointer;break;end
+		set c b#
+		and c (do_continue_bit)
+		if c=0
+			call write_forward_offset_jump(b#)
+		end
+	end
+	call brace_blocks_counter_dec()#type
+	call brace_blocks_counter_dec()#start
+	return codepointer
+end
 
 function action_code_else_add()
     #write dummy jump

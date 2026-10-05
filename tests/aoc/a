@@ -118,4 +118,10 @@ a().b=1;
 a.b().c=1;
 a=b().c;
 a=b.c().d;
-a=eval("")[0]
+a=eval("")[0];
+
+//do-while
+a=1;do{a=a+1;trace(a);}while(a<5);
+a=1;do a=a+1;while(a<5);trace(a);
+a=1;do{trace(a);if(a>2){a=a+2;continue;}a=a+1;}while(a<6);
+a=1;do{if(a>2)break;a=a+1;}while(a<6);trace(a);

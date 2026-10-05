@@ -3,7 +3,7 @@
 #1 file.swf  2 what to call (ex: ./a.out ...) or nothing to skip part 2
 #is_debug no_clean
 #skip_ffdec ffdec
-#skip_alternative no_number_check scripts skip_deobfuscation expect_obfuscation deobfuscator_launcher
+#skip_alternative no_number_check scripts skip_deobfuscation deobfuscator_launcher #expect_obfuscation
 #ld_preload
 
 if [ -z "${1}" ]; then echo file path required; exit 1; fi
@@ -14,9 +14,9 @@ bname=`basename ${1}`
 if [ -n "${scripts}" ]; then #this must be before the first cd
 	scripts=`readlink -f "${scripts}"`
 fi
-if [ -n "${expect_obfuscation}" ]; then #same, before first cd
-	expect_obfuscation=`readlink -f "${expect_obfuscation}"`
-fi
+#if [ -n "${expect_obfuscation}" ]; then #same, before first cd
+#	expect_obfuscation=`readlink -f "${expect_obfuscation}"`
+#fi
 
 at_start=`pwd`
 cd "${dname}" || exit 1
@@ -47,12 +47,12 @@ if [ -z "${skip_ffdec}" ]; then
 fi
 if [ -z "${skip_alternative}" ]; then
 	if [ -z "${skip_deobfuscation}" ]; then # at readlink -f, all but the last component must exist
-		deobfuscator=$(readlink -f "$(dirname "$0")"/oaalternative.py) #.py? to keep the compatibility with windows, else was oaalternativedeobf
+		deobfuscator_t=$(readlink -f "$(dirname "$0")"/oaalternative.py) #.py? to keep the compatibility with windows, else was oaalternativedeobf
 		#case "$deobfuscator" in
 		#	*.*) deobfuscator_t="${deobfuscator%.*}r.${deobfuscator##*.}" ;;
 		#	*)   deobfuscator_t="${deobfuscator}r" ;;
 		#esac
-		deobfuscator_t="${deobfuscator%.py}r.py"
+		#deobfuscator_t="${deobfuscator%.py}r.py"
 	fi
 
 	mkdir -p "${out}" || exit 1
@@ -68,19 +68,19 @@ if [ -z "${skip_alternative}" ]; then
 		if [ -z "${skip_deobfuscation}" ]; then
 			if [ -z "${deobfuscator_launcher}" ]; then #executable mode will not be represented in diff, but will be install -m0755 for /usr/bin
 				"${deobfuscator_t}" $2 || exit 1
-				a=`"${deobfuscator}" $2` || exit 1
+				#a=`"${deobfuscator}" $2` || exit 1 #was for the do-while transform, now do-while is in the compiler
 			else #anyway deb test still need
 				"${deobfuscator_launcher}" "${deobfuscator_t}" $2 || exit 1
-				a=`"${deobfuscator_launcher}" "${deobfuscator}" $2` || exit 1
+				#a=`"${deobfuscator_launcher}" "${deobfuscator}" $2` || exit 1
 			fi
-			if [ -n "$a" ]; then
-				if [ -n "${is_debug}" ]; then
-					echo $a
-				fi
-				if [ -n "${expect_obfuscation}" ]; then
-					echo "$a" >> "${expect_obfuscation}" #same reson like in doaction for not using a variable
-				fi
-			fi
+			#if [ -n "$a" ]; then
+			#	if [ -n "${is_debug}" ]; then
+			#		echo $a
+			#	fi
+			#	if [ -n "${expect_obfuscation}" ]; then
+			#		echo "$a" >> "${expect_obfuscation}" #same reson like in doaction for not using a variable
+			#	fi
+			#fi
 		fi
 		if [ -n "${is_debug}" ]; then
 			cat ${2}
@@ -252,12 +252,12 @@ if [ -z "${skip_alternative}" ]; then
 	doaction 0 frame_ /DoAction.as 0 # ""
 	cd ..
 
-	if [ -n "${expect_obfuscation}" ]; then
-		if [ ! -e "${expect_obfuscation}" ]; then
-			exit 1
-		fi
-		#rm "${expect_obfuscation}"
-	fi
+	#if [ -n "${expect_obfuscation}" ]; then
+	#	if [ ! -e "${expect_obfuscation}" ]; then
+	#		exit 1
+	#	fi
+	#	#rm "${expect_obfuscation}"
+	#fi
 fi
 #part 2
 if [ -n "${2}" ]; then

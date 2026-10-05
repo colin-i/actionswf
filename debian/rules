@@ -34,7 +34,6 @@ override_dh_auto_install:
 	#same as ocompiler, when adding another one, make install are useless or another test
 	echo usr/bin/oaalternative.sh usr/bin/ > debian/actionswf.install
 	echo usr/bin/oaalternative.py usr/bin/ >> debian/actionswf.install
-	echo usr/bin/oaalternativer.py usr/bin/ >> debian/actionswf.install
 	echo usr/bin/oaas3 usr/bin/ >> debian/actionswf.install
 	echo usr/lib/libactionswf.so usr/lib/ >> debian/actionswf.install
 	echo usr/lib/liboadbgdata.so usr/lib/ >> debian/actionswf.install
