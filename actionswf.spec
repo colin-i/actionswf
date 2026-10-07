@@ -7,7 +7,8 @@ Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
 Source0: %{name}-%{version}.tar.gz
 
-BuildRequires: ocompiler make gcc
+BuildRequires: ocompiler make gcc pkgconfig(zlib)
+#                                 need this for readelf -d /lib64/libactionswf.so | grep NEEDED , to be loaded with the lib
 Requires: python3
 
 %description
