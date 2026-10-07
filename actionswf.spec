@@ -1,7 +1,7 @@
 
 Name: actionswf
 Version: 1.183
-Release: 0
+Release: 1
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -58,6 +58,27 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Oct 07 2026 costin <costin.botescu@gmail.com> 1.183-1
+- zlib spec (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- do-while . and an end# fix. (costin.botescu@gmail.com)
+- break loop; (costin.botescu@gmail.com)
+- will also regen flashalizer (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- webassembly (costin.botescu@gmail.com)
+- new curve fixes (costin.botescu@gmail.com)
+- error fix (costin.botescu@gmail.com)
+- fix a=func()[0] (costin.botescu@gmail.com)
+- "tests" (mail@flashixy.com)
+- "up" (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- actionsf accept also ,[1,2] , was ,1,2 (costin.botescu@gmail.com)
+- switching to buffer,size instead of size,buffer (costin.botescu@gmail.com)
+- "up" (costin.botescu@gmail.com)
+- src: adding members after calls (costin.botescu@gmail.com)
+- fix ButtonData _pack_ (costin.botescu@gmail.com)
+- makewin (costin.botescu@gmail.com)
+
 * Sun Sep 20 2026 costin <costin.botescu@gmail.com> 1.183-0
 - fix deb test (costin.botescu@gmail.com)
 - fix deb (mail@flashixy.com)
