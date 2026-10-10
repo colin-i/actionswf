@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-# break OAPATH target src_name
+# break OAPATH target proj_compiler src_name
 # a1 a2a a2b a3 b1b b2b  splits_folder splits_format_ext splits_printf_ext
 # OACACHE from_diagnostics verbose main
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler web_compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # a1 a2a a3 b1b b2b
 # /  /   3
@@ -145,12 +145,48 @@ def splits_data(orig=False,dirs=''):
 			texts.pop()
 	return (files,files_mirror,files_src,texts)
 
+import re
+import subprocess
 target=os.environ.get('target')
 if target:
-	if target!="html5":
-		if target!="webassembly":
-			print('target not available')
-			exit(1)
+	proj_compiler=os.environ.get('proj_compiler')
+	if not proj_compiler:
+		proj_compiler='openfl'
+	def get_openfl_targets():
+		out = subprocess.run(
+			[proj_compiler, "help", "build"],
+			capture_output=True, text=True
+		)
+		text = out.stdout + out.stderr
+
+		# strip ANSI color codes, in case the output is colored
+		text = re.sub(r"\x1b\[[0-9;]*m", "", text)
+
+		targets = []
+		in_section = False
+
+		for line in text.splitlines():
+			stripped = line.strip()
+
+			if stripped in ("Targets:", "Target Aliases:"):
+				in_section = True
+				continue
+
+			# any other "Something:" header ends the sections
+			if in_section and re.match(r"^[A-Za-z ]+:$", stripped):
+				in_section = False
+				continue
+
+			if in_section and " -- " in stripped:
+				names = stripped.split(" -- ", 1)[0]
+				for name in names.split("/"):
+					name = name.strip()
+					if name and name not in targets:
+						targets.append(name)
+		return targets
+	if target not in get_openfl_targets():
+		print('target not available')
+		exit(1)
 
 src_name=os.environ.get('src_name')
 if not src_name:
@@ -458,7 +494,6 @@ if not os.environ.get(skip_src):
 		lib.ratio(True)
 
 if not os.environ.get('skip_comp'):
-	import subprocess
 	def srun(a):
 		r=subprocess.run(a)
 		if r.returncode:
@@ -572,13 +607,10 @@ if not os.environ.get('skip_comp'):
 	def build():
 		#the real, output-producing build. diagnostics themselves (the '--display' queries below) always stay on haxe/baser regardless of target
 		if target:
-			web_compiler=os.environ.get('web_compiler')
-			if not web_compiler:
-				web_compiler='openfl'
 			cur=os.getcwd()
 			os.chdir(c_dir) #openfl expects project.xml at the original invocation dir, not dest
 			try:
-				return prun([web_compiler,'build',target])
+				return prun([proj_compiler,'build',target])
 			finally:
 				os.chdir(cur)
 		return prun(baser)
@@ -712,7 +744,6 @@ if not os.environ.get('skip_comp'):
 						fp.write(line + os.linesep)
 					return #True
 
-				import re
 				def diag():
 					pp=''
 					firstline=None

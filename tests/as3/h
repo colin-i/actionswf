@@ -1,2 +1,2 @@
 
-web_compiler=openf target=html5 ./arf
+proj_compiler=openf target=html5 ./arf
