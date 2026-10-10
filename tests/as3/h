@@ -1,2 +1,2 @@
 
-target=html5 ./arlf
+web_compiler=openf target=html5 ./arf

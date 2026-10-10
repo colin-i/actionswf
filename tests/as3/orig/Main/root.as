@@ -71,6 +71,7 @@ a Main*/
 
 		//3!!as2 only
 		trace('only in as2');//3!!
+		trace('only in as2, one line');//3!
 	}
 //3}
 function Loader(){//3f
