@@ -6,7 +6,7 @@
 
 # skip_orig origf_name mirror_name
 # skip_src allow_untranslated
-# skip_comp  launcher compiler header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
+# skip_comp  launcher compiler proj_arg header  SERVER_PID server_extern server_compiler skip_connect_test sentinel  no_diagnostics only_diagnostics diag_json dump  no_confirm ffdec  no_clean
 
 # a1 a2a a3 b1b b2b
 # /  /   3
@@ -607,10 +607,14 @@ if not os.environ.get('skip_comp'):
 	def build():
 		#the real, output-producing build. diagnostics themselves (the '--display' queries below) always stay on haxe/baser regardless of target
 		if target:
+			proj_arg=os.environ.get('proj_arg')
 			cur=os.getcwd()
 			os.chdir(c_dir) #openfl expects project.xml at the original invocation dir, not dest
 			try:
-				return prun([proj_compiler,'build',target])
+				if proj_arg:
+					return prun([proj_compiler,'build',target,proj_arg])
+				else:
+					return prun([proj_compiler,'build',target])
 			finally:
 				os.chdir(cur)
 		return prun(baser)
@@ -636,7 +640,7 @@ if not os.environ.get('skip_comp'):
 				import json
 				import itertools
 
-				if target=='html5':
+				if target in ['html5','electron']:
 					baser.extend(['-D','html5']) #so #if html5 / #else / #end resolves correctly for diagnostics queries
 
 				_id_counter = itertools.count(1)
