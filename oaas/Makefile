@@ -92,12 +92,17 @@ ${exte}: ${obs}
 	$(AR) cr ${exte} $^
 #                      | is good if adding prerequisite like 'headers' but want to exclude them from $^
 
+ifeq ($(testCfile),1)
+%.o: %.c
+	$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c
+else
 %.o: %.oc
 	${OCOMP} $< ${OFLAGS} include_sec 1
 	if [ -z "${ldprefer}" ]; then \
 		${OCONV} ${OCONVFLAGS} $<.x import;\
 		$(CC) ${model} -c -w -fPIC ${compilerflags} ${EXTRA_CFLAGS} $*.c;\
 	fi
+endif
 %.h: %.ohi
 	${OCOMP} $< x_file 2 logfile 0 include_sec 1
 	${OCONV} $<.x

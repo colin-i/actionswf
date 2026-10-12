@@ -124,17 +124,17 @@ create('q',n,_x,_y,_width,_height);//3 t+s
 createTextField('label',1,0,16, 120, 48);//3
 _q=new Array(q,w,2);//3 u+s
 q=new Array(q,w,2);//3
-attach('q','_p',d);//3 v+s
+attachMovie('q','_p',d);//3 v+s
 create('_p',d);//3 V+s
 create('_p'+1,d);//3 W+s
-att('name','q',getNextHighest);//3
+attachMovie('name','q',getNextHighest);//3
 create('q',d);//3 v flash.display.DisplayObjectContainer
 create('q',d);//3 V flash
-w.attach('q','_p',d);//3 V
-var q=att('name','q'+2,getNext);//3w
+w.attachMovie('q','_p',d);//3 V
+var q=attachMovie('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
-w.attach('q','_p'+1,d);//3 W flash
+w.attachMovie('q','_p'+1,d);//3 W flash
 _//3 x+s
 _qtyty//3z wer ty+s
 */

@@ -41,6 +41,7 @@ importx "strrchr" strrchr
 ^import "dotbackafter" dotbackafter 2
 ^import "equalafter" equalafter 1
 ^import "equalon" equalon 1
+import "mem_reverse" mem_reverse
 import "object_com" object_com
 import "object_make" object_make
 ^import "parecafter" parecafter 1
@@ -1314,12 +1315,12 @@ function translate_var_full(ss start,ss oa,ss ?type)
 				if pointer=oa ##else is translate_one
 					#v class
 					ss afterindents;ss atarguments;ss cls
-					set cls translate_var_helper(start,#afterindents,#atarguments,#pointer)
+					ss cursor
+					set cls translate_var_helper(start,#afterindents,#atarguments,#pointer,#cursor)
 					if cls!=start
 						ss ?store;set store afterindents#;set afterindents# (Nullchar)
 						sd ?len
 						!xor len len ## o problem
-						ss cursor
 						set cursor translate_leftright_full(globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
 						if cursor!=#globalt.blank
 							callret translate_var_by_type(type,cursor,len,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
@@ -1338,45 +1339,49 @@ function translate_var_full(ss start,ss oa,ss ?type)
 end
 function translate_var_simple(ss indents,ss ?type)
 	ss cls;ss afterindents;ss atarguments;ss delim
-	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim)
+	ss cursor
+	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim,#cursor)
 	if cls!=indents
-		ss cursor
+		char at="attachMovie"^
+		ss ?atta;set atta mem_reverse(afterindents,cursor,#at,\.at)
 		ss ?store
 		sd ?len
-		ss name
-		set name quotafter(delim)
-		if name!=delim ##going on attachMovie
-			set cursor quoton(name)
-			if cursor!=cls
-				set store afterindents#;set afterindents# (Nullchar)
-				set cursor# (Nullchar)
-				set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
-				if len>0
-					if len<(a_page_size)
-						inc cursor
-						ss pointer
-						set pointer semicolafter(cursor)
-						if pointer!=cursor
-							ss args
-							set args translate_var_arguments(pointer,globalt.a_page_switch,#len)
-							if args=pointer
-								return indents
+		if atta!=(FALSE)
+			ss name
+			set name quotafter(delim)
+			if name!=delim
+				set cursor quoton(name)
+				if cursor!=cls
+					set store afterindents#;set afterindents# (Nullchar)
+					set cursor# (Nullchar)
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
+					if len>0
+						if len<(a_page_size)
+							inc cursor
+							ss pointer
+							set pointer semicolafter(cursor)
+							if pointer!=cursor
+								ss args
+								set args translate_var_arguments(pointer,globalt.a_page_switch,#len)
+								if args=pointer
+									return indents
+								end
 							end
-						end
-						sd ?size=a_page_size
-						sub size len
-						if size>=3
-							set pointer globalt.a_page_switch
-							add pointer len
-							set pointer# (Closeparenthesis)
-							inc pointer
-							set pointer# (Semicolon)
+							sd ?size=a_page_size
+							sub size len
+							if size>=3
+								set pointer globalt.a_page_switch
+								add pointer len
+								set pointer# (Closeparenthesis)
+								inc pointer
+								set pointer# (Semicolon)
 
-							inc pointer
-							set pointer# (Nullchar)
-							add len 2
+								inc pointer
+								set pointer# (Nullchar)
+								add len 2
 
-							callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
+								callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
+							end
 						end
 					end
 				end
@@ -1436,21 +1441,26 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 	end
 	return start
 end
-function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor)
+function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor,sv p_pointer)
 	ss cursor;set cursor spcfull(indents)
 	set p_afterindents# cursor
 	ss cls
 	inc cursor
-	set cls quoton(cursor)
-	if cls!=cursor
-		set p_atarguments# cls
-		inc cls
-		set cursor quoton(cls)
-		if cursor!=cls
-			set cursor# (Nullchar)
-			inc cursor
-			set p_cursor# cursor
-			return cls
+	ss pointer;set pointer pareoon(cursor)
+	if pointer!=cursor
+		set p_pointer# pointer
+		#inc pointer , (' will not work like that
+		set cls quoton(pointer)
+		if cls!=pointer
+			set p_atarguments# cls
+			inc cls
+			set cursor quoton(cls)
+			if cursor!=cls
+				set cursor# (Nullchar)
+				inc cursor
+				set p_cursor# cursor
+				return cls
+			end
 		end
 	end
 	return indents

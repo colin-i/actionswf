@@ -301,6 +301,22 @@ function strchr_reverse(ss s,ss ?c)
 		end
 	end
 end
+function mem_reverse(ss start,ss end,ss s,ss ?sz)
+	ss a;set a s
+	add s sz
+	while end!=start
+		dec end
+		dec s
+		if end#!=s#
+			return (FALSE)
+		end
+		dec sz
+		if sz=0
+			return (TRUE)
+		end
+	end
+	return (FALSE)
+end
 
 function var_advance(ss cursor,sv out)
 	ss ?a
