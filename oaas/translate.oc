@@ -19,6 +19,7 @@ char mouseup_string="MouseUp"^
 char rollover_string="RollOver"^
 char rollout_string="RollOut"^
 #
+char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
 
@@ -99,6 +100,10 @@ end
 
 function addChild_string_p()
 	return globalt.addChild
+end
+function attachMovie_string_get(ss z)
+	set z# \globalt.attachMovie
+	return #globalt.attachMovie
 end
 function getChildByName_string_p()
 	return globalt.getChildByName
@@ -1342,8 +1347,7 @@ function translate_var_simple(ss indents,ss ?type)
 	ss cursor
 	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim,#cursor)
 	if cls!=indents
-		char at="attachMovie"^
-		ss ?atta;set atta mem_reverse(afterindents,cursor,#at,\.at)
+		ss ?atta;set atta mem_reverse(afterindents,cursor,#globalt.attachMovie,\globalt.attachMovie)
 		ss ?store
 		sd ?len
 		if atta!=(FALSE)

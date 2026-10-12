@@ -25,7 +25,9 @@ importx "strstr" strstr
 ^import "mouseup_string_get" mouseup_string_get 1
 ^import "rollover_string_get" rollover_string_get 1
 ^import "rollout_string_get" rollout_string_get 1
+#
 ^import "addChild_string_p" addChild_string_p
+^import "attachMovie_string_get" attachMovie_string_get 1
 ^import "getChildByName_string_p" getChildByName_string_p
 ^import "new_string_p" new_string_p
 
@@ -234,11 +236,12 @@ function solver7(ss value,ss after)
 		call sprintf(#globals.outvalue,"%c",(childcast_char))
 		return #globals.outvalue
 	end
-	char var_string="attachMovie"^
-	set c strncmp(value,#var_string,\.var_string)
+	ss ?z
+	set cursor attachMovie_string_get(#z)
+	set c strncmp(value,cursor,z)
 	if c=0
 		set globals.stored_char solver7_var(after)
-		callret solver_endb(value,\.var_string)
+		callret solver_endb(value,z)
 	end
 	char bfil_string="begin"^
 	set c strncmp(value,#bfil_string,\.bfil_string)
@@ -319,7 +322,6 @@ function solver7(ss value,ss after)
 		end
 		return (NULL)
 	end
-	ss ?z
 	set cursor on_string_get(#z)
 	set c strncmp(value,cursor,z)
 	if c=0
