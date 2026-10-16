@@ -182,6 +182,9 @@ a Main*/
 		var esd=this['shape2'];
 		//3dqwer esd
 
+		//attach undefined
+		attachMovie('flash.display.Shape',undefined,getNextHighestDepth());
+
 		//on
 		onMouseDown=function(){
 			trace('this is from on mouse down');

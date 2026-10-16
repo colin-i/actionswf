@@ -1355,38 +1355,56 @@ function translate_var_simple(ss indents,ss ?type)
 			set name quotafter(delim)
 			if name!=delim
 				set cursor quoton(name)
-				if cursor!=cls
-					set store afterindents#;set afterindents# (Nullchar)
-					set cursor# (Nullchar)
-					set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
-					if len>0
-						if len<(a_page_size)
-							inc cursor
-							ss pointer
-							set pointer semicolafter(cursor)
-							if pointer!=cursor
-								ss args
-								set args translate_var_arguments(pointer,globalt.a_page_switch,#len)
-								if args=pointer
-									return indents
-								end
-							end
-							sd ?size=a_page_size
-							sub size len
-							if size>=3
-								set pointer globalt.a_page_switch
-								add pointer len
-								set pointer# (Closeparenthesis)
-								inc pointer
-								set pointer# (Semicolon)
-
-								inc pointer
-								set pointer# (Nullchar)
-								add len 2
-
-								callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
-							end
+				if cursor=cls
+					return indents
+				end
+			else
+				set name commaafter(delim)
+				if name=delim
+					return indents
+				end
+				set name spcfull(name)
+				set cursor commaon(name)
+				if cursor=name
+					return indents
+				end
+				char und="undefined"^
+				sd ?c;set c strncmp(name,#und,\.und)
+				if c!=0
+					return indents
+				end
+				dec name
+				set name# (_)
+			end
+			set store afterindents#;set afterindents# (Nullchar)
+			set cursor# (Nullchar)
+			set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
+			if len>0
+				if len<(a_page_size)
+					ss pointer
+					inc cursor
+					set pointer semicolafter(cursor)
+					if pointer!=cursor
+						ss args
+						set args translate_var_arguments(pointer,globalt.a_page_switch,#len)
+						if args=pointer
+							return indents
 						end
+					end
+					sd ?size=a_page_size
+					sub size len
+					if size>=3
+						set pointer globalt.a_page_switch
+						add pointer len
+						set pointer# (Closeparenthesis)
+						inc pointer
+						set pointer# (Semicolon)
+
+						inc pointer
+						set pointer# (Nullchar)
+						add len 2
+
+						callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
 					end
 				end
 			end
