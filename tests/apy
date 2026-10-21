@@ -16,5 +16,6 @@ else
 		export LD_LIBRARY_PATH=../src
 	fi
 fi
+export PYTHONMALLOC=malloc #asan problems
 LD_PRELOAD=${ld_preload} break=${break} $p || exit 1
 LD_PRELOAD=${ld_preload} break=${break} $p x
