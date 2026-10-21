@@ -1,7 +1,7 @@
 
 Name: actionswf
-Version: 1.183
-Release: 1
+Version: 1.184
+Release: 0%{?dist}
 License: GPLv3
 Summary: ActionSwf compiler
 Url: https://github.com/colin-i/actionswf
@@ -58,6 +58,17 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
+* Wed Oct 21 2026 costin <costin.botescu@gmail.com> 1.184-0
+- "up" (costin.botescu@gmail.com)
+- _undefined (costin.botescu@gmail.com)
+- attachMovie in one place (costin.botescu@gmail.com)
+- oaas: attach now by mem_reverse to allow non-string names
+  (costin.botescu@gmail.com)
+- proj_args (costin.botescu@gmail.com)
+- electron (costin.botescu@gmail.com)
+- targets (costin.botescu@gmail.com)
+- h (costin.botescu@gmail.com)
+
 * Wed Oct 07 2026 costin <costin.botescu@gmail.com> 1.183-1
 - zlib spec (costin.botescu@gmail.com)
 - "up" (costin.botescu@gmail.com)
