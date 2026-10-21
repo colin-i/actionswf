@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.184
+Version: 1.185
 Release: 0%{?dist}
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,7 +58,10 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Wed Oct 21 2026 costin <costin.botescu@gmail.com> 1.184-0
+* Wed Oct 21 2026 costin <costin.botescu@gmail.com> 1.185-0
+- asan problems (costin.botescu@gmail.com)
+- members after calls,actionf [],do-while,oaas attach undefined,and more
+  (mail@flashixy.com)
 - "up" (costin.botescu@gmail.com)
 - _undefined (costin.botescu@gmail.com)
 - attachMovie in one place (costin.botescu@gmail.com)
