@@ -30,7 +30,8 @@ jobs:
      cd ../..
 
      wget https://github.com/colin-i/o/releases/download/${otag}/${otag}-arch-x86_64.pkg.tar.zst
-     sudo pacman -U --arch x86_64 --assume-installed lib32-glibc --noconfirm ${otag}-arch-x86_64.pkg.tar.zst
+     sed -e '/^SigLevel/d' -e '/^LocalFileSigLevel/d' -e '/^\[options\]/a SigLevel = Never' /etc/pacman.conf > /tmp/pacman-nosig.conf
+     sudo pacman -U --config /tmp/pacman-nosig.conf --arch x86_64 --assume-installed lib32-glibc --noconfirm ${otag}-arch-x86_64.pkg.tar.zst
 
      cd src
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
