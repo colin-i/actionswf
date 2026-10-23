@@ -436,7 +436,10 @@ if not os.environ.get(skip_src):
 							if c==b2b:
 								mode=0
 								pos-=multiline_backjump
-								singleline()
+								if dual_mode: #still inside the dual mode(^): this last line (before the closing */) is as3 too, do not pass it to liboaas
+									dfile.write(bytes(chars[:pos])+os.linesep.encode())
+								else:
+									singleline()
 								pos=0
 								was_multiline=True
 								dual_mode=False
@@ -858,99 +861,99 @@ if not os.environ.get('skip_comp'):
 												with open(hx_ext(module_files[module][0])) as hf: #one dest .hx per module, several .as can share it
 													hx_cache[module] = hf.readlines()
 											lines = file_cache[module] #global line numbers index straight into this merged list
+											if line<len(lines): #Unexpected <end of file> is line==len(lines)
+												if kind==4:
+													solved = lib.solve4(value.encode())
+												elif kind==2:
+													solved = lib.solve2(value.encode())
+													if solved: # it is no having ""
+														if lib.firstline()[0]:
+															if firstline: #at compare without exclamations is from if, not this case
+																line=firstline
+												elif kind==1:
+													solved = lib.solve1(value.encode())
 
-											if kind==4:
-												solved = lib.solve4(value.encode())
-											elif kind==2:
-												solved = lib.solve2(value.encode())
-												if solved: # it is no having ""
-													if lib.firstline()[0]:
-														if firstline: #at compare without exclamations is from if, not this case
-															line=firstline
-											elif kind==1:
-												solved = lib.solve1(value.encode())
+												linestr = lines[line]
+												if linestr[-1] in terminations:
+													linestr = linestr.rstrip(terminations)
+													has_term=True
+												else:
+													has_term=False
 
-											linestr = lines[line]
-											if linestr[-1] in terminations:
-												linestr = linestr.rstrip(terminations)
-												has_term=True
-											else:
-												has_term=False
+												if kind==7:
+													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
 
-											if kind==7:
-												solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
-
-											if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
-												#this case is with the postpone_char. or normal
-												solved = lib.resolve()
-												part1, delim, part2 = linestr.partition(tr_sep)
-												if delim:
-													comparator = solved.decode()
-													sep=lib.sep().decode()
-													tokens = part2.split(sep)
-													n = lib.postpone_char().decode()
-													nn = len(n)
-													#c0 = comparator[0] # to compare less, like sw , sh
-													for i,token in enumerate(tokens):
-														token = token.lstrip()          # remove leading whitespace
-														if isinstance(solved, bytes):
-															against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
-															if against == n:
-																solved = comparator
-																token = solved + token[nn:]
-															#elif against == c0: #this comparation was going with another case at next code
-															#	break #example at rect, else will be r x+r+r
-														tokens[i]=token
-													if not isinstance(solved, bytes):
-														linestr = part1 + delim + sep.join(tokens)
-													#elif against == c0:
-													#	break #example at rect, else will be r+r+r
-											if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
-												rslvd=True
-												if isinstance(solved, bytes):
-													solved = solved.decode()
-													try:#still can be a line with markers from orig
-														part1, part2 = linestr.split(tr_sep) #will throw here
-														if not part1.strip(' \t'): #part1 is only whitespace: pull the real prefix from the dest .hx line, not this blank src part1
-															hx_line = hx_cache[module][line]
-															hx_line = hx_line.rstrip(terminations)
-															linestr = hx_line + tr_sep + solved
-														else:
-															s1 = solved[1:]
-															s0 = solved[0]
-															sep=lib.sep().decode()
-															tokens = part2.split(sep)
-															token_level_solved=False
-															for i,token in enumerate(tokens):
-																if token[0] == s0:
-																	if s1: # a case sw then sh, must combine them
-																		if not s1 in token[1:]:
-																			tokens[i] = token + s1
-																			token_level_solved=True
-																			break
-																	rslvd=False
-																	break
-															if rslvd:
-																if not token_level_solved:
-																	#insert after postpone ?
-																	#n = lib.postpone_char().decode()
-																	#nn = len(n)
-																	#insert_at = len(tokens)
-																	#for i,token in enumerate(tokens):
-																	#	if token[0:nn] == n: #postpone_char token must stay last: insert the new one before it
-																	#		insert_at = i
-																	#		break
-																	#tokens.insert(insert_at,solved)
-																	tokens.append(solved)
-																linestr = part1 + tr_sep + sep.join(tokens)
-													except:
-														linestr = linestr + tr_sep + solved
-												if rslvd:
-													save_line(module,line)
-													lines[line] = linestr + (os.linesep if has_term else "")
-													touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
-													resolved=True
-											#no more 'break' here: previously ended the per-file search loop, which no longer exists
+												if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
+													#this case is with the postpone_char. or normal
+													solved = lib.resolve()
+													part1, delim, part2 = linestr.partition(tr_sep)
+													if delim:
+														comparator = solved.decode()
+														sep=lib.sep().decode()
+														tokens = part2.split(sep)
+														n = lib.postpone_char().decode()
+														nn = len(n)
+														#c0 = comparator[0] # to compare less, like sw , sh
+														for i,token in enumerate(tokens):
+															token = token.lstrip()          # remove leading whitespace
+															if isinstance(solved, bytes):
+																against=token[0:nn] #token.startswith(n): # can be '_ val' , so, use startswith
+																if against == n:
+																	solved = comparator
+																	token = solved + token[nn:]
+																#elif against == c0: #this comparation was going with another case at next code
+																#	break #example at rect, else will be r x+r+r
+															tokens[i]=token
+														if not isinstance(solved, bytes):
+															linestr = part1 + delim + sep.join(tokens)
+														#elif against == c0:
+														#	break #example at rect, else will be r+r+r
+												if solved is not None: #was the 'break' path when solved==None: nothing further to do for this diagnostic
+													rslvd=True
+													if isinstance(solved, bytes):
+														solved = solved.decode()
+														try:#still can be a line with markers from orig
+															part1, part2 = linestr.split(tr_sep) #will throw here
+															if not part1.strip(' \t'): #part1 is only whitespace: pull the real prefix from the dest .hx line, not this blank src part1
+																hx_line = hx_cache[module][line]
+																hx_line = hx_line.rstrip(terminations)
+																linestr = hx_line + tr_sep + solved
+															else:
+																s1 = solved[1:]
+																s0 = solved[0]
+																sep=lib.sep().decode()
+																tokens = part2.split(sep)
+																token_level_solved=False
+																for i,token in enumerate(tokens):
+																	if token[0] == s0:
+																		if s1: # a case sw then sh, must combine them
+																			if not s1 in token[1:]:
+																				tokens[i] = token + s1
+																				token_level_solved=True
+																				break
+																		rslvd=False
+																		break
+																if rslvd:
+																	if not token_level_solved:
+																		#insert after postpone ?
+																		#n = lib.postpone_char().decode()
+																		#nn = len(n)
+																		#insert_at = len(tokens)
+																		#for i,token in enumerate(tokens):
+																		#	if token[0:nn] == n: #postpone_char token must stay last: insert the new one before it
+																		#		insert_at = i
+																		#		break
+																		#tokens.insert(insert_at,solved)
+																		tokens.append(solved)
+																	linestr = part1 + tr_sep + sep.join(tokens)
+														except:
+															linestr = linestr + tr_sep + solved
+													if rslvd:
+														save_line(module,line)
+														lines[line] = linestr + (os.linesep if has_term else "")
+														touched.add(module) #was touched.add(f) - one module can span several .as files sharing one Main.hx
+														resolved=True
+												#no more 'break' here: previously ended the per-file search loop, which no longer exists
 								if not solved:
 									unresolved=True
 				if resolved:
