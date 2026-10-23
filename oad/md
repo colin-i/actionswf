@@ -2,4 +2,4 @@
 if [ -z "${compilerflags}" ]; then
 	compilerflags="-fsanitize=address -g"
 fi
-compilerflags="${compilerflags}" linkerflags=" " ./m${what_m2} $@
+compilerflags="${compilerflags}" linkerflags=' ' ./m${what_m2} $@

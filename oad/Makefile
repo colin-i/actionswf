@@ -13,7 +13,8 @@ ifndef linkerflags
 	linkerflags=-O3 -s
 	# -Ofast: - crashes that don't happen with -O3
 	ifeq ($(findstring mingw,$(CC)),)
-		linkerflags += -march=native
+		arch ?= native
+		linkerflags += -march=$(arch)
 	endif
 endif
 ifndef compilerflags

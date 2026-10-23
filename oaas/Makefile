@@ -15,7 +15,8 @@ ifndef linkerflags
 	##unlike csrc or oad, flto here is not breaking, a clue is that libubsan is not erroring
 	# -flto=auto #that is not valid at jammy or since functions like var_advance
 	ifeq ($(findstring mingw,$(CC)),)
-		linkerflags += -march=native
+		arch ?= native
+		linkerflags += -march=$(arch)
 	endif
 endif
 ifndef compilerflags

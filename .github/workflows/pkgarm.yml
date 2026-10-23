@@ -47,6 +47,7 @@ jobs:
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
+     arch=armv8-a \
       make
      cd ..
 
@@ -57,7 +58,7 @@ jobs:
      makepkg
 
      nm=`ls | grep ".*\.gz$"`
-     nm2=`echo ${nm} | sed s/-aarch64/-ubuntu-aarch64/` #"; s/${name}/liboadbgdata/"
+     nm2=`echo ${nm} | sed s/-aarch64/-ubuntu-armv8a/` #"; s/${name}/liboadbgdata/"
      mv ${nm} ${nm2}
      echo "file=${nm2}" >> $GITHUB_ENV
 
@@ -78,7 +79,7 @@ jobs:
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
-     release=x no_sanitize=${{ github.event.inputs.no_sanitize }} \
+     release=x no_sanitize=${{ github.event.inputs.no_sanitize }} arch=armv8-a \
       ./md
   - name: Upload debug liboaas artifact
     uses: actions/upload-artifact@v4

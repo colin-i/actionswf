@@ -6,7 +6,8 @@ ifndef OCONV
 OCONV=otoc
 endif
 ifndef linkerflags
-linkerflags=-O3 -march=native -s
+arch ?= native
+linkerflags=-O3 -march=$(arch) -s
 # -flto currently breaks. ... block_get_size is pointer(translator), int when we use it, at == 0 comparation lto if having O1 will skip
 #	when trying to find what lto/O mix, -fno-strict-aliasing will produce less crashes
 endif
