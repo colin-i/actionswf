@@ -38,13 +38,13 @@ jobs:
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
-     make SUBDIRS="dev oad oaas"
+      make SUBDIRS="dev oad oaas"
      cd csrc
      LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
      OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
      OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
      OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
-     make
+      make
      cd ..
 
      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
@@ -66,4 +66,20 @@ jobs:
      upload_url: ${{ env.up_url }}
      asset_path: ./${{ env.file }}
      asset_name: ${{ env.file }}
-     asset_content_type: application/zstd
+     asset_content_type: application/gzip
+  - name: Build debug liboaas with AddressSanitizer
+    working-directory: src/oaas
+    run: |
+     make clean
+     LD_LIBRARY_PATH=/usr/i686-linux-gnu/lib:/usr/x86_64-linux-gnu/lib \
+     OCOMP="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/o" \
+     OCONV="qemu-amd64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 /usr/bin/otoc" \
+     OLINK="qemu-i386 /usr/i686-linux-gnu/lib/ld-linux.so.2 /usr/bin/ounused" \
+     release=x \
+      ./md
+  - name: Upload debug liboaas artifact
+    uses: actions/upload-artifact@v4
+    with:
+     name: liboaas.so
+     path: src/oaas/liboaas.so
+     if-no-files-found: error

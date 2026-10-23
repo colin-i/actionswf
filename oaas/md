@@ -1,5 +1,8 @@
 
 if [ -z "${compilerflags}" ]; then
-	compilerflags='-g -fsanitize=address,undefined'
+	if [ -n "${release}" ]; then
+		compilerflags='-O3 -march=native'
+	fi
+	compilerflags="${compilerflags} -g -fsanitize=address,undefined"
 fi
 compilerflags="${compilerflags}" linkerflags=' ' make -j4 $@
