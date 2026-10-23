@@ -1,7 +1,12 @@
 
 if [ -z "${compilerflags}" ]; then
 	if [ -n "${release}" ]; then
-		compilerflags='-O3 -march=native'
+		compilerflags='-O3 -march='
+	fi
+	if [ -z "${arch}" ]; then
+		compilerflags="${compilerflags}"native
+	else
+		compilerflags="${compilerflags}${arch}"
 	fi
 	compilerflags="${compilerflags} -g"
 	if [ -z "${no_sanitize}" ]; then

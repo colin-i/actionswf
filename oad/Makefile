@@ -13,7 +13,9 @@ ifndef linkerflags
 	linkerflags=-O3 -s
 	# -Ofast: - crashes that don't happen with -O3
 	ifeq ($(findstring mingw,$(CC)),)
-		arch ?= native
+		ifndef arch
+		arch=native
+		endif
 		linkerflags += -march=$(arch)
 	endif
 endif
