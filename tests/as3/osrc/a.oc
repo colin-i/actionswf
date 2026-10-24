@@ -111,7 +111,7 @@ call action_sprite(presprite,"/*3^
 	}
 //3}
 */
-")
+///")
 set sprite swf_sprite_done(presprite)
 call swf_exports_add(sprite,"MyClip2")
 
