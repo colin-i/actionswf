@@ -22,6 +22,7 @@ char rollout_string="RollOut"^
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
+vstr var_translate_5="%s%s%s%s=new %s();"
 
 importx "free" free
 importx "memcmp" memcmp
@@ -1252,51 +1253,78 @@ function translate_textfield(ss start)
 end
 function translate_label(ss indents)
 	ss cursor;set cursor spcfull(indents)
-	set cursor# (Nullchar) #on create...
-	ss name
-	inc cursor
-	set name quotafter(cursor)
-	if name!=cursor
-		set cursor quoton(name)
-		if cursor!=name
-			ss buffer;set buffer globalt.a_page_switch
-			sd ?size
-			set size object_make(indents,name,cursor,"flash.text.TextField",#buffer,(a_page_size))
-			if size!=0
-				inc cursor
-				ss pointer
-				set pointer commaafter(cursor)
-				if pointer!=cursor
-					set cursor commaafter(pointer)
-					if cursor!=pointer
-						set pointer commaon(cursor)
-						if pointer!=cursor
-							sd ?len
-							set len object_com(name,"x",cursor,pointer,#buffer,size)
-							if len!=0
-								inc pointer
-								set cursor commaon(pointer)
-								if cursor!=pointer
-									set size object_com(name,"y",pointer,cursor,#buffer,len)
-									if size!=0
-										inc cursor
-										set pointer commaon(cursor)
-										set len object_com(name,"width",cursor,pointer,#buffer,size)
-										if len!=0
-											inc pointer
-											set cursor parecon(pointer)
-											set size object_com(name,"height",pointer,cursor,#buffer,len)
-											if size!=0
-												#inc cursor
-												#set pointer semicolafter(cursor) # this for + case
-												#if pointer!=cursor
-												#	set len snprintf(buffer,size,"%s",pointer) #strncat or strncpy are not good here
-												#	if len>=0
-												#		if len<size
-												return globalt.a_page_switch
-												#		end
-												#	end
-												#end
+	ss paren;set paren pareoon(cursor)
+	if paren!=cursor
+		#[var ]tf=createTextField('label',...  then tf is used instead of label
+		ss target;set target (NULL)
+		ss decl;ss varname;ss parent
+		char first#2;ss p_first^first
+		set target translate_var_target(cursor,paren,#decl,#varname,p_first,#parent)
+		set cursor# (Nullchar) #after indents
+		if target!=(NULL)
+			set cursor paren ##the '=' is now a null char, the call is after it
+		end
+		ss name
+		inc cursor
+		set name quotafter(cursor)
+		if name!=cursor
+			set cursor quoton(name)
+			if cursor!=name
+				ss buffer;set buffer globalt.a_page_switch
+				sd ?size
+				sd ?len
+				vstr txt="flash.text.TextField"
+				if target=(NULL)
+					set varname name
+					set size object_make(indents,name,cursor,txt,#buffer,(a_page_size))
+				else
+					#the cut for indentation can be on the first char of the target, it is restored after printing
+					set len snprintf(buffer,(a_page_size),globalt.var_translate_5,indents,decl,p_first,target,txt)
+					set varname# p_first#
+					set size 0
+					if len>0
+						if len<(a_page_size)
+							add buffer len
+							set size (a_page_size)
+							sub size len
+						end
+					end
+				end
+				if size!=0
+					inc cursor
+					ss pointer
+					set pointer commaafter(cursor)
+					if pointer!=cursor
+						set cursor commaafter(pointer)
+						if cursor!=pointer
+							set pointer commaon(cursor)
+							if pointer!=cursor
+								set len object_com(varname,"x",cursor,pointer,#buffer,size)
+								if len!=0
+									inc pointer
+									set cursor commaon(pointer)
+									if cursor!=pointer
+										set size object_com(varname,"y",pointer,cursor,#buffer,len)
+										if size!=0
+											inc cursor
+											set pointer commaon(cursor)
+											set len object_com(varname,"width",cursor,pointer,#buffer,size)
+											if len!=0
+												inc pointer
+												set cursor parecon(pointer)
+												set size object_com(varname,"height",pointer,cursor,#buffer,len)
+												if size!=0
+													#inc cursor
+													#set pointer semicolafter(cursor) # this for + case
+													#if pointer!=cursor
+													#	set len snprintf(buffer,size,"%s",pointer) #strncat or strncpy are not good here
+													#	if len>=0
+													#		if len<size
+													return globalt.a_page_switch
+													#		end
+													#	end
+													#end
+												end
 											end
 										end
 									end
@@ -1439,7 +1467,7 @@ function translate_var_simple(ss indents,ss ?type)
 				set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,createtype,globalt.a_page_switch,#len)
 				set varname cls
 			else
-				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s=new %s();",indents,decl,p_first,pointer,createtype)
+				set len snprintf(globalt.a_page_switch,(a_page_size),globalt.var_translate_5,indents,decl,p_first,pointer,createtype)
 				set cursor #globalt.blank
 				if len>0
 					if len<(a_page_size)
