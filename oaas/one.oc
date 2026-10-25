@@ -304,7 +304,7 @@ function translate_one_nvar(ss buffer,ss indents,ss in,ss oa)
 			set reminder cursor#;set cursor# (Nullchar)
 			set o_a# (Nullchar)
 			sd ?len
-			set len snprintf(buffer,(a_page_size),"%s%svar %s=new %s();%s.name='%s';",indents,in,oa,pointer,oa,oa)
+			set len snprintf(buffer,(a_page_size),"%s%s%s%s=new %s();%s.name='%s';",indents,in,#globalo.var_,oa,pointer,oa,oa)
 			if len>0
 				if len<(a_page_size)
 					call translated("VarNamed")

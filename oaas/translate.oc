@@ -42,7 +42,7 @@ importx "strrchr" strrchr
 ^import "dotbackafter" dotbackafter 2
 ^import "equalafter" equalafter 1
 ^import "equalon" equalon 1
-import "mem_reverse" mem_reverse
+^import "mem_reverse" mem_reverse 4
 import "object_com" object_com
 import "object_make" object_make
 ^import "parecafter" parecafter 1
@@ -58,7 +58,7 @@ import "object_make" object_make
 ^import "spcfull" spcfull 1
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfullback" spcfullback 2
-^import "strchr_reverse" strchr_reverse 2
+^import "strchr_reverse" strchr_reverse 3
 ^import "strip" strip 3
 import "to_upper" to_upper
 ^import "translate_leftright_full" translate_leftright_full 7
@@ -1320,15 +1320,15 @@ function translate_var_full(ss start,ss oa,ss ?type)
 				if pointer=oa ##else is translate_one
 					#v class
 					ss afterindents;ss atarguments;ss cls
-					ss cursor
-					set cls translate_var_helper(start,#afterindents,#atarguments,#pointer,#cursor)
+					set cls translate_var_helper(start,#afterindents,#atarguments,#pointer)
 					if cls!=start
 						ss ?store;set store afterindents#;set afterindents# (Nullchar)
 						sd ?len
 						!xor len len ## o problem
+						ss cursor
 						set cursor translate_leftright_full(globalt.var_translate,start,#globalt.blank,cls,oa,globalt.a_page_switch,#len)
 						if cursor!=#globalt.blank
-							callret translate_var_by_type(type,cursor,len,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
+							callret translate_var_by_type(type,cursor,len,cls,cls,pointer,afterindents,store,atarguments,"VarCreateClass","VarCreateClassNamed","VarCreateClassAdded","VarCreateClassAddedNamed",start)
 						end
 					end
 				end
@@ -1344,13 +1344,22 @@ function translate_var_full(ss start,ss oa,ss ?type)
 end
 function translate_var_simple(ss indents,ss ?type)
 	ss cls;ss afterindents;ss atarguments;ss delim
-	ss cursor
-	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim,#cursor)
+	set cls translate_var_helper(indents,#afterindents,#atarguments,#delim)
 	if cls!=indents
-		ss ?atta;set atta mem_reverse(afterindents,cursor,#globalt.attachMovie,\globalt.attachMovie)
+		ss atta;set atta mem_reverse(afterindents,atarguments,#globalt.attachMovie,\globalt.attachMovie)
 		ss ?store
 		sd ?len
-		if atta!=(FALSE)
+
+		#[var ]b=attachMovie('a',...  or  [var ]b=createEmptyMovieClip('a',...
+		ss pointer
+		#these are set by translate_var_target, used only when it returns a target
+		ss parent;ss decl
+		char first#2;ss p_first^first #the target can start at afterindents, where the line is cut for indentation
+
+		vstr var_translate_simple="%s%s%s%s=new %s("
+		ss cursor
+		ss varname
+		if atta!=atarguments
 			ss name
 			set name quotafter(delim)
 			if name!=delim
@@ -1376,12 +1385,21 @@ function translate_var_simple(ss indents,ss ?type)
 				dec name
 				set name# (_)
 			end
+			set pointer translate_var_target(afterindents,atta,#decl,#varname,p_first,#parent)
 			set store afterindents#;set afterindents# (Nullchar)
+			if pointer=(NULL)
+				set decl #globalt.var_
+				set p_first# (Nullchar)
+				set pointer name
+				set varname name
+			else
+				set afterindents parent
+				set store afterindents#
+			end
 			set cursor# (Nullchar)
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%svar %s=new %s(",indents,name,cls)
+			set len snprintf(globalt.a_page_switch,(a_page_size),var_translate_simple,indents,decl,p_first,pointer,cls)
 			if len>0
 				if len<(a_page_size)
-					ss pointer
 					inc cursor
 					set pointer semicolafter(cursor)
 					if pointer!=cursor
@@ -1404,32 +1422,51 @@ function translate_var_simple(ss indents,ss ?type)
 						set pointer# (Nullchar)
 						add len 2
 
-						callret translate_var_by_type(type,globalt.a_page_switch,len,name,cursor,afterindents,store,atarguments,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
+						if p_first#!=(Nullchar)
+							set varname# p_first# #the cut for indentation can be on its first char
+						end
+						callret translate_var_by_type(type,globalt.a_page_switch,len,varname,name,cursor,afterindents,store,atta,"VarAttach","VarAttachNamed","VarAttachAdded","VarAttachAddedNamed",indents)
 					end
 				end
 			end
 		else #going on createEmptyMovieClip
+			set pointer translate_var_target(afterindents,atarguments,#decl,#varname,p_first,#parent)
 			set store afterindents#;set afterindents# (Nullchar)
-			!xor len len ## o problem
 			# DisplayObjectContainer will be with problems at html5, it's constructor is private, and claude says maybe will also break at flash runtime
-			set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,"flash.display.Sprite",globalt.a_page_switch,#len)
+			vstr createtype="flash.display.Sprite"
+			if pointer=(NULL)
+				!xor len len ## o problem
+				set cursor translate_leftright_full(globalt.var_translate,indents,#globalt.blank,cls,createtype,globalt.a_page_switch,#len)
+				set varname cls
+			else
+				set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%s=new %s();",indents,decl,p_first,pointer,createtype)
+				set cursor #globalt.blank
+				if len>0
+					if len<(a_page_size)
+						set cursor globalt.a_page_switch
+						set varname# p_first# #the cut for indentation can be on its first char
+						set afterindents parent
+						set store afterindents#
+					end
+				end
+			end
 			if cursor!=#globalt.blank
-				callret translate_var_by_type(type,cursor,len,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
+				callret translate_var_by_type(type,cursor,len,varname,cls,delim,afterindents,store,atarguments,"VarCreate","VarCreateNamed","VarCreateAdded","VarCreateAddedNamed",indents)
 			end
 		end
 	end
 	return indents
 end
-function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss afterindents,ss ?store,ss atarguments,ss ok1,ss ok2,ss ok3,ss ok4,ss start)
+function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss varname,ss name,ss pointer,ss afterindents,ss ?store,ss atarguments,ss ok1,ss ok2,ss ok3,ss ok4,ss start)
 	if type=(var_char)
 		call translated(ok1)
 		return cursor
 	end
 	if type=(nvar_char)
-		callret translate_var_named(cursor,len,name,pointer,ok2,start)
+		callret translate_var_named(cursor,len,varname,name,pointer,ok2,start)
 	end
 	ss has_dot
-	set has_dot strchr_reverse(atarguments,(Period))
+	set has_dot strchr_reverse(atarguments,afterindents,(Period))
 	ss d
 	if has_dot!=(NULL)
 		set afterindents# store
@@ -1449,7 +1486,7 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 	sd ?size=a_page_size
 	sub size len
 	sd ?ln
-	set ln snprintf(extra,size,"%s%s%s(%s);",afterindents,d,globalt.addChild,name)
+	set ln snprintf(extra,size,"%s%s%s(%s);",afterindents,d,globalt.addChild,varname)
 	if ln>0
 		if ln<size
 			if type=(Var_char)
@@ -1458,23 +1495,22 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss name,ss pointer,ss 
 			end
 			# nVar_char
 			add len ln
-			callret translate_var_named(cursor,len,name,pointer,ok4,start)
+			callret translate_var_named(cursor,len,varname,name,pointer,ok4,start)
 		end
 	end
 	return start
 end
-function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor,sv p_pointer)
+function translate_var_helper(ss indents,sv p_afterindents,sv p_atarguments,sv p_cursor)
 	ss cursor;set cursor spcfull(indents)
 	set p_afterindents# cursor
 	ss cls
 	inc cursor
 	ss pointer;set pointer pareoon(cursor)
 	if pointer!=cursor
-		set p_pointer# pointer
+		set p_atarguments# pointer
 		#inc pointer , (' will not work like that
 		set cls quoton(pointer)
 		if cls!=pointer
-			set p_atarguments# cls
 			inc cls
 			set cursor quoton(cls)
 			if cursor!=cls
@@ -1525,7 +1561,34 @@ function translate_var_arguments(ss start,ss out,sd p_len)
 	end
 	return out
 end
-function translate_var_named(ss cursor,sd ?len,ss oa,ss pointer,ss ok,ss bad_return)
+function translate_var_target(ss cursor,ss pointer,sv p_decl,sv p_varname,ss p_first,sv p_parent)
+	#line is: [var ]b=[parent.]attachMovie(  or  [var ]b=[parent.]createEmptyMovieClip(
+	#paren is where the call name is (or after it), the search for the '=' is only backward from there, so what is after the call (;x.a=1;) is never seen
+	#returns b (null terminated at its end) and sets p_parent to what is after the '=', p_decl to "var " or nothing, p_first to the first char of b
+	#returns NULL if there is no b=
+	set pointer strchr_reverse(pointer,cursor,(Equals))
+	if pointer!=(NULL)
+		sd ?c;set c strncmp(cursor,#globalt.var_,\globalt.var_-1)
+		if c=0
+			set p_decl# #globalt.var_
+			add cursor \globalt.var_-1
+		else
+			set p_decl# #globalt.blank
+		end
+		if cursor!=pointer
+			set pointer# (Nullchar)
+			inc pointer
+			set p_parent# pointer
+			set p_first# cursor#
+			inc p_first;set p_first# (Nullchar)
+			set p_varname# cursor
+			inc cursor
+			return cursor
+		end
+	end
+	return (NULL)
+end
+function translate_var_named(ss cursor,sd ?len,ss oa,ss nstr,ss pointer,ss ok,ss bad_return)
 	ss end
 	set end commaon(pointer)
 	set end# (Nullchar)
@@ -1533,7 +1596,7 @@ function translate_var_named(ss cursor,sd ?len,ss oa,ss pointer,ss ok,ss bad_ret
 	add extra len
 	sd ?size=a_page_size
 	sub size len
-	set len snprintf(extra,size,"%s.name='%s'%s;",oa,oa,pointer)
+	set len snprintf(extra,size,"%s.name='%s'%s;",oa,nstr,pointer)
 	if len>0
 		if len<size
 			call translated(ok)

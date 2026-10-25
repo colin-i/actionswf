@@ -137,6 +137,12 @@ w.attachMovie('q','_p',d);//3 V
 var q=attachMovie('name','q'+2,getNext);//3w
 create('q'+1,d);//3 w
 create('q'+1,d);//3 w flash
+var a=create('q'+1,d);//3W
+a=create('q'+1,d);//3W
+a=z.create('q'+1,d);//3W
+var a=attachMovie('w','q'+1,d);//3W
+a=attachMovie('w','q'+1,d);//3W
+a=z.attachMovie('w','q'+1,d);//3W
 w.attachMovie('q','_p'+1,d);//3 W flash
 _//3 x+s
 _qtyty//3z wer ty+s

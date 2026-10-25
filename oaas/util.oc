@@ -290,32 +290,30 @@ function object_com(ss name,ss prop,ss value,ss end,sv pbuffer,sd ?size)
 	return 0
 end
 
-function strchr_reverse(ss s,ss ?c)
-	whiletrue
+function strchr_reverse(ss s,ss e,ss ?c)
+	while s!=e
 		dec s
-		if s#=(Nullchar)
-			return (NULL)
-		end
 		if s#=c
 			return s
 		end
 	end
+	return (NULL)
 end
 function mem_reverse(ss start,ss end,ss s,ss ?sz)
-	ss a;set a s
+	ss a;set a end
 	add s sz
 	while end!=start
 		dec end
 		dec s
 		if end#!=s#
-			return (FALSE)
+			return a
 		end
 		dec sz
 		if sz=0
-			return (TRUE)
+			return end
 		end
 	end
-	return (FALSE)
+	return a
 end
 
 function var_advance(ss cursor,sv out)
