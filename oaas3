@@ -393,85 +393,92 @@ if not os.environ.get(skip_src):
 			text=sfile.readlines()
 		if not f_d:
 			with open(hx_ext(f),'ab') as dfile: #haxe will not do for .as
-				mode=0
-				for line in text:
-					chars = bytearray(len(line.encode())) #'utf-8'
-					pos = 0
-					for c in line:
-						ch=c.encode()
-						positions=len(ch)
-						for j in range(0,positions):
-							chars[pos]=ch[j]
-							pos+=1
-						if mode==0:
-							if c==a1:
-								mode=1
-							elif dual_mode:
+				if text: #needed since text[-1][-1]
+					mode=0
+					for line in text:
+						chars = bytearray(len(line.encode())) #'utf-8'
+						pos = 0
+						for c in line:
+							ch=c.encode()
+							positions=len(ch)
+							for j in range(0,positions):
+								chars[pos]=ch[j]
+								pos+=1
+							if mode==0:
+								if c==a1:
+									mode=1
+								elif dual_mode:
+									if c==b1b:
+										mode=7
+							elif mode==1:
+								if c==a2a:
+									mode=2
+								elif c==a2b:
+									mode=3
+								else:
+									mode=0
+							elif mode==2 or mode==3:
+								if c==a3:
+									if mode==2:
+										xpos=singleline_backjump_start
+									else:
+										xpos=multiline_backjump_start
+										if lib:
+											lib.dualmode_reset() #here is the less intensive place to reset a one line dual mode, can also signal at startline if is mode 4 or 6 but is intensive
+									stored=chars[:pos-xpos]
+									mode*=2
+									pos=0    #notice: both //3 and /*3 will reset the line
+								else:
+									mode=0
+							elif mode==6:
 								if c==b1b:
 									mode=7
-						elif mode==1:
-							if c==a2a:
-								mode=2
-							elif c==a2b:
-								mode=3
-							else:
-								mode=0
-						elif mode==2 or mode==3:
-							if c==a3:
-								if mode==2:
-									xpos=singleline_backjump_start
+							elif mode==7:
+								if c==b2b:
+									mode=0
+									pos-=multiline_backjump
+									if dual_mode: #still inside the dual mode(^): this last line (before the closing */) is as3 too, do not pass it to liboaas
+										dfile.write(bytes(chars[:pos])+os.linesep.encode())
+									else:
+										singleline()
+									pos=0
+									was_multiline=True
+									dual_mode=False
+								elif dual_mode:
+									mode=0
 								else:
-									xpos=multiline_backjump_start
-									if lib:
-										lib.dualmode_reset() #here is the less intensive place to reset a one line dual mode, can also signal at startline if is mode 4 or 6 but is intensive
-								stored=chars[:pos-xpos]
-								mode*=2
-								pos=0    #notice: both //3 and /*3 will reset the line
-							else:
-								mode=0
+									mode=6
+						if mode==4:
+							mode=0
+							singleline()
+							if lib:
+								single_mode=lib.singlemode()
+								single_mode=single_mode[0]
 						elif mode==6:
-							if c==b1b:
-								mode=7
-						elif mode==7:
-							if c==b2b:
-								mode=0
-								pos-=multiline_backjump
-								if dual_mode: #still inside the dual mode(^): this last line (before the closing */) is as3 too, do not pass it to liboaas
-									dfile.write(bytes(chars[:pos])+os.linesep.encode())
-								else:
-									singleline()
-								pos=0
-								was_multiline=True
-								dual_mode=False
-							elif dual_mode:
-								mode=0
-							else:
-								mode=6
-					if mode==4:
-						mode=0
-						singleline()
-						if lib:
-							single_mode=lib.singlemode()
-							single_mode=single_mode[0]
-					elif mode==6:
-						singleline()
-						if lib:
-							dual_mode=lib.dualmode() #c_char
-							dual_mode=dual_mode[0] #good at mode 7 to 6, else can be None/pointer
-							if dual_mode:
-								mode=0
-					else:
-						if single_mode:
-							dfile.write(os.linesep.encode())
+							singleline()
+							if lib:
+								dual_mode=lib.dualmode() #c_char
+								dual_mode=dual_mode[0] #good at mode 7 to 6, else can be None/pointer
+								if dual_mode:
+									mode=0
 						else:
-							bf=chars[:pos]
-							if not was_multiline:
-								dfile.write(bf)
+							if single_mode:
+								dfile.write(os.linesep.encode())
 							else:
-								bf=bf.rstrip(terminations.encode()) #was already added one separator
-								dfile.write(bf)
-								was_multiline=False
-				#here can test if multiline was closed
+								bf=chars[:pos]
+								if not was_multiline:
+									dfile.write(bf)
+								else:
+									bf=bf.rstrip(terminations.encode()) #was already added one separator
+									dfile.write(bf)
+									was_multiline=False
+					if text[-1][-1] not in terminations:
+						dfile.flush()
+						with open(hx_ext(f), "rb") as generated:
+							generated.seek(-1, os.SEEK_END)
+							if generated.read(1) not in (b"\n", b"\r"):
+								dfile.write(os.linesep.encode())
+					#here can test if multiline was closed
 		else:
 			mod = get_module_insens(f)
 			folder = Path(OACACHE)
