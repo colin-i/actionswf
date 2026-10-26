@@ -22,6 +22,7 @@ char rollout_string="RollOut"^
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
+vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 
 importx "free" free
@@ -1007,13 +1008,11 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required,ss name
 	ss pointer
 	set pointer spcfull(start)
 	set pointer# (Nullchar)
-	ss s1;ss s2
+	ss s
 	if stage_required=(TRUE)
-		set s1 globalt.stage
-		set s2 globalt.dot
+		set s globalt.staged
 	else
-		set s1 #globalt.blank
-		set s2 #globalt.blank
+		set s #globalt.blank
 	end
 	inc value
 
@@ -1034,7 +1033,7 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required,ss name
 	else
 		set kind "add"
 	end
-	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%sEventListener(flash.events.%sEvent.%s,%s%s",start,s1,s2,kind,type,ev,value,ending)
+	set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%sEventListener(flash.events.%sEvent.%s,%s%s",start,s,kind,type,ev,value,ending)
 	if len>0
 		if len<(a_page_size)
 			return globalt.a_page_switch
@@ -1044,15 +1043,26 @@ function translate_on(ss start,ss type,ss ev,ss value,ss ?stage_required,ss name
 end
 
 function translate_Oneve(ss indents)
-	vstr event_call="this.onRollOut();"
+	vstr event_call="onRollOut();"
 	ss found
 	set found strstr(indents,event_call)
 	if found!=(NULL)
 		ss cursor
 		set cursor spcfull(indents)
-		set cursor# (Nullchar)
+		ss pointer
+		if cursor=found
+			if globalt.mainmod_bool=(TRUE)
+				set pointer globalt.staged
+			else
+				set pointer #globalt.blank
+			end
+			set cursor# (Nullchar)
+		else
+			set pointer #globalt.blank
+			set found# (Nullchar)
+		end
 		sd ?len
-		set len snprintf(globalt.a_page_switch,(a_page_size),"%sthis.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.ROLL_OUT,false));",indents)
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%sdispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.ROLL_OUT,false));",indents,pointer)
 		if len>0
 			if len<(a_page_size)
 				call translated("OnCall")
@@ -1541,18 +1551,15 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss varname,ss name,ss 
 	end
 	ss has_dot
 	set has_dot strchr_reverse(atarguments,afterindents,(Period))
-	ss d
 	if has_dot!=(NULL)
 		set afterindents# store
+		inc has_dot
 		set has_dot# (Nullchar)
-		set d globalt.dot
 	else
 		if globalt.mainmod_bool=(TRUE)
-			set afterindents globalt.stage
-			set d globalt.dot
+			set afterindents globalt.staged
 		else
 			set afterindents #globalt.blank
-			set d #globalt.blank
 		end
 	end
 	ss extra;set extra cursor
@@ -1560,7 +1567,7 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss varname,ss name,ss 
 	sd ?size=a_page_size
 	sub size len
 	sd ?ln
-	set ln snprintf(extra,size,"%s%s%s(%s);",afterindents,d,globalt.addChild,varname)
+	set ln snprintf(extra,size,"%s%s(%s);",afterindents,globalt.addChild,varname)
 	if ln>0
 		if ln<size
 			if type=(Var_char)

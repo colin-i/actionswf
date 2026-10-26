@@ -2,7 +2,6 @@
 vstr addChild="addChild"
 char blank=""
 vstr class="class"
-vstr dot="."
 vstr double_s="%s%s"
 char func="function"
 char nw="new"

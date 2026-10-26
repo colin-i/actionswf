@@ -257,8 +257,9 @@ function translate_one_add(ss buffer,ss indents,ss in,ss oa)
 	inc oa
 	set oa spcfull(oa)
 	if oa#!=(Nullchar)
-		ss cursor;ss ext;ss pointer;ss ?reminder
+		ss cursor;ss pointer;ss ?reminder
 		set cursor spcfullafters(oa)
+		ss ext
 		if cursor!=oa
 			set pointer spcfull(cursor)
 			if pointer#=(Atsymbol)
@@ -268,11 +269,11 @@ function translate_one_add(ss buffer,ss indents,ss in,ss oa)
 				end
 				set pointer globalo.stage
 			end
+			set ext "."
 			set reminder cursor#;set cursor# (Nullchar)
-			set ext globalo.dot
 		else
 			set pointer #globalo.blank
-			set ext pointer
+			set ext #globalo.blank
 			set reminder (Nullchar)
 		end
 		set o_a# (Nullchar)
