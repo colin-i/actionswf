@@ -216,7 +216,7 @@ if not os.environ.get(skip_orig):
 			origf = Path(f)
 		mirror = Path(files_mirror[i])
 		src = Path(files_src[i])
-		if not mirror.exists():
+		if not mirror.exists() or not src.exists():
 			# create parent folders
 			mirror.parent.mkdir(parents=True, exist_ok=True)
 			src.parent.mkdir(parents=True, exist_ok=True)
@@ -845,7 +845,7 @@ if not os.environ.get('skip_comp'):
 									if values:
 										value,line,positions,pp,firstline=values
 										if verbose:
-											print(str(kind)+' '+pp+str(line)+' '+value+('' if not firstline else (' '+str(firstline))))
+											print(str(kind)+' '+pp+str(line)+' '+value) #+('' if not firstline else (' '+str(firstline))) #firstline is inside pp
 										#now is like: fix one error will fix another 4
 										if module in module_files:
 											if module not in file_cache:

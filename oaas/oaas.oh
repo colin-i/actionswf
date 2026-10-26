@@ -1,6 +1,9 @@
 
 einclude "../include/common.h" "../include/common.oh"
 
+Const E=0x45
+const O=0x4F
+
 Const f_low=0x66
 Const j_low=0x6A
 Const k_low=0x6B
@@ -48,11 +51,13 @@ const bitmap_char=m_low
 const childcast_char=i_low
 const compare_char=k_low
 const evfunc_char=e_low
+const Evfunc_char=E
 const fill_char=l_low
 const insert_char=z_low
 const new_char=n_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low
+const Onev_char=O
 const oreplace_char=p_low
 const rect_char=r_low
 const search_char=s_low

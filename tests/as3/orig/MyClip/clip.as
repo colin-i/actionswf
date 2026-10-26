@@ -72,6 +72,10 @@
 		onPress = onClick;
 
 		onEnterFrame = on_Enter_Frame;
+
+		//tests
+		onOut();
+		this.onRollOut();//3 O
 	}
 	//3x
 	var c=%u;

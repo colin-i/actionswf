@@ -85,6 +85,10 @@ call actionf_sprite(presprite,#buf,"
 		onPress = onClick;
 
 		onEnterFrame = on_Enter_Frame;
+
+		//tests
+		onOut();
+		this.onRollOut();//3 O
 	}
 	//3x
 	var c=%u;
@@ -277,6 +281,3 @@ main();
 
 call swf_done()
 call exit(0)
-
-
-

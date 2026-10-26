@@ -147,6 +147,13 @@ function solver2(ss value)
 		call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
 		return #globals.outvalue
 	end
+	char Evfunc_string="Not enough arguments, expected e:Unknown<0>"
+	set c strcmp(value,#Evfunc_string)
+	if c=0
+		set globals.firstline (TRUE)
+		call sprintf(#globals.outvalue,"%c",(Evfunc_char))
+		return #globals.outvalue
+	end
 	char align_string="String should be flash.text.TextFormatAlign"^
 	set c strncmp(value,#align_string,\.align_string)
 	if c=0
@@ -330,37 +337,37 @@ function solver7(ss value,ss after)
 		set cursor enterframe_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor press_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor mousedown_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor mousemove_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor mouseup_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor rollover_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 		set cursor rollout_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			callret solver7_on(value,z,after)
 		end
 	end
 	return (NULL)
@@ -373,7 +380,10 @@ function solver7_var(ss after)
 	end
 	return (nVar_char)
 end
-function solver7_on(ss value,ss ?z)
+function solver7_on(ss value,ss ?z,ss after)
+	if after#=(Openparenthesis) # this is the newgame.onRollOut() case
+		return (NULL)
+	end
 	set globals.stored_char (onev_char)
 	callret solver_endb(value,z)
 end

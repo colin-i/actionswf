@@ -23,7 +23,7 @@ import "untranslated" untranslated
 #                     --
 #a-cd fg i  -m -- -- -vw
 # b-defghijklmnop rstuvwx z
-#                     VW
+#    E         O      VW
 #                q       y
 #also at the end
 
@@ -362,6 +362,7 @@ closing
 Comment
 Compare
 Event
+EventPass
 Fill
 Function
 FunctionMorph
@@ -370,6 +371,7 @@ Import
 New
 Object
 On
+OnCall
 Public
 Rect
 Replace
