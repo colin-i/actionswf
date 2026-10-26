@@ -72,6 +72,9 @@ a Main*/
 			trace('this is from on mouse up');
 		}//3);
 
+		//O
+		onRollOut();//3 O
+
 		//3!!as2 only
 		trace('only in as2');//3!!
 		trace('only in as2, one line');//3!
