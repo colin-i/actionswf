@@ -201,6 +201,9 @@ a Main*/
 		//O
 		onRollOut();//3 O
 
+		//z
+		var so_keys=SharedObject.getLocal('keys');
+
 		//3!!as2 only
 		trace('only in as2');//3!!
 		trace('only in as2, one line');//3!

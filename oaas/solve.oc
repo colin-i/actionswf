@@ -5,7 +5,8 @@ einclude "oaas.h" "oaas.oh"
 
 #multithread unsafe
 char stored_char#1
-charx outvalue#1+11+1+10+1 ;#zflash.text. TextFormat\0
+charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
+#                            zflash.net. SharedObject\0
 #                            gDynamic
 char firstline=FALSE
 #
@@ -71,17 +72,33 @@ function solver1(ss value)
 	set c strncmp(value,#flash_string,\.flash_string-1)
 	if c=0
 		add value \.flash_string-1
+
+		char flashnet_string="net."
+		set c strncmp(value,#flashnet_string,\.flashnet_string-1) #strcmp will not work, value is not terminated here
+		if c=0
+			add value \.flashnet_string-1
+			char sharedobject_string="SharedObject"
+			set c strcmp(value,#sharedobject_string)
+			if c=0
+				call sprintf(#globals.outvalue,"%c%s%s %s",(insert_char),#flash_string,#flashnet_string,#sharedobject_string)
+				return #globals.outvalue ##after a strcmp. solver_end is not required
+			end
+			return (NULL)
+		end
+
 		char flashtext_string="text."
 		set c strncmp(value,#flashtext_string,\.flashtext_string-1)
 		if c=0
 			add value \.flashtext_string-1
 			char textformat_string="TextFormat"
-			set c strcmp(value,#textformat_string) #,\.textformat_string-1)
+			set c strcmp(value,#textformat_string)
 			if c=0
 				call sprintf(#globals.outvalue,"%c%s%s %s",(insert_char),#flash_string,#flashtext_string,#textformat_string)
-				return #globals.outvalue ##after a strcmp. solver_end is not required
+				return #globals.outvalue
 			end
+			return (NULL)
 		end
+
 		char object_string="utils.Object"^
 		set c strncmp(value,#object_string,\.object_string)
 		if c=0
@@ -91,7 +108,7 @@ function solver1(ss value)
 	end
 	return (NULL)
 end
-function solver2(ss value)
+function solver2(ss value,ss after)
 	sd ?c
 	char arracc_string="Array access is not allowed on flash.display."^
 	set c strncmp(value,#arracc_string,\.arracc_string) #with null to setFlag/return
@@ -125,13 +142,14 @@ function solver2(ss value)
 	if c=0
 		add value \.class_string
 		call var_advance(value,#value)
-		char cannotcall_string="> cannot be called"
+		char cannotcall_string="> cannot be called"  #with null to setFlag/return
 		set c strcmp(value,#cannotcall_string)
 		if c=0
 			set globals.firstline (TRUE)
 			call sprintf(#globals.outvalue,"%c",(new_char))
 			return #globals.outvalue
 		end
+		return (NULL)
 	end
 	char this_string="Cannot access this from a static function"
 	set c strcmp(value,#this_string) #with null to setFlag/return
@@ -143,11 +161,14 @@ function solver2(ss value)
 	char compare_string="Int should be Bool" #with null to setFlag/return
 	set c strcmp(value,#compare_string)
 	if c=0
-		set globals.firstline (TRUE)
-		call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
-		return #globals.outvalue
+		if after#=(Closeparenthesis)
+			set globals.firstline (TRUE)
+			call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
+			return #globals.outvalue
+		end
+		return (NULL)
 	end
-	char Evfunc_string="Not enough arguments, expected e:Unknown<0>"
+	char Evfunc_string="Not enough arguments, expected e:Unknown<0>" #with null to setFlag/return
 	set c strcmp(value,#Evfunc_string)
 	if c=0
 		set globals.firstline (TRUE)
@@ -208,7 +229,7 @@ function solver4(ss value)
 	end
 	return (NULL)
 end
-function solver7(ss value,ss after)
+function solver7(ss value,ss before)
 	sd ?c
 	if value#=(usc_pref)
 		inc value
@@ -247,7 +268,7 @@ function solver7(ss value,ss after)
 	set cursor attachMovie_string_get(#z)
 	set c strncmp(value,cursor,z)
 	if c=0
-		set globals.stored_char solver7_var(after)
+		set globals.stored_char solver7_var(before)
 		callret solver_endb(value,z)
 	end
 	char bfil_string="begin"^
@@ -274,7 +295,7 @@ function solver7(ss value,ss after)
 		char emclip_string="EmptyMovieClip"^
 		set c strncmp(value,#emclip_string,\.emclip_string)
 		if c=0
-			set globals.stored_char solver7_var(after)
+			set globals.stored_char solver7_var(before)
 			callret solver_endb(value,\.emclip_string)
 		end
 		char text_string="TextField"^
@@ -316,13 +337,13 @@ function solver7(ss value,ss after)
 	set c strncmp(value,#globals.stage_string,\globals.stage_string)
 	if c=0
 		char w=".w"^
-		set c strncmp(after,#w,\.w)
+		set c strncmp(before,#w,\.w)
 		if c=0
 			call sprintf(#globals.outvalue,"%cw",(search_char))
 			callret solver_end(value,\globals.stage_string)
 		end
 		char h=".h"^
-		set c strncmp(after,#h,\.h)
+		set c strncmp(before,#h,\.h)
 		if c=0
 			call sprintf(#globals.outvalue,"%ch",(search_char))
 			callret solver_end(value,\globals.stage_string)
@@ -337,51 +358,51 @@ function solver7(ss value,ss after)
 		set cursor enterframe_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor press_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor mousedown_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor mousemove_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor mouseup_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor rollover_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 		set cursor rollout_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,after)
+			callret solver7_on(value,z,before)
 		end
 	end
 	return (NULL)
 end
-function solver7_var(ss after)
+function solver7_var(ss before)
 	ss a
-	set a strstr(after," ,")
+	set a strstr(before," ,")
 	if a=(NULL)
 		return (Var_char)
 	end
 	return (nVar_char)
 end
-function solver7_on(ss value,ss ?z,ss after)
-	if after#=(Openparenthesis) # this is the newgame.onRollOut() case
+function solver7_on(ss value,ss ?z,ss before)
+	if before#=(Openparenthesis) # this is the newgame.onRollOut() case
 		return (NULL)
 	end
 	set globals.stored_char (onev_char)

@@ -872,11 +872,15 @@ if not os.environ.get('skip_comp'):
 												if kind==4:
 													solved = lib.solve4(value.encode())
 												elif kind==2:
-													solved = lib.solve2(value.encode())
-													if solved: # it is no having ""
-														if lib.firstline()[0]:
-															if firstline: #at compare without exclamations is from if, not this case
+													#was demonstrated that it also can not have a firstline
+													if firstline: #at compare without exclamations is from if, not this case
+														solved = lib.solve2(value.encode(),lines[firstline][d["range"]["end"]["character"]:])#ep25c so_keys.data[key_id]=code; is triggered to early
+														if solved: # it is no having ""
+															if lib.firstline()[0]:
+															#if firstline: #at compare without exclamations is from if, not this case
 																line=firstline
+													else:
+														solved = lib.solve2(value.encode())
 												elif kind==1:
 													solved = lib.solve1(value.encode())
 
