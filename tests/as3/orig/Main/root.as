@@ -71,9 +71,8 @@ a Main*/
 		onMouseUp=function(){
 			trace('this is from on mouse up');
 		}//3);
-
-		//O
-		onRollOut();//3 O
+		//on call
+		onRollOut();
 
 		//z
 		var so_keys=SharedObject.getLocal('keys');

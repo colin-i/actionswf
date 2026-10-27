@@ -75,8 +75,6 @@
 
 		//tests
 		onOut();
-		this.onRollOut();//3 O
-		onRollOut();//3 O
 	}
 	//3x
 	var c=%u;
