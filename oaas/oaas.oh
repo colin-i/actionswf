@@ -34,7 +34,6 @@ const arrconstr_char=u_low
 
 #translate solve
 Const E=0x45
-const O=0x4F
 Const j_low=0x6A
 Const k_low=0x6B
 Const m_low=0x6D
@@ -55,7 +54,6 @@ const insert_char=z_low
 const new_char=n_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low
-const Onev_char=O
 const oreplace_char=p_low
 const rect_char=r_low
 const search_char=s_low

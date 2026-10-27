@@ -358,37 +358,37 @@ function solver7(ss value,ss before)
 		set cursor enterframe_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor press_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor mousedown_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor mousemove_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor mouseup_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor rollover_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 		set cursor rollout_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z,before)
+			callret solver7_on(value,z)
 		end
 	end
 	return (NULL)
@@ -401,10 +401,10 @@ function solver7_var(ss before)
 	end
 	return (nVar_char)
 end
-function solver7_on(ss value,ss ?z,ss before)
-	if before#=(Openparenthesis) # this is the newgame.onRollOut() case
-		return (NULL)
-	end
+function solver7_on(ss value,ss ?z) #,ss before)
+	#if before#=(Openparenthesis) # this is the newgame.onRollOut() case, was merged into 'o'
+	#	return (NULL)
+	#end
 	set globals.stored_char (onev_char)
 	callret solver_endb(value,z)
 end
