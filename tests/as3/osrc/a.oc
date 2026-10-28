@@ -82,7 +82,7 @@ call actionf_sprite(presprite,#buf,"
 		useHandCursor= true;//3 bm
 		onRollOver = onOver;
 		onRollOut = onOut;
-		onPress = onClick;
+		onRelease = onClick;
 
 		onEnterFrame = on_Enter_Frame;
 
@@ -91,6 +91,11 @@ call actionf_sprite(presprite,#buf,"
 		onOut();
 		//l
 		lineStyle();
+		//o
+		function onMD(){
+			trace('as2 as3 diff');
+		}
+		onMouseDown=onMD;
 	}
 	//3x
 	var c=%u;
@@ -288,9 +293,4 @@ main();
 
 call swf_done()
 call exit(0)
-
-
-
-
-
 

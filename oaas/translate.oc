@@ -12,7 +12,7 @@ charx mainmod_bool#1
 #
 char on_string="on"^
 char enterframe_string="EnterFrame"^
-char press_string="Press"^
+char release_string="Release"^
 char mousedown_string="MouseDown"^
 char mousemove_string="MouseMove"^
 char mouseup_string="MouseUp"^
@@ -75,9 +75,9 @@ function enterframe_string_get(ss z)
 	set z# \globalt.enterframe_string
 	return #globalt.enterframe_string
 end
-function press_string_get(ss z)
-	set z# \globalt.press_string
-	return #globalt.press_string
+function release_string_get(ss z)
+	set z# \globalt.release_string
+	return #globalt.release_string
 end
 function mousedown_string_get(ss z)
 	set z# \globalt.mousedown_string
@@ -973,7 +973,7 @@ function translate_oneve(ss start,ss name)
 					callret translate_on(start,stg,#globalt.blank,"ENTER_FRAME",cursor,name,is_call)
 				end
 				vstr mous="Mouse"
-				set c strncmp(pointer,#globalt.press_string,\globalt.press_string)
+				set c strncmp(pointer,#globalt.release_string,\globalt.release_string)
 				if c=0
 					callret translate_on(start,stg,mous,"CLICK",cursor,name,is_call)
 				end
@@ -985,6 +985,10 @@ function translate_oneve(ss start,ss name)
 				if c=0
 					callret translate_on(start,stg,mous,"MOUSE_MOVE",cursor,name,is_call)
 				end
+				set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
+				if c=0
+					callret translate_on(start,stg,mous,"MOUSE_UP",cursor,name,is_call)
+				end
 				set c strncmp(pointer,#globalt.rollover_string,\globalt.rollover_string)
 				if c=0
 					callret translate_on(start,stg,mous,"ROLL_OVER",cursor,name,is_call)
@@ -992,10 +996,6 @@ function translate_oneve(ss start,ss name)
 				set c strncmp(pointer,#globalt.rollout_string,\globalt.rollout_string)
 				if c=0
 					callret translate_on(start,stg,mous,"ROLL_OUT",cursor,name,is_call)
-				end
-				set c strncmp(pointer,#globalt.mouseup_string,\globalt.mouseup_string)
-				if c=0
-					callret translate_on(start,stg,mous,"MOUSE_UP",cursor,name,is_call)
 				end
 				break # on is unique at the moment
 			end

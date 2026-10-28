@@ -69,7 +69,7 @@
 		useHandCursor= true;//3 bm
 		onRollOver = onOver;
 		onRollOut = onOut;
-		onPress = onClick;
+		onRelease = onClick;
 
 		onEnterFrame = on_Enter_Frame;
 
@@ -78,6 +78,11 @@
 		onOut();
 		//l
 		lineStyle();
+		//o
+		function onMD(){
+			trace('as2 as3 diff');
+		}
+		onMouseDown=onMD;
 	}
 	//3x
 	var c=%u;
