@@ -320,11 +320,23 @@ function solver7(ss value,ss before)
 	end
 	if value#=(l_low)
 		inc value
-		char rect_string="ineTo"^
-		set c strncmp(value,#rect_string,\.rect_string)
+		char line_string="ine"^
+		set c strncmp(value,#line_string,\.line_string)
 		if c=0
-			set globals.stored_char (rect_char)
-			callret solver_endb(value,\.rect_string)
+			add value (\.line_string)
+			char style_string="Style"^
+			set c strncmp(value,#style_string,\.style_string)
+			if c=0
+				set globals.stored_char (fill_char)
+				callret solver_endb(value,\.style_string)
+			end
+			char rect_string="To"^
+			set c strncmp(value,#rect_string,\.rect_string)
+			if c=0
+				set globals.stored_char (rect_char)
+				callret solver_endb(value,\.rect_string)
+			end
+			return (NULL)
 		end
 		char bitmap_string="oadBitmap"^
 		set c strncmp(value,#bitmap_string,\.bitmap_string)

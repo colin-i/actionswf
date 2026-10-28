@@ -74,7 +74,10 @@
 		onEnterFrame = on_Enter_Frame;
 
 		//tests
+		//E
 		onOut();
+		//l
+		lineStyle();
 	}
 	//3x
 	var c=%u;

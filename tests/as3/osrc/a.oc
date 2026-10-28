@@ -87,7 +87,10 @@ call actionf_sprite(presprite,#buf,"
 		onEnterFrame = on_Enter_Frame;
 
 		//tests
+		//E
 		onOut();
+		//l
+		lineStyle();
 	}
 	//3x
 	var c=%u;
@@ -285,9 +288,6 @@ main();
 
 call swf_done()
 call exit(0)
-
-
-
 
 
 

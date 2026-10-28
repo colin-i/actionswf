@@ -852,7 +852,12 @@ function translate_fill(ss indents,ss name)
 	whiletrue
 		if chr!=(b_low)
 			if chr!=(e_low)
-				break
+				sd ?c
+				char line="lineS"^
+				set c strncmp(cursor,#line,\.line) #too many conflicts at //3, and is safer
+				if c!=0
+					break
+				end
 			end
 		end
 		set cursor# (Nullchar)
