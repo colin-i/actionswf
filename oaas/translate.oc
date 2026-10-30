@@ -22,6 +22,7 @@ char rollout_string="RollOut"^
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
+vstr this="this"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 
@@ -275,6 +276,15 @@ function translate_two(ss start,ss in)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
+		end
+	elseif chr=(q_low)
+		set cursor translate_remmc(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
 		end
 	elseif chr=(rect_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
@@ -1068,6 +1078,36 @@ function translate_object(ss start,ss oa)
 	return oa
 end
 
+function translate_remmc(ss indents)
+	ss cursor;set cursor spcfull(indents)
+	vstr rmc="removeMovieClip"
+	ss pointer;set pointer strstr(cursor,rmc)
+	if pointer!=(NULL)
+		ss child;ss frontchild
+		if pointer=cursor
+			set frontchild globalt.this
+			set child globalt.this
+		else
+			set frontchild indents
+			set child cursor
+			set cursor strchr_reverse(pointer,cursor,(Period))
+			if cursor=(NULL)
+				return indents
+			end
+		end
+		set cursor# (Nullchar)
+		sd ?len
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s.parent.removeChild(%s);",frontchild,child);
+		if len>0
+			if len<(a_page_size)
+				call translated("RemMC")
+				return globalt.a_page_switch
+			end
+		end
+	end
+	return indents
+end
+
 function translate_rect(ss indents,ss name)
 	ss cursor;set cursor spcfull(indents)
 	if name#=(Nullchar)
@@ -1260,7 +1300,7 @@ function translate_search_base(ss start,ss ptypes)
 	end
 	call search_replace(2,#start,cursor,ptypes,"Stage.w","stage.stageW")
 	call search_replace(4,#start,cursor,ptypes,"Stage.h","stage.stageH")
-	call search_replace(8,#start,cursor,ptypes,"this",globalt.stage)
+	call search_replace(8,#start,cursor,ptypes,globalt.this,globalt.stage)
 	return start
 end
 

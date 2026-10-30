@@ -38,6 +38,10 @@
 	// Handlers
 	function onClick(){
 		trace('Button clicked!');
+		/*3^
+		onEnterFrame=undefined;//3_on_Enter_Frame
+		*/
+		removeMovieClip();//3q
 	}
 	function onOver(){
 		_alpha= 80;
