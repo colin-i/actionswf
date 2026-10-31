@@ -1217,7 +1217,7 @@ function translate_srch(ss start,ss oa)
 	return oa
 end
 function translate_srch_all(ss start)
-	ss ?t=0xf
+	sw ?t=0x1f
 	ss cursor
 	set cursor translate_search_base(start,#t)
 	if t=0
@@ -1229,7 +1229,7 @@ function translate_search(ss start,ss oa)
 	ss cursor
 	#set cursor spcfull(oa) #at py there is a comparison that is not spcfull there
 	set cursor oa
-	ss ?types=0
+	sw ?types=0
 	while cursor#!=(Nullchar)
 		if cursor#=(_)
 			or types 1
@@ -1251,12 +1251,17 @@ function translate_search(ss start,ss oa)
 			inc cursor
 			continue
 		end
+		if cursor#=(k_low)
+			or types 0x10
+			inc cursor
+			continue
+		end
 		if cursor#=(switch_char)
 			break
 		end
 		return oa
 	end
-	ss ?t;set t types
+	sw ?t;set t types
 	ss pointer
 	set pointer translate_search_base(start,#types)
 	if types=t
@@ -1271,7 +1276,7 @@ function translate_search(ss start,ss oa)
 	end
 	return oa
 end
-function search_replace(ss ?t,svu p_start,ss cursor,ss ptypes,ss from,ss to)
+function search_replace(sw ?t,svu p_start,ss cursor,sw ptypes,ss from,ss to)
 	and t ptypes#
 	if t!=0
 		ss start
@@ -1289,14 +1294,14 @@ function search_replace(ss ?t,svu p_start,ss cursor,ss ptypes,ss from,ss to)
 		if str!=pointer ##is ok to compare even if is free
 			set p_start# str
 		else
-			xor ptypes# 2
+			xor ptypes# t
 		end
 	end
 end
-function translate_search_base(ss start,ss ptypes)
+function translate_search_base(ss start,sw ptypes)
 	ss cursor;set cursor start
 	ss str
-	ss ?t=1
+	sw ?t=1
 	and t ptypes#
 	if t!=0
 		set str strip(start,globalt.a_page_switch,(a_page_size)) #can't recognize at search all if is good or bad without different buffer
@@ -1309,6 +1314,7 @@ function translate_search_base(ss start,ss ptypes)
 	call search_replace(2,#start,cursor,ptypes,"Stage.w","stage.stageW")
 	call search_replace(4,#start,cursor,ptypes,"Stage.h","stage.stageH")
 	call search_replace(8,#start,cursor,ptypes,globalt.this,globalt.stage)
+	call search_replace(0x10,#start,cursor,ptypes,"Key","flash.ui.Keyboard")
 	return start
 end
 

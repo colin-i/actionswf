@@ -64,6 +64,9 @@ a Main*/
 		//attach undefined
 		attachMovie('flash.display.Shape',undefined,getNextHighestDepth());
 
+		//key
+		var k=Key.ENTER;//3sk
+
 		//on
 		onMouseDown=function(){
 			trace('this is from on mouse down');
