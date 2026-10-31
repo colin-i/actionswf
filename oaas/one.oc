@@ -22,9 +22,8 @@ import "untranslated" untranslated
 
 #                     --
 #a-cd fg i  -m -- -- -vw
-# b-defghijklmnopqrstuvwx z
+# b-defghijklmnopqrstuvwxyz
 #    E                VW
-#                        y
 #also at the end
 
 #a	s [s]
@@ -362,6 +361,7 @@ Class
 closing
 Comment
 Compare
+Delete
 Event
 EventPass
 Fill

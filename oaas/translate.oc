@@ -159,7 +159,8 @@ end
 #u	=new Array(...)
 #vwVW	''''   ;=;=; ...
 #x	static. like new
-#z	replacing a to b
+#y	a b -> ab -> a
+#z	a b -> b -> ab
 
 function translate_two(ss start,ss in)
 	ss oa;set oa spcfull(in)
@@ -361,7 +362,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(y_low)
+	elseif chr=(delete_char)
 		set pointer translate_two_switchBefore(#oa)
 		set cursor translate_insert(start,oa,(TRUE)) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)

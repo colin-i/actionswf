@@ -202,7 +202,7 @@ a Main*/
 
 		//key
 		var k=Key.ENTER;
-		k=Key.DELETEKEY;//3y DELETE KEY
+		k=Key.DELETEKEY;
 
 		//on
 		onMouseDown=function(){
@@ -293,6 +293,7 @@ a=attachMovie('w','q'+1,d);//3W
 a=z.attachMovie('w','q'+1,d);//3W
 w.attachMovie('q','_p'+1,d);//3 W flash
 _//3 x+s
+abc_//3yb c+s
 _qtyty//3z wer ty+s
 */
 /*3

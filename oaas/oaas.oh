@@ -42,12 +42,14 @@ Const o_low=0x6F
 Const q_low=0x71
 Const r_low=0x72
 Const t_low=0x74
+Const y_low=0x79
 const alpha_char=h_low
 const align_char=j_low
 const arracc_char=d_low
 const bitmap_char=m_low
 const childcast_char=i_low
 const compare_char=k_low
+const delete_char=y_low
 const evfunc_char=e_low
 const Evfunc_char=E
 const fill_char=l_low
@@ -70,6 +72,3 @@ const ignore_pref=Exclamationmark
 
 #util solve
 const usc_pref=_
-
-#solve
-Const y_low=0x79

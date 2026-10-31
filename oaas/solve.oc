@@ -308,6 +308,12 @@ function solver7(ss value,ss before)
 		end
 		return (NULL)
 	end
+	char deletekey_string="DELETEKEY"^
+	set c strncmp(value,#deletekey_string,\.deletekey_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c%s %s",(delete_char),"DELETE","KEY")
+		callret solver_end(value,\.deletekey_string)
+	end
 	char efil_string="endFill"^
 	set c strncmp(value,#efil_string,\.efil_string)
 	if c=0
