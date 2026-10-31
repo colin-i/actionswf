@@ -65,7 +65,8 @@ a Main*/
 		attachMovie('flash.display.Shape',undefined,getNextHighestDepth());
 
 		//key
-		var k=Key.ENTER;//3sk
+		var k=Key.ENTER;
+		k=Key.DELETEKEY;//3y DELETE KEY
 
 		//on
 		onMouseDown=function(){

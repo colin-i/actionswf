@@ -30,6 +30,7 @@ importx "strstr" strstr
 ^import "addChild_string_p" addChild_string_p
 ^import "attachMovie_string_get" attachMovie_string_get 1
 ^import "getChildByName_string_p" getChildByName_string_p
+^import "key_string_p" key_string_p
 ^import "new_string_p" new_string_p
 ^import "remMC_string_p" remMC_string_p
 
@@ -317,6 +318,12 @@ function solver7(ss value,ss before)
 	set c strcmp(value,cursor)
 	if c=0
 		call sprintf(#globals.outvalue,"%c",(childcast_char))
+		return #globals.outvalue
+	end
+	set cursor key_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c%c",(search_char),(key_char))
 		return #globals.outvalue
 	end
 	if value#=(l_low)

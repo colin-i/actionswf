@@ -52,6 +52,7 @@ const evfunc_char=e_low
 const Evfunc_char=E
 const fill_char=l_low
 const insert_char=z_low
+const key_char=k_low
 const new_char=n_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low

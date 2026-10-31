@@ -369,6 +369,7 @@ Function
 FunctionMorph
 Give
 Import
+Insert
 New
 Object
 On
@@ -376,7 +377,6 @@ OnCall
 Public
 Rect
 RemMC
-Replace
 Search
 SearchAll
 Stage

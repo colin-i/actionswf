@@ -22,13 +22,16 @@ char rollout_string="RollOut"^
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
+vstr key="Key"
 vstr this="this"
 vstr rmc="removeMovieClip"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 
 importx "free" free
+importx "malloc" malloc
 importx "memcmp" memcmp
+importx "memcpy" memcpy
 importx "snprintf" snprintf
 importx "strcmp" strcmp
 importx "strcpy" strcpy
@@ -111,6 +114,9 @@ function attachMovie_string_get(ss z)
 end
 function getChildByName_string_p()
 	return globalt.getChildByName
+end
+function key_string_p()
+	return globalt.key
 end
 function new_string_p()
 	return #globalt.nw
@@ -355,9 +361,16 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
+	elseif chr=(y_low)
+		set pointer translate_two_switchBefore(#oa)
+		set cursor translate_insert(start,oa,(TRUE)) #here is not required the comparison, is inside
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
+		end
 	elseif chr=(insert_char)
 		set pointer translate_two_switchBefore(#oa)
-		set cursor translate_insert(start,oa) #here is not required the comparison, is inside
+		set cursor translate_insert(start,oa,(FALSE)) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
@@ -1078,7 +1091,7 @@ function translate_object(ss start,ss oa)
 			sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),globalt.triple_s,start,oa,pointer)
 			if len>0
 				if len<(a_page_size)
-					call translated(a) #RePlace
+					call translated(a)
 					return globalt.a_page_switch
 				end
 			end
@@ -1225,6 +1238,9 @@ function translate_srch_all(ss start)
 	end
 	return cursor
 end
+#_
+#wt
+#sh
 function translate_search(ss start,ss oa)
 	ss cursor
 	#set cursor spcfull(oa) #at py there is a comparison that is not spcfull there
@@ -1251,7 +1267,7 @@ function translate_search(ss start,ss oa)
 			inc cursor
 			continue
 		end
-		if cursor#=(k_low)
+		if cursor#=(key_char)
 			or types 0x10
 			inc cursor
 			continue
@@ -1314,7 +1330,7 @@ function translate_search_base(ss start,sw ptypes)
 	call search_replace(2,#start,cursor,ptypes,"Stage.w","stage.stageW")
 	call search_replace(4,#start,cursor,ptypes,"Stage.h","stage.stageH")
 	call search_replace(8,#start,cursor,ptypes,globalt.this,globalt.stage)
-	call search_replace(0x10,#start,cursor,ptypes,"Key","flash.ui.Keyboard")
+	call search_replace(0x10,#start,cursor,ptypes,globalt.key,"flash.ui.Keyboard")
 	return start
 end
 
@@ -1738,7 +1754,7 @@ function translate_new(ss start)
 	callret translate_unshift(start,#globalt.nw,"New")
 end
 
-function translate_insert(ss start,ss oa)
+function translate_insert(ss start,ss oa,ss ?is_delete)
 	ss cursor
 	set cursor spcfullafters(oa)
 	if cursor!=oa
@@ -1746,18 +1762,36 @@ function translate_insert(ss start,ss oa)
 		set pointer spcfull(cursor)
 		ss ?reminder
 		set reminder cursor#;set cursor# (Nullchar)
-
 		ss walker;set walker start
 		ss mover;set mover globalt.a_page_switch
 		sd ?len
 		sd ?sz=a_page_size
 		svu ?p2sz;set p2sz strlen(pointer)
+		if is_delete!=0
+			svu ?asz;set asz strlen(oa)
+			svu ?bsz=1;add bsz p2sz
+			add p2sz asz;inc p2sz
+			ss needle;set needle malloc(p2sz)
+			if needle=(NULL)
+				set cursor# reminder
+				return oa
+			end
+			call memcpy(needle,oa,asz)
+			add asz needle
+			call memcpy(asz,pointer,bsz)
+			set pointer needle
+			dec p2sz
+		end
 		whiletrue
 			ss pos
 			set pos strstr(walker,pointer)
 			if pos!=(NULL)
 				set pos# (Nullchar)
-				set len snprintf(mover,sz,globalt.triple_s,walker,oa,pointer)
+				if is_delete!=0
+					set len snprintf(mover,sz,globalt.double_s,walker,oa)
+				else
+					set len snprintf(mover,sz,globalt.triple_s,walker,oa,pointer)
+				end
 				if len>0
 					if len<sz
 						add pos p2sz
@@ -1772,11 +1806,18 @@ function translate_insert(ss start,ss oa)
 			end
 			break
 		end
+		if is_delete!=0
+			call free(pointer)
+		end
 		if walker!=start
 			set len snprintf(mover,sz,"%s",walker)
 			if len>=0
 				if len<sz
-					call translated("Replace")
+					if is_delete!=0
+						call translated("Delete")
+					else
+						call translated("Insert")
+					end
 					return globalt.a_page_switch
 				end
 			end
