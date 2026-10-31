@@ -146,6 +146,7 @@ end
 #n	new. after indents
 #o	onPATTERN=; onPATTERN(
 #p	public     Object(
+#q	removeMovieClip
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
@@ -400,6 +401,10 @@ set cursor translate_oneve(mem,#globalt.blank)
 if cursor=#globalt.blank
 
 call strcpy(mem,start)
+set cursor translate_remmc(mem)
+if cursor=mem
+
+call strcpy(mem,start)
 set cursor translate_rect(mem,#globalt.blank)
 if cursor=#globalt.blank
 
@@ -430,7 +435,7 @@ if cursor=mem
 call strcpy(mem,start)
 set cursor translate_new(mem) #conflicts: all
 
-end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
+end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
 
 		call free(mem)
 		if cursor!=mem;return cursor;end

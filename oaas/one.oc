@@ -22,9 +22,9 @@ import "untranslated" untranslated
 
 #                     --
 #a-cd fg i  -m -- -- -vw
-# b-defghijklmnop rstuvwx z
+# b-defghijklmnopqrstuvwx z
 #    E                VW
-#                q       y
+#                        y
 #also at the end
 
 #a	s [s]
@@ -375,6 +375,7 @@ On
 OnCall
 Public
 Rect
+RemMC
 Replace
 Search
 SearchAll
