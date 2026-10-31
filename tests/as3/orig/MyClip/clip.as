@@ -41,7 +41,7 @@
 		/*3^
 		onEnterFrame=undefined;//3_on_Enter_Frame
 		*/
-		removeMovieClip();//3q
+		removeMovieClip();
 	}
 	function onOver(){
 		_alpha= 80;

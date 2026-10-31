@@ -23,6 +23,7 @@ char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
 vstr graphics="graphics."
 vstr this="this"
+vstr rmc="removeMovieClip"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 
@@ -113,6 +114,9 @@ function getChildByName_string_p()
 end
 function new_string_p()
 	return #globalt.nw
+end
+function remMC_string_p()
+	return globalt.rmc
 end
 
 function switch_page()
@@ -277,7 +281,7 @@ function translate_two(ss start,ss in)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(q_low)
+	elseif chr=(remmc_char)
 		set cursor translate_remmc(start)
 		if cursor!=start
 			inc oa
@@ -1080,8 +1084,7 @@ end
 
 function translate_remmc(ss indents)
 	ss cursor;set cursor spcfull(indents)
-	vstr rmc="removeMovieClip"
-	ss pointer;set pointer strstr(cursor,rmc)
+	ss pointer;set pointer strstr(cursor,globalt.rmc)
 	if pointer!=(NULL)
 		ss child;ss frontchild
 		if pointer=cursor

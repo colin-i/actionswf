@@ -31,6 +31,7 @@ importx "strstr" strstr
 ^import "attachMovie_string_get" attachMovie_string_get 1
 ^import "getChildByName_string_p" getChildByName_string_p
 ^import "new_string_p" new_string_p
+^import "remMC_string_p" remMC_string_p
 
 import "var_advance" var_advance
 import "verbosev" verbosev
@@ -345,6 +346,12 @@ function solver7(ss value,ss before)
 			callret solver_endb(value,\.bitmap_string)
 		end
 		return (NULL)
+	end
+	set cursor remMC_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(remmc_char))
+		return #globals.outvalue
 	end
 	set c strncmp(value,#globals.stage_string,\globals.stage_string)
 	if c=0
