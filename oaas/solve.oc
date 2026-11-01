@@ -21,11 +21,13 @@ importx "strstr" strstr
 ^import "on_string_get" on_string_get 1
 ^import "enterframe_string_get" enterframe_string_get 1
 ^import "release_string_get" release_string_get 1
-^import "mousedown_string_get" mousedown_string_get 1
-^import "mousemove_string_get" mousemove_string_get 1
-^import "mouseup_string_get" mouseup_string_get 1
-^import "rollover_string_get" rollover_string_get 1
-^import "rollout_string_get" rollout_string_get 1
+^import "mouse_string_get" mouse_string_get 1
+^import "down_string_get" down_string_get 1
+^import "up_string_get" up_string_get 1
+^import "move_string_get" move_string_get 1
+^import "roll_string_get" roll_string_get 1
+^import "over_string_get" over_string_get 1
+^import "out_string_get" out_string_get 1
 #
 ^import "addChild_string_p" addChild_string_p
 ^import "attachMovie_string_get" attachMovie_string_get 1
@@ -418,30 +420,41 @@ function solver7(ss value,ss before)
 		if c=0
 			callret solver7_on(value,z)
 		end
-		set cursor mousedown_string_get(#z)
+		set cursor mouse_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
+			add value z
+			set cursor down_string_get(#z)
+			set c strncmp(value,cursor,z)
+			if c=0
+				callret solver7_on(value,z)
+			end
+			set cursor up_string_get(#z)
+			set c strncmp(value,cursor,z)
+			if c=0
+				callret solver7_on(value,z)
+			end
+			set cursor move_string_get(#z)
+			set c strncmp(value,cursor,z)
+			if c=0
+				callret solver7_on(value,z)
+			end
+			return (NULL)
 		end
-		set cursor mousemove_string_get(#z)
+		set cursor roll_string_get(#z)
 		set c strncmp(value,cursor,z)
 		if c=0
-			callret solver7_on(value,z)
-		end
-		set cursor mouseup_string_get(#z)
-		set c strncmp(value,cursor,z)
-		if c=0
-			callret solver7_on(value,z)
-		end
-		set cursor rollover_string_get(#z)
-		set c strncmp(value,cursor,z)
-		if c=0
-			callret solver7_on(value,z)
-		end
-		set cursor rollout_string_get(#z)
-		set c strncmp(value,cursor,z)
-		if c=0
-			callret solver7_on(value,z)
+			add value z
+			set cursor over_string_get(#z)
+			set c strncmp(value,cursor,z)
+			if c=0
+				callret solver7_on(value,z)
+			end
+			set cursor out_string_get(#z)
+			set c strncmp(value,cursor,z)
+			if c=0
+				callret solver7_on(value,z)
+			end
 		end
 	end
 	return (NULL)
