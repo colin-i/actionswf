@@ -9,11 +9,8 @@ Const w_low=0x77
 
 #one
 Const Atsymbol=0x40
-Const c_low=0x63
-Const d_low=0x64
 Const g_low=0x67
 Const i_low=0x69
-Const p_low=0x70
 
 #util
 Const Dollar=0x24
@@ -30,6 +27,9 @@ const nvar_char=w_low
 const var_char=v_low
 
 #translate one solve
+Const c_low=0x63
+Const d_low=0x64
+Const p_low=0x70
 const arrconstr_char=u_low
 
 #translate solve
@@ -47,6 +47,7 @@ const alpha_char=h_low
 const align_char=j_low
 const arracc_char=d_low
 const bitmap_char=m_low
+const capslock_char=c_low
 const childcast_char=i_low
 const compare_char=k_low
 const delete_char=y_low
@@ -59,6 +60,8 @@ const new_char=n_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low
 const oreplace_char=p_low
+const pgdn_char=d_low
+const pgup_char=u_low
 const rect_char=r_low
 const remmc_char=q_low
 const search_char=s_low

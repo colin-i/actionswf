@@ -14,6 +14,7 @@ char on_string="on"^
 char enterframe_string="EnterFrame"^
 char release_string="Release"^
 char mousedown_string="MouseDown"^
+char keydown_string="KeyDown"^
 char mousemove_string="MouseMove"^
 char mouseup_string="MouseUp"^
 char rollover_string="RollOver"^
@@ -21,9 +22,12 @@ char rollout_string="RollOut"^
 #
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
+vstr capslock="CAPSLOCK"
 vstr graphics="graphics."
 vstr key="Key"
 vstr this="this"
+vstr pgdn="PGDN"
+vstr pgup="PGUP"
 vstr rmc="removeMovieClip"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
@@ -112,6 +116,9 @@ function attachMovie_string_get(ss z)
 	set z# \globalt.attachMovie
 	return #globalt.attachMovie
 end
+function capslock_string_p()
+	return globalt.capslock
+end
 function getChildByName_string_p()
 	return globalt.getChildByName
 end
@@ -120,6 +127,12 @@ function key_string_p()
 end
 function new_string_p()
 	return #globalt.nw
+end
+function pgdn_string_p()
+	return globalt.pgdn
+end
+function pgup_string_p()
+	return globalt.pgup
 end
 function remMC_string_p()
 	return globalt.rmc
@@ -1014,6 +1027,10 @@ function translate_oneve(ss start,ss name)
 				if c=0
 					callret translate_on(start,stg,mous,"MOUSE_DOWN",cursor,name,is_call)
 				end
+				set c strncmp(pointer,#globalt.keydown_string,\globalt.keydown_string)
+				if c=0
+					callret translate_on(start,stg,"Keyboard","KEY_DOWN",cursor,name,is_call)
+				end
 				set c strncmp(pointer,#globalt.mousemove_string,\globalt.mousemove_string)
 				if c=0
 					callret translate_on(start,stg,mous,"MOUSE_MOVE",cursor,name,is_call)
@@ -1231,7 +1248,7 @@ function translate_srch(ss start,ss oa)
 	return oa
 end
 function translate_srch_all(ss start)
-	sw ?t=0x1f
+	sw ?t=0xff
 	ss cursor
 	set cursor translate_search_base(start,#t)
 	if t=0
@@ -1270,6 +1287,21 @@ function translate_search(ss start,ss oa)
 		end
 		if cursor#=(key_char)
 			or types 0x10
+			inc cursor
+			continue
+		end
+		if cursor#=(d_low)
+			or types 0x20
+			inc cursor
+			continue
+		end
+		if cursor#=(u_low)
+			or types 0x40
+			inc cursor
+			continue
+		end
+		if cursor#=(c_low)
+			or types 0x80
 			inc cursor
 			continue
 		end
@@ -1332,6 +1364,9 @@ function translate_search_base(ss start,sw ptypes)
 	call search_replace(4,#start,cursor,ptypes,"Stage.h","stage.stageH")
 	call search_replace(8,#start,cursor,ptypes,globalt.this,globalt.stage)
 	call search_replace(0x10,#start,cursor,ptypes,globalt.key,"flash.ui.Keyboard")
+	call search_replace(0x20,#start,cursor,ptypes,globalt.pgdn,"PAGE_DOWN")
+	call search_replace(0x40,#start,cursor,ptypes,globalt.pgup,"PAGE_UP")
+	call search_replace(0x80,#start,cursor,ptypes,globalt.capslock,"CAPS_LOCK")
 	return start
 end
 

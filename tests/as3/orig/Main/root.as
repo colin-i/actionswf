@@ -49,7 +49,7 @@ a Main*/
 		createEmptyMovieClip('solved_w'+1 ,getNextHighestDepth());
 
 		//postpone tests
-		var c=new Object();//3_ MyClip
+		var c=new Object();//3_ flash.display.Sprite
 		createEmptyMovieClip('qwer' ,getNextHighestDepth());//3_flash.display.Sprite
 		attachMovie('strangetest','shape3' ,getNextHighestDepth());//3_flash.display.Sprite
 
@@ -67,6 +67,7 @@ a Main*/
 		//key
 		var k=Key.ENTER;
 		k=Key.DELETEKEY;
+		k=Key.PGDN+Key.PGUP+Key.CAPSLOCK;
 
 		//on
 		onMouseDown=function(){

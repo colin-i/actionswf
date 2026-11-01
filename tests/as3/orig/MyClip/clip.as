@@ -84,9 +84,11 @@
 		lineStyle();
 		//o
 		function onMD(){
-			trace('as2 as3 diff');
-		}
+			trace('as2 as3 diff');}
 		onMouseDown=onMD;
+		function onKD(){
+			trace('a');}
+		onKeyDown=onKD;//3o
 	}
 	//3x
 	var c=%u;

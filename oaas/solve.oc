@@ -7,7 +7,7 @@ einclude "oaas.h" "oaas.oh"
 char stored_char#1
 charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
 #                            zflash.net. SharedObject\0
-#                            gDynamic
+#                            yDELETE KEY\0
 char firstline=FALSE
 #
 char stage_string="Stage"^
@@ -29,9 +29,12 @@ importx "strstr" strstr
 #
 ^import "addChild_string_p" addChild_string_p
 ^import "attachMovie_string_get" attachMovie_string_get 1
+^import "capslock_string_p" capslock_string_p
 ^import "getChildByName_string_p" getChildByName_string_p
 ^import "key_string_p" key_string_p
 ^import "new_string_p" new_string_p
+^import "pgdn_string_p" pgdn_string_p
+^import "pgup_string_p" pgup_string_p
 ^import "remMC_string_p" remMC_string_p
 
 import "var_advance" var_advance
@@ -290,6 +293,12 @@ function solver7(ss value,ss before)
 			callret solver_endb(value,\.bfilsimple_string)
 		end
 	end
+	set cursor capslock_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c%c",(search_char),(capslock_char))
+		return #globals.outvalue
+	end
 	char create_string="create"^
 	set c strncmp(value,#create_string,\.create_string)
 	if c=0
@@ -359,6 +368,18 @@ function solver7(ss value,ss before)
 			callret solver_endb(value,\.bitmap_string)
 		end
 		return (NULL)
+	end
+	set cursor pgdn_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c%c",(search_char),(pgdn_char))
+		return #globals.outvalue
+	end
+	set cursor pgup_string_p()
+	set c strcmp(value,cursor)
+	if c=0
+		call sprintf(#globals.outvalue,"%c%c",(search_char),(pgup_char))
+		return #globals.outvalue
 	end
 	set cursor remMC_string_p()
 	set c strcmp(value,cursor)
