@@ -1768,7 +1768,7 @@ function translate_insert(ss start,ss oa,ss ?is_delete)
 		sd ?len
 		sd ?sz=a_page_size
 		svu ?p2sz;set p2sz strlen(pointer)
-		if is_delete!=0
+		if is_delete!=(FALSE)
 			svu ?asz;set asz strlen(oa)
 			svu ?bsz=1;add bsz p2sz
 			add p2sz asz;inc p2sz
@@ -1788,7 +1788,7 @@ function translate_insert(ss start,ss oa,ss ?is_delete)
 			set pos strstr(walker,pointer)
 			if pos!=(NULL)
 				set pos# (Nullchar)
-				if is_delete!=0
+				if is_delete!=(FALSE)
 					set len snprintf(mover,sz,globalt.double_s,walker,oa)
 				else
 					set len snprintf(mover,sz,globalt.triple_s,walker,oa,pointer)
@@ -1807,7 +1807,7 @@ function translate_insert(ss start,ss oa,ss ?is_delete)
 			end
 			break
 		end
-		if is_delete!=0
+		if is_delete!=(FALSE)
 			call free(pointer)
 		end
 		if walker!=start
