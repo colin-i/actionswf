@@ -73,6 +73,21 @@ function spcfullafters(ss a)
 		end
 	end
 end
+function spcfullafters_keep(ss a) #same , but return a at null
+	ss b;set b a
+	whiletrue
+		if a#=(Nullchar)
+			return a
+		end
+		inc a
+		if a#=(Space)
+			return a
+		end
+		if a#=(HorizontalTab)
+			return a
+		end
+	end
+end
 function spcfullback(ss start,ss right)
 	ss left
 	set left right

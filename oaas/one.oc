@@ -23,7 +23,7 @@ import "untranslated" untranslated
 #                     --
 #a-cd fg i  -m -- -- -vw
 # b-defghijklmnopqrstuvwxyz
-#    E                VW
+#    E         O      VW
 #also at the end
 
 #a	s [s]
@@ -268,7 +268,7 @@ function translate_one_add(ss buffer,ss indents,ss in,ss oa)
 				end
 				set pointer globalo.stage
 			end
-			set ext "."
+			set ext globalo.dot
 			set reminder cursor#;set cursor# (Nullchar)
 		else
 			set pointer #globalo.blank
@@ -345,8 +345,9 @@ end
 entryraw globalo()
 
 #!
-mrtu
+rtu
 s
+m
 
 AddChild
 Alpha

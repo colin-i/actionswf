@@ -69,6 +69,7 @@ import "object_make" object_make
 ^import "semicolon" semicolon 1
 ^import "spcfull" spcfull 1
 ^import "spcfullafters" spcfullafters 1
+^import "spcfullafters_keep" spcfullafters_keep 1
 ^import "spcfullback" spcfullback 2
 ^import "strchr_reverse" strchr_reverse 3
 ^import "strip" strip 3
@@ -173,6 +174,7 @@ end
 #m	all spcback= loadBitmap()
 #n	new. after indents
 #o	onPATTERN=; onPATTERN(
+#O	same
 #p	public     Object(
 #q	removeMovieClip
 #r	.( (,),)(,
@@ -301,6 +303,13 @@ function translate_two(ss start,ss in)
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_oneve(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(Onev_char)
+		set pointer translate_two_switchBefore(#oa)
+		set cursor translate_oneve_full((Onev_char),start,oa)
+		set cursor translate_two_switchAfter(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
@@ -988,11 +997,32 @@ function translate_bitmap(ss start,ss value)
 end
 
 function translate_oneve(ss start,ss name)
+	callret translate_oneve_full((onev_char),start,name)
+end
+function translate_oneve_full(ss ?chr,ss start,ss name)
+	ss cursor ;#still need to pointer and oa compare in that switchAfter, can't go with return start
+	if chr=(Onev_char)
+		set cursor spcfullafters_keep(name)
+		if cursor#=(Nullchar)
+			callret translate_oneve_helper(start,name,name,globalt.dot,cursor)
+		end
+		ss funcname=1
+		add funcname cursor
+		set funcname spcfull(funcname)
+		ss pointer
+		ss rem;set rem cursor#;set cursor# (Nullchar)
+		set pointer translate_oneve_helper(start,name,name,globalt.dot,funcname)
+		set cursor# rem
+		return pointer
+	end
+	callret translate_oneve_helper(start,name,(NULL),#globalt.blank,name)
+end
+function translate_oneve_helper(ss start,ss name,ss stg,ss d,ss funcname)
 	ss ?is_call
 	ss cursor
 	set cursor equalon(start)
 	if cursor=start
-		if name#!=(Nullchar) #name is only for remove
+		if funcname#!=(Nullchar) #funcname is only for remove
 			return name
 		end
 		set cursor pareoon(start)
@@ -1007,44 +1037,45 @@ function translate_oneve(ss start,ss name)
 			sd ?c
 			set c memcmp(pointer,#globalt.on_string,\globalt.on_string) #on is to short for strncmp
 			if c=0
-				ss stg
-				whiletrue
-					if globalt.mainmod_bool=(TRUE)# test if stage is required
-						ss afterindents
-						set afterindents spcfull(start)
-						if afterindents=pointer
-							set stg globalt.staged
-							break
+				if stg=(NULL)
+					whiletrue
+						if globalt.mainmod_bool=(TRUE)# test if stage is required
+							ss afterindents
+							set afterindents spcfull(start)
+							if afterindents=pointer
+								set stg globalt.staged
+								break
+							end
 						end
+						set stg #globalt.blank
+						break
 					end
-					set stg #globalt.blank
-					break
 				end
 
 				set pointer# (Nullchar)
 				add pointer \globalt.on_string
 				set c strncmp(pointer,#globalt.enterframe_string,\globalt.enterframe_string) #strncmp is defined to compare the first 10 bytes
 				if c=0
-					callret translate_on(start,stg,#globalt.blank,"ENTER_FRAME",cursor,name,is_call)
+					callret translate_on(start,stg,d,#globalt.blank,"ENTER_FRAME",cursor,funcname,is_call)
 				end
 				set c strncmp(pointer,#globalt.release_string,\globalt.release_string)
 				if c=0
-					callret translate_on(start,stg,#globalt.mouse_string,"CLICK",cursor,name,is_call)
+					callret translate_on(start,stg,d,#globalt.mouse_string,"CLICK",cursor,funcname,is_call)
 				end
 				set c strncmp(pointer,#globalt.mouse_string,\globalt.mouse_string-1)
 				if c=0
 					add pointer \globalt.mouse_string-1
 					set c strncmp(pointer,#globalt.down_string,\globalt.down_string)
 					if c=0
-						callret translate_on(start,stg,#globalt.mouse_string,"MOUSE_DOWN",cursor,name,is_call)
+						callret translate_on(start,stg,d,#globalt.mouse_string,"MOUSE_DOWN",cursor,funcname,is_call)
 					end
 					set c strncmp(pointer,#globalt.up_string,\globalt.up_string)
 					if c=0
-						callret translate_on(start,stg,#globalt.mouse_string,"MOUSE_UP",cursor,name,is_call)
+						callret translate_on(start,stg,d,#globalt.mouse_string,"MOUSE_UP",cursor,funcname,is_call)
 					end
 					set c strncmp(pointer,#globalt.move_string,\globalt.move_string)
 					if c=0
-						callret translate_on(start,stg,#globalt.mouse_string,"MOUSE_MOVE",cursor,name,is_call)
+						callret translate_on(start,stg,d,#globalt.mouse_string,"MOUSE_MOVE",cursor,funcname,is_call)
 					end
 					break
 				end
@@ -1053,18 +1084,18 @@ function translate_oneve(ss start,ss name)
 					add pointer \globalt.roll_string
 					set c strncmp(pointer,#globalt.over_string,\globalt.over_string)
 					if c=0
-						callret translate_on(start,stg,#globalt.mouse_string,"ROLL_OVER",cursor,name,is_call)
+						callret translate_on(start,stg,d,#globalt.mouse_string,"ROLL_OVER",cursor,funcname,is_call)
 					end
 					set c strncmp(pointer,#globalt.out_string,\globalt.out_string)
 					if c=0
-						callret translate_on(start,stg,#globalt.mouse_string,"ROLL_OUT",cursor,name,is_call)
+						callret translate_on(start,stg,d,#globalt.mouse_string,"ROLL_OUT",cursor,funcname,is_call)
 					end
 					break
 				end
 				char keydown_string="KeyDown"^
 				set c strncmp(pointer,#keydown_string,\.keydown_string)
 				if c=0
-					callret translate_on(start,stg,"Keyboard","KEY_DOWN",cursor,name,is_call)
+					callret translate_on(start,stg,d,"Keyboard","KEY_DOWN",cursor,funcname,is_call)
 				end
 				break # on is unique at the moment
 			end
@@ -1072,7 +1103,7 @@ function translate_oneve(ss start,ss name)
 	end
 	return name
 end
-function translate_on(ss start,ss stg,ss type,ss ev,ss value,ss name,ss ?is_call)
+function translate_on(ss start,ss stg,ss d,ss type,ss ev,ss value,ss name,ss ?is_call)
 	sd ?len
 	ss onOk
 	if is_call=(FALSE)
@@ -1093,10 +1124,10 @@ function translate_on(ss start,ss stg,ss type,ss ev,ss value,ss name,ss ?is_call
 		else
 			set kind "add"
 		end
-		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%sEventListener(flash.events.%sEvent.%s,%s%s",start,stg,kind,type,ev,value,ending)
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%s%sEventListener(flash.events.%sEvent.%s,%s%s",start,stg,d,kind,type,ev,value,ending)
 		set onOk "On"
 	else
-		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%sdispatchEvent(new flash.events.%sEvent(flash.events.%sEvent.%s,false));",start,stg,type,type,ev)
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s%sdispatchEvent(new flash.events.%sEvent(flash.events.%sEvent.%s,false));",start,stg,d,type,type,ev)
 		set onOk "OnCall"
 	end
 	if len>0
@@ -1276,8 +1307,9 @@ function translate_srch_all(ss start)
 	return cursor
 end
 #_
-#wt
-#sh
+#wtu
+#dhk
+#c
 function translate_search(ss start,ss oa)
 	ss cursor
 	#set cursor spcfull(oa) #at py there is a comparison that is not spcfull there

@@ -33,7 +33,6 @@ Const p_low=0x70
 const arrconstr_char=u_low
 
 #translate solve
-Const E=0x45
 Const j_low=0x6A
 Const k_low=0x6B
 Const m_low=0x6D
@@ -43,6 +42,8 @@ Const q_low=0x71
 Const r_low=0x72
 Const t_low=0x74
 Const y_low=0x79
+Const E=0x45
+Const O=0x4F
 const alpha_char=h_low
 const align_char=j_low
 const arracc_char=d_low
@@ -59,6 +60,7 @@ const key_char=k_low
 const new_char=n_low
 const nVar_char=nvar_char-a_low+A
 const onev_char=o_low
+const Onev_char=O
 const oreplace_char=p_low
 const pgdn_char=d_low
 const pgup_char=u_low
