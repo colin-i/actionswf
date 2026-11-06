@@ -20,6 +20,7 @@ char move_string="Move"^
 char roll_string="Roll"^
 char over_string="Over"^
 char out_string="Out"^
+char keydown_string="KeyDown"^
 #
 char attachMovie="attachMovie"^
 vstr getChildByName="getChildByName"
@@ -117,6 +118,10 @@ end
 function out_string_get(ss z)
 	set z# \globalt.out_string
 	return #globalt.out_string
+end
+function keydown_string_get(ss z)
+	set z# \globalt.keydown_string
+	return #globalt.keydown_string
 end
 
 function addChild_string_p()
@@ -1002,16 +1007,33 @@ end
 function translate_oneve_full(ss ?chr,ss start,ss name)
 	ss cursor ;#still need to pointer and oa compare in that switchAfter, can't go with return start
 	if chr=(Onev_char)
+		ss stg
+		whiletrue
+			if name#=(Nullchar)
+				set stg globalt.stage
+				break
+			end
+			if name#=(Atsymbol)
+				inc name
+				if name#=(Nullchar)
+					set stg globalt.stage
+					break
+				end
+				dec name
+			end
+			set stg name
+			break
+		end
 		set cursor spcfullafters_keep(name)
 		if cursor#=(Nullchar)
-			callret translate_oneve_helper(start,name,name,globalt.dot,cursor)
+			callret translate_oneve_helper(start,name,stg,globalt.dot,cursor)
 		end
 		ss funcname=1
 		add funcname cursor
 		set funcname spcfull(funcname)
 		ss pointer
 		ss rem;set rem cursor#;set cursor# (Nullchar)
-		set pointer translate_oneve_helper(start,name,name,globalt.dot,funcname)
+		set pointer translate_oneve_helper(start,name,stg,globalt.dot,funcname)
 		set cursor# rem
 		return pointer
 	end
@@ -1092,8 +1114,7 @@ function translate_oneve_helper(ss start,ss name,ss stg,ss d,ss funcname)
 					end
 					break
 				end
-				char keydown_string="KeyDown"^
-				set c strncmp(pointer,#keydown_string,\.keydown_string)
+				set c strncmp(pointer,#globalt.keydown_string,\globalt.keydown_string)
 				if c=0
 					callret translate_on(start,stg,d,"Keyboard","KEY_DOWN",cursor,funcname,is_call)
 				end

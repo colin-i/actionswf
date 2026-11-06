@@ -88,7 +88,7 @@
 		onMouseDown=onMD;
 		function onKD(){
 			trace('a');}
-		onKeyDown=onKD;//3 O stage
+		onKeyDown=onKD;
 	}
 	//3x
 	var c=%u;

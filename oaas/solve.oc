@@ -28,6 +28,7 @@ importx "strstr" strstr
 ^import "roll_string_get" roll_string_get 1
 ^import "over_string_get" over_string_get 1
 ^import "out_string_get" out_string_get 1
+^import "keydown_string_get" keydown_string_get 1
 #
 ^import "addChild_string_p" addChild_string_p
 ^import "attachMovie_string_get" attachMovie_string_get 1
@@ -455,6 +456,12 @@ function solver7(ss value,ss before)
 			if c=0
 				callret solver7_on(value,z)
 			end
+			return (NULL)
+		end
+		set cursor keydown_string_get(#z)
+		set c strncmp(value,cursor,z)
+		if c=0
+			callret solver7_on_full(value,z,(Onev_char))
 		end
 	end
 	return (NULL)
@@ -468,10 +475,13 @@ function solver7_var(ss before)
 	return (nVar_char)
 end
 function solver7_on(ss value,ss ?z) #,ss before)
+	callret solver7_on_full(value,z,(onev_char))
+end
+function solver7_on_full(ss value,ss ?z,ss ?chr) #,ss before)
 	#if before#=(Openparenthesis) # this is the newgame.onRollOut() case, was merged into 'o'
 	#	return (NULL)
 	#end
-	set globals.stored_char (onev_char)
+	set globals.stored_char chr
 	callret solver_endb(value,z)
 end
 

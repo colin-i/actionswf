@@ -37,7 +37,7 @@
 <p class="blue">Left/Right strings</p>
 <p class="yellow">Tested</p>
 <p class="green">[] is optional . details</p>
-<p>Link with '+' (//3 s+b or /*3h+s*/). Resolve later with '_'. Ignore with '!'. AS2-only mode is '!!'. AS3-only mode is '^'.</p>
+<p>Link with '+' (//3 s+b or /*3h+s*/). Resolve later with '_'. Ignore with '!'. AS2-only mode is '!!'. AS3-only mode is '^'. '@' is 'stage'.</p>
 <table>
 	<tr><td rowspan=2>a</td>             <td class="red">className</td><td class="com">class <span class="red">className</span>{</td></tr>
 	<tr>                                 <td class="red"><table><tr><td>className</td><td>extendName</td></tr></table></td><td class="com">class <span class="red">className</span> extends <span class="red">extendName</span>{</td></tr>
@@ -71,8 +71,8 @@
 	<tr>                                           <td class="com">...MouseEvent.CLICK<span class="green">[</span>MOUSE_DOWN<span class="green">/</span>MOUSE_UP<span class="green">/</span>MOUSE_MOVE<span class="green">/</span>ROLL_OVER<span class="green">/</span>ROLL_OUT<span class="green">]</span>,<span class="blue">...</span></td><td class="com">...<span class="yellow">onRelease<span class="green">[</span>onMouseDown<span class="green">/</span>onMouseUp<span class="green">/</span>onMouseMove<span class="green">/</span>onRollOver<span class="green">/</span>onRollOut<span class="green">]</span>=</span><span class="blue">...</td></tr>
 	<tr>                                           <td class="com">...dispatchEvent(new flash.events.<span class="green">[</span>Mouse<span class="green">]</span>Event(flash.events.<span class="green">[</span>Mouse<span class="green">]</span>Event....,false));</td><td class="com">...<span class="yellow">onRelease(</span>...</td></tr>
 	<tr><td class="blue">o</td>          <td class="red">name</td><td class="com">...removeEventListener...,<span class="red">name</span>...</td><td class="com">...undefined...</td></tr>
-	<tr><td class="blue" rowspan=2>O</td><td class="red">parent</td><td class="com" rowspan=2><span class="red">parent</span>. <span class="green">then is same like 'o' but without the stage code</span></td></tr>
-	<tr>                                 <td class="red"><table><tr><td>parent</td><td>name</td></tr></table></td></tr>
+	<tr><td class="blue" rowspan=2>O</td><td class="red">parent<span class="green">/</span>@</td><td class="com" rowspan=2><span class="red">parent<span class="green">/</span>@</span>. <span class="green">then is same like 'o' but without the stage code</span></td></tr>
+	<tr>                                 <td class="red"><table><tr><td>parent<span class="green">/</span>@</td><td>name</td></tr></table></td></tr>
 	<tr><td class="blue" colspan=2>p</td><td class="com">public <span class="blue">...</span></td></tr>
 	<tr><td class="blue">p</td>          <td class="red">name</td><td class="com"><span class="blue">var a=new <span class="red">name</span>();</span></td><td class="com"><span class="blue">var a=new <span class="yellow">Object(</span>);</span></td></tr>
 	<tr><td class="blue" colspan=2>q</td><td class="com">...parent.<span class="blue">remove</span>Child(...);</td><td class="com">...<span class="blue">remove</span>MovieClip...</td></tr>

@@ -127,6 +127,7 @@ Loader;//3
 p.onEnterFrame=_fune;//3 o+s
 onEnterFrame=q;//3
 p_ponKeyDown=undefined;//3O sta f+s
+onKeyDown=w;//3O
 	q._w.removeMovieClip();//3q+s
 removeMovieClip//3
 _//3 p+s
