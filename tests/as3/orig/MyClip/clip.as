@@ -40,6 +40,7 @@
 		trace('Button clicked!');
 		/*3^
 		onEnterFrame=undefined;//3_on_Enter_Frame
+		onKeyDown=undefined;//3_@ onKD
 		*/
 		removeMovieClip();
 	}
@@ -49,6 +50,8 @@
 	function onOut(){
 		_alpha= 100;
 	}
+	function onKD(){
+		trace('a');}
 	function new(){//3 f
 		// Simple visual so you can see it
 		beginFill(0x3399FF);
@@ -86,8 +89,7 @@
 		function onMD(){
 			trace('as2 as3 diff');}
 		onMouseDown=onMD;
-		function onKD(){
-			trace('a');}
+		//3g
 		onKeyDown=onKD;
 	}
 	//3x

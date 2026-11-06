@@ -1008,6 +1008,7 @@ function translate_oneve_full(ss ?chr,ss start,ss name)
 	ss cursor ;#still need to pointer and oa compare in that switchAfter, can't go with return start
 	if chr=(Onev_char)
 		ss stg
+		set cursor spcfullafters_keep(name)
 		whiletrue
 			if name#=(Nullchar)
 				set stg globalt.stage
@@ -1015,7 +1016,8 @@ function translate_oneve_full(ss ?chr,ss start,ss name)
 			end
 			if name#=(Atsymbol)
 				inc name
-				if name#=(Nullchar)
+				if name=cursor
+					dec name
 					set stg globalt.stage
 					break
 				end
@@ -1024,7 +1026,6 @@ function translate_oneve_full(ss ?chr,ss start,ss name)
 			set stg name
 			break
 		end
-		set cursor spcfullafters_keep(name)
 		if cursor#=(Nullchar)
 			callret translate_oneve_helper(start,name,stg,globalt.dot,cursor)
 		end
