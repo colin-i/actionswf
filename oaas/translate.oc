@@ -312,9 +312,9 @@ function translate_two(ss start,ss in)
 			return cursor
 		end
 	elseif chr=(Onev_char)
-		set pointer translate_two_switchBefore(#oa)
+		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_oneve_full((Onev_char),start,oa)
-		set cursor translate_two_switchAfter(cursor,oa,pointer)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
