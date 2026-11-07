@@ -198,7 +198,13 @@ function translate_two(ss start,ss in)
 	if chr=(postpone_char)
 		return start
 	end
-	if chr=(b_low)
+	if chr=(ignore_pref)
+		inc oa
+		if oa#=(Nullchar)
+			call translated("Ignored")
+			return oa
+		end
+	elseif chr=(b_low)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
@@ -1391,7 +1397,7 @@ function translate_search(ss start,ss oa)
 		if cursor#=(switch_char)
 			set pointer translate_two_switcher(cursor)
 			if pointer=cursor
-				return cursor
+				return oa
 			end
 		end
 		return pointer

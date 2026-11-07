@@ -721,6 +721,13 @@ if not os.environ.get('skip_comp'):
 				file_cache = {} #keyed by module: merged lines of ALL of that module's .as files, in Main.hx line order
 				file_spans = {} #keyed by module: [(as_file, line_count), ...] to split file_cache[module] back apart on write-back
 				hx_cache = {} #keyed by module: raw lines of the dest .hx file itself (read-only, never written back here)
+				def dest_lines(fullfilename):
+					lst = hx_cache.get(fullfilename)
+					if lst is None:
+						with open(fullfilename, 'r', newline='') as f:  # newline for \r\n wine
+							lst = f.read().splitlines(keepends=True)
+						hx_cache[fullfilename] = lst
+					return lst
 				touched = set() #modules, not files
 				line_cache = {}
 				line_cache_last = {}
@@ -783,18 +790,9 @@ if not os.environ.get('skip_comp'):
 							value=args.split("\n")[0] #JSON doesn't use the host OS's line-ending convention.
 							if kind==2:
 								character=positions["character"]
-
-								# 3.13+ #src = Path(fullfilename).read_text(newline='') #encoding="utf-8" #newline for \r\n wine
-								with open(fullfilename, 'r', newline='') as f:  # encoding="utf-8" #newline for \r\n wine
-									src = f.read()
-
-								lines = src.splitlines(keepends=True)
-								# get text before the target line
-								before = "".join(lines[:line])
-								# add characters in the target line
-								offset_chars = len(before) + character
-								# convert character offset -> UTF-8 byte offset
-								offset_bytes = len(src[:offset_chars].encode()) #"utf-8"
+								hx = dest_lines(fullfilename)
+								# bytes of the full lines before, plus the bytes up to the character in the target line
+								offset_bytes = len("".join(hx[:line]).encode()) + len(hx[line][:character].encode())
 
 								pp='('+str(line)+':'+str(character)+' at '+str(offset_bytes)+') to '
 
@@ -865,16 +863,17 @@ if not os.environ.get('skip_comp'):
 													merged.extend(flines)
 												file_cache[module] = merged
 												file_spans[module] = spans
-												with open(hx_ext(module_files[module][0])) as hf: #one dest .hx per module, several .as can share it
-													hx_cache[module] = hf.readlines()
 											lines = file_cache[module] #global line numbers index straight into this merged list
 											if line<len(lines): #Unexpected <end of file> is line==len(lines)
-												if kind==4:
+												if kind==7:
+													hx_linestr = dest_lines(fullfilename)[line].rstrip(terminations)
+													solved = lib.solve7(value.encode(),hx_linestr[positions["character"]:].encode())
+												elif kind==4:
 													solved = lib.solve4(value.encode())
 												elif kind==2:
 													#was demonstrated that it also can not have a firstline
 													if firstline: #at compare without exclamations is from if, not this case
-														solved = lib.solve2(value.encode(),lines[firstline][d["range"]["end"]["character"]:])#ep25c so_keys.data[key_id]=code; is triggered to early
+														solved = lib.solve2(value.encode(),dest_lines(fullfilename)[firstline][d["range"]["end"]["character"]:])#ep25c so_keys.data[key_id]=code; is triggered to early
 														if solved: # it is no having ""
 															if lib.firstline()[0]:
 															#if firstline: #at compare without exclamations is from if, not this case
@@ -890,10 +889,6 @@ if not os.environ.get('skip_comp'):
 													has_term=True
 												else:
 													has_term=False
-
-												if kind==7:
-													solved = lib.solve7(value.encode(),linestr[positions["character"]:].encode())
-
 												if not solved and solved is not None: #solved==None means abandon this diagnostic entirely; otherwise try the postpone_char path
 													#this case is with the postpone_char. or normal
 													solved = lib.resolve()
@@ -926,7 +921,7 @@ if not os.environ.get('skip_comp'):
 														try:#still can be a line with markers from orig
 															part1, part2 = linestr.split(tr_sep) #will throw here
 															if not part1.strip(' \t'): #part1 is only whitespace: pull the real prefix from the dest .hx line, not this blank src part1
-																hx_line = hx_cache[module][line]
+																hx_line = dest_lines(fullfilename)[line]
 																hx_line = hx_line.rstrip(terminations)
 																linestr = hx_line + tr_sep + solved
 															else:

@@ -42,6 +42,7 @@
 		onEnterFrame=undefined;//3_on_Enter_Frame
 		onKeyDown=undefined;//3_@ onKD
 		*/
+		Key.removeListener(this);
 		removeMovieClip();
 	}
 	function onOver(){
@@ -90,6 +91,7 @@
 			trace('as2 as3 diff');}
 		onMouseDown=onMD;
 		//3g
+		Key.addListener(this);
 		onKeyDown=onKD;
 	}
 	//3x

@@ -272,6 +272,12 @@ function solver7(ss value,ss before)
 		call sprintf(#globals.outvalue,"%c",(childcast_char))
 		return #globals.outvalue
 	end
+	char addlistener_string="addListener"^
+	set c strncmp(value,#addlistener_string,\.addlistener_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(ignore_pref))
+		callret solver_end(value,\.addlistener_string)
+	end
 	ss ?z
 	set cursor attachMovie_string_get(#z)
 	set c strncmp(value,cursor,z)
@@ -384,6 +390,12 @@ function solver7(ss value,ss before)
 		call sprintf(#globals.outvalue,"%c%c",(search_char),(pgup_char))
 		return #globals.outvalue
 	end
+	char removelistener_string="removeListener"^
+	set c strncmp(value,#removelistener_string,\.removelistener_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(ignore_pref))
+		callret solver_end(value,\.removelistener_string)
+	end
 	set cursor remMC_string_p()
 	set c strcmp(value,cursor)
 	if c=0
@@ -392,17 +404,16 @@ function solver7(ss value,ss before)
 	end
 	set c strncmp(value,#globals.stage_string,\globals.stage_string)
 	if c=0
-		char w=".w"^
-		set c strncmp(before,#w,\.w)
-		if c=0
-			call sprintf(#globals.outvalue,"%cw",(search_char))
-			callret solver_end(value,\globals.stage_string)
-		end
-		char h=".h"^
-		set c strncmp(before,#h,\.h)
-		if c=0
-			call sprintf(#globals.outvalue,"%ch",(search_char))
-			callret solver_end(value,\globals.stage_string)
+		if before#=(Period)
+			inc before
+			if before#=(w_low)
+				call sprintf(#globals.outvalue,"%cw",(search_char))
+				callret solver_end(value,\globals.stage_string)
+			end
+			if before#=(h_low)
+				call sprintf(#globals.outvalue,"%ch",(search_char))
+				callret solver_end(value,\globals.stage_string)
+			end
 		end
 		return (NULL)
 	end

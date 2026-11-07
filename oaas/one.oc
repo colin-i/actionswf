@@ -176,8 +176,7 @@ function translate_one(ss in,ss indents)
 			call translated("single mode off")
 			return oa
 		end
-		call translated("Ignored")
-		return oa
+		#ok here was moved to translate two, isn't extra? is fastest for sk+! cases that the solver can do, and oaas3 has no ignore, is the easy way
 	elseif oa#=(Caret)
 		inc oa
 		set len snprintf(buffer,(a_page_size),globalo.double_s,indents,oa)
