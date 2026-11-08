@@ -41,8 +41,6 @@ ${OCOMP} a.oc inplace_reloc 0 logfile 0 && \
 	fi
 }
 
-# for (( i=`pwd | grep -o / | wc -l`; i>0 ; i-- )) do qwe="${qwe}../"; done; ffdec=/home/bc/ffdec/j13/usr/bin/ffdec FFDEC_JARFILENAME=${qwe}home/bc/ffdec/j13/usr/share/java/ffdec/ffdec.jar ./f
-
 #while(true) 2 comparisons was solved since ffdec_24.1.1_nightly3382
 
 # LD_LIBRARY_PATH=/home/bc/x86_64_lib ./ff

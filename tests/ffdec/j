@@ -1,0 +1,3 @@
+
+for (( i=`pwd | grep -o / | wc -l`; i>0 ; i-- )) do dots="${dots}../"; done
+ffdec=/home/bc/ffdec/j$1/usr/bin/ffdec FFDEC_JARFILENAME=${dots}home/bc/ffdec/j$1/usr/share/java/ffdec/ffdec.jar ./f
