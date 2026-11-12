@@ -4,5 +4,8 @@ set -e
 base64 -d a.jpg.txt > a.jpg
 #convert -size 1x1 xc:black a.png #or none for transparent
 
+if [ ! -e a.oc ]; then
+	edor --save-exit a.oc.oac
+fi
 cd osrc
 ${RUN__SHELL} ./a

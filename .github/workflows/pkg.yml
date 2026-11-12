@@ -12,4 +12,4 @@ jobs:
      with:
       amd64: x
       pac: bc haxe
-      aur: ocompiler ffdec-bin
+      aur: ocompiler edor ffdec-bin
