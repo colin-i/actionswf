@@ -106,6 +106,8 @@ call actionf_sprite(presprite,#buf,"
 		//3g
 		Key.addListener(this);
 		onKeyDown=onKD;
+		//T
+		label.setNewTextFormat(tf);
 	}
 	//3x
 	var c=%u;
@@ -282,6 +284,8 @@ this._x//3
 create('q',n,_x,_y,_width,_height);//3 t+s
 var a=createTextField('label'+2,1,1,16,120,48);//3t
 createTextField('label',1,0,16, 120, 48);//3
+setNewTextFormat(_q)//3T+s
+setNewTextFormat(q)//3
 _q=new Array(q,w,2);//3 u+s
 q=new Array(q,w,2);//3
 attachMovie('q','_p',d);//3 v+s

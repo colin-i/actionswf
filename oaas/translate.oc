@@ -31,6 +31,7 @@ vstr this="this"
 vstr pgdn="PGDN"
 vstr pgup="PGUP"
 vstr rmc="removeMovieClip"
+char snewtextformat="setNewTextFormat"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 
@@ -152,6 +153,9 @@ end
 function remMC_string_p()
 	return globalt.rmc
 end
+function snewtextformat_p()
+	return #globalt.snewtextformat
+end
 
 function switch_page()
 	if globalt.a_page_switch=#globalt.a_page
@@ -185,6 +189,7 @@ end
 #r	.( (,),)(,
 #s	_ and more
 #t	'',,,,)
+#T	setNewTextFormat()
 #u	=new Array(...)
 #vwVW	''''   ;=;=; ...
 #x	static. like new
@@ -360,6 +365,15 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
+	elseif chr=(ntextfmt_char)
+		set cursor translate_newtextformat(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
 	elseif chr=(arrconstr_char)
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_arrayconstructor_full(start,oa)
@@ -473,6 +487,10 @@ set cursor translate_textfield(mem)
 if cursor=mem
 
 call strcpy(mem,start)
+set cursor translate_newtextformat(mem)
+if cursor=mem
+
+call strcpy(mem,start)
 set cursor translate_arrayconstructor_full(mem,#globalt.blank)
 if cursor=#globalt.blank
 
@@ -491,7 +509,7 @@ if cursor=mem
 call strcpy(mem,start)
 set cursor translate_new(mem) #conflicts: all
 
-end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
+end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
 
 		call free(mem)
 		if cursor!=mem;return cursor;end
@@ -1544,6 +1562,30 @@ function translate_label(ss indents)
 		end
 	end
 	return indents
+end
+
+function translate_newtextformat(ss start)
+	ss cursor;set cursor strstr(start,#globalt.snewtextformat)
+	if cursor!=(NULL)
+		ss pointer;set pointer cursor
+		add cursor \globalt.snewtextformat-1
+		ss indicator;set indicator pareoafter(cursor)
+		if indicator!=cursor
+			set cursor parecon(indicator)
+			if cursor!=indicator
+				set cursor# (Nullchar)
+				set pointer# (Nullchar)
+				sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%sdefaultTextFormat=%s;",start,indicator);
+				if len>0
+					if len<(a_page_size)
+						call translated("SetNewTextFormat")
+						return globalt.a_page_switch
+					end
+				end
+			end
+		end
+	end
+	return start
 end
 
 function translate_var_full(ss start,ss oa,ss ?type)

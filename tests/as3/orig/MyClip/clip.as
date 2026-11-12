@@ -93,6 +93,8 @@
 		//3g
 		Key.addListener(this);
 		onKeyDown=onKD;
+		//T
+		label.setNewTextFormat(tf);
 	}
 	//3x
 	var c=%u;
