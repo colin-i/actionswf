@@ -1,2 +1,5 @@
 #!/bin/sh
+if [ ! -e a.oc ]; then
+	edor --save-exit ../a.oc.oac
+fi
 inter=../../ ${RUN__SHELL} ../../a${s} # interext=.oac

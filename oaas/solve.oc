@@ -406,7 +406,7 @@ function solver7(ss value,ss before)
 	set cursor snewtextformat_p()
 	set c strcmp(value,cursor)
 	if c=0
-		set globals.stored_char (ntextfmt_char)
+		call sprintf(#globals.outvalue,"%c",(ntextfmt_char))
 		return #globals.outvalue
 	end
 	set c strncmp(value,#globals.stage_string,\globals.stage_string)
