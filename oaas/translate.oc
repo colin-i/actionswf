@@ -1344,7 +1344,7 @@ function translate_srch(ss start,ss oa)
 	return oa
 end
 function translate_srch_all(ss start)
-	sw ?t=0xff
+	sw ?t=0x1ff
 	ss cursor
 	set cursor translate_search_base(start,#t)
 	if t=0
@@ -1399,6 +1399,11 @@ function translate_search(ss start,ss oa)
 		end
 		if cursor#=(c_low)
 			or types 0x80
+			inc cursor
+			continue
+		end
+		if cursor#=(s_low)
+			or types 0x100
 			inc cursor
 			continue
 		end
@@ -1464,6 +1469,7 @@ function translate_search_base(ss start,sw ptypes)
 	call search_replace(0x20,#start,cursor,ptypes,globalt.pgdn,"PAGE_DOWN")
 	call search_replace(0x40,#start,cursor,ptypes,globalt.pgup,"PAGE_UP")
 	call search_replace(0x80,#start,cursor,ptypes,globalt.capslock,"CAPS_LOCK")
+	call search_replace(0x100,#start,cursor,ptypes,globalt.this,"self")
 	return start
 end
 

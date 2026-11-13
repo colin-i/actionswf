@@ -137,7 +137,7 @@ lineTo(width,y);lineTo(width,height);lineTo(x,height);//3
 _x()//3 s+e
 this._y()//3 s_t+e
 this._x//3
-create('q',n,_x,_y,_width,_height);//3 t+s
+create('q',n,_x,_ythis,_width,_height);//3 t+ss
 var a=createTextField('label'+2,1,1,16,120,48);//3t
 createTextField('label',1,0,16, 120, 48);//3
 setNewTextFormat(_q)//3T+s
