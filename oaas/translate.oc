@@ -1527,7 +1527,7 @@ function translate_self_set(ss container,ss subject)
 	add cursor (translate_self_hardcoded+1);set cursor# (Nullchar)
 	sub cursor (1+translate_self_hardcoded+1)
 	ss ?b;set b translate_self_subset(container,cursor,(Openparenthesis),(Comma),1)
-	add b translate_self_subset(container,cursor,(Comma),(Comma),1)
+	add b translate_self_subset(container,cursor,(Comma),(Comma),0)
 	add b translate_self_subset(container,cursor,(Comma),(Closeparenthesis),0)
 	return b
 end
