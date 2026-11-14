@@ -190,6 +190,7 @@ end
 #q	removeMovieClip
 #r	.( (,),)(,
 #s	_ and more
+#S	... ,self, ...
 #t	'',,,,)
 #T	setNewTextFormat()
 #u	=new Array(...)
@@ -359,10 +360,10 @@ function translate_two(ss start,ss in)
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
 	elseif chr=(S)
-		set cursor translate_self(start)
-		if cursor!=start
+		ss ?b;set b translate_self(start)
+		if b!=0
 			inc oa
-			set cursor translate_two_switch(oa,cursor)
+			set cursor translate_two_switch_pageless(oa,start)
 			if cursor!=oa
 				return cursor
 			end
@@ -539,6 +540,24 @@ end
 function translate_two_switcher(ss oa)
 	inc oa
 	ss page;set page switch_page()
+	set page translate_two(page,oa)
+	if page!=oa
+		return page
+	end
+	dec oa
+	return oa
+end
+function translate_two_switch_pageless(ss oa,ss cursor)
+	if oa#=(Nullchar)
+		return cursor
+	end
+	if oa#=(switch_char)
+		callret translate_two_switcher_pageless(oa,cursor)
+	end
+	return oa
+end
+function translate_two_switcher_pageless(ss oa,ss page)
+	inc oa
 	set page translate_two(page,oa)
 	if page!=oa
 		return page
@@ -1466,7 +1485,7 @@ function translate_search_base(ss start,sw ptypes)
 	sw ?t=1
 	and t ptypes#
 	if t!=0
-		set str strip(start,globalt.a_page_switch,(a_page_size)) #can't recognize at search all if is good or bad without different buffer
+		set str strip(start,globalt.a_page_switch,(a_page_size)) #too many things to modify other way, search all return, down below
 		if str!=start
 			set start str
 		else
@@ -1491,15 +1510,10 @@ function translate_self(ss container)
 	if b=0
 		set b translate_self_set(container,globalt.self)
 	end
-	if b!=0 #still need it on separate buffer for switch char logic where is looking at current page
-		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),globalt.single_s,container)
-		if len>=0
-			if len<(a_page_size)
-				return globalt.a_page_switch
-			end
-		end
+	if b!=0
+		call translated("Self")
 	end
-	return container
+	return b
 end
 function translate_self_set(ss container,ss subject)
 	charx data#translate_self_size;ss cursor^data

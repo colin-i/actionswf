@@ -23,7 +23,7 @@ import "untranslated" untranslated
 #                     --
 #a-cd fg i  -m -- -- -vw
 # b-defghijklmnopqrstuvwxyz
-#    E         O    T VW
+#    E         O   ST VW
 #also at the end
 
 #a	s [s]
@@ -379,6 +379,7 @@ Rect
 RemMC
 Search
 SearchAll
+Self
 SetNewTextFormat
 Stage
 Static
