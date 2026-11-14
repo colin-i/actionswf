@@ -31,6 +31,8 @@ vstr this="this"
 vstr pgdn="PGDN"
 vstr pgup="PGUP"
 vstr rmc="removeMovieClip"
+vstr self="self"
+vstr single_s="%s"
 char snewtextformat="setNewTextFormat"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
@@ -356,6 +358,15 @@ function translate_two(ss start,ss in)
 		inc oa
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
+	elseif chr=(S)
+		set cursor translate_self(start)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
 	elseif chr=(text_char)
 		set cursor translate_textfield(start)
 		if cursor!=start
@@ -1469,8 +1480,56 @@ function translate_search_base(ss start,sw ptypes)
 	call search_replace(0x20,#start,cursor,ptypes,globalt.pgdn,"PAGE_DOWN")
 	call search_replace(0x40,#start,cursor,ptypes,globalt.pgup,"PAGE_UP")
 	call search_replace(0x80,#start,cursor,ptypes,globalt.capslock,"CAPS_LOCK")
-	call search_replace(0x100,#start,cursor,ptypes,globalt.this,"self")
+	call search_replace(0x100,#start,cursor,ptypes,globalt.this,globalt.self)
 	return start
+end
+
+const translate_self_hardcoded=4
+const translate_self_size=1+translate_self_hardcoded+1+1
+function translate_self(ss container)
+	ss ?b;set b translate_self_set(container,globalt.this)
+	if b=0
+		set b translate_self_set(container,globalt.self)
+	end
+	if b!=0 #still need it on separate buffer for switch char logic where is looking at current page
+		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),globalt.single_s,container)
+		if len>=0
+			if len<(a_page_size)
+				return globalt.a_page_switch
+			end
+		end
+	end
+	return container
+end
+function translate_self_set(ss container,ss subject)
+	charx data#translate_self_size;ss cursor^data
+	inc cursor;call memcpy(cursor,subject,(translate_self_hardcoded));
+	add cursor (translate_self_hardcoded+1);set cursor# (Nullchar)
+	sub cursor (1+translate_self_hardcoded+1)
+	ss ?b;set b translate_self_subset(container,cursor,(Openparenthesis),(Comma))
+	add b translate_self_subset(container,cursor,(Comma),(Comma))
+	add b translate_self_subset(container,cursor,(Comma),(Closeparenthesis))
+	return b
+end
+function translate_self_subset(ss container,ss subject,ss ?left,ss ?right)
+	set subject# left
+	add subject (translate_self_size-1-1)
+	set subject# right
+	sub subject (translate_self_size-1-1)
+	ss cursor;set cursor strstr(container,subject)
+	if cursor!=(NULL)
+		ss pointer=translate_self_size-1
+		add pointer cursor
+		svu ?end=1;add end strlen(pointer)
+		add end cursor
+		while cursor!=end
+			set cursor# pointer#
+			inc cursor
+			inc pointer
+		end
+		return 1
+	end
+	return 0
 end
 
 function translate_textfield(ss start)
@@ -1973,7 +2032,7 @@ function translate_insert(ss start,ss oa,ss ?is_delete)
 			call free(pointer)
 		end
 		if walker!=start
-			set len snprintf(mover,sz,"%s",walker)
+			set len snprintf(mover,sz,globalt.single_s,walker)
 			if len>=0
 				if len<sz
 					if is_delete!=0
