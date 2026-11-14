@@ -201,11 +201,12 @@ end
 
 function translate_two(ss start,ss in)
 	ss oa;set oa spcfull(in)
-	ss cursor;ss pointer
 	ss ?chr;set chr oa#
 	if chr=(postpone_char)
 		return start
 	end
+	ss cursor;ss pointer
+	ss ?b
 	if chr=(ignore_pref)
 		inc oa
 		if oa#=(Nullchar)
@@ -360,7 +361,7 @@ function translate_two(ss start,ss in)
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
 	elseif chr=(S)
-		ss ?b;set b translate_self(start)
+		set b translate_self(start)
 		if b!=0
 			inc oa
 			set cursor translate_two_switch_pageless(oa,start)
@@ -445,6 +446,7 @@ function translate_two(ss start,ss in)
 			return cursor
 		end
 	elseif chr=(Nullchar)
+		set b 0
 		ss mem;set mem strdup(start) #must remember that start is touched in calls #set cursor fn(mem,oa) is not yet through otoc
 
 set cursor translate_buttonmode(mem,(NULL))
@@ -494,7 +496,10 @@ call strcpy(mem,start)
 set cursor translate_srch_all(mem)
 if cursor=mem
 
-call strcpy(mem,start)
+set b translate_self(start)
+if b=0
+
+#call strcpy(mem,start) #after srch_all
 set cursor translate_textfield(mem)
 if cursor=mem
 
@@ -521,10 +526,11 @@ if cursor=mem
 call strcpy(mem,start)
 set cursor translate_new(mem) #conflicts: all
 
-end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
+end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end;end
 
 		call free(mem)
 		if cursor!=mem;return cursor;end
+		if b!=0;return start;end
 	end
 	return in
 end
