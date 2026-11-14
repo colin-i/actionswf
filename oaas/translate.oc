@@ -1526,19 +1526,20 @@ function translate_self_set(ss container,ss subject)
 	inc cursor;call memcpy(cursor,subject,(translate_self_hardcoded));
 	add cursor (translate_self_hardcoded+1);set cursor# (Nullchar)
 	sub cursor (1+translate_self_hardcoded+1)
-	ss ?b;set b translate_self_subset(container,cursor,(Openparenthesis),(Comma))
-	add b translate_self_subset(container,cursor,(Comma),(Comma))
-	add b translate_self_subset(container,cursor,(Comma),(Closeparenthesis))
+	ss ?b;set b translate_self_subset(container,cursor,(Openparenthesis),(Comma),1)
+	add b translate_self_subset(container,cursor,(Comma),(Comma),1)
+	add b translate_self_subset(container,cursor,(Comma),(Closeparenthesis),0)
 	return b
 end
-function translate_self_subset(ss container,ss subject,ss ?left,ss ?right)
+function translate_self_subset(ss container,ss subject,ss ?left,ss ?right,ss ?at_left)
 	set subject# left
 	add subject (translate_self_size-1-1)
 	set subject# right
 	sub subject (translate_self_size-1-1)
 	ss cursor;set cursor strstr(container,subject)
 	if cursor!=(NULL)
-		ss pointer=translate_self_size-1
+		add cursor at_left
+		ss pointer=translate_self_size-1-1
 		add pointer cursor
 		svu ?end=1;add end strlen(pointer)
 		add end cursor
