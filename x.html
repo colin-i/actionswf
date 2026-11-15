@@ -53,6 +53,7 @@
 	<tr><td class="green">2</td></tr>
 	<tr><td class="green">F</td></tr>
 	<tr><td>call_action_left</td><td class="green">C</td><td class="red">{</td><td>args_end</td><td class="green">ML</td><td class="red">}</td></tr>
+	<tr><td>call_chain_left</td><td class="green">C</td><td class="green">CL</td></tr>
 	<tr><td class="green" rowspan=2>If</td><td class="red" rowspan=2>{</td><td rowspan=2>else_marker</td><td class="green">If</td>  <td class="red">}</td></tr>
 	<tr>                                                                                              <td class="green">{1}</td><td>block_else_end</td><td>number_of_elses</td></tr>
 	<tr><td>while_marker</td><td class="green">RG<sup-r>c</sup-r></td><td class="green">{1}</td><td>whileblock_end</td></tr>
@@ -82,6 +83,12 @@
 <br>Table C: <!-- action_code_parse_new_or_call<>action_code_new_or_call -->
 <table>
 	<tr><td class="blue">function</td><td class="green">{RG}</td><td>args_end</td><td><span class="blue">null</span>/<span class="green">MC</span></td></tr>
+</table>
+
+<br>Table CL: <!-- action_code_write_left_call (header: action_code_chain_header). a().b(): the chained call is stored before the call it is applied to, its C ends with null (no member) -->
+<table>
+	<tr><td>call_chain_left</td><td class="green">C</td><td class="green">CL</td></tr>
+	<tr><td>call_action_left</td><td class="green">C</td><td class="red">{</td><td>args_end</td><td class="green">ML</td><td class="red">}</td></tr>
 </table>
 
 <br>Table F: <!-- action_code_parse_deffunction<>action_definefunction -->
@@ -189,4 +196,4 @@
 	<tr><td>ActionGetMember</td><td class="green">M</td></tr>
 </table>
 
-<br><div class="green">1 2 Call <sup-r>c</sup-r> Function If Left Members MemberS MembersCall MembersLeft MembersRight Operation OperationCompare Right RIght RiGht RigHt RighT</div>
+<br><div class="green">1 2 Call CallLeft <sup-r>c</sup-r> Function If Left Members MemberS MembersCall MembersLeft MembersRight Operation OperationCompare Right RIght RiGht RigHt RighT</div>

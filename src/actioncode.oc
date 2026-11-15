@@ -34,6 +34,9 @@ endfunction
 function action_code_values_index()
 	return #global.nr
 endfunction
+function action_code_values_index_get()
+	return global.nr
+endfunction
 #pointer
 function action_code_get()
 	sdu ?x
@@ -895,6 +898,8 @@ function action_code_conditions_end(sd codepointer)
 	return codepointer
 endfunction
 
+import "debug_xlog_call" debug_xlog_call
+
 ^import "action_member_loop_left_onstack" action_member_loop_left_onstack 1
 #codepointer
 function action_code_write_function(sd codepointer)
@@ -909,10 +914,12 @@ function action_code_write_function(sd codepointer)
 		return pointer
 	endif
 	if codepointer#!=(call_action_left)
-		return codepointer
+		if codepointer#!=(call_chain_left)
+			return codepointer
+		endif
 	endif
 	ss ?want_return=FALSE
-	setcall codepointer action_code_write_function_call(codepointer,#want_return)
+	setcall codepointer action_code_write_left_call(codepointer,#want_return)
 	if codepointer#=(args_end)
 		add codepointer (DWORD)
 		set codepointer action_member_loop_left_onstack(codepointer)
@@ -925,8 +932,33 @@ function action_code_write_function(sd codepointer)
 	endif
 	return codepointer
 endfunction
+#codepointer
+function action_code_write_left_call(sd codepointer,ss pwant_return)
+	if codepointer#!=(call_chain_left)
+		callret action_code_write_function_call(codepointer,pwant_return)
+	end
+	add codepointer (DWORD)
+	sd fname
+	setcall codepointer action_code_chain_header(codepointer,#fname)
+	ss ?inner=TRUE #the inner result is the object, so it must stay on the stack
+	setcall codepointer action_code_write_left_call(codepointer,#inner)
+	call action_push((ap_Constant8),fname)
+	call action_one((ActionCallMethod))
+	call debug_xlog_call()
+	return codepointer
+endfunction
+#codepointer
+function action_code_chain_header(sv codepointer,sv pfname)
+	sv member
+	sv mathpointer;set mathpointer codepointer
+	setcall codepointer x_call(#member,pfname,codepointer)
+	if codepointer=mathpointer
+		set member debug_x_preexpand(#codepointer)
+		setcall codepointer action_caller(member,pfname,codepointer)
+	end
+	return codepointer
+endfunction
 
-import "debug_xlog_call" debug_xlog_call
 #codepointer
 function action_code_write_function_call(sv codepointer,ss pwant_return)
 	add codepointer (DWORD)

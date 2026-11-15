@@ -27,6 +27,7 @@ const swapdata_max=0x400
 importx "strcspn" strcspn
 importx "strchr" strchr
 importx "memcpy" memcpy
+importx "memmove" memmove
 importx "sscanf" sscanf
 importx "strpbrk" strpbrk
 importx "malloc" malloc #builtin
@@ -120,6 +121,7 @@ end
 ^import "action_code_get" action_code_get
 ^import "action_code_values" action_code_values
 ^import "action_code_values_index" action_code_values_index #full
+import "action_code_values_index_get" action_code_values_index_get
 import "memtrail" memtrail
 import "memtrailstrict" memtrailstrict
 import "compat" compat
@@ -1414,10 +1416,19 @@ function action_code_parse_leftfunction(ss ac)
     endif
     #a call
 	ss start;set start ac
+	sd ?begin;setcall begin action_code_values_index_get() #where this statement's tokens start (DWORD units)
 	setcall ac action_code_parse_new_or_call(ac,(call_action_left),ac)
 	if ac=start
 		return ac
 	end
+	#a().b() : chained calls
+	whiletrue
+		ss chained;setcall chained action_code_parse_call_chain(ac,begin)
+		if chained=ac
+			break
+		end
+		set ac chained
+	endwhile
 	if ac#=(Period)
 		callret action_code_parse_call_assign(ac)
 	end
@@ -1450,6 +1461,59 @@ function action_code_parse_call_assign(ss pointer)
 	callret action_parse_right(pointer,(Semicolon))
 end
 import "part_of_variable" part_of_variable
+#pointer - pointer is right after a call's closing ')'. If what follows is .name( parse it as a call
+#on the previous call's return value, else return pointer unchanged.
+#The chained call tokens go before the call they apply to: CallMethod pops name,object,nrargs,args,
+#so its args must be pushed first and the object (the inner call's result) last.
+#[begin,mid)=calls parsed so far, [mid,end)=the new chained call; they are swapped to [chain][inner]
+#pointer
+function action_code_parse_call_chain(ss ac,sd ?begin)
+	if ac#!=(Period)
+		return ac
+	end
+	ss name;set name ac;inc name
+	ss open;set open name
+	ss ?sz
+	whiletrue
+		setcall sz part_of_variable(open)
+		if sz=0
+			break
+		end
+		add open sz
+	endwhile
+	if open=name #no name after the dot
+		return ac
+	end
+	if open#!=(Openparenthesis) #.member or .member.x(): not a plain method call on the result
+		return ac
+	end
+	sd ?mid;setcall mid action_code_values_index_get()
+	ss pointer;setcall pointer action_code_parse_new_or_call(name,(call_chain_left),name)
+	if pointer=name
+		call error("chained call expected")
+	end
+	sd ?end;setcall end action_code_values_index_get()
+	call action_code_values_rotate(begin,mid,end)
+	return pointer
+endfunction
+#swap adjacent token ranges [begin,mid) and [mid,end), units are DWORDs like action_code_values_index.
+#offsets, not pointers: the values container can be reallocated while parsing
+function action_code_values_rotate(sd ?begin,sd ?mid,sd ?end)
+	sd base;setcall base action_code_values()
+	sd first;set first mid;sub first begin;mult first (DWORD)
+	sd second;set second end;sub second mid;mult second (DWORD)
+	sd offset;set offset begin;mult offset (DWORD);add base offset
+	sd tmp;set tmp malloc(first)
+	if tmp=0
+		call error("memory")
+	end
+	call memcpy(tmp,base,first)
+	ss source;set source base;add source first
+	call memmove(base,source,second)
+	add base second
+	call memcpy(base,tmp,first)
+	call free(tmp)
+endfunction
 #pointer
 function action_code_parse_new_or_call(ss ac,sd ?type,ss cursor)
 	ss pointer

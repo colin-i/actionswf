@@ -125,3 +125,9 @@ a=1;do{a=a+1;trace(a);}while(a<5);
 a=1;do a=a+1;while(a<5);trace(a);
 a=1;do{trace(a);if(a>2){a=a+2;continue;}a=a+1;}while(a<6);
 a=1;do{if(a>2)break;a=a+1;}while(a<6);trace(a);
+
+//chained calls
+a.b(c).dd();
+a.b(c).d(e,f);
+a.b(c).d(e).f(g);
+a.b(c).d().x=1;

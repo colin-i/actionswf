@@ -32,8 +32,8 @@ if [ -z "${f}" ]; then
 	f=../../example/example.swf
 fi
 if [ -z "${x_file}" ]; then x_file=2; fi
-if [ -n "${asan}" ]; then ldpreload=$(gcc -print-file-name=libasan.so); fi
-if [ -n "${ubsan}" ]; then ldpreload=${ldpreload}:$(gcc -print-file-name=libubsan.so); fi
+if [ -n "${asan}" ]; then ldpreload=$(${CC} -print-file-name=libasan.so); fi
+if [ -n "${ubsan}" ]; then ldpreload=${ldpreload}:$(${CC} -print-file-name=libubsan.so); fi
 ${launcher} ${OCOMP} a.oc x_file ${x_file} logfile 0 && \
 if [ -z "${ldprefer}" ]; then
 	${launcher64} ${OCONV} ${OCONVFLAGS} a.oc.x && \
