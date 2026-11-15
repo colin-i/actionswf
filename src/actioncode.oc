@@ -915,7 +915,9 @@ function action_code_write_function(sd codepointer)
 	endif
 	if codepointer#!=(call_action_left)
 		if codepointer#!=(call_chain_left)
-			return codepointer
+			if codepointer#!=(call_chain_path)
+				return codepointer
+			end
 		endif
 	endif
 	ss ?want_return=FALSE
@@ -934,14 +936,24 @@ function action_code_write_function(sd codepointer)
 endfunction
 #codepointer
 function action_code_write_left_call(sd codepointer,ss pwant_return)
-	if codepointer#!=(call_chain_left)
-		callret action_code_write_function_call(codepointer,pwant_return)
+	sd ?marker;set marker codepointer#
+	if marker!=(call_chain_left)
+		if marker!=(call_chain_path)
+			callret action_code_write_function_call(codepointer,pwant_return)
+		end
 	end
 	add codepointer (DWORD)
 	sd fname
 	setcall codepointer action_code_chain_header(codepointer,#fname)
 	ss ?inner=TRUE #the inner result is the object, so it must stay on the stack
 	setcall codepointer action_code_write_left_call(codepointer,#inner)
+	if marker=(call_chain_path) #a().x.d(): apply members after the inner call to its returned object
+		if codepointer#!=(args_end)
+			call error("chained call members expected")
+		end
+		add codepointer (DWORD)
+		set codepointer action_member_loop_right_onstack(codepointer)
+	end
 	call action_push((ap_Constant8),fname)
 	call action_one((ActionCallMethod))
 	call debug_xlog_call()
@@ -1224,6 +1236,8 @@ function action_code_right_number(sd codepointer)
 	if codepointer#=(call_action_right)
 		set right_call (TRUE)
 	elseif codepointer#=(call_chain_left) #a().b() at right
+		set right_call (TRUE)
+	elseif codepointer#=(call_chain_path) #a().x.b() at right
 		set right_call (TRUE)
 	endelseif
 	if right_call=(TRUE)

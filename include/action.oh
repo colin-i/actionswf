@@ -36,7 +36,8 @@ const ifElse_start=0xfd0DD0d0         #RG
 const for=0xfe0EE0e0                  #1
 const do_start=0xfe0FF0f0             #1
 const label=0xff0FF0f0                #L
-const call_chain_left=0xff0AA0a0      #1 CL
+const call_chain_left=0xff0AA0a0      #1 CL RH
+const call_chain_path=0xff0BB0b0      #1 CL RH
 
 const no_flag=0                        #code only
 const consecutive_flag=0x80000000      #parse only

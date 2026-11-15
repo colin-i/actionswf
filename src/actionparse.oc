@@ -1476,29 +1476,57 @@ import "part_of_variable" part_of_variable
 #The chained call tokens go before the call they apply to: CallMethod pops name,object,nrargs,args,
 #so its args must be pushed first and the object (the inner call's result) last.
 #[begin,mid)=calls parsed so far, [mid,end)=the new chained call; they are swapped to [chain][inner]
+#with a member path (a().x.d()) [begin,mid) also has the path tokens: [chain][inner][path]
 #pointer
 function action_code_parse_call_chain(ss ac,sd ?begin)
 	if ac#!=(Period)
 		return ac
 	end
-	ss name;set name ac;inc name
-	ss open;set open name
-	ss ?sz
+	#.name( or .member[..].name( : walk over the members to find the last .name before '('
+	ss pos;set pos ac
+	ss last_dot
+	ss name ;#start of the last name. 0 if the last element was a [..]
 	whiletrue
-		setcall sz part_of_variable(open)
-		if sz=0
+		if pos#=(Period)
+			set last_dot pos
+			inc pos
+			set name pos
+			ss ?sz
+			setcall sz part_of_variable(pos)
+			if sz=0 #no name after the dot
+				return ac
+			end
+			whiletrue
+				add pos sz
+				setcall sz part_of_variable(pos)
+				if sz=0
+					break
+				end
+			end
+		elseif pos#=(Openingbracket)
+			setcall pos brackets_test(pos)
+			set name 0
+		else
 			break
 		end
-		add open sz
 	endwhile
-	if open=name #no name after the dot
+	if pos#!=(Openparenthesis) #.member : not a call
 		return ac
 	end
-	if open#!=(Openparenthesis) #.member or .member.x(): not a plain method call on the result
+	if name=0 #[1]( : not a plain method call on a member
 		return ac
+	end
+	sd ?type;set type (call_chain_left)
+	if last_dot!=ac
+		#.x.d() : apply the path before the final method name to the previous call's result
+		set type (call_chain_path)
+		#the last dot is nulled: member tokens retain string pointers for write time
+		set last_dot# (Nullchar)
+		call action_code_set((args_end)) #sentinel, like at action_code_call_member_tail
+		call action_code_member_body(ac,0)
 	end
 	sd ?mid;setcall mid action_code_values_index_get()
-	ss pointer;setcall pointer action_code_parse_new_or_call(name,(call_chain_left),name)
+	ss pointer;setcall pointer action_code_parse_new_or_call(name,type,name)
 	if pointer=name
 		call error("chained call expected")
 	end
