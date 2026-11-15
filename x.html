@@ -85,10 +85,10 @@
 	<tr><td class="blue">function</td><td class="green">{RG}</td><td>args_end</td><td><span class="blue">null</span>/<span class="green">MC</span></td></tr>
 </table>
 
-<br>Table CL: <!-- action_code_write_left_call (header: action_code_chain_header). a().b(): the chained call is stored before the call it is applied to, its C ends with null (no member) -->
+<br>Table CL: <!-- action_code_write_left_call (header: action_code_chain_header). a().b(): the chained call is stored before the call it is applied to, its C ends with null (no member). Left: ML at the end, right (call_action_right, from RH): MR -->
 <table>
 	<tr><td>call_chain_left</td><td class="green">C</td><td class="green">CL</td></tr>
-	<tr><td>call_action_left</td><td class="green">C</td><td class="red">{</td><td>args_end</td><td class="green">ML</td><td class="red">}</td></tr>
+	<tr><td>call_action_left/call_action_right</td><td class="green">C</td><td class="red">{</td><td>args_end</td><td class="green">ML/MR</td><td class="red">}</td></tr>
 </table>
 
 <br>Table F: <!-- action_code_parse_deffunction<>action_definefunction -->
@@ -187,6 +187,7 @@
 	<tr><td>ap_Double</td><td>scanf1</td><td>scanf2</td></tr>
 	<tr><td>ap_Constant8</td><td class="blue">string</td></tr>
 	<tr><td>call_action_right</td><td class="green">C</td><td class="red">{</td><td>args_end</td><td class="green">MR</td><td class="red">}</td></tr>
+	<tr><td>call_chain_left</td><td class="green">C</td><td class="green">CL</td></tr>
 	<tr><td>parenthesis_start</td><td class="green">RG</td><td>math_end</td></tr>
 </table>
 

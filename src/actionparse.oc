@@ -10,6 +10,7 @@ dataxu flag#1
 charx type#1
 data compare_bool=FALSE
 datax counter#1
+datax call_begin#1 #index (DWORD units) of the last parsed call marker
 datax blocks_mem#brace_blocks_max
 wordu swapsdata_index=0
 valuexu swapdsdata#swapsdata_max
@@ -798,6 +799,15 @@ function action_code_take_main(ss ac,ss p_op,ss delims)
 	ss cursor;set cursor pointer
 	setcall pointer action_code_parse_new_or_call(cursor,(call_action_right),ac)
 	if pointer!=cursor
+		#a().b() : chained calls
+		sd ?begin;set begin globalp.call_begin
+		whiletrue
+			ss chained;setcall chained action_code_parse_call_chain(pointer,begin)
+			if chained=pointer
+				break
+			end
+			set pointer chained
+		end
 		whiletrue
 			if pointer#!=(Period)
 				if pointer#!=(Openingbracket)
@@ -1543,6 +1553,7 @@ function action_code_parse_new_or_call(ss ac,sd ?type,ss cursor)
 endfunction
 #pointer
 function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd ?type)
+	sd ?marker;setcall marker action_code_values_index_get() #after pointer_prefix (-a()), which stays before the call
     #function mark
     call action_code_set(type)
     set pointer# 0
@@ -1558,6 +1569,7 @@ function action_code_parse_function_detected(ss start,ss last_dot,ss pointer,sd 
     endelse
     setcall pointer action_code_parse_function_arguments(pointer)
     call action_code_set((args_end))
+	set globalp.call_begin marker ##here, not before: arguments can contain calls too
     return pointer
 endfunction
 #pointer
