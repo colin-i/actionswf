@@ -86,6 +86,8 @@
 		onOut();
 		//l
 		lineStyle();
+		//m
+		moveTo(0,0);
 		//o
 		function onMD(){
 			trace('as2 as3 diff');}

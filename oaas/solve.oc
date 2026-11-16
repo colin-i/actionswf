@@ -379,6 +379,12 @@ function solver7(ss value,ss before)
 		end
 		return (NULL)
 	end
+	char moveto_string="moveTo"^
+	set c strncmp(value,#moveto_string,\.moveto_string)
+	if c=0
+		set globals.stored_char (fill_char)
+		callret solver_endb(value,\.moveto_string)
+	end
 	set cursor pgdn_string_p()
 	set c strcmp(value,cursor)
 	if c=0
