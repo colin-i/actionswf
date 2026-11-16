@@ -20,10 +20,19 @@ import "translated" translated
 ^import "translate_buffer" translate_buffer
 import "untranslated" untranslated
 
-#                     --
-#a-cd fg i  -m -- -- -vw
-# b-defghijklmnopqrstuvwxyz
-#    E         O   ST VW
+#a -d        m        vw --
+#a--d f- -  -- -- -- ---
+# -c---g- ---------------
+# b-def-hijklmnopqrstuvwx
+#-b-- -g -  lm op rs uvw
+#- --        -        -- yz
+
+#              -      --
+#    -         -   -- --
+#    E             ST VW
+#              O      VW
+#              O
+
 #also at the end
 
 #a	s [s]

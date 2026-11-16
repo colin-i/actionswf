@@ -1513,38 +1513,40 @@ function translate_search_base(ss start,sw ptypes)
 	return start
 end
 
-const translate_self_hardcoded=4
-const translate_self_size=1+translate_self_hardcoded+1+1
 function translate_self(ss container)
-	ss ?b;set b translate_self_set(container,globalt.this)
+	ss ?b;set b translate_self_set(container,globalt.this,4)
 	if b=0
-		set b translate_self_set(container,globalt.self)
+		set b translate_self_set(container,globalt.self,4)
+		if b=0
+const translate_self_hardcoded=21
+const translate_self_size=1+translate_self_hardcoded+1+1
+			set b translate_self_set(container,"getNextHighestDepth()",(translate_self_hardcoded))
+		end
 	end
 	if b!=0
 		call translated("Self")
 	end
 	return b
 end
-function translate_self_set(ss container,ss subject)
+function translate_self_set(ss container,ss subject,ss sz)
 	charx data#translate_self_size;ss cursor^data
-	inc cursor;call memcpy(cursor,subject,(translate_self_hardcoded));
-	add cursor (translate_self_hardcoded+1);set cursor# (Nullchar)
-	sub cursor (1+translate_self_hardcoded+1)
-	ss ?b;set b translate_self_subset(container,cursor,(Openparenthesis),(Comma),1,0)
-	add b translate_self_subset(container,cursor,(Comma),(Comma),0,0)
-	add b translate_self_subset(container,cursor,(Comma),(Closeparenthesis),0,0)
-	add b translate_self_subset(container,cursor,(Openparenthesis),(Closeparenthesis),1,1)
+	ss pointer;set pointer cursor
+	inc cursor;call memcpy(cursor,subject,sz)
+	inc sz;add cursor sz;set cursor# (Nullchar)
+	ss ?b;set b translate_self_subset(container,pointer,(Openparenthesis),(Comma),1,0,sz)
+	add b translate_self_subset(container,pointer,(Comma),(Comma),0,0,sz)
+	add b translate_self_subset(container,pointer,(Comma),(Closeparenthesis),0,0,sz)
+	add b translate_self_subset(container,pointer,(Openparenthesis),(Closeparenthesis),1,1,sz)
 	return b
 end
-function translate_self_subset(ss container,ss subject,ss ?left,ss ?right,ss ?at_left,ss ?at_right)
+function translate_self_subset(ss container,ss subject,ss ?left,ss ?right,ss ?at_left,ss ?at_right,ss pointer)
 	set subject# left
-	add subject (translate_self_size-1-1)
+	add subject pointer
 	set subject# right
-	sub subject (translate_self_size-1-1)
+	sub subject pointer
 	ss cursor;set cursor strstr(container,subject)
 	if cursor!=(NULL)
 		add cursor at_left
-		ss pointer=translate_self_size-1-1
 		add pointer cursor
 		sub pointer at_right
 		svu ?end=1;add end strlen(pointer)
