@@ -28,6 +28,7 @@ vstr capslock="CAPSLOCK"
 vstr graphics="graphics."
 vstr key="Key"
 vstr this="this"
+vstr null="null"
 vstr pgdn="PGDN"
 vstr pgup="PGUP"
 vstr rmc="removeMovieClip"
@@ -36,6 +37,7 @@ vstr single_s="%s"
 char snewtextformat="setNewTextFormat"
 vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
+vstr zero="0"
 
 importx "free" free
 importx "malloc" malloc
@@ -288,7 +290,16 @@ function translate_two(ss start,ss in)
 			end
 		end
 	elseif chr=(compare_char)
-		set cursor translate_compare(start)
+		set cursor translate_compare(start,globalt.zero)
+		if cursor!=start
+			inc oa
+			set cursor translate_two_switch(oa,cursor)
+			if cursor!=oa
+				return cursor
+			end
+		end
+	elseif chr=(K)
+		set cursor translate_compare(start,globalt.null)
 		if cursor!=start
 			inc oa
 			set cursor translate_two_switch(oa,cursor)
@@ -520,7 +531,7 @@ set cursor translate_var_simple(mem,(var_char))
 if cursor=mem
 
 call strcpy(mem,start)
-set cursor translate_compare(mem) #conflicts at test: t(translate_textfield), w(translate_var_simple)
+set cursor translate_compare(mem,globalt.zero) #conflicts at test: t(translate_textfield), w(translate_var_simple)
 if cursor=mem
 
 call strcpy(mem,start)
@@ -788,7 +799,7 @@ function translate_param(ss start,ss param,ss onOk)
 end
 
 function translate_nullparam(ss start)
-	callret translate_param(start,"null","EventPass")
+	callret translate_param(start,globalt.null,"EventPass")
 end
 
 function translate_function(ss indents)
@@ -925,7 +936,7 @@ function translate_childcast(ss indents)
 	return indents
 end
 
-function translate_compare(ss start)
+function translate_compare(ss start, ss type)
 	ss cursor
 	set cursor pareoafter(start)
 	if cursor!=start
@@ -943,9 +954,9 @@ function translate_compare(ss start)
 				if cursor#=(Exclamationmark)
 					set cursor# (Nullchar)
 					inc cursor
-					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s==0%c%s",start,cursor,(Closeparenthesis),end)
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s%s==%s%c%s",start,cursor,type,(Closeparenthesis),end)
 				else
-					set len snprintf(globalt.a_page_switch,(a_page_size),"%s!=0%c%s",start,(Closeparenthesis),end)
+					set len snprintf(globalt.a_page_switch,(a_page_size),"%s!=%s%c%s",start,type,(Closeparenthesis),end)
 				end
 				if len>0
 					if len<(a_page_size)

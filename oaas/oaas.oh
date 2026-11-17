@@ -6,6 +6,7 @@ Const b_low=0x62
 Const e_low=0x65
 Const h_low=0x68
 Const w_low=0x77
+Const K=0x4B
 
 #one
 Const Atsymbol=0x40

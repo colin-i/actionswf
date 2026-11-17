@@ -86,6 +86,11 @@
 		onOut();
 		//l
 		lineStyle();
+		//K
+		function kk(a){
+			if(a)//3K
+				label.text=a;
+		}
 		//m
 		moveTo(0,0);
 		//o

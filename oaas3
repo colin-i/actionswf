@@ -663,7 +663,7 @@ if not os.environ.get('skip_comp'):
 					# Legacy "file@offset[@mode]" suffix -> JSON-RPC "display/..." method.
 					# Modes without an explicit @suffix (plain "file@offset") default to completion.
 					#_MODE_TO_METHOD = {
-					#    "":             "display/completion",     # file@offset          -> completion
+					#    "":             "display/completion",     # file@offset          -> completion, add ,"wasAutoTriggered": false
 					#    "position":     "display/definition",     # file@offset@position -> goto definition
 					#    "usage":        "display/references",     # file@offset@usage    -> find references
 					#    "type":         "display/hover",          # file@offset@type     -> hover/type info
