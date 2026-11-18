@@ -22,6 +22,8 @@ import "_postpone_char" _postpone_char
 import "_resolve" _resolve
 ^import "_firstline" _firstline
 
+^import "diagmode" diagmode 1
+
 einclude "oaas.h" "oaas.oh"
 
 #multithread unsafe
@@ -52,6 +54,10 @@ functionx ratio(ss ?print)
 	else
 		callret translated_ratio((FALSE))
 	end
+end
+
+functionx diag_mode(ss value)
+	callret diagmode(value)
 end
 
 functionx flash_to_openfl(ss ?bol)

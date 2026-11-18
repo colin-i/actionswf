@@ -181,13 +181,12 @@ end
 #g	;
 #h	alpha=;
 #i	getChildByName/addChild
-#k	(unimportant) or (!unimportant)
+#kK	(unimportant) or (!unimportant)
 #l	.( b or e
 #j	=''
 #m	all spcback= loadBitmap()
 #n	new. after indents
-#o	onPATTERN=; onPATTERN(
-#O	same
+#oO	onPATTERN=; onPATTERN(
 #p	public     Object(
 #q	removeMovieClip
 #r	.( (,),)(,
@@ -298,7 +297,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(K)
+	elseif chr=(compare_null_char)
 		set cursor translate_compare(start,globalt.null)
 		if cursor!=start
 			inc oa

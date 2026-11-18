@@ -6,7 +6,6 @@ Const b_low=0x62
 Const e_low=0x65
 Const h_low=0x68
 Const w_low=0x77
-Const K=0x4B
 
 #one
 Const Atsymbol=0x40
@@ -44,6 +43,7 @@ Const r_low=0x72
 Const t_low=0x74
 Const y_low=0x79
 Const E=0x45
+Const K=0x4B
 Const O=0x4F
 Const T=0x54
 const alpha_char=h_low
@@ -53,6 +53,7 @@ const bitmap_char=m_low
 const capslock_char=c_low
 const childcast_char=i_low
 const compare_char=k_low
+const compare_null_char=K
 const delete_char=y_low
 const evfunc_char=e_low
 const Evfunc_char=E

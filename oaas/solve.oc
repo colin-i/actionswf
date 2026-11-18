@@ -10,7 +10,10 @@ charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
 #                            yDELETE KEY\0
 char firstline=FALSE
 #
+char bool_str_string="Bool should be String"
+vstr position="position"
 char stage_string="Stage"^
+vstr usage="usage"
 
 importx "strcmp" strcmp
 importx "strncmp" strncmp
@@ -144,6 +147,11 @@ function solver2(ss value,ss after)
 		end
 		set globals.firstline (TRUE)
 		call sprintf(#globals.outvalue,"%c",(arracc_char))
+		return #globals.outvalue
+	end
+	set c strcmp(value,#globals.bool_str_string)
+	if c=0
+		call sprintf(#globals.outvalue,"%c",(compare_null_char))
 		return #globals.outvalue
 	end
 	char class_string="Class<"^
@@ -507,6 +515,15 @@ function solver7_on_full(ss value,ss ?z,ss ?chr) #,ss before)
 	#end
 	set globals.stored_char chr
 	callret solver_endb(value,z)
+end
+
+function diagmode(ss value)
+	sd ?c
+	set c strcmp(value,#globals.bool_str_string)
+	if c=0
+		return globals.usage
+	end
+	return globals.position
 end
 
 entryraw globals()

@@ -88,7 +88,7 @@
 		lineStyle();
 		//K
 		function kk(a){
-			if(a)//3K
+			if(a)
 				label.text=a;
 		}
 		//m
