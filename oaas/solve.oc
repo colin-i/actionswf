@@ -198,26 +198,26 @@ function solver2(ss value,ss after)
 	if c=0
 		sv ?offset_marker;set offset_marker value
 		add value \.notenough_string
+		char Evfunc_string="e:"^
+		sd ?cmp;set cmp strncmp(value,#Evfunc_string,\.Evfunc_string)
 		sv ?offset_marker2;set offset_marker2 value
 		call var_advance(value,#value)
-		char unknown0=":Unknown<0>"^
+		char unknown0=":Unknown<0>" #with null to setFlag/return
 		set c strncmp(value,#unknown0,\.unknown0)
 		if c=0
+			if cmp=0
+				set globals.firstline (TRUE)
+				call sprintf(#globals.outvalue,"%c",(Evfunc_char))
+				return #globals.outvalue
+			end
 			set globals.offset offset_marker2
 			sub globals.offset offset_marker
 			set globals.offsetsize value
 			sub globals.offsetsize offset_marker2
 			call sprintf(#globals.outvalue,"%c",(evfunc_char))
-			callret solver_end(value,\.unknown0)
+			return #globals.outvalue
 		end
 		return (NULL)
-	end
-	char Evfunc_string="Not enough arguments, expected e:Unknown<0>" #with null to setFlag/return
-	set c strcmp(value,#Evfunc_string)
-	if c=0
-		set globals.firstline (TRUE)
-		call sprintf(#globals.outvalue,"%c",(Evfunc_char))
-		return #globals.outvalue
 	end
 	char align_string="String should be flash.text.TextFormatAlign"^
 	set c strncmp(value,#align_string,\.align_string)
