@@ -19,8 +19,11 @@ import "_postpone_char" _postpone_char
 ^import "solver4" solver4 1
 ^import "solver7" solver7 2
 ^import "solver" solver 2
+
 import "_resolve" _resolve
 ^import "_firstline" _firstline
+^import "offset_get_p" offset_get_p
+^import "offsetsize_get" offsetsize_get
 
 ^import "diagmode" diagmode 1
 
@@ -115,6 +118,7 @@ functionx solve7(ss value,ss after)
 	set s solver7(value,after)
 	callret solver(value,s)
 end
+
 functionx resolve()
 	callret _resolve()
 end
@@ -123,6 +127,17 @@ functionx firstline()
 	ss ?b;set b a#
 	set a# (FALSE)
 	return b
+end
+functionx offset()
+	sv offs#1
+	set offs offset_get_p()
+	sv ?of;set of offs#
+	set offs# -1
+	return of
+end
+functionx offsetsize()
+	svu ?of;set of offsetsize_get()
+	return of
 end
 
 entryraw globalm()

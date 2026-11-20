@@ -86,11 +86,12 @@
 		onOut();
 		//l
 		lineStyle();
-		//K
-		function kk(a){
+		//K ename
+		function kk(a,b){
 			if(a)
 				label.text=a;
 		}
+		kk("");
 		//m
 		moveTo(0,0);
 		//o

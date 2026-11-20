@@ -9,6 +9,8 @@ charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
 #                            zflash.net. SharedObject\0
 #                            yDELETE KEY\0
 char firstline=FALSE
+value offset=-1
+valuexu offsetsize#1
 #
 char bool_str_string="Bool should be String"
 vstr position="position"
@@ -52,6 +54,12 @@ function _resolve()
 end
 function _firstline()
 	return #globals.firstline
+end
+function offset_get_p()
+	return #globals.offset
+end
+function offsetsize_get()
+	return globals.offsetsize
 end
 
 function solver_end(ss value,ss ?small_size)
@@ -182,6 +190,25 @@ function solver2(ss value,ss after)
 			set globals.firstline (TRUE)
 			call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
 			return #globals.outvalue
+		end
+		return (NULL)
+	end
+	char notenough_string="Not enough arguments, expected "^
+	set c strncmp(value,#notenough_string,\.notenough_string)
+	if c=0
+		sv ?offset_marker;set offset_marker value
+		add value \.notenough_string
+		sv ?offset_marker2;set offset_marker2 value
+		call var_advance(value,#value)
+		char unknown0=":Unknown<0>"^
+		set c strncmp(value,#unknown0,\.unknown0)
+		if c=0
+			set globals.offset offset_marker2
+			sub globals.offset offset_marker
+			set globals.offsetsize value
+			sub globals.offsetsize offset_marker2
+			call sprintf(#globals.outvalue,"%c",(evfunc_char))
+			callret solver_end(value,\.unknown0)
 		end
 		return (NULL)
 	end

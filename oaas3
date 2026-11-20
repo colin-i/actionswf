@@ -82,6 +82,8 @@ if lib:
 		lib.dualmode.restype = ctypes.c_char
 		lib.singlemode.restype = ctypes.c_char
 		lib.firstline.restype = ctypes.c_char
+		lib.offset.restype = ctypes.c_ssize_t #a lib is a lib, stay independent
+		lib.offsetsize.restype = ctypes.c_size_t
 		lib.postpone_char.restype = ctypes.c_char
 		lib.resolve.restype = ctypes.c_char
 		lib.sep.restype = ctypes.c_char
@@ -879,6 +881,10 @@ if not os.environ.get('skip_comp'):
 															if lib.firstline()[0]:
 															#if firstline: #at compare without exclamations is from if, not this case
 																line=firstline   # undo the jump, apply the fix on the original line
+															else:
+																off = lib.offset()
+																if off != -1: #eNAME
+																	solved = solved + value.encode()[off:off+lib.offsetsize()]
 													else:
 														solved = lib.solve2(value.encode())
 												elif kind==1:

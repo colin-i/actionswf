@@ -176,7 +176,7 @@ end
 
 #b	useHandCursor=; same as p but diff at format and continuation
 #d	[]
-#eE	()
+#eE	() also (, ,, ,( () for ename
 #f	function newOther
 #g	;
 #h	alpha=;
@@ -218,7 +218,7 @@ function translate_two(ss start,ss in)
 		inc oa
 		set cursor translate_buttonmode(start,oa)
 		if cursor!=start;return cursor;end
-	elseif chr=(arracc_char)
+	elseif chr=(arracc_char)#d
 		set cursor translate_childbyname(start)
 		if cursor!=start
 			inc oa
@@ -227,16 +227,18 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(evfunc_char)
-		set cursor translate_eparam(start)
-		if cursor!=start
-			inc oa
-			set cursor translate_two_switch(oa,cursor)
-			if cursor!=oa
-				return cursor
-			end
+	elseif chr=(evfunc_char)#e
+		set pointer translate_two_switchBefore_orZero(#oa)
+		if oa#=(Nullchar)
+			set cursor translate_eparam(start)
+		else
+			set cursor translate_optarg(start,oa)
 		end
-	elseif chr=(Evfunc_char)
+		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		if cursor!=oa
+			return cursor
+		end
+	elseif chr=(Evfunc_char)#E
 		set cursor translate_nullparam(start)
 		if cursor!=start
 			inc oa
@@ -245,7 +247,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(func_char)
+	elseif chr=(func_char)#f
 		set cursor translate_function(start)
 		if cursor!=start
 			inc oa
@@ -254,14 +256,16 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(vartype_char)
+	elseif chr=(vartype_char)#g
 		set pointer translate_two_switchBefore(#oa)
-		set cursor translate_give(start,oa)
-		set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparison, is inside
-		if cursor!=oa
-			return cursor
+		if pointer!=(NULL)
+			set cursor translate_give(start,oa)
+			set cursor translate_two_switchAfter(cursor,oa,pointer) #here is not required the comparison, is inside
+			if cursor!=oa
+				return cursor
+			end
 		end
-	elseif chr=(alpha_char)
+	elseif chr=(alpha_char)#h
 		set cursor translate_alpha(start)
 		if cursor!=start
 			inc oa
@@ -270,7 +274,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(childcast_char)
+	elseif chr=(childcast_char)#i
 		set cursor translate_childcast(start)
 		if cursor!=start
 			inc oa
@@ -279,7 +283,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(align_char)
+	elseif chr=(align_char)#j
 		set cursor translate_textformat(start)
 		if cursor!=start
 			inc oa
@@ -288,7 +292,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(compare_char)
+	elseif chr=(compare_char)#k
 		set cursor translate_compare(start,globalt.zero)
 		if cursor!=start
 			inc oa
@@ -297,7 +301,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(compare_null_char)
+	elseif chr=(compare_null_char)#K
 		set cursor translate_compare(start,globalt.null)
 		if cursor!=start
 			inc oa
@@ -306,21 +310,21 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(fill_char)
+	elseif chr=(fill_char)#l
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_fill(start,oa)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(bitmap_char)
+	elseif chr=(bitmap_char)#m
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_bitmap(start,oa)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(new_char)
+	elseif chr=(new_char)#n
 		set cursor translate_new(start)
 		if cursor!=start
 			inc oa
@@ -329,28 +333,28 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(onev_char)
+	elseif chr=(onev_char)#o
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_oneve(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(Onev_char)
+	elseif chr=(Onev_char)#O
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_oneve_full((Onev_char),start,oa)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(oreplace_char)
+	elseif chr=(oreplace_char)#p
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_object(start,oa) #here is not required the comparison, is inside
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(remmc_char)
+	elseif chr=(remmc_char)#q
 		set cursor translate_remmc(start)
 		if cursor!=start
 			inc oa
@@ -359,14 +363,14 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(rect_char)
+	elseif chr=(rect_char)#r
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_rect(start,oa)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(search_char)
+	elseif chr=(search_char)#s
 		inc oa
 		set cursor translate_srch(start,oa)
 		if cursor!=oa;return cursor;end
@@ -379,7 +383,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(text_char)
+	elseif chr=(text_char)#t
 		set cursor translate_textfield(start)
 		if cursor!=start
 			inc oa
@@ -388,7 +392,7 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(ntextfmt_char)
+	elseif chr=(ntextfmt_char)#T
 		set cursor translate_newtextformat(start)
 		if cursor!=start
 			inc oa
@@ -397,35 +401,35 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(arrconstr_char)
+	elseif chr=(arrconstr_char)#u
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_arrayconstructor_full(start,oa)
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(var_char)
+	elseif chr=(var_char)#v
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_var_full(start,oa,(var_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(Var_char)
+	elseif chr=(Var_char)#V
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_var_full(start,oa,(Var_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(nvar_char)
+	elseif chr=(nvar_char)#w
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_var_full(start,oa,(nvar_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
 		if cursor!=oa
 			return cursor
 		end
-	elseif chr=(nVar_char)
+	elseif chr=(nVar_char)#W
 		set pointer translate_two_switchBefore_orZero(#oa)
 		set cursor translate_var_full(start,oa,(nVar_char))
 		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
@@ -441,19 +445,23 @@ function translate_two(ss start,ss in)
 				return cursor
 			end
 		end
-	elseif chr=(delete_char)
-		set pointer translate_two_switchBefore(#oa)
-		set cursor translate_insert(start,oa,(TRUE)) #here is not required the comparison, is inside
-		set cursor translate_two_switchAfter(cursor,oa,pointer)
-		if cursor!=oa
-			return cursor
+	elseif chr=(delete_char)#y
+		set pointer translate_two_switchBefore(#oa) #knowing that translate_insert has 2 args and already checking space,is like a drastic early checker.will be ugly with orZero
+		if pointer!=(NULL)
+			set cursor translate_insert(start,oa,(TRUE)) #here is not required the comparison, is inside
+			set cursor translate_two_switchAfter(cursor,oa,pointer)
+			if cursor!=oa
+				return cursor
+			end
 		end
-	elseif chr=(insert_char)
+	elseif chr=(insert_char)#z
 		set pointer translate_two_switchBefore(#oa)
-		set cursor translate_insert(start,oa,(FALSE)) #here is not required the comparison, is inside
-		set cursor translate_two_switchAfter(cursor,oa,pointer)
-		if cursor!=oa
-			return cursor
+		if pointer!=(NULL)
+			set cursor translate_insert(start,oa,(FALSE)) #here is not required the comparison, is inside
+			set cursor translate_two_switchAfter(cursor,oa,pointer)
+			if cursor!=oa
+				return cursor
+			end
 		end
 	elseif chr=(Nullchar)
 		set b 0
@@ -590,6 +598,8 @@ function translate_two_switchBefore(sv _oa)
 	set pointer pluson(oa)
 	if pointer!=oa
 		set pointer# (Nullchar)
+	elseif oa#=(Nullchar)
+		return (NULL)
 	end
 	set _oa# oa
 	return pointer
@@ -797,6 +807,44 @@ function translate_param(ss start,ss param,ss onOk)
 	return start
 end
 
+function translate_optarg(ss start,ss oa) #oa here is not ""
+	sdu ?sz;set sz strlen(oa)
+	ss cursor;set cursor start
+	whiletrue
+		ss pointer
+		set pointer strstr(cursor,oa)
+		if pointer=(NULL)
+			break
+		end
+		if pointer=cursor
+			break
+		end
+		set cursor pointer;add cursor sz
+		dec pointer
+		if pointer#!=(Openparenthesis)
+			if pointer#!=(Comma)
+				continue
+			end
+		end
+		if cursor#!=(Closeparenthesis)
+			if cursor#!=(Comma)
+				continue
+			end
+		end
+		inc pointer
+		set sz pointer;sub sz start
+		sd ?len;set len snprintf(globalt.a_page_switch,(a_page_size),"%.*s?%s",sz,start,pointer)
+		if len>0
+			if len<(a_page_size)
+				call translated("OptArg")
+				return globalt.a_page_switch
+			end
+		end
+		break
+	end
+	return start
+end
+
 function translate_nullparam(ss start)
 	callret translate_param(start,globalt.null,"EventPass")
 end
@@ -846,28 +894,26 @@ function translate_function(ss indents)
 end
 
 function translate_give(ss indents,ss name) #cannot postpone when no error
-	if name#!=(Nullchar)
-		ss cursor
-		set cursor semicolon(indents)
-		if cursor!=indents
-			set cursor# (Nullchar)
-			inc cursor
-			char ar="Array"
-			sd ?c
-			set c strcmp(name,#ar,\.ar)
-			sd ?len
-			ss type
-			if c=0
-				set type "<Dynamic>"
-			else
-				set type #globalt.blank
-			end
-			set len snprintf(globalt.a_page_switch,(a_page_size),"%s:%s%s%c%s",indents,name,type,(Semicolon),cursor)
-			if len>0
-				if len<(a_page_size)
-					call translated("Give")
-					return globalt.a_page_switch
-				end
+	ss cursor
+	set cursor semicolon(indents)
+	if cursor!=indents
+		set cursor# (Nullchar)
+		inc cursor
+		char ar="Array"
+		sd ?c
+		set c strcmp(name,#ar,\.ar)
+		sd ?len
+		ss type
+		if c=0
+			set type "<Dynamic>"
+		else
+			set type #globalt.blank
+		end
+		set len snprintf(globalt.a_page_switch,(a_page_size),"%s:%s%s%c%s",indents,name,type,(Semicolon),cursor)
+		if len>0
+			if len<(a_page_size)
+				call translated("Give")
+				return globalt.a_page_switch
 			end
 		end
 	end
