@@ -1,5 +1,6 @@
 
-pid=`ps -C python3 -o pid,cmd | grep oaas3 | tr -s ' ' | cut -d' ' -f2`
+if [ -z "$p" ]; then p=python3; fi
+pid=`ps -C $p -o pid,cmd | grep oaas3 | tr -s ' ' | cut -d' ' -f2`
 if [ -z "${nosudo}" ]; then s=sudo; fi
 if [ -n "$1" ]; then
 	$s gdb -p ${pid} -ex "source /home/bc/a/Desktop/gef/gef.py"

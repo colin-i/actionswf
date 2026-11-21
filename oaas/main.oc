@@ -103,9 +103,9 @@ functionx solve1(ss value)
 	set s solver1(value)
 	callret solver(value,s)
 end
-functionx solve2(ss value)
+functionx solve2(ss value) #,ss after)
 	ss s
-	set s solver2(value)
+	set s solver2(value) #,after)
 	callret solver(value,s)
 end
 functionx solve4(ss value)

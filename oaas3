@@ -75,7 +75,7 @@ if lib:
 		lib.verbose.argtypes = [ctypes.c_char]
 
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
-		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p
+		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p #,ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
 		lib.solve7.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve7.restype = ctypes.c_char_p
 
@@ -874,9 +874,10 @@ if not os.environ.get('skip_comp'):
 												elif kind==4:
 													solved = lib.solve4(value.encode())
 												elif kind==2:
+													#??? after=dest_lines(fullfilename)[firstline][d["range"]["end"]["character"]:].encode()
+													solved = lib.solve2(value.encode())#??? ,after ep25c so_keys.data[key_id]=code; is triggered to early
 													#was demonstrated that it also can not have a firstline
 													if firstline: #at compare without exclamations is from if, not this case
-														solved = lib.solve2(value.encode(),dest_lines(fullfilename)[firstline][d["range"]["end"]["character"]:])#ep25c so_keys.data[key_id]=code; is triggered to early
 														if solved: # it is no having ""
 															if lib.firstline()[0]:
 															#if firstline: #at compare without exclamations is from if, not this case
@@ -885,8 +886,8 @@ if not os.environ.get('skip_comp'):
 																off = lib.offset()
 																if off != -1: #eNAME
 																	solved = solved + value.encode()[off:off+lib.offsetsize()]
-													else:
-														solved = lib.solve2(value.encode())
+													#else:
+													#	solved = lib.solve2(value.encode()) #??? ,b"" here after is not important, but also is not on ')', a hack is inside solver for this, tested at haxe 4
 												elif kind==1:
 													solved = lib.solve1(value.encode())
 

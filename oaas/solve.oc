@@ -128,7 +128,7 @@ function solver1(ss value)
 	end
 	return (NULL)
 end
-function solver2(ss value,ss after)
+function solver2(ss value) #,ss after)
 	sd ?c
 	char arracc_string="Array access is not allowed on flash.display."^
 	set c strncmp(value,#arracc_string,\.arracc_string) #with null to setFlag/return
@@ -186,7 +186,12 @@ function solver2(ss value,ss after)
 	char compare_string="Int should be Bool" #with null to setFlag/return
 	set c strcmp(value,#compare_string)
 	if c=0
-		if after#=(Closeparenthesis)
+		whiletrue
+			#if after#!=(Closeparenthesis)
+			#	if after#!=(Nullchar) #more at oaas3
+			#		break
+			#	end
+			#end
 			set globals.firstline (TRUE)
 			call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
 			return #globals.outvalue
