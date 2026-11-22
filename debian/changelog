@@ -1,3 +1,9 @@
+actionswf (1-187) jammy; urgency=medium
+
+  * chained calls, at solver keys,self,and many more
+
+ -- bc <bc@ubuntu>  Sun, 22 Nov 2026 12:13:48 +0200
+
 actionswf (1-186) jammy; urgency=medium
 
   * chained calls, at solver keys,self,and many more

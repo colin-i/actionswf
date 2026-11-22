@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.186
+Version: 1.187
 Release: 0%{?dist}
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,7 +58,10 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Sat Nov 21 2026 costin <costin.botescu@gmail.com> 1.186-0
+* Sun Nov 22 2026 costin <costin.botescu@gmail.com> 1.187-0
+- compat fixes (costin.botescu@gmail.com)
+- problems on amd64 (costin.botescu@gmail.com)
+- chained calls, at solver keys,self,and many more (mail@flashixy.com)
 - optimize solver optarg/E (costin.botescu@gmail.com)
 - eNAME at solver (costin.botescu@gmail.com)
 - K at solver (costin.botescu@gmail.com)

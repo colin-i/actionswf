@@ -1,5 +1,6 @@
 #!/bin/sh
 if [ ! -e ./a.oc ]; then
+	echo edor
 	edor --save-exit ../a.oc.oac
 fi
 stat -c '%a' a.oc
