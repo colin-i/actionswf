@@ -1,2 +1,2 @@
 
-LD_PRELOAD=$(gcc -print-file-name=libasan.so):$(gcc -print-file-name=libubsan.so) compiler=`pwd`/hax ffdec=`pwd`/ffde ./b
+LD_PRELOAD=$(gcc -print-file-name=libasan.so):$(gcc -print-file-name=libubsan.so) PYTHONMALLOC=malloc compiler=`pwd`/hax ffdec=`pwd`/ffde ./b

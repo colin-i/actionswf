@@ -2,5 +2,5 @@
 if [ ! -e ./a.oc ]; then
 	edor --save-exit ../a.oc.oac
 fi
-ls
+stat -c '%a' a.oc
 inter=../../ ${RUN__SHELL} ../../a${s} # interext=.oac

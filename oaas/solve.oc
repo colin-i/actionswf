@@ -9,6 +9,7 @@ charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
 #                            zflash.net. SharedObject\0
 #                            yDELETE KEY\0
 char firstline=FALSE
+char secondlinerequired=FALSE
 value offset=-1
 valuexu offsetsize#1
 #
@@ -54,6 +55,9 @@ function _resolve()
 end
 function _firstline()
 	return #globals.firstline
+end
+function _secondlinerequired()
+	return #globals.secondlinerequired
 end
 function offset_get_p()
 	return #globals.offset
@@ -186,17 +190,17 @@ function solver2(ss value) #,ss after)
 	char compare_string="Int should be Bool" #with null to setFlag/return
 	set c strcmp(value,#compare_string)
 	if c=0
-		whiletrue
-			#if after#!=(Closeparenthesis)
-			#	if after#!=(Nullchar) #more at oaas3
-			#		break
-			#	end
-			#end
-			set globals.firstline (TRUE)
-			call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
-			return #globals.outvalue
-		end
-		return (NULL)
+		#whiletrue
+		#	if after#!=(Closeparenthesis)
+		#		if after#!=(Nullchar) #more at oaas3
+		#			break
+		#		end
+		#	end
+		set globals.firstline (TRUE)
+		call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
+		return #globals.outvalue
+		#end
+		#return (NULL)
 	end
 	char notenough_string="Not enough arguments, expected "^
 	set c strncmp(value,#notenough_string,\.notenough_string)
@@ -215,6 +219,7 @@ function solver2(ss value) #,ss after)
 				call sprintf(#globals.outvalue,"%c",(Evfunc_char))
 				return #globals.outvalue
 			end
+			set globals.secondlinerequired (TRUE)
 			set globals.offset offset_marker2
 			sub globals.offset offset_marker
 			set globals.offsetsize value

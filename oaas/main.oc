@@ -22,6 +22,7 @@ import "_postpone_char" _postpone_char
 
 import "_resolve" _resolve
 ^import "_firstline" _firstline
+^import "_secondlinerequired" _secondlinerequired
 ^import "offset_get_p" offset_get_p
 ^import "offsetsize_get" offsetsize_get
 
@@ -124,6 +125,12 @@ functionx resolve()
 end
 functionx firstline()
 	ss a;set a _firstline()
+	ss ?b;set b a#
+	set a# (FALSE)
+	return b
+end
+functionx secondlinerequired()
+	ss a;set a _secondlinerequired()
 	ss ?b;set b a#
 	set a# (FALSE)
 	return b
