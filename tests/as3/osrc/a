@@ -1,7 +1,10 @@
 #!/bin/sh
 if [ ! -e ./a.oc ]; then
-	echo edor
+	#id; ls -ld . ..; ls -l .
+	#strace -f -o /tmp/edor.trace edor --save-exit ../a.oc.oac
+	#echo "edor exit=$?"
+	#grep -v ENOENT /tmp/edor.trace | tail -40
+	#ls -l a.oc
 	edor --save-exit ../a.oc.oac
 fi
-stat -c '%a' a.oc
 inter=../../ ${RUN__SHELL} ../../a${s} # interext=.oac

@@ -1,6 +1,6 @@
 
 Name: actionswf
-Version: 1.187
+Version: 1.185
 Release: 0%{?dist}
 License: GPLv3
 Summary: ActionSwf compiler
@@ -58,77 +58,6 @@ install_number=64 %make_install
 
 #-- CHANGELOG -----------------------------------------------------------------#
 %changelog
-* Sun Nov 22 2026 costin <costin.botescu@gmail.com> 1.187-0
-- compat fixes (costin.botescu@gmail.com)
-- problems on amd64 (costin.botescu@gmail.com)
-- chained calls, at solver keys,self,and many more (mail@flashixy.com)
-- optimize solver optarg/E (costin.botescu@gmail.com)
-- eNAME at solver (costin.botescu@gmail.com)
-- K at solver (costin.botescu@gmail.com)
-- bare K (costin.botescu@gmail.com)
-- getNextHighestDepth() at 'S' (costin.botescu@gmail.com)
-- moveto doc (costin.botescu@gmail.com)
-- moveTo (costin.botescu@gmail.com)
-- inner path at chained calls (costin.botescu@gmail.com)
-- right chained calls (costin.botescu@gmail.com)
-- chained calls (costin.botescu@gmail.com)
-- S and (self) (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- S lets (,) (costin.botescu@gmail.com)
-- S at no sign (costin.botescu@gmail.com)
-- pageless (costin.botescu@gmail.com)
-- oaas S (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- this to self (costin.botescu@gmail.com)
-- test (costin.botescu@gmail.com)
-- as3 tests extra file (costin.botescu@gmail.com)
-- "tests" (mail@flashixy.com)
-- defaultTextFormat (costin.botescu@gmail.com)
-- j (costin.botescu@gmail.com)
-- listeners (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- fix 3O@ n (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- KEY_DOWN solver (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- translate_Oneve (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- compare reductions (costin.botescu@gmail.com)
-- 3 key searches. and onKeyDown at t*oc (costin.botescu@gmail.com)
-- !=(FALSE) (costin.botescu@gmail.com)
-- delete_char (costin.botescu@gmail.com)
-- oaas y (costin.botescu@gmail.com)
-- starting Key duplex (costin.botescu@gmail.com)
-- full remmc (costin.botescu@gmail.com)
-- remmc at solver (costin.botescu@gmail.com)
-- remMC (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- events as2<->as3 (costin.botescu@gmail.com)
-- lineStyle at translate_fill (costin.botescu@gmail.com)
-- [] (costin.botescu@gmail.com)
-- on event call (costin.botescu@gmail.com)
-- "tests" (mail@flashixy.com)
-- solver fixes (costin.botescu@gmail.com)
-- oaas3: multi-files to be separated by a new line (costin.botescu@gmail.com)
-- at Oneve, [parent/stage.] (costin.botescu@gmail.com)
-- "tests" (mail@flashixy.com)
-- Evfunc (costin.botescu@gmail.com)
-- "tests" (mail@flashixy.com)
-- [var ]name for TextField (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- vars can also have varname from assignment (costin.botescu@gmail.com)
-- edor test (costin.botescu@gmail.com)
-- line<len(lines) , not translating code*/ at dual mode
-  (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- arch armv8-a (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- md (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-- "up" (costin.botescu@gmail.com)
-
 * Wed Oct 21 2026 costin <costin.botescu@gmail.com> 1.185-0
 - asan problems (costin.botescu@gmail.com)
 - members after calls,actionf [],do-while,oaas attach undefined,and more
