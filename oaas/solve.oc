@@ -9,7 +9,8 @@ charx outvalue#1+10+1+12+1 ;#zflash.text. TextFormat\0
 #                            zflash.net. SharedObject\0
 #                            yDELETE KEY\0
 char firstline=FALSE
-char secondlinerequired=FALSE
+char secondline=FALSE
+#char oneline=FALSE
 value offset=-1
 valuexu offsetsize#1
 #
@@ -56,9 +57,12 @@ end
 function _firstline()
 	return #globals.firstline
 end
-function _secondlinerequired()
-	return #globals.secondlinerequired
+function _secondline()
+	return #globals.secondline
 end
+#function _oneline()
+#	return #globals.oneline
+#end
 function offset_get_p()
 	return #globals.offset
 end
@@ -163,6 +167,7 @@ function solver2(ss value) #,ss after)
 	end
 	set c strcmp(value,#globals.bool_str_string)
 	if c=0
+		set globals.secondline (TRUE) #it is not erroring but if that will happen will catch
 		call sprintf(#globals.outvalue,"%c",(compare_null_char))
 		return #globals.outvalue
 	end
@@ -183,7 +188,7 @@ function solver2(ss value) #,ss after)
 	char this_string="Cannot access this from a static function"
 	set c strcmp(value,#this_string) #with null to setFlag/return
 	if c=0
-		set globals.firstline (TRUE)
+		#set globals.oneline (TRUE)
 		call sprintf(#globals.outvalue,"%c%c",(search_char),(this_char))
 		return #globals.outvalue
 	end
@@ -197,6 +202,7 @@ function solver2(ss value) #,ss after)
 		#		end
 		#	end
 		set globals.firstline (TRUE)
+		#set globals.oneline (TRUE) #same like Void case but for first can be marked if required
 		call sprintf(#globals.outvalue,"%c",(compare_char)) #this is only for !comp side
 		return #globals.outvalue
 		#end
@@ -219,7 +225,7 @@ function solver2(ss value) #,ss after)
 				call sprintf(#globals.outvalue,"%c",(Evfunc_char))
 				return #globals.outvalue
 			end
-			set globals.secondlinerequired (TRUE)
+			set globals.secondline (TRUE)
 			set globals.offset offset_marker2
 			sub globals.offset offset_marker
 			set globals.offsetsize value
@@ -232,24 +238,28 @@ function solver2(ss value) #,ss after)
 	char align_string="String should be flash.text.TextFormatAlign"^
 	set c strncmp(value,#align_string,\.align_string)
 	if c=0
+		#set globals.oneline (TRUE)
 		call sprintf(#globals.outvalue,"%c",(align_char))
 		callret solver_end(value,\.align_string)
 	end
 	char arrconstr_string="Too many arguments"^
 	set c strncmp(value,#arrconstr_string,\.arrconstr_string)
 	if c=0
+		#set globals.oneline (TRUE)
 		set globals.stored_char (arrconstr_char)
 		callret solver_endb(value,\.arrconstr_string)
 	end
 	char vartype_string="Variable requires type-hint or initialization"^
 	set c strncmp(value,#vartype_string,\.vartype_string)
 	if c=0
+		#set globals.oneline (TRUE)
 		call sprintf(#globals.outvalue,"%cDynamic",(vartype_char))
 		callret solver_end(value,\.vartype_string)
 	end
 	char evfunc_string="() -> Void should be Dynamic -> Void"^
 	set c strncmp(value,#evfunc_string,\.evfunc_string)
 	if c=0
+		#this is second , but on some second=first cases is not always returning useful even if last error, can be useful to add oneline
 		call sprintf(#globals.outvalue,"%c",(evfunc_char))
 		callret solver_end(value,\.evfunc_string)
 	end

@@ -1,4 +1,4 @@
 set -e
-./mwa
+./mwa $@
 cd ../tests/as3
 ./aw $@

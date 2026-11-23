@@ -82,7 +82,8 @@ if lib:
 		lib.dualmode.restype = ctypes.c_char
 		lib.singlemode.restype = ctypes.c_char
 		lib.firstline.restype = ctypes.c_char
-		lib.secondlinerequired.restype = ctypes.c_char
+		lib.secondline.restype = ctypes.c_char
+		#lib.oneline.restype = ctypes.c_char
 		lib.offset.restype = ctypes.c_ssize_t #a lib is a lib, stay independent
 		lib.offsetsize.restype = ctypes.c_size_t
 		lib.postpone_char.restype = ctypes.c_char
@@ -881,10 +882,12 @@ if not os.environ.get('skip_comp'):
 													if lib.firstline()[0]:
 														#was demonstrated that it also can not have a firstline
 														if firstline!=None: #at compare without exclamations is from if, not this case
-															if solved: # it is no having ""
+															#if solved: # it is no having ""
 															#if firstline: #at compare without exclamations is from if, not this case
-																line=firstline   # undo the jump, apply the fix on the original line
-													elif lib.secondlinerequired()[0]: #is only 1 case at the moment
+															line=firstline   # undo the jump, apply the fix on the original line
+														#else:
+														#	line=None not required at the moment but can be useful, combined with oneline
+													elif lib.secondline()[0]:
 														if firstline!=None:
 															off = lib.offset()
 															if off != -1: #eNAME
