@@ -1570,14 +1570,15 @@ function translate_search_base(ss start,sw ptypes)
 end
 
 function translate_self(ss container)
+	#these stays are in calls
 	ss ?b;set b translate_self_set(container,globalt.this,4)
-	if b=0
-		set b translate_self_set(container,globalt.self,4)
-		if b=0
 const translate_self_hardcoded=21
 const translate_self_size=1+translate_self_hardcoded+1+1
-			set b translate_self_set(container,"getNextHighestDepth()",(translate_self_hardcoded))
-		end
+	add b translate_self_set(container,"getNextHighestDepth()",(translate_self_hardcoded))
+	if b=0
+	#these stays in definitions
+		set b translate_self_set(container,globalt.self,4)
+		add b translate_self_set(container,"variable",8)
 	end
 	if b!=0
 		call translated("Self")
