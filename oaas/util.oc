@@ -305,7 +305,7 @@ function object_com(ss name,ss prop,ss value,ss end,sv pbuffer,sd ?size)
 	return 0
 end
 
-function strchr_reverse(ss s,ss e,ss ?c)
+function memchr_reverse(ss s,ss e,ss ?c)
 	while s!=e
 		dec s
 		if s#=c

@@ -77,7 +77,7 @@ import "object_make" object_make
 ^import "spcfullafters" spcfullafters 1
 ^import "spcfullafters_keep" spcfullafters_keep 1
 ^import "spcfullback" spcfullback 2
-^import "strchr_reverse" strchr_reverse 3
+^import "memchr_reverse" memchr_reverse 3
 ^import "strip" strip 3
 import "to_upper" to_upper
 ^import "translate_leftright_full" translate_leftright_full 7
@@ -1321,7 +1321,7 @@ function translate_remmc(ss indents)
 		else
 			set frontchild indents
 			set child cursor
-			set cursor strchr_reverse(pointer,cursor,(Period))
+			set cursor memchr_reverse(pointer,cursor,(Period))
 			if cursor=(NULL)
 				return indents
 			end
@@ -1894,7 +1894,7 @@ function translate_var_by_type(ss ?type,ss cursor,sd ?len,ss varname,ss name,ss 
 		callret translate_var_named(cursor,len,varname,name,pointer,ok2,start)
 	end
 	ss has_dot
-	set has_dot strchr_reverse(atarguments,afterindents,(Period))
+	set has_dot memchr_reverse(atarguments,afterindents,(Period))
 	if has_dot!=(NULL)
 		set afterindents# store
 		inc has_dot
@@ -1991,7 +1991,7 @@ function translate_var_target(ss cursor,ss pointer,sv p_decl,sv p_varname,ss p_f
 	#paren is where the call name is (or after it), the search for the '=' is only backward from there, so what is after the call (;x.a=1;) is never seen
 	#returns b (null terminated at its end) and sets p_parent to what is after the '=', p_decl to "var " or nothing, p_first to the first char of b
 	#returns NULL if there is no b=
-	set pointer strchr_reverse(pointer,cursor,(Equals))
+	set pointer memchr_reverse(pointer,cursor,(Equals))
 	if pointer!=(NULL)
 		sd ?c;set c strncmp(cursor,#globalt.var_,\globalt.var_-1)
 		if c=0
