@@ -15,7 +15,7 @@ import "_postpone_char" _postpone_char
 ^import "dual_mode" dual_mode
 
 ^import "solver1" solver1 1
-^import "solver2" solver2 1
+^import "solver2" solver2 2
 ^import "solver4" solver4 1
 ^import "solver7" solver7 2
 ^import "solver" solver 2
@@ -105,9 +105,9 @@ functionx solve1(ss value)
 	set s solver1(value)
 	callret solver(value,s)
 end
-functionx solve2(ss value) #,ss after)
+functionx solve2(ss value,ss before)
 	ss s
-	set s solver2(value) #,after)
+	set s solver2(value,before)
 	callret solver(value,s)
 end
 functionx solve4(ss value)

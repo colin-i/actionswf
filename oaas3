@@ -75,7 +75,7 @@ if lib:
 		lib.verbose.argtypes = [ctypes.c_char]
 
 		lib.solve1.argtypes = [ctypes.c_char_p]; lib.solve1.restype = ctypes.c_char_p
-		lib.solve2.argtypes = [ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p #,ctypes.c_char_p
+		lib.solve2.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve2.restype = ctypes.c_char_p #,ctypes.c_char_p
 		lib.solve4.argtypes = [ctypes.c_char_p]; lib.solve4.restype = ctypes.c_char_p
 		lib.solve7.argtypes = [ctypes.c_char_p,ctypes.c_char_p]; lib.solve7.restype = ctypes.c_char_p
 
@@ -877,8 +877,9 @@ if not os.environ.get('skip_comp'):
 												elif kind==4:
 													solved = lib.solve4(value.encode())
 												elif kind==2:
-													solved = lib.solve2(value.encode())#??? ,after ep25c so_keys.data[key_id]=code; is triggered to early
-													#??? after=dest_lines(fullfilename)[firstline][d["range"]["end"]["character"]:].encode()
+													hx_linestr = dest_lines(fullfilename)[line]
+													solved = lib.solve2(value.encode(),hx_linestr[:positions["character"]][-6:].encode()) #-6 for a single case at the moment, hardcoded
+													#??? after=dest_lines(fullfilename)[firstline][d["range"]["end"]["character"]:].encode() ,after ep25c so_keys.data[key_id]=code; is triggered to early
 													if lib.firstline()[0]:
 														#was demonstrated that it also can not have a firstline
 														if firstline!=None: #at compare without exclamations is from if, not this case

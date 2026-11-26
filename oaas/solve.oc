@@ -136,7 +136,7 @@ function solver1(ss value)
 	end
 	return (NULL)
 end
-function solver2(ss value) #,ss after)
+function solver2(ss value,ss before)
 	sd ?c
 	char arracc_string="Array access is not allowed on flash.display."^
 	set c strncmp(value,#arracc_string,\.arracc_string) #with null to setFlag/return
@@ -246,8 +246,13 @@ function solver2(ss value) #,ss after)
 	set c strncmp(value,#arrconstr_string,\.arrconstr_string)
 	if c=0
 		#set globals.oneline (TRUE)
-		set globals.stored_char (arrconstr_char)
-		callret solver_endb(value,\.arrconstr_string)
+		vstr arrbefore_string="Array("
+		set c strcmp(before,arrbefore_string)
+		if c=0
+			set globals.stored_char (arrconstr_char)
+			callret solver_endb(value,\.arrconstr_string)
+		end
+		return (NULL)
 	end
 	char vartype_string="Variable requires type-hint or initialization"^
 	set c strncmp(value,#vartype_string,\.vartype_string)
