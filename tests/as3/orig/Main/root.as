@@ -145,6 +145,7 @@ createTextField('label',1,0,16, 120, 48);//3
 setNewTextFormat(_q)//3T+s
 setNewTextFormat(q)//3
 _q=new Array(q,w,2);//3 u+s
+_q=new Array(q,w,2);//3 u13 14+s
 q=new Array(q,w,2);//3
 attachMovie('q','_p',d);//3 v+s
 create('_p',d);//3 V+s

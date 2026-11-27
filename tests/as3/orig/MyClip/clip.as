@@ -103,6 +103,9 @@
 		onKeyDown=onKD;
 		//T
 		label.setNewTextFormat(tf);
+		//u
+		function simpletest(a){}
+		simpletest(1,2);//3 u 15 16
 	}
 	//3x
 	var c=%u;

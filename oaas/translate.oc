@@ -39,6 +39,7 @@ vstr staged="stage."
 vstr var_translate_5="%s%s%s%s=new %s();"
 vstr zero="0"
 
+importx "atoi" atoi
 importx "free" free
 importx "malloc" malloc
 importx "memcmp" memcmp
@@ -403,8 +404,12 @@ function translate_two(ss start,ss in)
 		end
 	elseif chr=(arrconstr_char)#u
 		set pointer translate_two_switchBefore_orZero(#oa)
-		set cursor translate_arrayconstructor_full(start,oa)
-		set cursor translate_two_switchAfter_orZero(cursor,oa,pointer) #here is not required the comparison, is inside
+		set cursor translate_argsmix(start,oa)
+		if cursor=start
+			set cursor translate_two_switchAfter_orZero_pageless(cursor,oa,pointer)
+		else
+			set cursor translate_two_switchAfter_orZero(cursor,oa,pointer)
+		end
 		if cursor!=oa
 			return cursor
 		end
@@ -561,6 +566,15 @@ function translate_two_switch(ss oa,ss cursor)
 	end
 	return oa
 end
+function translate_two_switch_pageless(ss oa,ss cursor)
+	if oa#=(Nullchar)
+		return cursor
+	end
+	if oa#=(switch_char)
+		callret translate_two_switcher_pageless(oa,cursor)
+	end
+	return oa
+end
 function translate_two_switcher(ss oa)
 	inc oa
 	ss page;set page switch_page()
@@ -569,15 +583,6 @@ function translate_two_switcher(ss oa)
 		return page
 	end
 	dec oa
-	return oa
-end
-function translate_two_switch_pageless(ss oa,ss cursor)
-	if oa#=(Nullchar)
-		return cursor
-	end
-	if oa#=(switch_char)
-		callret translate_two_switcher_pageless(oa,cursor)
-	end
 	return oa
 end
 function translate_two_switcher_pageless(ss oa,ss page)
@@ -604,6 +609,19 @@ function translate_two_switchBefore(sv _oa)
 	set _oa# oa
 	return pointer
 end
+function translate_two_switchBefore_orZero(sv _oa)
+	ss oa
+	set oa _oa#
+	inc oa
+	set oa spcfull(oa)
+	ss pointer
+	set pointer strchr(oa,(Plus))
+	if pointer!=(Nullchar)
+		set pointer# (Nullchar)
+	end
+	set _oa# oa
+	return pointer
+end
 function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 	if pointer!=oa
 		if cursor!=oa
@@ -620,23 +638,26 @@ function translate_two_switchAfter(ss cursor,ss oa,ss pointer)
 	end
 	return oa
 end
-function translate_two_switchBefore_orZero(sv _oa)
-	ss oa
-	set oa _oa#
-	inc oa
-	set oa spcfull(oa)
-	ss pointer
-	set pointer strchr(oa,(Plus))
-	if pointer!=(Nullchar)
-		set pointer# (Nullchar)
-	end
-	set _oa# oa
-	return pointer
-end
 function translate_two_switchAfter_orZero(ss cursor,ss oa,ss pointer)
 	if pointer!=(Nullchar)
 		if cursor!=oa
 			set cursor translate_two_switcher(pointer)
+			if cursor!=pointer
+				return cursor
+			end
+		end
+		set pointer# (switch_char)
+	else
+		if cursor!=oa
+			return cursor
+		end
+	end
+	return oa
+end
+function translate_two_switchAfter_orZero_pageless(ss cursor,ss oa,ss pointer)
+	if pointer!=(Nullchar)
+		if cursor!=oa
+			set cursor translate_two_switcher_pageless(pointer,cursor)
 			if cursor!=pointer
 				return cursor
 			end
@@ -672,6 +693,49 @@ function translate_unshift(ss start,ss value,ss onOk)
 	return start
 end
 
+function translate_argsmix(ss start,ss oa)
+	ss cursor;set cursor spcfullafters(oa)
+	if cursor=oa
+		callret translate_arrayconstructor_full(start,oa)
+	end
+	ss rem;set rem cursor#
+	set cursor# (Nullchar)
+	sd ?first;set first atoi(oa)
+	set cursor# rem
+
+	inc cursor
+	set cursor spcfull(cursor)
+	sd ?last;set last atoi(cursor)
+
+	if first>0 #to compare also [-1] safely
+		if last>=first ## or = is like: i don't care
+			sdu len;set len strlen(start)
+			if last<=^len  ## or = is like: i don't care
+				ss cutb;set cutb start;add cutb first
+				ss cute;set cute start;add cute last
+				if cute#=(Comma)
+					inc cute
+				else
+					dec cutb
+					if cutb#!=(Comma)
+						inc cutb
+					end
+				end
+				whiletrue
+					set cutb# cute#
+					if cute#=(Nullchar)
+						break
+					end
+					inc cutb
+					inc cute
+				end
+				call translated("ArgsMix")
+				return start
+			end
+		end
+	end
+	return oa
+end
 function translate_arrayconstructor_full(ss start,ss oa)
 	char predefined="=new Array(";
 	ss cursor
